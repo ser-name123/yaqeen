@@ -1,0 +1,1169 @@
+/* About Page Specific Styles */
+
+.about-page-container {
+  min-height: auto; /* Hug the content naturally instead of forcing full-screen height */
+  padding: 20px 24px 36px 24px; /* Added slightly more breathing room at the top (20px) and bottom (36px) */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #FAF6F0; /* Elegant warm cream background matching the mockup */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23C99B4D' stroke-width='0.5' stroke-opacity='0.08'%3E%3Ccircle cx='80' cy='80' r='80'/%3E%3Ccircle cx='0' cy='0' r='80'/%3E%3Ccircle cx='160' cy='0' r='80'/%3E%3Ccircle cx='0' cy='160' r='80'/%3E%3Ccircle cx='160' cy='160' r='80'/%3E%3Ccircle cx='80' cy='0' r='80'/%3E%3Ccircle cx='0' cy='80' r='80'/%3E%3Ccircle cx='160' cy='80' r='80'/%3E%3Ccircle cx='80' cy='160' r='80'/%3E%3Ccircle cx='80' cy='80' r='40'/%3E%3Ccircle cx='0' cy='0' r='40'/%3E%3Ccircle cx='160' cy='0' r='40'/%3E%3Ccircle cx='0' cy='160' r='40'/%3E%3Ccircle cx='160' cy='160' r='40'/%3E%3Ccircle cx='80' cy='0' r='40'/%3E%3Ccircle cx='0' cy='80' r='40'/%3E%3Ccircle cx='160' cy='80' r='40'/%3E%3Ccircle cx='80' cy='160' r='40'/%3E%3Ccircle cx='80' cy='80' r='20'/%3E%3Ccircle cx='0' cy='0' r='20'/%3E%3Ccircle cx='160' cy='0' r='20'/%3E%3Ccircle cx='0' cy='160' r='20'/%3E%3Ccircle cx='160' cy='160' r='20'/%3E%3Ccircle cx='80' cy='0' r='20'/%3E%3Ccircle cx='0' cy='80' r='20'/%3E%3Ccircle cx='160' cy='80' r='20'/%3E%3Ccircle cx='80' cy='160' r='20'/%3E%3Ccircle cx='80' cy='80' r='10'/%3E%3Ccircle cx='0' cy='0' r='10'/%3E%3Ccircle cx='160' cy='0' r='10'/%3E%3Ccircle cx='0' cy='160' r='10'/%3E%3Ccircle cx='160' cy='160' r='10'/%3E%3Ccircle cx='80' cy='0' r='10'/%3E%3Ccircle cx='0' cy='80' r='10'/%3E%3Ccircle cx='160' cy='80' r='10'/%3E%3Ccircle cx='80' cy='160' r='10'/%3E%3Crect x='68' y='68' width='24' height='24' transform='rotate(0 80 80)'/%3E%3Crect x='68' y='68' width='24' height='24' transform='rotate(45 80 80)'/%3E%3Crect x='-12' y='-12' width='24' height='24' transform='rotate(0 0 0)'/%3E%3Crect x='-12' y='-12' width='24' height='24' transform='rotate(45 0 0)'/%3E%3Crect x='148' y='-12' width='24' height='24' transform='rotate(0 160 0)'/%3E%3Crect x='148' y='-12' width='24' height='24' transform='rotate(45 160 0)'/%3E%3Crect x='-12' y='148' width='24' height='24' transform='rotate(0 0 160)'/%3E%3Crect x='-12' y='148' width='24' height='24' transform='rotate(45 0 160)'/%3E%3Crect x='148' y='148' width='24' height='24' transform='rotate(0 160 160)'/%3E%3Crect x='148' y='148' width='24' height='24' transform='rotate(45 160 160)'/%3E%3Crect x='68' y='-12' width='24' height='24' transform='rotate(0 80 0)'/%3E%3Crect x='68' y='-12' width='24' height='24' transform='rotate(45 80 0)'/%3E%3Crect x='-12' y='68' width='24' height='24' transform='rotate(0 0 80)'/%3E%3Crect x='-12' y='68' width='24' height='24' transform='rotate(45 0 80)'/%3E%3Crect x='148' y='68' width='24' height='24' transform='rotate(0 160 80)'/%3E%3Crect x='148' y='68' width='24' height='24' transform='rotate(45 160 80)'/%3E%3Crect x='68' y='148' width='24' height='24' transform='rotate(0 80 160)'/%3E%3Crect x='68' y='148' width='24' height='24' transform='rotate(45 80 160)'/%3E%3Crect x='74' y='74' width='12' height='12' transform='rotate(0 80 80)'/%3E%3Crect x='74' y='74' width='12' height='12' transform='rotate(45 80 80)'/%3E%3Crect x='-6' y='-6' width='12' height='12' transform='rotate(0 0 0)'/%3E%3Crect x='-6' y='-6' width='12' height='12' transform='rotate(45 0 0)'/%3E%3Crect x='154' y='-6' width='12' height='12' transform='rotate(0 160 0)'/%3E%3Crect x='154' y='-6' width='12' height='12' transform='rotate(45 160 0)'/%3E%3Crect x='-6' y='154' width='12' height='12' transform='rotate(0 0 160)'/%3E%3Crect x='-6' y='154' width='12' height='12' transform='rotate(45 0 160)'/%3E%3Crect x='154' y='154' width='12' height='12' transform='rotate(0 160 160)'/%3E%3Crect x='154' y='154' width='12' height='12' transform='rotate(45 160 160)'/%3E%3Crect x='74' y='-6' width='12' height='12' transform='rotate(0 80 0)'/%3E%3Crect x='74' y='-6' width='12' height='12' transform='rotate(45 80 0)'/%3E%3Crect x='-6' y='74' width='12' height='12' transform='rotate(0 0 80)'/%3E%3Crect x='-6' y='74' width='12' height='12' transform='rotate(45 0 80)'/%3E%3Crect x='154' y='74' width='12' height='12' transform='rotate(0 160 80)'/%3E%3Crect x='154' y='74' width='12' height='12' transform='rotate(45 160 80)'/%3E%3Crect x='74' y='154' width='12' height='12' transform='rotate(0 80 160)'/%3E%3Crect x='74' y='154' width='12' height='12' transform='rotate(45 80 160)'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+/* Gold outer page border frame with perfectly sharp 90-degree corners and the requested brand cream background */
+.about-page-border-frame {
+  width: 100%;
+  max-width: 1800px; /* Further increased max-width from 1680px to 1800px to maximize the widescreen horizontal span */
+  border: 1.2px solid rgba(201, 155, 77, 0.32); /* Thin gold border frame around the page */
+  border-radius: 0; /* Perfectly sharp 90-degree corners with no border radius, matching the mockup exactly */
+  padding: 24px; /* Space between the gold frame and the white card */
+  display: flex;
+  flex-direction: column; /* Stack the white card and the bottom banner vertically */
+  gap: 20px; /* Clean cream gap between the card and the bottom banner */
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background-color: transparent; /* Transparent to let the container background show through seamlessly */
+  background-image: none;
+}
+
+.about-card {
+  width: 100%;
+  background-color: #fcf3ed; /* Soft warm cream background as requested */
+  border: 1px solid rgba(201, 155, 77, 0.22); /* Adjusted border opacity for contrast */
+  border-radius: 20px; /* White card retains its elegant rounded corners as shown in the mockup */
+  box-shadow: 0 10px 35px rgba(44, 37, 30, 0.02);
+  padding: 40px 48px; /* Compact padding inside the card */
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px); /* Premium soft blur behind the card */
+}
+
+/* Pattern overlay styles removed to favor clean semi-transparent background bleed-through */
+
+.about-main-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 48px; /* Balanced gap between columns */
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* Left Column - Image Container */
+.about-image-column {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  height: 100%;
+}
+
+.about-image-wrapper {
+  position: relative;
+  width: 380px; /* Perfectly sized circle */
+  height: 380px;
+  z-index: 3;
+}
+
+.about-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 12px 36px rgba(44, 37, 30, 0.08);
+  position: relative;
+  z-index: 4;
+}
+
+/* Decorative border arcs with pixel-perfect alignment and rotation */
+.about-image-arc {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.about-image-arc.arc-green {
+  top: -15px;
+  left: -15px;
+  width: calc(100% + 30px);
+  height: calc(100% + 30px);
+  border: 2.2px solid transparent;
+  border-top-color: var(--secondary-color); /* 90-degree arc at the top */
+  transform: rotate(-30deg); /* Positioned elegantly at the top-left */
+}
+
+.about-image-arc.arc-gold {
+  bottom: -15px;
+  left: -15px;
+  width: calc(100% + 30px);
+  height: calc(100% + 30px);
+  border: 2.2px solid transparent;
+  border-bottom-color: var(--primary-color); /* 90-degree arc at the bottom */
+  transform: rotate(30deg); /* Positioned elegantly at the bottom-left */
+}
+
+.about-image-wrapper:hover .about-image-arc.arc-green {
+  transform: rotate(-48deg); /* Smoothly glides outwards on hover, widening the gap */
+}
+
+.about-image-wrapper:hover .about-image-arc.arc-gold {
+  transform: rotate(48deg); /* Smoothly glides outwards on hover, widening the gap */
+}
+
+/* Right Column - Content */
+.about-content-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.about-badge {
+  background-color: rgba(201, 155, 77, 0.08);
+  color: var(--primary-color);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  font-family: var(--font-sans);
+}
+
+.about-heading {
+  font-size: 46px; /* Perfectly scaled font size */
+  font-weight: 700; /* Medium-bold elegant weight for serif */
+  line-height: 1.18;
+  color: var(--fg-color);
+  font-family: var(--font-serif); /* Serif font matching the mockup */
+  margin-bottom: 4px;
+}
+
+.about-heading span {
+  color: var(--primary-color);
+}
+
+.about-heading-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 20px 0;
+}
+
+.about-heading-divider .divider-line {
+  width: 32px;
+  height: 1.5px;
+  background-color: var(--primary-color);
+}
+
+.about-heading-divider .divider-diamond {
+  width: 6px;
+  height: 6px;
+  background-color: var(--primary-color);
+  transform: rotate(45deg);
+}
+
+.about-description {
+  font-size: 14.5px;
+  line-height: 1.58;
+  color: var(--fg-color);
+  opacity: 0.95;
+  margin-bottom: 24px;
+  font-family: var(--font-sans);
+}
+
+/* Features Grid */
+.about-features-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  width: 100%;
+}
+
+.about-feature-item {
+  background-color: #FFFFFF; /* White background to stand out elegantly against the cream card background */
+  border: 1px solid rgba(201, 155, 77, 0.15); /* Soft brand gold border */
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  transition: var(--transition-smooth);
+}
+
+.about-feature-item:hover {
+  transform: translateY(-3px);
+  background-color: #F5EBDD;
+  border-color: var(--primary-color);
+  box-shadow: 0 8px 24px rgba(201, 155, 77, 0.05);
+}
+
+.feature-icon-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.feature-icon-circle.green {
+  background-color: var(--secondary-color);
+  box-shadow: 0 4px 10px rgba(85, 107, 59, 0.18);
+}
+
+.feature-icon-circle.gold {
+  background-color: var(--primary-color);
+  box-shadow: 0 4px 10px rgba(201, 155, 77, 0.18);
+}
+
+.feature-icon-circle svg {
+  width: 16px;
+  height: 16px;
+}
+
+.feature-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.feature-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--fg-color);
+  font-family: var(--font-sans);
+}
+
+.feature-subtext {
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--fg-muted);
+  font-family: var(--font-sans);
+}
+
+/* Bottom Banner - Now sibling of the card, sitting on the cream background */
+.about-bottom-banner {
+  background: linear-gradient(90deg, #FAF6F0 0%, #F5EBDD 100%); /* Warm brand gradient matching the mockup */
+  border: 1px solid rgba(201, 155, 77, 0.2); /* Soft brand gold border */
+  border-radius: 16px;
+  padding: 16px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  margin-top: 0; /* Margin handled by the border frame gap now */
+  position: relative;
+  z-index: 2;
+}
+
+.banner-deco {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.banner-deco .deco-line {
+  width: 48px;
+  height: 1px;
+  background-color: var(--primary-color);
+  opacity: 0.7;
+}
+
+.banner-deco .deco-diamond {
+  width: 5px;
+  height: 5px;
+  background-color: var(--primary-color);
+  transform: rotate(45deg);
+}
+
+.banner-logo-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.banner-logo-text {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 1.2px;
+  color: var(--fg-color);
+  text-transform: uppercase;
+}
+
+.banner-divider {
+  width: 1px;
+  height: 32px;
+  background-color: rgba(43, 31, 20, 0.15);
+  flex-shrink: 0;
+}
+
+.banner-quote-text {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.48;
+  color: var(--fg-color);
+  flex-grow: 1;
+}
+
+/* Responsive Styles */
+@media (max-width: 1100px) {
+  .about-page-border-frame {
+    padding: 16px;
+    background-color: transparent; /* Keep border-frame transparent to let container bg show through */
+    gap: 16px;
+  }
+
+  .about-main-layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  
+  .about-image-column {
+    min-height: auto;
+  }
+  
+  .about-image-wrapper {
+    width: 320px;
+    height: 320px;
+  }
+  
+  .about-card {
+    padding: 28px;
+  }
+
+  .about-card-pattern-overlay {
+    width: 100%;
+    height: 360px;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 20px;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%);
+  }
+}
+
+@media (max-width: 768px) {
+  .about-page-container {
+    padding: 20px 12px 36px 12px; /* Set top/bottom padding consistently on mobile */
+    background-color: #FAF6F0; /* Keep the beautiful cream background on mobile */
+  }
+
+  .about-page-border-frame {
+    padding: 12px;
+    background-color: transparent; /* Keep border-frame transparent to let container bg show through */
+    gap: 12px;
+  }
+
+  .about-card {
+    padding: 24px 16px 20px 16px;
+  }
+
+  .about-bottom-banner {
+    flex-direction: column;
+    padding: 16px;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .banner-divider {
+    display: none;
+  }
+
+  .banner-deco {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .about-features-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .about-heading {
+    font-size: 30px;
+  }
+
+  .about-image-wrapper {
+    width: 240px;
+    height: 240px;
+  }
+}
+
+/* Styling for the Second & Third Sections (Who We Are & What We Do) */
+
+.about-row-card {
+  width: 100%;
+  background-color: #fcf3ed; /* Soft warm cream background matching the main cards */
+  border: 1.2px solid rgba(201, 155, 77, 0.25); /* Brand gold border */
+  border-radius: 24px;
+  padding: 40px 48px;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 48px;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 35px rgba(44, 37, 30, 0.02);
+  backdrop-filter: blur(10px); /* Premium soft blur behind row cards */
+}
+
+.about-row-card.img-left {
+  grid-template-columns: 0.85fr 1.15fr;
+}
+
+.about-row-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.about-section-header-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 4px;
+}
+
+.about-header-icon-outer {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1.5px solid rgba(201, 155, 77, 0.4);
+  flex-shrink: 0;
+}
+
+.about-header-icon-inner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.about-header-icon-inner.green {
+  background-color: var(--secondary-color);
+  box-shadow: 0 4px 12px rgba(85, 107, 59, 0.22);
+}
+
+.about-header-icon-inner.gold {
+  background-color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(201, 155, 77, 0.22);
+}
+
+.about-row-heading {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--fg-color);
+  font-family: var(--font-serif);
+  line-height: 1.2;
+}
+
+.about-row-heading span {
+  color: var(--primary-color);
+}
+
+.about-row-description {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--fg-color);
+  opacity: 0.95;
+  font-family: var(--font-sans);
+}
+
+.about-row-image-column {
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.about-row-image-wrapper {
+  width: 100%;
+  height: 340px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(44, 37, 30, 0.05);
+}
+
+.about-row-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.about-row-image-wrapper:hover img {
+  transform: scale(1.03);
+}
+
+/* Left and right pattern styles removed to favor clean semi-transparent background bleed-through */
+
+/* Responsive styles for second section */
+@media (max-width: 1100px) {
+  .about-row-card {
+    grid-template-columns: 1fr !important;
+    gap: 32px;
+    padding: 36px 28px;
+  }
+  
+  .about-row-image-wrapper {
+    height: 300px;
+  }
+
+  .about-card-pattern-overlay.left-pattern,
+  .about-card-pattern-overlay.right-pattern {
+    width: 100%;
+    height: 220px;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
+  }
+  
+  /* On Card 2 (What We Do), make sure the text comes first on mobile screen sizes */
+  .about-row-card.img-left {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .about-row-card.img-left .about-row-content {
+    order: 1;
+    width: 100%;
+  }
+  
+  .about-row-card.img-left .about-row-image-column {
+    order: 2;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-row-card {
+    padding: 28px 20px;
+    border-radius: 20px;
+  }
+  
+  .about-row-heading {
+    font-size: 28px;
+  }
+  
+  .about-row-image-wrapper {
+    height: 220px;
+    border-radius: 16px;
+  }
+}
+
+/* Mission & Vision Section Styles */
+.mission-vision-grid {
+  display: grid;
+  grid-template-columns: 390px 1fr 390px; /* Increased card widths to 390px for spaciousness */
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "mission header vision"
+    "mission guides vision";
+  gap: 28px; /* Optimized gap to give more horizontal width to the center column */
+  width: 100%;
+  max-width: 1728px; /* Expanded to absolute physical capacity of the card container */
+  margin: 0 auto; /* Centers the grid inside the white about-card */
+  align-items: start;
+  position: relative;
+  z-index: 2;
+  padding: 10px 0;
+}
+
+.mv-center-content {
+  display: contents; /* Direct grid placement for children */
+}
+
+/* Arched Cards (Mission & Vision) */
+.arched-card {
+  background-color: transparent; /* Transparent background as the SVG handles the custom arched fill */
+  border: none; /* No border as the SVG draws the perfect custom arched border outline */
+  border-radius: 0; /* Let the SVG define the custom contour */
+  padding: 145px 28px 32px 28px; /* Increased top padding to push the divider and content below the nestled icon's bottom edge (140px) */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  box-shadow: none; /* Removed rectangular box-shadow */
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+  margin-top: 110px; /* Moves the entire card section lower down to provide generous breathing room at the top and avoid a cramped layout */
+  align-self: start; /* CRITICAL: Prevents stretching to the grid row height, eliminating empty spaces */
+}
+
+/* Drop-shadow filter on the custom SVG background path to follow the arched shape perfectly */
+.arched-card-bg {
+  filter: drop-shadow(0 10px 24px rgba(44, 37, 30, 0.035));
+  transition: filter 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.arched-card:hover .arched-card-bg {
+  filter: drop-shadow(0 15px 36px rgba(201, 155, 77, 0.12));
+}
+
+/* Elegant stroke hover micro-animation for the custom SVG arched borders */
+.arched-card-bg path {
+  transition: stroke 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.arched-card:hover .arched-card-bg path:first-of-type {
+  stroke: rgba(201, 155, 77, 0.85); /* Outer border brightens on hover */
+}
+
+.arched-card:hover .arched-card-bg path:last-of-type {
+  stroke: rgba(201, 155, 77, 0.7); /* Inner border brightens on hover */
+}
+
+/* Semi-circular dome tab sticking out of the top center */
+.arched-card-dome {
+  width: 180px; /* Scaled up from 160px to match the wider card */
+  height: 90px; /* Scaled up from 80px */
+  position: absolute;
+  top: -89px; /* Overlaps top border by 1px to hide it */
+  left: 50%;
+  transform: translateX(-50%);
+  border: 1.2px solid rgba(201, 155, 77, 0.35);
+  border-bottom: none; /* Merges seamlessly with the white card body */
+  border-radius: 90px 90px 0 0; /* Semi-circle curve */
+  background-color: #FFFFFF;
+  z-index: 1; /* Sits behind the icon circle but above the card body border */
+}
+
+.arched-card.mission {
+  grid-area: mission;
+}
+
+.arched-card.vision {
+  grid-area: vision;
+}
+
+.arched-card:hover {
+  transform: translateY(-6px);
+}
+
+/* Large Icon Circles positioned absolutely, centering on the arch dome */
+.arched-card-icon-outer {
+  width: 100px; /* Reduced from 120px to fit perfectly without the white ring */
+  height: 100px;
+  border-radius: 50%;
+  border: none;
+  background-color: transparent; /* Transparent background to remove the white border/ring */
+  padding: 0; /* Removed padding to eliminate the white border/ring */
+  box-shadow: none; /* Shadow moved directly to the colored inner circle */
+  position: absolute;
+  top: 40px; /* Lowered the icon to nestle beautifully in the center of the newly expanded dome */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3; /* Sits on top of the dome tab */
+}
+
+.arched-card-icon-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.arched-card-icon-inner.green {
+  background-color: var(--secondary-color);
+  box-shadow: 0 8px 24px rgba(85, 107, 59, 0.28); /* Premium shadow on the green circle */
+}
+
+.arched-card-icon-inner.gold {
+  background-color: var(--primary-color);
+  box-shadow: 0 8px 24px rgba(201, 155, 77, 0.28); /* Premium shadow on the gold circle */
+}
+
+.arched-card-icon-inner svg {
+  width: 36px; /* Large, bold icons matching mockup */
+  height: 36px;
+}
+
+/* Ensure all content text and dividers sit on top of the absolute SVG background */
+.arched-card-heading,
+.arched-card-description,
+.arched-card-footer-divider,
+.arched-card .about-heading-divider {
+  position: relative;
+  z-index: 2;
+}
+
+/* Card Heading & Divider */
+.arched-card-heading {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 700;
+  margin: 16px 0 12px 0;
+  letter-spacing: 0.5px;
+}
+
+/* Correct color swap: 'OUR' is dark brown/black, 'MISSION' is green */
+.arched-card-heading.green {
+  color: var(--fg-color);
+}
+
+.arched-card-heading.green span {
+  color: var(--secondary-color);
+}
+
+/* Correct color swap: 'OUR' is dark brown/black, 'VISION' is gold */
+.arched-card-heading.gold {
+  color: var(--fg-color);
+}
+
+.arched-card-heading.gold span {
+  color: var(--primary-color);
+}
+
+/* Card Description */
+.arched-card-description {
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--fg-color);
+  opacity: 0.95;
+  margin-bottom: 8px; /* Reduced from 24px to eliminate empty vertical space */
+  padding: 0 28px; /* Increased horizontal padding to provide spacious margins and prevent text from touching the borders */
+}
+
+/* Split-line horizontal gold footer divider with Rub El Hizb star */
+.arched-card-footer-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 12px;
+  margin-top: 8px; /* Reduced from 28px to eliminate empty vertical space, pulling the footer divider up */
+}
+
+.arched-card-footer-divider .deco-line-half {
+  flex-grow: 1;
+  height: 1px;
+  background-color: rgba(201, 155, 77, 0.25);
+}
+
+/* Center Content - Header & Intro */
+.mv-header {
+  grid-area: header;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 16px;
+}
+
+.mv-badge {
+  background-color: rgba(201, 155, 77, 0.08);
+  color: var(--primary-color);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  font-family: var(--font-sans);
+  display: inline-block;
+}
+
+.mv-heading {
+  font-family: var(--font-serif);
+  font-size: 42px; /* Increased to match mockup prominent font size */
+  font-weight: 700;
+  line-height: 1.18;
+  color: var(--fg-color);
+  margin-bottom: 16px;
+}
+
+.mv-heading span {
+  color: var(--primary-color);
+}
+
+.mv-intro-text {
+  font-family: var(--font-sans);
+  font-size: 14.5px;
+  line-height: 1.62;
+  color: var(--fg-color);
+  opacity: 0.95;
+  max-width: 520px;
+  margin-bottom: 28px;
+}
+
+/* Center Content - Guides Section */
+.mv-guides {
+  grid-area: guides;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.guides-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.guides-header-row .divider-line {
+  width: 48px;
+  height: 1.2px;
+  background-color: var(--primary-color);
+  opacity: 0.7;
+}
+
+.guides-header-row .divider-diamond {
+  width: 5px;
+  height: 5px;
+  background-color: var(--primary-color);
+  transform: rotate(45deg);
+}
+
+.guides-header-title {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 12.5px;
+  letter-spacing: 1.5px;
+  color: var(--fg-color);
+  text-transform: uppercase;
+}
+
+/* Guides Grid & Items */
+.guides-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 540px; /* Clusters the values beautifully directly under the header */
+  margin: 8px auto 0 auto; /* Centers the cluster in the column */
+}
+
+.guides-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.guides-icon-circle {
+  width: 48px; /* Prominent size matching mockup */
+  height: 48px;
+  border-radius: 50%;
+  background-color: #FAF6F0;
+  border: 1px solid rgba(201, 155, 77, 0.22);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(44, 37, 30, 0.01);
+}
+
+.guides-item:hover .guides-icon-circle {
+  transform: translateY(-2px);
+  background-color: #F5EBDD;
+  border-color: var(--primary-color);
+  box-shadow: 0 6px 12px rgba(201, 155, 77, 0.08);
+}
+
+.guides-icon-circle svg {
+  width: 18px;
+  height: 18px;
+}
+
+.guides-title {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--fg-color);
+  margin-bottom: 6px;
+}
+
+.guides-desc {
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--fg-muted);
+}
+
+/* Responsive Styles for Mission & Vision */
+@media (max-width: 1100px) {
+  .mission-vision-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "header header"
+      "mission vision"
+      "guides guides";
+    gap: 32px;
+    padding: 10px 0;
+    max-width: 720px;
+  }
+
+  .arched-card {
+    min-height: auto; /* Allow natural height on smaller screens */
+    margin-top: 0; /* Reset top margin on tablet/mobile */
+  }
+
+  .mv-heading {
+    font-size: 34px;
+  }
+
+  .guides-grid {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .guides-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .mission-vision-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto;
+    grid-template-areas:
+      "header"
+      "mission"
+      "vision"
+      "guides";
+    gap: 24px;
+    max-width: 320px;
+  }
+
+  .arched-card {
+    min-height: auto;
+    border-radius: 120px 120px 20px 20px;
+    padding: 44px 20px 30px 20px;
+  }
+
+  .mv-heading {
+    font-size: 28px;
+  }
+
+  .guides-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* Call-to-Action (CTA) Course Finder Banner Styles */
+.about-cta-card {
+  width: 100%;
+  background-color: #fcf3ed; /* Soft warm cream background matching the other cards */
+  border: 1px solid rgba(201, 155, 77, 0.25); /* Elegant brand gold border */
+  border-radius: 24px;
+  display: grid;
+  grid-template-columns: 260px 1fr 340px; /* Layout: Image (260px), Content, Features (340px) */
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(44, 37, 30, 0.03);
+  backdrop-filter: blur(10px); /* Soft premium blur background */
+}
+
+/* Left Image Column with Custom Curved Frame */
+.cta-image-column {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+}
+
+.cta-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 190px;
+  overflow: hidden;
+  background-color: #F5EBDD;
+  /* Custom border radius to create the elegant curved shape on the right side of the image */
+  border-top-right-radius: 90px;
+  border-bottom-right-radius: 90px;
+  border-right: 2.2px solid var(--primary-color);
+  box-shadow: 4px 0 15px rgba(201, 155, 77, 0.08);
+}
+
+.cta-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Floating graduation cap icon with dashed line */
+.cta-cap-floating {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #FAF6F0;
+  border: 1px solid rgba(201, 155, 77, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 10px rgba(44, 37, 30, 0.04);
+  z-index: 5;
+}
+
+/* Middle Content Column */
+.cta-content-column {
+  padding: 32px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 2;
+}
+
+.cta-heading {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--fg-color);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.cta-description {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--fg-color);
+  opacity: 0.95;
+  margin: 12px 0 20px 0;
+  max-width: 360px;
+}
+
+/* Right Features Column */
+.cta-features-column {
+  padding: 24px 28px 24px 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  align-items: center;
+  height: 100%;
+  z-index: 2;
+  position: relative;
+}
+
+.cta-feature-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 8px;
+  position: relative;
+}
+
+/* Thin vertical dividers between columns */
+.cta-feature-item:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: -4px;
+  top: 15%;
+  width: 1px;
+  height: 70%;
+  background-color: rgba(201, 155, 77, 0.22);
+}
+
+.cta-feature-icon-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: rgba(201, 155, 77, 0.06);
+  border: 1px solid rgba(201, 155, 77, 0.22);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+}
+
+.cta-feature-item:hover .cta-feature-icon-circle {
+  transform: translateY(-2px);
+  background-color: rgba(201, 155, 77, 0.12);
+  border-color: var(--primary-color);
+}
+
+.cta-feature-text {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--fg-color);
+  max-width: 100px;
+}
+
+/* Responsive Styles for CTA Banner */
+@media (max-width: 1100px) {
+  .about-cta-card {
+    grid-template-columns: 1fr;
+    padding: 0;
+  }
+
+  .cta-image-column {
+    display: none; /* Hide image on tablet/mobile to keep the card compact and focused */
+  }
+
+  .cta-content-column {
+    padding: 32px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .cta-description {
+    max-width: 100%;
+  }
+
+  .cta-features-column {
+    padding: 0 24px 32px 24px;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .cta-features-column {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .cta-feature-item:not(:last-child)::after {
+    display: none; /* Hide dividers on mobile stacked layout */
+  }
+  
+  .cta-heading {
+    font-size: 26px;
+  }
+}
+
