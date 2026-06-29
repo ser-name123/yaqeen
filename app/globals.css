@@ -91,11 +91,11 @@ body {
 }
 
 .animate-slide-up {
-  animation: slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slide-up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-fade-in {
-  animation: fade-in 1s ease-out forwards;
+  animation: fade-in 1.2s ease-out forwards;
 }
 
 /* Glassmorphism utility */
@@ -1135,7 +1135,7 @@ body {
    ========================================================================== */
 .reveal-fade {
   opacity: 0;
-  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .reveal-fade.reveal-visible {
@@ -1144,8 +1144,8 @@ body {
 
 .reveal-slide-up {
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(35px);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .reveal-slide-up.reveal-visible {
@@ -1155,8 +1155,8 @@ body {
 
 .reveal-stagger {
   opacity: 0;
-  transform: translateY(25px);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(30px);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .reveal-stagger.reveal-visible {
@@ -1165,14 +1165,14 @@ body {
 }
 
 /* Staggered transition delays for lists/grids */
-.stagger-group .reveal-stagger:nth-child(1) { transition-delay: 0.05s; }
-.stagger-group .reveal-stagger:nth-child(2) { transition-delay: 0.15s; }
-.stagger-group .reveal-stagger:nth-child(3) { transition-delay: 0.25s; }
-.stagger-group .reveal-stagger:nth-child(4) { transition-delay: 0.35s; }
-.stagger-group .reveal-stagger:nth-child(5) { transition-delay: 0.45s; }
-.stagger-group .reveal-stagger:nth-child(6) { transition-delay: 0.55s; }
-.stagger-group .reveal-stagger:nth-child(7) { transition-delay: 0.65s; }
-.stagger-group .reveal-stagger:nth-child(8) { transition-delay: 0.75s; }
+.stagger-group .reveal-stagger:nth-child(1) { transition-delay: 0.08s; }
+.stagger-group .reveal-stagger:nth-child(2) { transition-delay: 0.22s; }
+.stagger-group .reveal-stagger:nth-child(3) { transition-delay: 0.36s; }
+.stagger-group .reveal-stagger:nth-child(4) { transition-delay: 0.50s; }
+.stagger-group .reveal-stagger:nth-child(5) { transition-delay: 0.64s; }
+.stagger-group .reveal-stagger:nth-child(6) { transition-delay: 0.78s; }
+.stagger-group .reveal-stagger:nth-child(7) { transition-delay: 0.92s; }
+.stagger-group .reveal-stagger:nth-child(8) { transition-delay: 1.06s; }
 
 /* ==========================================================================
    Section 5: Age Program Section Styles

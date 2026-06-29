@@ -232,6 +232,21 @@ export default function BlogList() {
     fetchBlogs();
   }, []);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("reveal-visible");
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+    const animatedElements = document.querySelectorAll(".reveal-fade, .reveal-slide-up, .reveal-stagger");
+    animatedElements.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, [blogs, activeCategory, searchQuery, currentPage, loading]);
+
   // Reset page when category or search changes
   useEffect(() => {
     setCurrentPage(1);
@@ -264,14 +279,14 @@ export default function BlogList() {
         <section className="blog-hero-section">
           <div className="blog-hero-content">
             {/* Breadcrumbs */}
-            <div className="blog-breadcrumbs">
+            <div className="blog-breadcrumbs reveal-slide-up">
               <Link href="/">Home</Link>
               <span>&gt;</span>
               <span>Blog</span>
             </div>
 
             {/* Title & Underline Ornament */}
-            <div className="blog-title-container">
+            <div className="blog-title-container reveal-slide-up">
               <h1 className="blog-hero-title">Blog</h1>
               <div className="blog-title-ornament">
                 <div className="blog-ornament-diamond"></div>
@@ -279,7 +294,7 @@ export default function BlogList() {
             </div>
 
             {/* Subtitle */}
-            <p className="blog-hero-subtitle">
+            <p className="blog-hero-subtitle reveal-slide-up">
               Insights to strengthen your faith, expand your knowledge, and inspire your journey.
             </p>
           </div>
@@ -288,7 +303,7 @@ export default function BlogList() {
         {/* =========================================================================
            2. FILTER & SEARCH CONTROLS SECTION
            ========================================================================= */}
-        <section className="blog-controls-section">
+        <section className="blog-controls-section reveal-slide-up">
           <div className="blog-controls-container">
             {/* Category Pills list */}
             <div className="blog-categories-list">
@@ -359,11 +374,12 @@ export default function BlogList() {
             </div>
           ) : (
             <>
-              <div className="blog-posts-grid">
+              <div className="blog-posts-grid stagger-group">
                 {currentBlogs.map((blog) => (
                   <Link
                     href={`/blog/${blog.slug}`}
                     key={blog.id}
+                    className="reveal-stagger"
                     style={{ textDecoration: "none", color: "inherit", display: "block" }}
                   >
                     <article className="blog-card">

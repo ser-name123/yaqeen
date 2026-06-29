@@ -1,12 +1,25 @@
+"use client";
+
+import { useEffect } from "react";
 import "./contact.css";
 import ContactForm from "@/components/ContactForm";
 
-export const metadata = {
-  title: "Contact Us - Yaqeen Institute",
-  description: "Have a question or need assistance? Our team is happy to support you on your learning journey.",
-};
-
 export default function ContactPage() {
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("reveal-visible");
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+    const animatedElements = document.querySelectorAll(".reveal-fade, .reveal-slide-up, .reveal-stagger");
+    animatedElements.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <main className="contact-page-container">
       {/* SVG Clip Path Definition for the Wavy Image */}
@@ -64,10 +77,10 @@ export default function ContactPage() {
             <path d="M175 60 A12 12 0 1 0 175 84 A9 9 0 1 1 175 60 Z" fill="#C99B4D" />
           </svg>
 
-          <span className="contact-hero-label">Contact Us</span>
-          <h1 className="contact-hero-title">We're Here to Help You</h1>
-          <div className="contact-hero-divider"></div>
-          <p className="contact-hero-description">
+          <span className="contact-hero-label reveal-slide-up">Contact Us</span>
+          <h1 className="contact-hero-title reveal-slide-up">We're Here to Help You</h1>
+          <div className="contact-hero-divider reveal-slide-up"></div>
+          <p className="contact-hero-description reveal-slide-up">
             Have a question or need assistance? Our team is happy to support you on your learning journey.
           </p>
         </div>
@@ -114,14 +127,14 @@ export default function ContactPage() {
          ========================================================================= */}
       <section className="contact-grid-section">
         {/* Left Side: Get in Touch Card */}
-        <div className="contact-info-card animate-slide-up">
+        <div className="contact-info-card reveal-slide-up">
           <h2 className="contact-section-title">Get in Touch</h2>
           <div className="contact-section-divider"></div>
           <p className="contact-section-subtitle">We'd love to hear from you.</p>
 
-          <div className="contact-info-list">
+          <div className="contact-info-list stagger-group">
             {/* Address */}
-            <div className="contact-info-item">
+            <div className="contact-info-item reveal-stagger">
               <div className="contact-info-icon-wrapper">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
@@ -137,7 +150,7 @@ export default function ContactPage() {
             </div>
 
             {/* Email Us */}
-            <div className="contact-info-item">
+            <div className="contact-info-item reveal-stagger">
               <div className="contact-info-icon-wrapper">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
@@ -151,7 +164,7 @@ export default function ContactPage() {
             </div>
 
             {/* Call / WhatsApp */}
-            <div className="contact-info-item">
+            <div className="contact-info-item reveal-stagger">
               <div className="contact-info-icon-wrapper">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
@@ -164,7 +177,7 @@ export default function ContactPage() {
             </div>
 
             {/* Working Hours */}
-            <div className="contact-info-item">
+            <div className="contact-info-item reveal-stagger">
               <div className="contact-info-icon-wrapper">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="10" />
@@ -178,7 +191,7 @@ export default function ContactPage() {
             </div>
 
             {/* Worldwide Support */}
-            <div className="contact-info-item">
+            <div className="contact-info-item reveal-stagger">
               <div className="contact-info-icon-wrapper">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="10" />
@@ -222,20 +235,22 @@ export default function ContactPage() {
         </div>
 
         {/* Right Side: Send Us a Message Form Card */}
-        <ContactForm />
+        <div className="reveal-slide-up" style={{ width: "100%" }}>
+          <ContactForm />
+        </div>
       </section>
 
       {/* =========================================================================
          3. FAQ SECTION (THIRD SECTION)
          ========================================================================= */}
       <section className="contact-faq-section">
-        <div className="contact-faq-card animate-slide-up">
+        <div className="contact-faq-card reveal-slide-up">
           <h2 className="contact-section-title">Frequently Asked Questions</h2>
           <div className="contact-section-divider"></div>
 
-          <div className="contact-faq-grid">
+          <div className="contact-faq-grid stagger-group">
             {/* FAQ 1: Enrollment */}
-            <div className="contact-faq-col">
+            <div className="contact-faq-col reveal-stagger">
               <div className="contact-info-icon-wrapper">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -251,7 +266,7 @@ export default function ContactPage() {
             </div>
 
             {/* FAQ 2: Scheduling */}
-            <div className="contact-faq-col">
+            <div className="contact-faq-col reveal-stagger">
               <div className="contact-info-icon-wrapper">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -269,7 +284,7 @@ export default function ContactPage() {
             </div>
 
             {/* FAQ 3: Trials */}
-            <div className="contact-faq-col">
+            <div className="contact-faq-col reveal-stagger">
               <div className="contact-info-icon-wrapper">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
@@ -285,7 +300,7 @@ export default function ContactPage() {
             </div>
 
             {/* FAQ 4: Payments */}
-            <div className="contact-faq-col">
+            <div className="contact-faq-col reveal-stagger">
               <div className="contact-info-icon-wrapper">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
@@ -307,7 +322,7 @@ export default function ContactPage() {
          4. CTA BANNER SECTION (LAST SECTION)
          ========================================================================= */}
       <section className="contact-cta-section">
-        <div className="contact-cta-card animate-slide-up">
+        <div className="contact-cta-card reveal-slide-up">
           {/* Faint Mosque Watermark on the Right */}
           <svg 
             style={{

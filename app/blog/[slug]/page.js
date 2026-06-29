@@ -185,6 +185,21 @@ export default function BlogDetail() {
     }
   }, [slug]);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("reveal-visible");
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+    const animatedElements = document.querySelectorAll(".reveal-fade, .reveal-slide-up, .reveal-stagger");
+    animatedElements.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, [blog, loading]);
+
   // Social Share event handlers
   const handleCopyLink = () => {
     if (typeof window !== "undefined") {
@@ -260,7 +275,7 @@ export default function BlogDetail() {
            ===================================================================== */}
         <div className="blog-details-left-col">
           {/* Breadcrumbs */}
-          <div className="blog-details-breadcrumbs">
+          <div className="blog-details-breadcrumbs reveal-slide-up">
             <Link href="/">Home</Link>
             <span className="separator">&gt;</span>
             <Link href="/blog">Blog</Link>
@@ -269,15 +284,15 @@ export default function BlogDetail() {
           </div>
 
           {/* Category Pill */}
-          <span className="blog-details-category">
+          <span className="blog-details-category reveal-slide-up">
             {blog.category}
           </span>
 
           {/* Title */}
-          <h1 className="blog-details-title">{blog.title}</h1>
+          <h1 className="blog-details-title reveal-slide-up">{blog.title}</h1>
 
           {/* Metadata */}
-          <div className="blog-details-meta">
+          <div className="blog-details-meta reveal-slide-up">
             <div className="meta-item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
               <span>{formatDate(blog.created_at)}</span>
@@ -296,7 +311,7 @@ export default function BlogDetail() {
 
           {/* Featured Image */}
           {blog.featured_image && (
-            <div className="blog-details-image-wrapper">
+            <div className="blog-details-image-wrapper reveal-slide-up">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 className="blog-details-image"
@@ -308,7 +323,7 @@ export default function BlogDetail() {
 
           {/* Callout Quote 1 */}
           {blog.quote && (
-            <div className="blog-details-quote-box">
+            <div className="blog-details-quote-box reveal-slide-up">
               <span className="quote-icon">“</span>
               <div className="quote-content">
                 <p className="quote-text">&ldquo;{blog.quote}&rdquo;</p>
@@ -318,13 +333,13 @@ export default function BlogDetail() {
           )}
 
           {/* Body Intro Text */}
-          <div className="blog-details-body-intro" dangerouslySetInnerHTML={{ __html: blog.body }} />
+          <div className="blog-details-body-intro reveal-slide-up" dangerouslySetInnerHTML={{ __html: blog.body }} />
 
           {/* Accordion Sections list */}
           {blog.sections && blog.sections.length > 0 && (
-            <div className="blog-details-sections-list">
+            <div className="blog-details-sections-list stagger-group">
               {blog.sections.map((section, idx) => (
-                <div key={idx} id={`section-${idx}`}>
+                <div key={idx} id={`section-${idx}`} className="reveal-stagger">
                   <div className="blog-details-section-item">
                     <div className={`icon-circle ${idx % 2 === 0 ? 'color-green' : 'color-gold'}`}>
                       {sectionIcons[idx % sectionIcons.length]}
@@ -348,7 +363,7 @@ export default function BlogDetail() {
 
           {/* Second Quote Box */}
           {blog.second_quote && (
-            <div className="blog-details-second-quote">
+            <div className="blog-details-second-quote reveal-slide-up">
               <div className="quote-icon-container">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"></path></svg>
               </div>
@@ -360,12 +375,12 @@ export default function BlogDetail() {
           )}
 
           {/* Closing remark */}
-          <p className="blog-details-closing">
+          <p className="blog-details-closing reveal-slide-up">
             May Allah grant us hearts that reflect, understand, and act upon His words. Ameen.
           </p>
 
           {/* Tags */}
-          <div className="blog-details-tags-row">
+          <div className="blog-details-tags-row reveal-slide-up">
             <span className="label">Tags:</span>
             <div className="tags-list">
               {['Tadabbur', 'Quran', 'Reflection', 'Faith', 'Guidance'].map((tag) => (
@@ -375,7 +390,7 @@ export default function BlogDetail() {
           </div>
 
           {/* Next / Previous post selection row */}
-          <div className="blog-details-nav-box">
+          <div className="blog-details-nav-box reveal-slide-up">
             {prevPost && (
               <Link href={`/blog/${prevPost.slug}`} className="blog-details-nav-card prev-card">
                 <div className="nav-img-wrapper">
@@ -418,7 +433,7 @@ export default function BlogDetail() {
         <div className="blog-details-sidebar">
           {/* Card 1: Table of Contents */}
           {blog.sections && blog.sections.length > 0 && (
-            <div className="sidebar-panel-card">
+            <div className="sidebar-panel-card reveal-slide-up">
               <div className="sidebar-card-header">
                 <div className="header-icon-title">
                   <div className="header-icon-circle">
@@ -446,7 +461,7 @@ export default function BlogDetail() {
           )}
 
           {/* Card 2: Share this article */}
-          <div className="sidebar-panel-card">
+          <div className="sidebar-panel-card reveal-slide-up">
             <div className="sidebar-card-header">
               <div className="header-icon-title">
                 <div className="header-icon-circle">
@@ -479,7 +494,7 @@ export default function BlogDetail() {
 
           {/* Card 3: Related Articles */}
           {related && related.length > 0 && (
-            <div className="sidebar-panel-card">
+            <div className="sidebar-panel-card reveal-slide-up">
               <div className="sidebar-card-header">
                 <div className="header-icon-title">
                   <div className="header-icon-circle">
@@ -511,7 +526,7 @@ export default function BlogDetail() {
           )}
 
           {/* Card 4: Stay Inspired */}
-          <div className="sidebar-panel-card">
+          <div className="sidebar-panel-card reveal-slide-up">
             <div className="sidebar-card-header">
               <div className="header-icon-title">
                 <div className="header-icon-circle">

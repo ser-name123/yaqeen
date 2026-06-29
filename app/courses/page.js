@@ -464,6 +464,21 @@ export default function CoursesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("reveal-visible");
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+    const animatedElements = document.querySelectorAll(".reveal-fade, .reveal-slide-up, .reveal-stagger");
+    animatedElements.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     console.log("Search query submitted:", searchQuery);
@@ -490,7 +505,7 @@ export default function CoursesPage() {
       }}>
         
         {/* Centered Online Courses Badge */}
-        <div style={{
+        <div className="reveal-slide-up" style={{
           display: "inline-flex",
           alignItems: "center",
           gap: "8px",
@@ -517,7 +532,7 @@ export default function CoursesPage() {
         </div>
 
         {/* Headline */}
-        <h1 style={{
+        <h1 className="reveal-slide-up" style={{
           fontSize: "clamp(36px, 5vw, 60px)",
           fontWeight: "800",
           fontFamily: "var(--font-serif), Georgia, serif",
@@ -531,7 +546,7 @@ export default function CoursesPage() {
         </h1>
 
         {/* Description */}
-        <p style={{
+        <p className="reveal-slide-up" style={{
           fontSize: "clamp(14px, 1.2vw, 16px)",
           color: "#5C4D3C",
           lineHeight: "1.6",
@@ -547,6 +562,7 @@ export default function CoursesPage() {
         {/* Search Bar Input */}
         <form 
           onSubmit={handleSearchSubmit}
+          className="reveal-slide-up"
           style={{
             display: "flex",
             alignItems: "center",
@@ -577,6 +593,7 @@ export default function CoursesPage() {
             placeholder="Search for anything Islam & Arabic" 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            suppressHydrationWarning
             style={{
               border: "none",
               outline: "none",
@@ -591,6 +608,7 @@ export default function CoursesPage() {
           <button 
             type="submit"
             aria-label="Search"
+            suppressHydrationWarning
             style={{
               width: "42px",
               height: "42px",
@@ -634,7 +652,7 @@ export default function CoursesPage() {
       }}>
         
         {/* Section Header Badge with diamonds & line accents, matching mockup */}
-        <div style={{
+        <div className="reveal-slide-up" style={{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -671,7 +689,7 @@ export default function CoursesPage() {
         </div>
 
         {/* Section Headline */}
-        <h2 style={{
+        <h2 className="reveal-slide-up" style={{
           fontSize: "clamp(32px, 3.8vw, 48px)",
           fontWeight: "800",
           color: "#2B1F14",
@@ -682,14 +700,14 @@ export default function CoursesPage() {
         }}>Explore Our Courses</h2>
 
         {/* Decorative Divider Diamond - Clean thin line with diamond */}
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", maxWidth: "100px", marginBottom: "36px" }}>
+        <div className="reveal-slide-up" style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", maxWidth: "100px", marginBottom: "36px" }}>
           <div style={{ flexGrow: 1, height: "1px", backgroundColor: "#C99B4D", opacity: 0.4 }} />
           <span style={{ color: "#C99B4D", fontSize: "10px", display: "inline-block" }}>◆</span>
           <div style={{ flexGrow: 1, height: "1px", backgroundColor: "#C99B4D", opacity: 0.4 }} />
         </div>
 
         {/* Cards Grid */}
-        <div style={{
+        <div className="stagger-group" style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
           gap: "32px",
@@ -700,6 +718,7 @@ export default function CoursesPage() {
           {coursesList.map((course, idx) => (
             <div
               key={idx}
+              className="reveal-stagger"
               style={{
                 backgroundColor: "#FFFFFF",
                 borderRadius: "24px",
@@ -880,7 +899,7 @@ export default function CoursesPage() {
       }}>
         
         {/* Section Header Badge with diamonds & line accents, matching mockup */}
-        <div style={{
+        <div className="reveal-slide-up" style={{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -915,7 +934,7 @@ export default function CoursesPage() {
         </div>
 
         {/* Section Headline */}
-        <h2 style={{
+        <h2 className="reveal-slide-up" style={{
           fontSize: "clamp(32px, 3.8vw, 48px)",
           fontWeight: "800",
           color: "#2B1F14",
@@ -930,14 +949,14 @@ export default function CoursesPage() {
         </h2>
 
         {/* Decorative Divider Diamond */}
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", maxWidth: "100px", marginBottom: "24px" }}>
+        <div className="reveal-slide-up" style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", maxWidth: "100px", marginBottom: "24px" }}>
           <div style={{ flexGrow: 1, height: "1px", backgroundColor: "#C99B4D", opacity: 0.4 }} />
           <span style={{ color: "#C99B4D", fontSize: "10px", display: "inline-block" }}>◆</span>
           <div style={{ flexGrow: 1, height: "1px", backgroundColor: "#C99B4D", opacity: 0.4 }} />
         </div>
 
         {/* Section Subtitle */}
-        <p style={{
+        <p className="reveal-slide-up" style={{
           fontSize: "15px",
           color: "#5C4D3C",
           lineHeight: "1.6",
@@ -952,7 +971,7 @@ export default function CoursesPage() {
         </p>
 
         {/* Skills Cards Grid */}
-        <div style={{
+        <div className="stagger-group" style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
           gap: "24px",
@@ -967,6 +986,7 @@ export default function CoursesPage() {
             return (
               <div
                 key={idx}
+                className="reveal-stagger"
                 style={{
                   backgroundColor: "#FAF5EE", // Elegant, soft cream-beige card background (not white, matching mockup)
                   borderRadius: "20px",
@@ -1103,7 +1123,7 @@ export default function CoursesPage() {
           }}>
             
             {/* Left Aligned Header Badge */}
-            <div style={{
+            <div className="reveal-slide-up" style={{
               display: "flex",
               alignItems: "center",
               gap: "14px",
@@ -1131,7 +1151,7 @@ export default function CoursesPage() {
             </div>
 
             {/* Headline */}
-            <h2 style={{
+            <h2 className="reveal-slide-up" style={{
               fontSize: "clamp(34px, 4.2vw, 52px)",
               fontWeight: "800",
               color: "#2B1F14",
@@ -1145,7 +1165,7 @@ export default function CoursesPage() {
             </h2>
 
             {/* Subtitle */}
-            <p style={{
+            <p className="reveal-slide-up" style={{
               fontSize: "clamp(14px, 1.2vw, 16px)",
               color: "#6B5B47",
               lineHeight: "1.65",
@@ -1159,7 +1179,7 @@ export default function CoursesPage() {
           </div>
 
           {/* Cards Grid */}
-          <div style={{
+          <div className="stagger-group" style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
             gap: "24px",
@@ -1172,6 +1192,7 @@ export default function CoursesPage() {
               return (
                 <div
                   key={idx}
+                  className="reveal-stagger"
                   style={{
                     backgroundColor: "#FAF5EE", // Soft cream-beige card background matching mockup
                     borderRadius: "20px",
@@ -1373,12 +1394,12 @@ export default function CoursesPage() {
       <section className="teachers-section" id="teachers" style={{ borderTop: "1px solid #F5EBDD", padding: "35px 24px 60px 24px" }}>
         
         {/* Pill Badge */}
-        <div className="teachers-pill">
+        <div className="teachers-pill reveal-slide-up">
           <span className="teachers-pill-text">Meet Our Teachers</span>
         </div>
 
         {/* Decorative Divider Line */}
-        <div className="teachers-divider" style={{ width: "100%", maxWidth: "200px", display: "flex", alignItems: "center", gap: "12px", margin: "0 auto 8px auto" }}>
+        <div className="teachers-divider reveal-slide-up" style={{ width: "100%", maxWidth: "200px", display: "flex", alignItems: "center", gap: "12px", margin: "0 auto 8px auto" }}>
           <div style={{ flexGrow: 1, height: "1.5px", backgroundColor: "#C99B4D", opacity: 0.6 }} />
           <div style={{ display: "flex", alignItems: "center", color: "#C99B4D", transform: "scale(0.85)" }}>
             <IconDividerStar />
@@ -1387,20 +1408,20 @@ export default function CoursesPage() {
         </div>
 
         {/* Section Headline */}
-        <h2 className="teachers-title">
+        <h2 className="teachers-title reveal-slide-up">
           Learn from Experienced<br />and <span style={{ color: "#C99B4D" }}>Caring Teachers.</span>
         </h2>
 
         {/* Section Subtitle / Description */}
-        <p className="teachers-desc">
+        <p className="teachers-desc reveal-slide-up">
           Our teachers are qualified, experienced, and passionate about helping you grow in your Islamic knowledge.
         </p>
 
         {/* Teachers Cards Grid */}
-        <div className="teachers-grid">
+        <div className="teachers-grid stagger-group">
           
           {/* Card 1: Ustadh Rahman Ali */}
-          <div className="teacher-card">
+          <div className="teacher-card reveal-stagger">
             <div className="teacher-avatar-wrap">
               <img src="/images/teacher_rahman.png" alt="Ustadh Rahman Ali" className="teacher-avatar" />
             </div>
@@ -1426,7 +1447,7 @@ export default function CoursesPage() {
           </div>
 
           {/* Card 2: Ustadha Aisha Khan */}
-          <div className="teacher-card">
+          <div className="teacher-card reveal-stagger">
             <div className="teacher-avatar-wrap">
               <img src="/images/teacher_aisha.png" alt="Ustadha Aisha Khan" className="teacher-avatar" />
             </div>
@@ -1452,7 +1473,7 @@ export default function CoursesPage() {
           </div>
 
           {/* Card 3: Ustadh Saad Ahmed */}
-          <div className="teacher-card">
+          <div className="teacher-card reveal-stagger">
             <div className="teacher-avatar-wrap">
               <img src="/images/teacher_saad.png" alt="Ustadh Saad Ahmed" className="teacher-avatar" />
             </div>
@@ -1478,7 +1499,7 @@ export default function CoursesPage() {
           </div>
 
           {/* Card 4: Ustadha Maryam Zahra */}
-          <div className="teacher-card">
+          <div className="teacher-card reveal-stagger">
             <div className="teacher-avatar-wrap">
               <img src="/images/teacher_maryam.png" alt="Ustadha Maryam Zahra" className="teacher-avatar" />
             </div>
