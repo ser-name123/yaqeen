@@ -354,43 +354,65 @@ export default function AboutPage() {
                     <div className="feature-info" style={{ gap: "4px" }}>
                        <span className="feature-title">Expert & Caring Instructors</span>
                        <div style={{ position: "relative" }}>
-                         <span
-                           className="feature-subtext"
+                         {/* Animated text container using max-height */}
+                         <div
                            style={{
-                             display: "-webkit-box",
-                             WebkitLineClamp: expandInstructors ? "unset" : 2,
-                             WebkitBoxOrient: "vertical",
+                             maxHeight: expandInstructors ? "200px" : "2.8em",
                              overflow: "hidden",
-                             lineHeight: "1.5",
+                             transition: "max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1)",
+                             lineHeight: "1.4",
                            }}
                          >
-                           Learn from certified Quran, Arabic, and Islamic Studies teachers delivering Online Quran Classes, Quran Lessons Online, and personalized guidance. Our experienced instructors help children and adults Learn Quran Online with confidence, Tajweed, and lasting Islamic knowledge.
-                         </span>
-                         <span
-                           onClick={() => setExpandInstructors(!expandInstructors)}
-                           style={{
-                             display: "inline-flex",
-                             alignItems: "center",
-                             gap: "3px",
-                             marginTop: "4px",
-                             fontSize: "10.5px",
-                             fontWeight: "600",
-                             color: "var(--primary-color)",
-                             cursor: "pointer",
-                             letterSpacing: "0.2px",
-                             borderBottom: "1px solid transparent",
-                             transition: "border-color 0.2s ease, opacity 0.2s ease",
-                             opacity: 0.85,
-                           }}
-                           onMouseEnter={e => { e.currentTarget.style.borderBottomColor = "var(--primary-color)"; e.currentTarget.style.opacity = "1"; }}
-                           onMouseLeave={e => { e.currentTarget.style.borderBottomColor = "transparent"; e.currentTarget.style.opacity = "0.85"; }}
-                         >
-                           {expandInstructors ? (
-                             <><svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M2 7L5 4L8 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg> Show less</>
-                           ) : (
-                             <><svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M2 3L5 6L8 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg> Read more</>
-                           )}
-                         </span>
+                           <span className="feature-subtext" style={{ lineHeight: "1.4" }}>
+                             Learn from certified Quran, Arabic, and Islamic Studies teachers delivering Online Quran Classes, Quran Lessons Online, and personalized guidance. Our experienced instructors help children and adults Learn Quran Online with confidence, Tajweed, and lasting Islamic knowledge.
+                           </span>
+                         </div>
+                         {/* Inline "Read more" at end of last visible text line */}
+                         {!expandInstructors && (
+                           <div
+                             onClick={() => setExpandInstructors(true)}
+                             style={{
+                               position: "absolute",
+                               bottom: 0,
+                               right: 0,
+                               height: "1.4em",
+                               background: "linear-gradient(to right, transparent, #fff 38%)",
+                               display: "flex",
+                               alignItems: "center",
+                               paddingLeft: "32px",
+                               cursor: "pointer",
+                             }}
+                           >
+                             <span style={{
+                               fontSize: "10.5px",
+                               fontWeight: "700",
+                               color: "var(--primary-color)",
+                               letterSpacing: "0.1px",
+                             }}>
+                               Read more ›
+                             </span>
+                           </div>
+                         )}
+                         {/* "Show less" link after full text */}
+                         {expandInstructors && (
+                           <span
+                             onClick={() => setExpandInstructors(false)}
+                             style={{
+                               display: "inline-flex",
+                               alignItems: "center",
+                               gap: "3px",
+                               marginTop: "3px",
+                               fontSize: "10.5px",
+                               fontWeight: "700",
+                               color: "var(--primary-color)",
+                               cursor: "pointer",
+                               letterSpacing: "0.1px",
+                             }}
+                           >
+                             <svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M2 7L5 4L8 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                             Show less
+                           </span>
+                         )}
                        </div>
                      </div>
                   </div>
