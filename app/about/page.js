@@ -233,6 +233,7 @@ const ArchedCardBackground = () => (
 export default function AboutPage() {
   const { faviconUrl } = useSettings();
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
+  const [expandInstructors, setExpandInstructors] = useState(false);
   const [testimonials, setTestimonials] = useState([
     {
       id: 1,
@@ -340,7 +341,7 @@ export default function AboutPage() {
                 </div>
   
                 <p className="about-description">
-                  At Yaqeen Institute, we make learning the Quran, Arabic, and Islamic studies simple, engaging, and accessible for everyone. Our supportive environment nurtures confidence, strengthens faith, and helps learners grow both in knowledge and character.
+                  We make Online Quran Classes, Arabic Language, and Islamic Studies simple, engaging, and accessible for everyone. Our Online Quran Academy helps students Learn Quran Online, strengthen faith, and grow in knowledge, confidence, and character.
                 </p>
   
                 {/* Feature Highlights Grid */}
@@ -351,9 +352,38 @@ export default function AboutPage() {
                       <IconPeopleWhite />
                     </div>
                     <div className="feature-info">
-                      <span className="feature-title">Expert & Caring Instructors</span>
-                      <span className="feature-subtext">Passionate educators dedicated to every learner's success.</span>
-                    </div>
+                       <span className="feature-title">Expert & Caring Instructors</span>
+                       <span
+                         className="feature-subtext"
+                         style={{
+                           display: "-webkit-box",
+                           WebkitLineClamp: expandInstructors ? "unset" : 2,
+                           WebkitBoxOrient: "vertical",
+                           overflow: expandInstructors ? "visible" : "hidden",
+                           transition: "all 0.3s ease",
+                           cursor: "pointer"
+                         }}
+                         onClick={() => setExpandInstructors(!expandInstructors)}
+                         title={expandInstructors ? "Click to collapse" : "Click to read more"}
+                       >
+                         Learn from certified Quran, Arabic, and Islamic Studies teachers delivering Online Quran Classes, Quran Lessons Online, and personalized guidance. Our experienced instructors help children and adults Learn Quran Online with confidence, Tajweed, and lasting Islamic knowledge.
+                       </span>
+                       <button
+                         onClick={() => setExpandInstructors(!expandInstructors)}
+                         style={{
+                           background: "none",
+                           border: "none",
+                           padding: "2px 0 0",
+                           fontSize: "11px",
+                           fontWeight: "600",
+                           color: "var(--secondary-color)",
+                           cursor: "pointer",
+                           letterSpacing: "0.3px"
+                         }}
+                       >
+                         {expandInstructors ? "Show less ▲" : "Read more ▼"}
+                       </button>
+                     </div>
                   </div>
   
                   <div className="about-feature-item">
