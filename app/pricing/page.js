@@ -470,16 +470,63 @@ export default function PricingPage() {
           </div>
 
           {/* Footnotes & Disclaimers */}
-          <div className="pricing-footnotes reveal-slide-up">
-            <p className="footnote-line-primary">
-              * Reschedules must be used within the same month. &nbsp;** Cancellations must be requested 12 hours in advance.
-            </p>
-            
-            <div className="footnote-details">
-              <p className="footnote-detail-item">* US only</p>
-              <p className="footnote-detail-item">** Students must reschedule within 30 days with the original or a substitute teacher.</p>
-              <p className="footnote-detail-item">*** All cancellations must be submitted via the student app or dashboard at least 4 hours before the lesson start time.</p>
-              <p className="footnote-detail-item">‡ Discounts apply when two or more students are enrolled under the same plan or higher. Group lessons are not eligible for discounts. In cases where multiple discount levels apply, the lesser discount will be applied.</p>
+          <div className="pricing-footnotes reveal-slide-up" style={{
+            textAlign: "left",
+            alignItems: "stretch",
+            maxWidth: "960px",
+            margin: "32px auto 0 auto"
+          }}>
+            <div style={{
+              background: "#FAF6F0",
+              borderLeft: "4px solid #C99B4D",
+              borderRadius: "12px",
+              padding: "24px 28px",
+              boxShadow: "0 4px 20px rgba(44, 37, 30, 0.03)",
+              width: "100%",
+              boxSizing: "border-box"
+            }}>
+              <ul style={{
+                margin: 0,
+                padding: 0,
+                listStyleType: "none",
+                display: "flex",
+                flexDirection: "column",
+                gap: "14px"
+              }}>
+                <li style={{
+                  display: "flex",
+                  gap: "12px",
+                  fontSize: "14.5px",
+                  color: "#6C5D4E",
+                  lineHeight: "1.6",
+                  fontWeight: "500"
+                }}>
+                  <span style={{ color: "#C99B4D", fontSize: "16px", marginTop: "-2px" }}>•</span>
+                  <span>Rescheduled classes must be completed within 30 days of current month.</span>
+                </li>
+                <li style={{
+                  display: "flex",
+                  gap: "12px",
+                  fontSize: "14.5px",
+                  color: "#6C5D4E",
+                  lineHeight: "1.6",
+                  fontWeight: "500"
+                }}>
+                  <span style={{ color: "#C99B4D", fontSize: "16px", marginTop: "-2px" }}>•</span>
+                  <span>Any reschedules or cancellations must be informed to the teacher or admin at least 3-4 hours before the class start time; otherwise, the session is marked attended with no refund or reschedule.</span>
+                </li>
+                <li style={{
+                  display: "flex",
+                  gap: "12px",
+                  fontSize: "14.5px",
+                  color: "#6C5D4E",
+                  lineHeight: "1.6",
+                  fontWeight: "500"
+                }}>
+                  <span style={{ color: "#C99B4D", fontSize: "16px", marginTop: "-2px" }}>•</span>
+                  <span>Discounts are offered to families with two or more members as per the applicable plan and are not valid for group classes. The family discount applies only to the second or subsequent student from the same family, not to all students.</span>
+                </li>
+              </ul>
             </div>
           </div>
 
