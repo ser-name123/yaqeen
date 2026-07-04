@@ -355,6 +355,10 @@ export default function AdminDashboard() {
   useEffect(() => {
     const token = localStorage.getItem("aero_admin_token");
     if (token) {
+      // Optimistically assume authenticated to prevent reload/compilation logout flashes
+      setIsAuthenticated(true);
+      setIsVerifyingSession(false);
+
       const validateSession = async () => {
         try {
           const res = await fetch("/api/admin/profile", {
@@ -364,25 +368,38 @@ export default function AdminDashboard() {
           });
           const data = await res.json();
           if (data.success) {
-            setIsAuthenticated(true);
             setProfileForm({
               email: data.email,
               password: data.password,
               logo_text: data.logo_text || "",
-              logo_url: data.logo_url || ""
+              logo_url: data.logo_url || "",
+              contact_email: data.contact_email || "",
+              contact_phone: data.contact_phone || "",
+              contact_hours: data.contact_hours || "",
+              contact_support: data.contact_support || "",
+              social_facebook: data.social_facebook || "",
+              social_instagram: data.social_instagram || "",
+              social_youtube: data.social_youtube || "",
+              social_whatsapp: data.social_whatsapp || ""
             });
             setLogoText(data.logo_text || "yaqeen");
             setLogoUrl(data.logo_url || "");
           } else {
+            // Server explicitly rejects token (e.g. expired session)
             localStorage.removeItem("aero_admin_token");
             setIsAuthenticated(false);
+            adminSwal.fire({
+              icon: "warning",
+              title: "Session Expired",
+              text: "Your admin session has expired. Please log in again.",
+              confirmButtonColor: "var(--primary-color)",
+              background: "#111827",
+              color: "#fff"
+            });
           }
         } catch (err) {
-          console.error("Session verification failed:", err);
-          localStorage.removeItem("aero_admin_token");
-          setIsAuthenticated(false);
-        } finally {
-          setIsVerifyingSession(false);
+          console.warn("Silent session verification network check skipped:", err);
+          // Do not delete token or logout on network/server-compiling errors
         }
       };
       validateSession();
