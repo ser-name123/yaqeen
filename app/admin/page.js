@@ -2267,7 +2267,7 @@ export default function AdminDashboard() {
                         </tr>
                       </thead>
                       <tbody>
-                        {contacts.slice(0, 8).map((c) => (
+                        {contacts.slice(0, 10).map((c) => (
                           <tr key={c.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
                             <td style={{ padding: "12px", fontWeight: "600" }}>{c.name}</td>
                             <td style={{ padding: "12px" }}><a href={`mailto:${c.email}`} style={{ color: "var(--secondary-color)", textDecoration: "none" }}>{c.email}</a></td>
@@ -2281,7 +2281,7 @@ export default function AdminDashboard() {
                 )}
               </div>
 
-              {/* Right Side: Geolocation & Provider Analytics */}
+              {/* Right Side: Geolocation Analytics */}
               <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
                 {/* Country Breakdown Panel */}
                 <div className="glass-panel" style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -2312,30 +2312,6 @@ export default function AdminDashboard() {
                           </div>
                         );
                       })}
-                    </div>
-                  )}
-                </div>
-
-                {/* ISP Provider Breakdown Panel */}
-                <div className="glass-panel" style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
-                  <h3 style={{ fontSize: "16px", fontWeight: "600", color: "#2B1F14", margin: 0, fontFamily: "var(--font-serif), Georgia, serif" }}>
-                    🏢 Network Providers (ISPs)
-                  </h3>
-                  
-                  {contacts.length === 0 ? (
-                    <p style={{ color: "var(--fg-muted)", fontSize: "13px" }}>No ISP logs recorded yet.</p>
-                  ) : (
-                    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                      {getProviderStats().map(({ provider, count }) => (
-                        <div key={provider} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "13px", padding: "8px 12px", borderRadius: "8px", border: "1px solid var(--card-border)", background: "rgba(255,255,255,0.01)" }}>
-                          <span style={{ fontWeight: "500", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap", maxWidth: "200px" }}>
-                            🔌 {provider}
-                          </span>
-                          <span style={{ fontWeight: "700", color: "#C99B4D", backgroundColor: "rgba(201, 155, 77, 0.08)", padding: "2px 8px", borderRadius: "4px" }}>
-                            {count}
-                          </span>
-                        </div>
-                      ))}
                     </div>
                   )}
                 </div>
