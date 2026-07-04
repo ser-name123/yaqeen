@@ -351,38 +351,47 @@ export default function AboutPage() {
                     <div className="feature-icon-circle green">
                       <IconPeopleWhite />
                     </div>
-                    <div className="feature-info">
+                    <div className="feature-info" style={{ gap: "4px" }}>
                        <span className="feature-title">Expert & Caring Instructors</span>
-                       <span
-                         className="feature-subtext"
-                         style={{
-                           display: "-webkit-box",
-                           WebkitLineClamp: expandInstructors ? "unset" : 2,
-                           WebkitBoxOrient: "vertical",
-                           overflow: expandInstructors ? "visible" : "hidden",
-                           transition: "all 0.3s ease",
-                           cursor: "pointer"
-                         }}
-                         onClick={() => setExpandInstructors(!expandInstructors)}
-                         title={expandInstructors ? "Click to collapse" : "Click to read more"}
-                       >
-                         Learn from certified Quran, Arabic, and Islamic Studies teachers delivering Online Quran Classes, Quran Lessons Online, and personalized guidance. Our experienced instructors help children and adults Learn Quran Online with confidence, Tajweed, and lasting Islamic knowledge.
-                       </span>
-                       <button
-                         onClick={() => setExpandInstructors(!expandInstructors)}
-                         style={{
-                           background: "none",
-                           border: "none",
-                           padding: "2px 0 0",
-                           fontSize: "11px",
-                           fontWeight: "600",
-                           color: "var(--secondary-color)",
-                           cursor: "pointer",
-                           letterSpacing: "0.3px"
-                         }}
-                       >
-                         {expandInstructors ? "Show less ▲" : "Read more ▼"}
-                       </button>
+                       <div style={{ position: "relative" }}>
+                         <span
+                           className="feature-subtext"
+                           style={{
+                             display: "-webkit-box",
+                             WebkitLineClamp: expandInstructors ? "unset" : 2,
+                             WebkitBoxOrient: "vertical",
+                             overflow: "hidden",
+                             lineHeight: "1.5",
+                           }}
+                         >
+                           Learn from certified Quran, Arabic, and Islamic Studies teachers delivering Online Quran Classes, Quran Lessons Online, and personalized guidance. Our experienced instructors help children and adults Learn Quran Online with confidence, Tajweed, and lasting Islamic knowledge.
+                         </span>
+                         <span
+                           onClick={() => setExpandInstructors(!expandInstructors)}
+                           style={{
+                             display: "inline-flex",
+                             alignItems: "center",
+                             gap: "3px",
+                             marginTop: "4px",
+                             fontSize: "10.5px",
+                             fontWeight: "600",
+                             color: "var(--primary-color)",
+                             cursor: "pointer",
+                             letterSpacing: "0.2px",
+                             borderBottom: "1px solid transparent",
+                             transition: "border-color 0.2s ease, opacity 0.2s ease",
+                             opacity: 0.85,
+                           }}
+                           onMouseEnter={e => { e.currentTarget.style.borderBottomColor = "var(--primary-color)"; e.currentTarget.style.opacity = "1"; }}
+                           onMouseLeave={e => { e.currentTarget.style.borderBottomColor = "transparent"; e.currentTarget.style.opacity = "0.85"; }}
+                         >
+                           {expandInstructors ? (
+                             <><svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M2 7L5 4L8 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg> Show less</>
+                           ) : (
+                             <><svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M2 3L5 6L8 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg> Read more</>
+                           )}
+                         </span>
+                       </div>
                      </div>
                   </div>
   
