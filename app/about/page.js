@@ -353,6 +353,7 @@ export default function AboutPage() {
                     </div>
                     <div className="feature-info" style={{ gap: "4px" }}>
                        <span className="feature-title">Expert &amp; Caring Instructors</span>
+                       <span className="feature-subtext" style={{ lineHeight: "1.4" }}>Passionate educators dedicated to every learner&apos;s success.</span>
                        {/* Text with inline Read more at end of line 2 */}
                        <div style={{ position: "relative" }}>
                          <div
