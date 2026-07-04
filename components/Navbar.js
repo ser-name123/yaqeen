@@ -12,12 +12,15 @@ export default function Navbar({ logoText = "yaqeen", logoUrl = "", faviconUrl =
 
   return (
     <header className="header" style={{
-      position: "relative",
+      position: "sticky",
+      top: 0,
       width: "100%",
       zIndex: 1000,
-      backgroundColor: "rgba(251, 248, 243, 0.95)",
+      backgroundColor: "rgba(251, 248, 243, 0.92)",
+      backdropFilter: "blur(12px)",
+      WebkitBackdropFilter: "blur(12px)",
       borderBottom: "1px solid var(--card-border)",
-      boxShadow: "0 2px 10px rgba(44, 37, 30, 0.03)",
+      boxShadow: "0 2px 16px rgba(44, 37, 30, 0.07)",
       transition: "all 0.3s ease"
     }}>
       <div className="nav-container" style={{
