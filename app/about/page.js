@@ -352,9 +352,7 @@ export default function AboutPage() {
                       <IconPeopleWhite />
                     </div>
                     <div className="feature-info" style={{ gap: "4px" }}>
-                       <span className="feature-title">Expert & Caring Instructors</span>
-                       {/* Always visible short subtext */}
-                       <span className="feature-subtext">Passionate educators dedicated to every learner's success.</span>
+                       <span className="feature-title">Expert &amp; Caring Instructors</span>
                        {/* Expandable detailed content */}
                        <div>
                          <div
