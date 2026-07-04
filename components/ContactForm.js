@@ -45,27 +45,65 @@ export default function ContactForm() {
     let userState = "Unknown";
     let userCountry = "Unknown";
 
-    try {
-      // 1. Fetch IP Address and Location Info using ipapi.co
-      const geoResponse = await fetch("https://ipapi.co/json/");
-      if (geoResponse.ok) {
-        const geoData = await geoResponse.json();
-        userIp = geoData.ip || userIp;
-        userCity = geoData.city || "Unknown";
-        userState = geoData.region || "Unknown";
-        userCountry = geoData.country_name || "Unknown";
+    const apis = [
+      {
+        url: "https://ipwho.is/",
+        parse: (data) => ({
+          ip: data.ip,
+          city: data.city,
+          state: data.region,
+          country: data.country
+        })
+      },
+      {
+        url: "https://freeipapi.com/api/json",
+        parse: (data) => ({
+          ip: data.ipAddress,
+          city: data.cityName,
+          state: data.regionName,
+          country: data.countryName
+        })
+      },
+      {
+        url: "https://ipapi.co/json/",
+        parse: (data) => ({
+          ip: data.ip,
+          city: data.city,
+          state: data.region,
+          country: data.country_name
+        })
       }
-    } catch (geoErr) {
-      console.warn("Could not retrieve geolocation data dynamically:", geoErr);
-      // Fallback to simple ipify if ipapi.co is rate-limited or fails
+    ];
+
+    for (const api of apis) {
       try {
-        const ipResponse = await fetch("https://api.ipify.org?format=json");
+        const response = await fetch(api.url);
+        if (response.ok) {
+          const data = await response.json();
+          const parsed = api.parse(data);
+          if (parsed.ip) {
+            userIp = parsed.ip;
+            userCity = parsed.city || "Unknown";
+            userState = parsed.state || "Unknown";
+            userCountry = parsed.country || "Unknown";
+            break; // Exit loop once lookup succeeds
+          }
+        }
+      } catch (err) {
+        console.warn(`Geolocation lookup failed for ${api.url}:`, err);
+      }
+    }
+
+    // Final raw IP lookup fallback
+    if (userIp === "Unknown / Client-side only") {
+      try {
+        const ipResponse = await fetch("https://api64.ipify.org?format=json");
         if (ipResponse.ok) {
           const ipData = await ipResponse.json();
           userIp = ipData.ip || userIp;
         }
       } catch (ipErr) {
-        console.warn("Could not retrieve IP address dynamically:", ipErr);
+        console.warn("Could not retrieve fallback IP address:", ipErr);
       }
     }
 
