@@ -353,17 +353,19 @@ export default function AboutPage() {
                     </div>
                     <div className="feature-info" style={{ gap: "4px" }}>
                        <span className="feature-title">Expert & Caring Instructors</span>
-                       <div style={{ position: "relative" }}>
-                         {/* Animated text container using max-height */}
+                       {/* Always visible short subtext */}
+                       <span className="feature-subtext">Passionate educators dedicated to every learner's success.</span>
+                       {/* Expandable detailed content */}
+                       <div>
                          <div
                            style={{
-                             maxHeight: expandInstructors ? "200px" : "2.8em",
+                             maxHeight: expandInstructors ? "200px" : "0px",
                              overflow: "hidden",
                              transition: "max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1)",
                              lineHeight: "1.4",
                            }}
                          >
-                           <span className="feature-subtext" style={{ lineHeight: "1.4" }}>
+                           <span className="feature-subtext" style={{ lineHeight: "1.4", display: "block", marginTop: "4px" }}>
                              Learn from certified Quran, Arabic, and Islamic Studies teachers delivering Online Quran Classes, Quran Lessons Online, and personalized guidance. Our experienced instructors help children and adults Learn Quran Online with confidence, Tajweed, and lasting Islamic knowledge.
                            </span>
                          </div>
@@ -374,7 +376,7 @@ export default function AboutPage() {
                              display: "inline-flex",
                              alignItems: "center",
                              gap: "3px",
-                             marginTop: "2px",
+                             marginTop: "3px",
                              fontSize: "10.5px",
                              fontWeight: "700",
                              color: "var(--primary-color)",
