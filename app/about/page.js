@@ -913,7 +913,7 @@ export default function AboutPage() {
             </div>
 
             {/* CTA Button */}
-            <div className="reveal-slide-up" style={{ display: "flex", justifyContent: "center", width: "100%", marginTop: "36px" }}>
+            <div className="reveal-slide-up" style={{ display: "flex", justifyContent: "center", width: "100%", marginTop: "56px" }}>
               <Link 
                 href="/contact" 
                 className="faq-cta-btn"

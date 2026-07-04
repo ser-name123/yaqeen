@@ -723,8 +723,8 @@ export default function PricingPage() {
         </div>
 
         {/* CTA Button */}
-        <div className="reveal-slide-up" style={{ display: "flex", justifyContent: "center", width: "100%" }}>
-          <Link 
+        <div className="reveal-slide-up" style={{ display: "flex", justifyContent: "center", width: "100%", marginTop: "56px" }}>
+          <Link
             href="/contact"
             className="faq-cta-btn"
             style={{ textDecoration: "none" }}

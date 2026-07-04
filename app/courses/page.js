@@ -1752,77 +1752,115 @@ export default function CoursesPage() {
         <div className="faq-container">
           
           {/* FAQ 1 */}
-          <div 
-            className="faq-item" 
+          <div
+            className="faq-item"
             onClick={() => setOpenFaqIndex(openFaqIndex === 0 ? null : 0)}
           >
             <div className="faq-question-row">
               <div className="faq-icon-badge">
-                <IconCalendar size={20} />
+                <IconBookOutline size={20} />
               </div>
-              <span className="faq-question-text">Is the class schedule suitable for me?</span>
+              <span className="faq-question-text">What will I learn in these courses?</span>
               <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 0 ? "open" : ""}`} />
             </div>
             <div className={`faq-answer-wrapper ${openFaqIndex === 0 ? "open" : ""}`}>
               <p className="faq-answer-text">
-                Yes. We offer highly flexible class schedules. You can choose your preferred days and times, and we have teachers available 24/7 across different time zones to fit your busy routine.
+                You will learn Quran with Tajweed, Online Quran Reading, Quran Memorization (Hifz), Islamic Studies, and Arabic Language through live online classes. Our courses are suitable for beginners, intermediate, and advanced learners of all ages.
               </p>
             </div>
           </div>
 
           {/* FAQ 2 */}
-          <div 
-            className="faq-item" 
+          <div
+            className="faq-item"
             onClick={() => setOpenFaqIndex(openFaqIndex === 1 ? null : 1)}
           >
             <div className="faq-question-row">
               <div className="faq-icon-badge">
                 <IconUser size={20} />
               </div>
-              <span className="faq-question-text">How do I begin?</span>
+              <span className="faq-question-text">Who can join these courses?</span>
               <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 1 ? "open" : ""}`} />
             </div>
             <div className={`faq-answer-wrapper ${openFaqIndex === 1 ? "open" : ""}`}>
               <p className="faq-answer-text">
-                Getting started is very simple. Just click the 'Book Your Free Session Now' button below, fill out a short form with your contact details and preferences, and our academic advisor will contact you within 24 hours to schedule your free trial class.
+                Our online Quran classes are open to children, teenagers, and adults worldwide. Whether you&apos;re looking for Quran classes for kids, Arabic language lessons, or Islamic education online, we have the right course for you.
               </p>
             </div>
           </div>
 
           {/* FAQ 3 */}
-          <div 
-            className="faq-item" 
+          <div
+            className="faq-item"
             onClick={() => setOpenFaqIndex(openFaqIndex === 2 ? null : 2)}
           >
             <div className="faq-question-row">
               <div className="faq-icon-badge">
                 <IconVideoPlay size={20} />
               </div>
-              <span className="faq-question-text">Are these classes pre-recorded?</span>
+              <span className="faq-question-text">How are the classes conducted?</span>
               <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 2 ? "open" : ""}`} />
             </div>
             <div className={`faq-answer-wrapper ${openFaqIndex === 2 ? "open" : ""}`}>
               <p className="faq-answer-text">
-                No, all our classes are 100% live and interactive, conducted one-on-one via Zoom or our portal. This ensures personalized attention and allows you to ask questions and receive instant feedback from your teacher.
+                Yaqeen Institute offers live one-to-one and small group online classes with qualified Quran and Arabic teachers. Learn from the comfort of your home with flexible scheduling and personalized guidance.
               </p>
             </div>
           </div>
 
           {/* FAQ 4 */}
-          <div 
-            className="faq-item" 
+          <div
+            className="faq-item"
             onClick={() => setOpenFaqIndex(openFaqIndex === 3 ? null : 3)}
           >
             <div className="faq-question-row">
               <div className="faq-icon-badge">
-                <IconMapPin size={20} />
+                <IconCalendar size={20} />
               </div>
-              <span className="faq-question-text">Where is the headquarter of your business?</span>
+              <span className="faq-question-text">What are the course durations?</span>
               <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 3 ? "open" : ""}`} />
             </div>
             <div className={`faq-answer-wrapper ${openFaqIndex === 3 ? "open" : ""}`}>
               <p className="faq-answer-text">
-                Our digital headquarters and academic operations are based in London, UK, but our teachers and students are spread globally across the UK, USA, Canada, Middle East, and South Asia, providing a truly international learning experience.
+                Our online Quran, Tajweed, Hifz, Islamic Studies, and Arabic courses offer flexible learning plans, including short-term and long-term programs to suit your goals and availability.
+              </p>
+            </div>
+          </div>
+
+          {/* FAQ 5 */}
+          <div
+            className="faq-item"
+            onClick={() => setOpenFaqIndex(openFaqIndex === 4 ? null : 4)}
+          >
+            <div className="faq-question-row">
+              <div className="faq-icon-badge">
+                <IconPencilOutline size={20} />
+              </div>
+              <span className="faq-question-text">What do I need to start learning?</span>
+              <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 4 ? "open" : ""}`} />
+            </div>
+            <div className={`faq-answer-wrapper ${openFaqIndex === 4 ? "open" : ""}`}>
+              <p className="faq-answer-text">
+                You only need a laptop, tablet, or smartphone with a stable internet connection. Yaqeen Institute provides a simple and engaging online Islamic learning experience from anywhere in the world.
+              </p>
+            </div>
+          </div>
+
+          {/* FAQ 6 */}
+          <div
+            className="faq-item"
+            onClick={() => setOpenFaqIndex(openFaqIndex === 5 ? null : 5)}
+          >
+            <div className="faq-question-row">
+              <div className="faq-icon-badge">
+                <IconBadgeStar size={20} />
+              </div>
+              <span className="faq-question-text">Will I receive progress reports?</span>
+              <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 5 ? "open" : ""}`} />
+            </div>
+            <div className={`faq-answer-wrapper ${openFaqIndex === 5 ? "open" : ""}`}>
+              <p className="faq-answer-text">
+                Yes. We provide regular progress reports, teacher feedback, and personalized learning guidance to help students achieve success in their online Quran and Arabic learning journey.
               </p>
             </div>
           </div>
@@ -1830,8 +1868,8 @@ export default function CoursesPage() {
         </div>
 
         {/* CTA Button */}
-        <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
-          <Link 
+        <div style={{ display: "flex", justifyContent: "center", width: "100%", marginTop: "56px" }}>
+          <Link
             href="/contact"
             className="faq-cta-btn"
             style={{ textDecoration: "none" }}
