@@ -367,52 +367,33 @@ export default function AboutPage() {
                              Learn from certified Quran, Arabic, and Islamic Studies teachers delivering Online Quran Classes, Quran Lessons Online, and personalized guidance. Our experienced instructors help children and adults Learn Quran Online with confidence, Tajweed, and lasting Islamic knowledge.
                            </span>
                          </div>
-                         {/* Inline "Read more" at end of last visible text line */}
-                         {!expandInstructors && (
-                           <div
-                             onClick={() => setExpandInstructors(true)}
-                             style={{
-                               position: "absolute",
-                               bottom: 0,
-                               right: 0,
-                               height: "1.4em",
-                               background: "linear-gradient(to right, transparent, #fff 38%)",
-                               display: "flex",
-                               alignItems: "center",
-                               paddingLeft: "32px",
-                               cursor: "pointer",
-                             }}
-                           >
-                             <span style={{
-                               fontSize: "10.5px",
-                               fontWeight: "700",
-                               color: "var(--primary-color)",
-                               letterSpacing: "0.1px",
-                             }}>
-                               Read more ›
-                             </span>
-                           </div>
-                         )}
-                         {/* "Show less" link after full text */}
-                         {expandInstructors && (
-                           <span
-                             onClick={() => setExpandInstructors(false)}
-                             style={{
-                               display: "inline-flex",
-                               alignItems: "center",
-                               gap: "3px",
-                               marginTop: "3px",
-                               fontSize: "10.5px",
-                               fontWeight: "700",
-                               color: "var(--primary-color)",
-                               cursor: "pointer",
-                               letterSpacing: "0.1px",
-                             }}
-                           >
-                             <svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M2 7L5 4L8 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                             Show less
-                           </span>
-                         )}
+                         {/* Read more / Show less — flows naturally right after the text */}
+                         <span
+                           onClick={() => setExpandInstructors(!expandInstructors)}
+                           style={{
+                             display: "inline-flex",
+                             alignItems: "center",
+                             gap: "3px",
+                             marginTop: "2px",
+                             fontSize: "10.5px",
+                             fontWeight: "700",
+                             color: "var(--primary-color)",
+                             cursor: "pointer",
+                             letterSpacing: "0.1px",
+                           }}
+                         >
+                           {expandInstructors ? (
+                             <>
+                               <svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M2 7L5 4L8 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                               Show less
+                             </>
+                           ) : (
+                             <>
+                               <svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M2 3L5 6L8 3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                               Read more
+                             </>
+                           )}
+                         </span>
                        </div>
                      </div>
                   </div>
