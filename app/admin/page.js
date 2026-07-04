@@ -2728,6 +2728,11 @@ export default function AdminDashboard() {
                     <div>
                       🌐 <strong>IP Address:</strong> <span style={{ fontFamily: "monospace", color: "#C99B4D", fontWeight: "600" }}>{selectedContact.ip_address || "N/A (Local / Legacy)"}</span>
                     </div>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", borderTop: "1px dashed rgba(201, 155, 77, 0.15)", paddingTop: "8px", color: "#2B1F14" }}>
+                      <span>📍 <strong>City:</strong> {selectedContact.city || "Unknown"}</span>
+                      <span>🏛️ <strong>State/Region:</strong> {selectedContact.state || "Unknown"}</span>
+                      <span>🗺️ <strong>Country:</strong> {selectedContact.country || "Unknown"}</span>
+                    </div>
                     <div>
                       💻 <strong>System Specs:</strong> <span style={{ color: "#2B1F14" }}>{selectedContact.system_info || "N/A"}</span>
                     </div>

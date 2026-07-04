@@ -41,16 +41,32 @@ export default function ContactForm() {
     let userIp = "Unknown / Client-side only";
     let browserInfo = "Unknown Browser";
     let systemInfo = "Unknown System";
+    let userCity = "Unknown";
+    let userState = "Unknown";
+    let userCountry = "Unknown";
 
     try {
-      // 1. Fetch IP Address
-      const ipResponse = await fetch("https://api.ipify.org?format=json");
-      if (ipResponse.ok) {
-        const ipData = await ipResponse.json();
-        userIp = ipData.ip || userIp;
+      // 1. Fetch IP Address and Location Info using ipapi.co
+      const geoResponse = await fetch("https://ipapi.co/json/");
+      if (geoResponse.ok) {
+        const geoData = await geoResponse.json();
+        userIp = geoData.ip || userIp;
+        userCity = geoData.city || "Unknown";
+        userState = geoData.region || "Unknown";
+        userCountry = geoData.country_name || "Unknown";
       }
-    } catch (ipErr) {
-      console.warn("Could not retrieve IP address dynamically:", ipErr);
+    } catch (geoErr) {
+      console.warn("Could not retrieve geolocation data dynamically:", geoErr);
+      // Fallback to simple ipify if ipapi.co is rate-limited or fails
+      try {
+        const ipResponse = await fetch("https://api.ipify.org?format=json");
+        if (ipResponse.ok) {
+          const ipData = await ipResponse.json();
+          userIp = ipData.ip || userIp;
+        }
+      } catch (ipErr) {
+        console.warn("Could not retrieve IP address dynamically:", ipErr);
+      }
     }
 
     try {
@@ -79,7 +95,10 @@ export default function ContactForm() {
           message,
           ip_address: userIp,
           browser_info: browserInfo,
-          system_info: systemInfo
+          system_info: systemInfo,
+          city: userCity,
+          state: userState,
+          country: userCountry
         }]);
 
       if (error) throw error;
