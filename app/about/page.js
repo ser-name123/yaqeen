@@ -351,8 +351,8 @@ export default function AboutPage() {
                       <IconPeopleWhite />
                     </div>
                     <div className="feature-info">
-                      <span className="feature-title">Expert & Caring Instructors</span>
-                      <span className="feature-subtext">Passionate educators dedicated to every learner's success.</span>
+                      <span className="feature-title">Expert &amp; Caring Instructors</span>
+                      <span className="feature-title" style={{ fontWeight: "700", fontSize: "12px" }}>Passionate educators dedicated to every learner&apos;s success.</span>
                       <span className="feature-subtext" style={{ marginTop: "4px", display: "block", lineHeight: "1.5" }}>Learn from certified Quran, Arabic, and Islamic Studies teachers delivering Online Quran Classes, Quran Lessons Online, and personalized guidance. Our experienced instructors help children and adults Learn Quran Online with confidence, Tajweed, and lasting Islamic knowledge.</span>
                     </div>
                   </div>
