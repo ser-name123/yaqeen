@@ -4,22 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { useSettings } from "@/lib/settings-context";
-
-// Premium Search Icon (Magnifying Glass)
-const IconSearch = ({ size = 20, color = "#C99B4D" }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="11" cy="11" r="8" />
-    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-  </svg>
-);
-
-// Right Arrow Icon for Search Button
-const IconArrowRight = ({ size = 18 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="5" y1="12" x2="19" y2="12" />
-    <polyline points="12 5 19 12 12 19" />
-  </svg>
-);
+import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 
 // Custom Book Outline Icon
 const IconBookOutline = ({ size = 22, color = "#C99B4D" }) => (
@@ -278,7 +263,7 @@ const IconGlobeOutline = ({ size = 26 }) => (
   </svg>
 );
 
-const IconYaqeenEmblem = ({ size = 64, url = "" }) => (
+const IconYaqeenEmblem = ({ size = 64, url = "", pad = "10%" }) => (
   <div style={{
     width: `${size}px`,
     height: `${size}px`,
@@ -297,13 +282,13 @@ const IconYaqeenEmblem = ({ size = 64, url = "" }) => (
       <img 
         src={url} 
         alt="Yaqeen Logo" 
-        style={{ 
-          width: "100%", 
-          height: "100%", 
+        style={{
+          width: "100%",
+          height: "100%",
           objectFit: "contain",
-          padding: "10%",
+          padding: pad,
           boxSizing: "border-box"
-        }} 
+        }}
       />
     ) : (
       <svg width={size * 0.6} height={size * 0.6} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -497,58 +482,9 @@ const defaultTeachers = [
 
 export default function CoursesPage() {
   const { faviconUrl } = useSettings();
-  const [searchQuery, setSearchQuery] = useState("");
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
   const [teachers, setTeachers] = useState(defaultTeachers);
-  const [testimonials, setTestimonials] = useState([
-    {
-      id: 1,
-      name: "Ayesha Khan",
-      role: "Mother of 2",
-      content: "Yaqeen has helped my child develop a strong understanding of Islam in a fun and meaningful way. Highly recommended!",
-      avatar_url: "/images/testi_ayesha.png"
-    },
-    {
-      id: 2,
-      name: "Hassan Ali",
-      role: "Adult Learner",
-      content: "The lessons are clear, engaging and practical. I appreciate how easy it is to stay consistent with my learning.",
-      avatar_url: "/images/testi_hassan.png"
-    },
-    {
-      id: 3,
-      name: "Maryam Zahra",
-      role: "Parent",
-      content: "We love how the whole family can learn together. Yaqeen has brought us closer to our faith and each other.",
-      avatar_url: "/images/testi_maryam.png"
-    }
-  ]);
   const [coursesList, setCoursesList] = useState(defaultCoursesList);
-
-  useEffect(() => {
-    async function fetchTestimonials() {
-      try {
-        const { data, error } = await supabase
-          .from("testimonials")
-          .select("*")
-          .order("order_index", { ascending: true })
-          .order("created_at", { ascending: false });
-
-        if (error) throw error;
-        if (data && data.length > 0) {
-          const filtered = data.filter(t => {
-            if (!t.page_target) return false;
-            const targets = t.page_target.split(",").map(x => x.trim().toLowerCase());
-            return targets.includes("all") || targets.includes("courses");
-          });
-          setTestimonials(filtered);
-        }
-      } catch (err) {
-        console.warn("Could not load testimonials from Supabase, using default lists:", err);
-      }
-    }
-    fetchTestimonials();
-  }, []);
 
   useEffect(() => {
     async function fetchTeachers() {
@@ -611,11 +547,6 @@ export default function CoursesPage() {
 
     return () => observer.disconnect();
   }, []);
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    console.log("Search query submitted:", searchQuery);
-  };
 
   return (
     <main style={{ minHeight: "100vh", backgroundColor: "#FAF5EE", display: "flex", flexDirection: "column" }}>
@@ -688,86 +619,10 @@ export default function CoursesPage() {
           margin: "0 auto 30px auto",
           fontFamily: "var(--font-sans), sans-serif"
         }}>
-          Explore our online courses designed for all ages, helping students seek knowledge,
-          build skills, and strengthen understanding in a modern and meaningful way.
+          Explore online Quran classes, Quran courses online, Arabic Language, and Islamic Studies
+          designed to help kids and adults learn Quran online, master Tajweed, memorize the Quran,
+          and build strong Islamic knowledge through personalized learning.
         </p>
-
-        {/* Search Bar Input */}
-        <form 
-          onSubmit={handleSearchSubmit}
-          className="reveal-slide-up"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            backgroundColor: "#FFFFFF",
-            borderRadius: "9999px",
-            border: "1.5px solid #EADDC8",
-            padding: "5px 5px 5px 18px",
-            width: "100%",
-            maxWidth: "580px",
-            boxShadow: "0 10px 25px rgba(44, 37, 30, 0.03)",
-            boxSizing: "border-box",
-            transition: "border-color 0.3s ease, box-shadow 0.3s ease"
-          }}
-          onFocusCapture={(e) => {
-            e.currentTarget.style.borderColor = "#C99B4D";
-            e.currentTarget.style.boxShadow = "0 10px 30px rgba(201, 155, 77, 0.06)";
-          }}
-          onBlurCapture={(e) => {
-            e.currentTarget.style.borderColor = "#EADDC8";
-            e.currentTarget.style.boxShadow = "0 10px 25px rgba(44, 37, 30, 0.03)";
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <IconSearch size={18} color="#C99B4D" />
-          </div>
-          <input 
-            type="text" 
-            placeholder="Search for anything Islam & Arabic" 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            suppressHydrationWarning
-            style={{
-              border: "none",
-              outline: "none",
-              flexGrow: 1,
-              fontFamily: "var(--font-sans), sans-serif",
-              fontSize: "14px",
-              color: "#2C251E",
-              padding: "8px 12px",
-              backgroundColor: "transparent"
-            }}
-          />
-          <button 
-            type="submit"
-            aria-label="Search"
-            suppressHydrationWarning
-            style={{
-              width: "42px",
-              height: "42px",
-              borderRadius: "50%",
-              backgroundColor: "#C99B4D",
-              border: "none",
-              color: "#FFFFFF",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              transition: "background-color 0.2s ease, transform 0.2s ease",
-              flexShrink: 0
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.backgroundColor = "#B3853B";
-              e.currentTarget.style.transform = "scale(1.05)";
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.backgroundColor = "#C99B4D";
-              e.currentTarget.style.transform = "scale(1)";
-            }}
-          >
-            <IconArrowRight size={16} />
-          </button>
-        </form>
 
       </section>
 
@@ -1258,7 +1113,7 @@ export default function CoursesPage() {
           {/* Cards Grid */}
           <div className="stagger-group" style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+            gridTemplateColumns: "repeat(6, minmax(0, 1fr))",
             gap: "24px",
             width: "100%"
           }}>
@@ -1274,7 +1129,7 @@ export default function CoursesPage() {
                     backgroundColor: "#FAF5EE", // Soft cream-beige card background matching mockup
                     borderRadius: "20px",
                     border: "1px solid rgba(201, 155, 77, 0.25)", // Soft elegant gold/cream border
-                    padding: "36px 20px 32px 20px", // Tall and narrow card padding
+                    padding: "36px 28px 32px 28px", // Tall and narrow card padding with comfortable side spacing
                     boxShadow: "0 6px 20px rgba(44, 37, 30, 0.015)",
                     display: "flex",
                     flexDirection: "column",
@@ -1603,7 +1458,7 @@ export default function CoursesPage() {
           }}>
             
             {/* Large White Badge Yaqeen Emblem */}
-            <IconYaqeenEmblem size={140} url={faviconUrl} />
+            <IconYaqeenEmblem size={120} url={faviconUrl} pad="20%" />
 
             {/* Text Content & Badges */}
             <div className="cta-text-content" style={{
@@ -1864,33 +1719,8 @@ export default function CoursesPage() {
           Hear from our learners and parents<br />building a stronger connection with Allah, together.
         </p>
 
-        {/* Testimonials Grid */}
-        <div className="testi-grid">
-          {testimonials.map((t) => (
-            <div key={t.id} className="testi-card">
-              <span className="testi-quote-mark">“</span>
-              <p className="testi-text">{t.content}</p>
-              <div className="testi-card-divider" />
-              <div className="testi-author-row">
-                <div className="testi-avatar-wrap">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={t.avatar_url || "/images/testi_ayesha.png"} alt={t.name} className="testi-avatar" />
-                </div>
-                <div className="testi-author-info">
-                  <span className="testi-author-name">{t.name}</span>
-                  <span className="testi-author-role">{t.role}</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Pagination Dots */}
-        <div className="testi-dots">
-          {testimonials.map((_, idx) => (
-            <div key={idx} className={`testi-dot ${idx === 0 ? "active" : ""}`} />
-          ))}
-        </div>
+        {/* Testimonials Carousel */}
+        <TestimonialsCarousel page="courses" />
 
       </section>
 

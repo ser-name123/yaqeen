@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import "./about.css";
 import { useSettings } from "@/lib/settings-context";
-import { supabase } from "@/lib/supabase";
+import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 
 // Seamless, intricate Islamic geometric lace star pattern URL (Girih tiling with overlapping circles)
 const LACE_BACKGROUND_PATTERN = 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'160\' height=\'160\' viewBox=\'0 0 160 160\'%3E%3Cg fill=\'none\' stroke=\'%23C99B4D\' stroke-width=\'0.5\' stroke-opacity=\'0.08\'%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'80\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'80\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'80\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'80\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'80\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'80\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'80\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'80\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'80\'/%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'40\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'40\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'40\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'40\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'40\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'40\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'40\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'40\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'40\'/%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'20\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'20\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'20\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'20\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'20\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'20\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'20\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'20\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'20\'/%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'10\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'10\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'10\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'10\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'10\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'10\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'10\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'10\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'10\'/%3E%3Crect x=\'68\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(0 80 80)\'/%3E%3Crect x=\'68\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(45 80 80)\'/%3E%3Crect x=\'-12\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(0 0 0)\'/%3E%3Crect x=\'-12\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(45 0 0)\'/%3E%3Crect x=\'148\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(0 160 0)\'/%3E%3Crect x=\'148\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(45 160 0)\'/%3E%3Crect x=\'-12\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(0 0 160)\'/%3E%3Crect x=\'-12\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(45 0 160)\'/%3E%3Crect x=\'148\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(0 160 160)\'/%3E%3Crect x=\'148\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(45 160 160)\'/%3E%3Crect x=\'68\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(0 80 0)\'/%3E%3Crect x=\'68\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(45 80 0)\'/%3E%3Crect x=\'-12\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(0 0 80)\'/%3E%3Crect x=\'-12\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(45 0 80)\'/%3E%3Crect x=\'148\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(0 160 80)\'/%3E%3Crect x=\'148\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(45 160 80)\'/%3E%3Crect x=\'68\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(0 80 160)\'/%3E%3Crect x=\'68\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(45 80 160)\'/%3E%3Crect x=\'74\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(0 80 80)\'/%3E%3Crect x=\'74\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(45 80 80)\'/%3E%3Crect x=\'-6\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(0 0 0)\'/%3E%3Crect x=\'-6\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(45 0 0)\'/%3E%3Crect x=\'154\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(0 160 0)\'/%3E%3Crect x=\'154\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(45 160 0)\'/%3E%3Crect x=\'-6\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(0 0 160)\'/%3E%3Crect x=\'-6\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(45 0 160)\'/%3E%3Crect x=\'154\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(0 160 160)\'/%3E%3Crect x=\'154\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(45 160 160)\'/%3E%3Crect x=\'74\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(0 80 0)\'/%3E%3Crect x=\'74\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(45 80 0)\'/%3E%3Crect x=\'-6\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(0 0 80)\'/%3E%3Crect x=\'-6\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(45 0 80)\'/%3E%3Crect x=\'154\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(0 160 80)\'/%3E%3Crect x=\'154\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(45 160 80)\'/%3E%3Crect x=\'74\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(0 80 160)\'/%3E%3Crect x=\'74\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(45 80 160)\'/%3E%3C/g%3E%3C/svg%3E")';
@@ -233,55 +233,10 @@ const ArchedCardBackground = () => (
 export default function AboutPage() {
   const { faviconUrl } = useSettings();
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
-  const [testimonials, setTestimonials] = useState([
-    {
-      id: 1,
-      name: "Ayesha Khan",
-      role: "Mother of 2",
-      content: "Yaqeen has helped my child develop a strong understanding of Islam in a fun and meaningful way. Highly recommended!",
-      avatar_url: "/images/testi_ayesha.png"
-    },
-    {
-      id: 2,
-      name: "Hassan Ali",
-      role: "Adult Learner",
-      content: "The lessons are clear, engaging and practical. I appreciate how easy it is to stay consistent with my learning.",
-      avatar_url: "/images/testi_hassan.png"
-    },
-    {
-      id: 3,
-      name: "Maryam Zahra",
-      role: "Parent",
-      content: "We love how the whole family can learn together. Yaqeen has brought us closer to our faith and each other.",
-      avatar_url: "/images/testi_maryam.png"
-    }
-  ]);
-
-  useEffect(() => {
-    async function fetchTestimonials() {
-      try {
-        const { data, error } = await supabase
-          .from("testimonials")
-          .select("*")
-          .order("order_index", { ascending: true })
-          .order("created_at", { ascending: false });
-
-        if (error) throw error;
-        if (data && data.length > 0) {
-          const filtered = data.filter(t => {
-            if (!t.page_target) return false;
-            const targets = t.page_target.split(",").map(x => x.trim().toLowerCase());
-            return targets.includes("all") || targets.includes("about");
-          });
-          setTestimonials(filtered);
-        }
-      } catch (err) {
-        console.warn("Could not load testimonials from Supabase, using default lists:", err);
-      }
-    }
-    fetchTestimonials();
-  }, []);
-
+  const [instructorExpanded, setInstructorExpanded] = useState(false);
+  const [personalizedExpanded, setPersonalizedExpanded] = useState(false);
+  const [engagingExpanded, setEngagingExpanded] = useState(false);
+  const [globalExpanded, setGlobalExpanded] = useState(false);
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -300,7 +255,7 @@ export default function AboutPage() {
   return (
     <>
       {/* First Section */}
-      <div className="about-page-container" style={{ minHeight: "calc(100vh - 70px)", backgroundImage: LACE_BACKGROUND_PATTERN, backgroundRepeat: 'repeat' }}>
+      <div className="about-page-container" style={{ backgroundImage: LACE_BACKGROUND_PATTERN, backgroundRepeat: 'repeat' }}>
         {/* Outer elegant border frame around the page */}
         <div className="about-page-border-frame animate-slide-up" style={{ backgroundColor: 'transparent', backgroundImage: 'none' }}>
           
@@ -352,7 +307,16 @@ export default function AboutPage() {
                     </div>
                     <div className="feature-info">
                       <span className="feature-title">Expert &amp; Caring Instructors — Passionate educators dedicated to every learner&apos;s success.</span>
-                      <span className="feature-subtext" style={{ marginTop: "4px", display: "block", lineHeight: "1.5" }}>Learn from certified Quran, Arabic, and Islamic Studies teachers delivering Online Quran Classes, Quran Lessons Online, and personalized guidance. Our experienced instructors help children and adults Learn Quran Online with confidence, Tajweed, and lasting Islamic knowledge.</span>
+                      <span className={`feature-subtext feature-subtext-collapsible ${instructorExpanded ? "expanded" : ""}`} style={{ marginTop: "4px", display: "block", lineHeight: "1.5" }}>Learn from certified Quran, Arabic, and Islamic Studies teachers delivering Online Quran Classes, Quran Lessons Online, and personalized guidance. Our experienced instructors help children and adults Learn Quran Online with confidence, Tajweed, and lasting Islamic knowledge.</span>
+                      <button
+                        type="button"
+                        className="feature-readmore-btn"
+                        aria-expanded={instructorExpanded}
+                        onClick={() => setInstructorExpanded((prev) => !prev)}
+                      >
+                        <span>{instructorExpanded ? "Read Less" : "Read More"}</span>
+                        <IconChevron size={14} className={`feature-readmore-chevron ${instructorExpanded ? "open" : ""}`} />
+                      </button>
                     </div>
                   </div>
   
@@ -361,8 +325,17 @@ export default function AboutPage() {
                       <IconBookWhite />
                     </div>
                     <div className="feature-info">
-                      <span className="feature-title">Personalized Learning</span>
-                      <span className="feature-subtext">Lessons tailored to each student's goals and pace.</span>
+                      <span className="feature-title">Personalized Learning — Lessons tailored to each student&apos;s goals and pace.</span>
+                      <span className={`feature-subtext feature-subtext-collapsible ${personalizedExpanded ? "expanded" : ""}`} style={{ marginTop: "4px", display: "block", lineHeight: "1.5" }}>Every student receives customized Online Quran Classes, Quran Courses Online, and Arabic lessons based on their learning style, age, and goals. Personalized teaching helps beginners and advanced learners Learn Quran Online effectively with measurable progress.</span>
+                      <button
+                        type="button"
+                        className="feature-readmore-btn"
+                        aria-expanded={personalizedExpanded}
+                        onClick={() => setPersonalizedExpanded((prev) => !prev)}
+                      >
+                        <span>{personalizedExpanded ? "Read Less" : "Read More"}</span>
+                        <IconChevron size={14} className={`feature-readmore-chevron ${personalizedExpanded ? "open" : ""}`} />
+                      </button>
                     </div>
                   </div>
   
@@ -371,8 +344,17 @@ export default function AboutPage() {
                       <IconStarWhite />
                     </div>
                     <div className="feature-info">
-                      <span className="feature-title">Engaging & Effective</span>
-                      <span className="feature-subtext">Interactive classes that make learning enjoyable and impactful.</span>
+                      <span className="feature-title">Engaging &amp; Effective — Interactive classes that make learning enjoyable and impactful.</span>
+                      <span className={`feature-subtext feature-subtext-collapsible ${engagingExpanded ? "expanded" : ""}`} style={{ marginTop: "4px", display: "block", lineHeight: "1.5" }}>Our interactive Online Quran Teaching combines live classes, practical activities, and personalized feedback to make Quran Lessons Online, Arabic, and Islamic Studies engaging. Students Learn Quran with Tajweed while building confidence, understanding, and strong Islamic values.</span>
+                      <button
+                        type="button"
+                        className="feature-readmore-btn"
+                        aria-expanded={engagingExpanded}
+                        onClick={() => setEngagingExpanded((prev) => !prev)}
+                      >
+                        <span>{engagingExpanded ? "Read Less" : "Read More"}</span>
+                        <IconChevron size={14} className={`feature-readmore-chevron ${engagingExpanded ? "open" : ""}`} />
+                      </button>
                     </div>
                   </div>
   
@@ -381,8 +363,17 @@ export default function AboutPage() {
                       <IconGlobeWhite />
                     </div>
                     <div className="feature-info">
-                      <span className="feature-title">Global Community of Learners</span>
-                      <span className="feature-subtext">Connecting students worldwide through faith and knowledge.</span>
+                      <span className="feature-title">Global Community of Learners — Connecting students worldwide through faith and knowledge.</span>
+                      <span className={`feature-subtext feature-subtext-collapsible ${globalExpanded ? "expanded" : ""}`} style={{ marginTop: "4px", display: "block", lineHeight: "1.5" }}>Join our trusted Online Quran Academy, where students from around the world attend Online Quran Classes, Quran Courses Online, and Arabic lessons. Build faith, connect with expert teachers, and Learn Quran Online in a supportive global community.</span>
+                      <button
+                        type="button"
+                        className="feature-readmore-btn"
+                        aria-expanded={globalExpanded}
+                        onClick={() => setGlobalExpanded((prev) => !prev)}
+                      >
+                        <span>{globalExpanded ? "Read Less" : "Read More"}</span>
+                        <IconChevron size={14} className={`feature-readmore-chevron ${globalExpanded ? "open" : ""}`} />
+                      </button>
                     </div>
                   </div>
   
@@ -401,20 +392,20 @@ export default function AboutPage() {
             <div className="banner-logo-section">
               {faviconUrl ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
-                <img 
-                  src={faviconUrl} 
-                  alt="YAQEEN INSTITUTE" 
-                  style={{ height: "30px", width: "auto", objectFit: "contain" }} 
+                <img
+                  src={faviconUrl}
+                  alt="YAQEEN INSTITUTE"
+                  style={{ height: "60px", width: "auto", objectFit: "contain" }}
                 />
               ) : (
-                <svg width="34" height="30" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="68" height="60" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M12 20C7.5 20 4.5 16 4.5 11C4.5 7 7.5 6 12 9V20Z" fill="#C99B4D" />
                   <path d="M12 20C16.5 20 19.5 16 19.5 11C19.5 7 16.5 6 12 9V20Z" fill="#B3853B" />
                   <circle cx="12" cy="3.5" r="1.5" fill="#C99B4D" />
                   <path d="M12 6V9" stroke="#C99B4D" strokeWidth="1.5" strokeLinecap="round" />
                 </svg>
               )}
-              <div style={{ display: "flex", flexDirection: "column", lineHeight: "1.1" }}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", lineHeight: "1.1" }}>
                 <span className="banner-logo-text" style={{ fontSize: "14px", fontWeight: "800", color: "#2B1F14" }}>YAQEEN</span>
                 <span className="banner-logo-text" style={{ fontSize: "10px", fontWeight: "700", color: "#C99B4D" }}>INSTITUTE</span>
               </div>
@@ -423,7 +414,8 @@ export default function AboutPage() {
             <div className="banner-divider"></div>
   
             <p className="banner-quote-text">
-              We believe in building strong foundations, nurturing character, and empowering every learner to lead with faith and purpose.
+              We believe in building strong foundations, nurturing character,<br />
+              and empowering every learner to lead with faith and purpose.
             </p>
   
             <div className="banner-deco">
@@ -436,7 +428,7 @@ export default function AboutPage() {
       </div>
  
       {/* Second Section - Who We Are & What We Do */}
-      <div className="about-page-container" style={{ paddingTop: "0", marginTop: "-10px", backgroundImage: LACE_BACKGROUND_PATTERN, backgroundRepeat: 'repeat' }}>
+      <div className="about-page-container" style={{ backgroundImage: LACE_BACKGROUND_PATTERN, backgroundRepeat: 'repeat' }}>
         {/* Outer elegant border frame around the page */}
         <div className="about-page-border-frame animate-slide-up" style={{ backgroundColor: 'transparent', backgroundImage: 'none' }}>
           
@@ -518,7 +510,7 @@ export default function AboutPage() {
       </div>
 
       {/* Third Section - Mission & Vision */}
-      <div className="about-page-container" style={{ paddingTop: "0", marginTop: "-10px", backgroundImage: LACE_BACKGROUND_PATTERN, backgroundRepeat: 'repeat' }}>
+      <div className="about-page-container" style={{ backgroundImage: LACE_BACKGROUND_PATTERN, backgroundRepeat: 'repeat' }}>
         {/* Outer elegant border frame around the page */}
         <div className="about-page-border-frame animate-slide-up" style={{ backgroundColor: 'transparent', backgroundImage: 'none' }}>
           
@@ -674,7 +666,7 @@ export default function AboutPage() {
       </div>
 
       {/* Fourth Section - Testimonials */}
-      <div className="about-page-container" style={{ paddingTop: "0", marginTop: "-10px", backgroundImage: LACE_BACKGROUND_PATTERN, backgroundRepeat: 'repeat' }}>
+      <div className="about-page-container" style={{ backgroundImage: LACE_BACKGROUND_PATTERN, backgroundRepeat: 'repeat' }}>
         {/* Outer elegant border frame around the page */}
         <div className="about-page-border-frame animate-slide-up" style={{ backgroundColor: 'transparent', backgroundImage: 'none' }}>
           
@@ -705,33 +697,8 @@ export default function AboutPage() {
               Hear from our learners and parents<br />building a stronger connection with Allah, together.
             </p>
 
-            {/* Testimonials Grid */}
-            <div className="testi-grid stagger-group" style={{ width: "100%" }}>
-              {testimonials.map((t) => (
-                <div key={t.id} className="testi-card reveal-stagger">
-                  <span className="testi-quote-mark">“</span>
-                  <p className="testi-text">{t.content}</p>
-                  <div className="testi-card-divider" />
-                  <div className="testi-author-row">
-                    <div className="testi-avatar-wrap">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={t.avatar_url || "/images/testi_ayesha.png"} alt={t.name} className="testi-avatar" />
-                    </div>
-                    <div className="testi-author-info">
-                      <span className="testi-author-name">{t.name}</span>
-                      <span className="testi-author-role">{t.role}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Pagination Dots */}
-            <div className="testi-dots reveal-slide-up" style={{ marginTop: "32px" }}>
-              {testimonials.map((_, idx) => (
-                <div key={idx} className={`testi-dot ${idx === 0 ? "active" : ""}`} />
-              ))}
-            </div>
+            {/* Testimonials Carousel */}
+            <TestimonialsCarousel page="about" />
 
           </div>
 
@@ -739,7 +706,7 @@ export default function AboutPage() {
       </div>
 
       {/* Fifth Section - Course Finder CTA Banner */}
-      <div className="about-page-container" style={{ paddingTop: "0", marginTop: "-10px", backgroundImage: LACE_BACKGROUND_PATTERN, backgroundRepeat: 'repeat' }}>
+      <div className="about-page-container" style={{ backgroundImage: LACE_BACKGROUND_PATTERN, backgroundRepeat: 'repeat' }}>
         {/* Outer elegant border frame around the page */}
         <div className="about-page-border-frame animate-slide-up" style={{ backgroundColor: 'transparent', backgroundImage: 'none' }}>
           
@@ -765,7 +732,7 @@ export default function AboutPage() {
               <h2 className="cta-heading">Not sure where to start?</h2>
               
               {/* Divider */}
-              <div className="about-heading-divider" style={{ margin: "10px 0 0 0", alignSelf: "flex-start" }}>
+              <div className="about-heading-divider" style={{ margin: "10px 0 0 0", alignSelf: "center" }}>
                 <div className="divider-line" style={{ width: "32px" }}></div>
                 <div className="divider-diamond"></div>
                 <div className="divider-line" style={{ width: "32px" }}></div>
@@ -838,7 +805,7 @@ export default function AboutPage() {
       </div>
 
       {/* Sixth Section - FAQ */}
-      <div className="about-page-container" style={{ minHeight: "auto", paddingTop: "0", marginTop: "-10px", backgroundImage: LACE_BACKGROUND_PATTERN, backgroundRepeat: 'repeat' }}>
+      <div className="about-page-container" style={{ minHeight: "auto", backgroundImage: LACE_BACKGROUND_PATTERN, backgroundRepeat: 'repeat' }}>
         {/* Outer elegant border frame around the page */}
         <div className="about-page-border-frame animate-slide-up" style={{ backgroundColor: 'transparent', backgroundImage: 'none' }}>
           

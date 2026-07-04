@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { useSettings } from "@/lib/settings-context";
+import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 
 // Custom Icons for the Hero Section
 const IconGlobe = ({ size = 16 }) => (
@@ -446,54 +447,6 @@ export default function Home() {
   const [newsEmail, setNewsEmail] = useState("");
   const [newsSubmitted, setNewsSubmitted] = useState(false);
   const [teachers, setTeachers] = useState(defaultTeachers);
-  const [testimonials, setTestimonials] = useState([
-    {
-      id: 1,
-      name: "Ayesha Khan",
-      role: "Mother of 2",
-      content: "Yaqeen has helped my child develop a strong understanding of Islam in a fun and meaningful way. Highly recommended!",
-      avatar_url: "/images/testi_ayesha.png"
-    },
-    {
-      id: 2,
-      name: "Hassan Ali",
-      role: "Adult Learner",
-      content: "The lessons are clear, engaging and practical. I appreciate how easy it is to stay consistent with my learning.",
-      avatar_url: "/images/testi_hassan.png"
-    },
-    {
-      id: 3,
-      name: "Maryam Zahra",
-      role: "Parent",
-      content: "We love how the whole family can learn together. Yaqeen has brought us closer to our faith and each other.",
-      avatar_url: "/images/testi_maryam.png"
-    }
-  ]);
-
-  useEffect(() => {
-    async function fetchTestimonials() {
-      try {
-        const { data, error } = await supabase
-          .from("testimonials")
-          .select("*")
-          .order("order_index", { ascending: true })
-          .order("created_at", { ascending: false });
-
-        if (error) throw error;
-        if (data && data.length > 0) {
-          const filtered = data.filter(t => {
-            if (!t.page_target) return false;
-            const targets = t.page_target.split(",").map(x => x.trim().toLowerCase());
-            return targets.includes("all") || targets.includes("home");
-          });
-          setTestimonials(filtered);
-        }
-      } catch (err) {
-        console.warn("Could not load testimonials from Supabase, using default lists:", err);
-      }
-    }
-    fetchTestimonials();
-  }, []);
 
   useEffect(() => {
     async function fetchTeachers() {
@@ -2044,33 +1997,8 @@ export default function Home() {
           Hear from our learners and parents<br />building a stronger connection with Allah, together.
         </p>
 
-        {/* Testimonials Grid */}
-        <div className="testi-grid stagger-group">
-          {testimonials.map((t) => (
-            <div key={t.id} className="testi-card reveal-stagger">
-              <span className="testi-quote-mark">“</span>
-              <p className="testi-text">{t.content}</p>
-              <div className="testi-card-divider" />
-              <div className="testi-author-row">
-                <div className="testi-avatar-wrap">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={t.avatar_url || "/images/testi_ayesha.png"} alt={t.name} className="testi-avatar" />
-                </div>
-                <div className="testi-author-info">
-                  <span className="testi-author-name">{t.name}</span>
-                  <span className="testi-author-role">{t.role}</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Pagination Dots */}
-        <div className="testi-dots reveal-slide-up">
-          {testimonials.map((_, idx) => (
-            <div key={idx} className={`testi-dot ${idx === 0 ? "active" : ""}`} />
-          ))}
-        </div>
+        {/* Testimonials Carousel */}
+        <TestimonialsCarousel page="home" />
 
       </section>
 
