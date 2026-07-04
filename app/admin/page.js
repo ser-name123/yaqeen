@@ -2732,6 +2732,7 @@ export default function AdminDashboard() {
                       <span>📍 <strong>City:</strong> {selectedContact.city || "Unknown"}</span>
                       <span>🏛️ <strong>State/Region:</strong> {selectedContact.state || "Unknown"}</span>
                       <span>🗺️ <strong>Country:</strong> {selectedContact.country || "Unknown"}</span>
+                      <span>🏢 <strong>Provider/ISP:</strong> {selectedContact.provider || "Unknown"}</span>
                     </div>
                     <div>
                       💻 <strong>System Specs:</strong> <span style={{ color: "#2B1F14" }}>{selectedContact.system_info || "N/A"}</span>

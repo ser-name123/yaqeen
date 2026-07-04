@@ -124,33 +124,36 @@ export default function ContactForm() {
     }
 
     try {
-      const { error } = await supabase
-        .from("contacts")
-        .insert([{ 
-          name, 
-          email, 
-          subject, 
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          subject,
           message,
-          ip_address: userIp,
           browser_info: browserInfo,
           system_info: systemInfo,
-          city: userCity,
-          state: userState,
-          country: userCountry
-        }]);
+          ip_address: userIp !== "Unknown / Client-side only" ? userIp : undefined,
+          city: userCity !== "Unknown" ? userCity : undefined,
+          state: userState !== "Unknown" ? userState : undefined,
+          country: userCountry !== "Unknown" ? userCountry : undefined
+        })
+      });
 
-      if (error) throw error;
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to submit message.");
+      }
 
       setStatus("success");
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (err) {
       console.error("Contact form error:", err);
       setStatus("error");
-      setErrorMessage(
-        err.message?.includes("relation")
-          ? "Database schema missing: Please ensure you run the SQL script to create the 'contacts' table in your Supabase panel."
-          : err.message || "Something went wrong. Please try again."
-      );
+      setErrorMessage(err.message || "Something went wrong. Please try again.");
     }
   };
 

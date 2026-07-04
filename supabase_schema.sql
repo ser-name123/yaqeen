@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS public.contacts (
     city TEXT,
     state TEXT,
     country TEXT,
+    provider TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -26,6 +27,7 @@ ALTER TABLE public.contacts ADD COLUMN IF NOT EXISTS system_info TEXT;
 ALTER TABLE public.contacts ADD COLUMN IF NOT EXISTS city TEXT;
 ALTER TABLE public.contacts ADD COLUMN IF NOT EXISTS state TEXT;
 ALTER TABLE public.contacts ADD COLUMN IF NOT EXISTS country TEXT;
+ALTER TABLE public.contacts ADD COLUMN IF NOT EXISTS provider TEXT;
 
 -- Enable Row Level Security (RLS)
 ALTER TABLE public.contacts ENABLE ROW LEVEL SECURITY;
