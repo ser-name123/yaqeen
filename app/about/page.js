@@ -329,8 +329,8 @@ export default function AboutPage() {
                 <div className="about-badge">About Us</div>
                 
                 <h1 className="about-heading">
-                  Empowering Minds.<br />
-                  <span>Inspiring Futures.</span>
+                  Expert &amp; Caring Instructors.<br />
+                  <span>Passionate educators dedicated to every learner&apos;s success.</span>
                 </h1>
   
                 {/* Custom line and diamond divider: — ⬥ — */}
