@@ -2281,6 +2281,7 @@ export default function AdminDashboard() {
                           <th style={{ padding: "12px" }}>Email</th>
                           <th style={{ padding: "12px" }}>Subject</th>
                           <th style={{ padding: "12px" }}>Submitted At</th>
+                          <th style={{ padding: "12px", textAlign: "right" }}>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -2290,6 +2291,15 @@ export default function AdminDashboard() {
                             <td style={{ padding: "12px" }}><a href={`mailto:${c.email}`} style={{ color: "var(--secondary-color)", textDecoration: "none" }}>{c.email}</a></td>
                             <td style={{ padding: "12px" }}>{c.subject}</td>
                             <td style={{ padding: "12px" }}>{new Date(c.created_at).toLocaleDateString()}</td>
+                            <td style={{ padding: "12px", textAlign: "right" }}>
+                              <button 
+                                onClick={() => setSelectedContact(c)} 
+                                className="btn-secondary" 
+                                style={{ padding: "4px 10px", fontSize: "12px" }}
+                              >
+                                View
+                              </button>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
