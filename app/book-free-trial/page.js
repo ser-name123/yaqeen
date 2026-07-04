@@ -26,16 +26,6 @@ const IconTeacher = ({ size = 26 }) => (
     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
   </svg>
 );
-const IconCalendarBig = ({ size = 26 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
-  </svg>
-);
-const IconBookOpen = ({ size = 26 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-  </svg>
-);
 const IconArrow = ({ size = 16 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
     <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
@@ -273,11 +263,6 @@ export default function BookFreeTrialPage() {
         <div className="bft-hero-divider">
           <span className="line" /><span className="diamond" /><span className="line" />
         </div>
-        <p className="bft-hero-sub">
-          Experience a live, one-to-one online lesson with a qualified teacher — completely free.
-          Tell us your preferences and we&apos;ll match you with the perfect tutor for Quran, Arabic,
-          or Islamic Studies.
-        </p>
         <div className="bft-hero-stats">
           <span className="bft-stat"><IconCheck /> 100% Free, No Card Needed</span>
           <span className="bft-stat"><IconClock /> Flexible 24/7 Scheduling</span>
@@ -285,35 +270,7 @@ export default function BookFreeTrialPage() {
         </div>
       </section>
 
-      {/* ============ SECTION 2: HOW IT WORKS ============ */}
-      <section className="bft-how">
-        <div className="bft-section-head">
-          <h2>How Your <span>Free Trial</span> Works</h2>
-          <p>Getting started takes less than two minutes — here&apos;s what happens next.</p>
-        </div>
-        <div className="bft-how-grid">
-          <div className="bft-how-card">
-            <span className="bft-how-step">01</span>
-            <div className="bft-how-icon gold"><IconCalendarBig /></div>
-            <h3>Share Your Details</h3>
-            <p>Fill in the short form below with your details and your preferred day and time for the class.</p>
-          </div>
-          <div className="bft-how-card">
-            <span className="bft-how-step">02</span>
-            <div className="bft-how-icon green"><IconTeacher /></div>
-            <h3>Meet Your Teacher</h3>
-            <p>Our team matches you with a qualified teacher and confirms your slot within 24 hours.</p>
-          </div>
-          <div className="bft-how-card">
-            <span className="bft-how-step">03</span>
-            <div className="bft-how-icon gold"><IconBookOpen /></div>
-            <h3>Start Learning</h3>
-            <p>Join your free live lesson online from home and begin your learning journey with confidence.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* ============ SECTION 3: THE FORM ============ */}
+      {/* ============ SECTION 2: THE FORM ============ */}
       <section className="bft-form-section">
         <div className="bft-form-card" ref={formCardRef}>
           {submitted ? (

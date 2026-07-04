@@ -3170,3 +3170,94 @@ body {
 }
 
 
+
+/* ==========================================================================
+   Shared SearchSelect (searchable, height-capped dropdown) — used by forms
+   ========================================================================== */
+.ss { position: relative; width: 100%; }
+
+.ss-trigger {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  text-align: left;
+  padding: 13px 16px;
+  border: 1.5px solid #E5DCC9;
+  border-radius: 12px;
+  background-color: #FDFBF7;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--fg-color);
+  cursor: pointer;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.ss-trigger.open,
+.ss-trigger:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(201, 155, 77, 0.12);
+  background-color: #FFFFFF;
+  outline: none;
+}
+
+.ss-trigger.invalid { border-color: #E0A0A0; background-color: #FDF5F5; }
+.ss-ph { color: #B8AC98; }
+.ss-arrow { color: var(--fg-muted); flex-shrink: 0; transition: transform 0.2s ease; }
+.ss-trigger.open .ss-arrow { transform: rotate(180deg); }
+
+.ss-menu {
+  position: absolute;
+  z-index: 200;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  padding: 6px;
+  background-color: #FFFFFF;
+  border: 1.5px solid #E5DCC9;
+  border-radius: 12px;
+  box-shadow: 0 14px 34px rgba(44, 37, 30, 0.12);
+}
+
+.ss-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  border: 1.5px solid #E5DCC9;
+  border-radius: 9px;
+  background-color: #FDFBF7;
+  color: var(--fg-muted);
+}
+
+.ss-search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  color: var(--fg-color);
+}
+.ss-search input::placeholder { color: #B8AC98; }
+
+.ss-list { margin: 0; padding: 0; list-style: none; max-height: 200px; overflow-y: auto; }
+.ss-list::-webkit-scrollbar { width: 8px; }
+.ss-list::-webkit-scrollbar-thumb { background: rgba(201, 155, 77, 0.35); border-radius: 8px; }
+
+.ss-empty { padding: 14px 12px; text-align: center; font-size: 13px; color: var(--fg-muted); }
+
+.ss-option {
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--fg-color);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.ss-option:hover { background-color: rgba(201, 155, 77, 0.10); }
+.ss-option.sel { background-color: rgba(85, 107, 59, 0.12); font-weight: 600; color: var(--secondary-color); }
