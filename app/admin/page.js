@@ -1972,7 +1972,17 @@ export default function AdminDashboard() {
                 {authLoading ? "Verifying..." : "Verify & Unlock"}
               </button>
 
-              <button type="button" onClick={handleCancelOtp} className="btn-secondary" style={{ justifyContent: "center" }}>
+              <button 
+                type="button" 
+                onClick={handleCancelOtp} 
+                className="btn-secondary" 
+                style={{ 
+                  justifyContent: "center",
+                  color: "#2C251E",
+                  borderColor: "#EADDC8",
+                  background: "rgba(0, 0, 0, 0.03)"
+                }}
+              >
                 Go Back
               </button>
             </form>
