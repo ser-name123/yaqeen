@@ -1,0 +1,126 @@
+/* ==========================================================================
+   Our Teachers page (brand: gold #C99B4D / olive #556B3B)
+   ========================================================================== */
+.tp-page { width: 100%; background-color: #FBF8F3; color: var(--fg-color); font-family: var(--font-sans); }
+
+/* ---------- Hero ---------- */
+.tp-hero {
+  padding: 60px 24px 44px 24px; display: flex; flex-direction: column; align-items: center; text-align: center;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(201, 155, 77, 0.10), transparent 45%),
+    radial-gradient(circle at 85% 15%, rgba(169, 123, 46, 0.08), transparent 40%),
+    linear-gradient(180deg, #FDFAF4 0%, #F7F0E6 100%);
+}
+.tp-badge {
+  display: inline-flex; align-items: center; gap: 8px; padding: 7px 16px; border-radius: 9999px;
+  background-color: rgba(201, 155, 77, 0.12); border: 1px solid rgba(201, 155, 77, 0.3);
+  color: #A97B2E; font-size: 12px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+}
+.tp-hero h1 { margin: 18px 0 0 0; font-family: var(--font-serif); font-size: clamp(32px, 5vw, 48px); font-weight: 700; line-height: 1.15; }
+.tp-hero h1 span { color: var(--primary-color); }
+.tp-divider { display: flex; align-items: center; gap: 10px; margin: 18px 0; }
+.tp-divider .line { width: 44px; height: 1.5px; background-color: var(--primary-color); opacity: 0.7; }
+.tp-divider .diamond { width: 7px; height: 7px; background-color: var(--primary-color); transform: rotate(45deg); }
+.tp-hero p { margin: 0; max-width: 640px; font-size: 16px; line-height: 1.7; color: #6B5B47; }
+
+/* ---------- Section heads ---------- */
+.tp-head { text-align: center; margin-bottom: 34px; }
+.tp-head h2 { margin: 0; font-family: var(--font-serif); font-size: clamp(24px, 3.6vw, 34px); font-weight: 700; line-height: 1.25; }
+.tp-head h2 span { color: var(--primary-color); }
+.tp-head p { margin: 12px auto 0 auto; max-width: 640px; font-size: 14.5px; line-height: 1.6; color: #6B5B47; }
+.tp-head .tp-badge { margin-bottom: 14px; }
+
+/* Avatar helper */
+.tp-avatar { border-radius: 50%; overflow: hidden; flex-shrink: 0; background-color: #F0E6D4; display: flex; align-items: center; justify-content: center; color: var(--primary-color); font-weight: 800; font-family: var(--font-serif); border: 2px solid rgba(201,155,77,0.35); }
+.tp-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ---------- Featured teacher ---------- */
+.tp-featured-section { max-width: 1000px; margin: 0 auto; padding: 46px 24px 20px 24px; width: 100%; }
+.tp-featured {
+  display: flex; gap: 26px; align-items: center; background-color: #FFFFFF;
+  border: 1px solid #EFE7DA; border-radius: 22px; padding: 26px 30px;
+  box-shadow: 0 12px 30px rgba(44, 37, 30, 0.04);
+}
+.tp-featured .tp-avatar { width: 120px; height: 120px; font-size: 40px; }
+.tp-featured h3 { margin: 0 0 4px 0; font-size: 22px; font-weight: 700; font-family: var(--font-serif); }
+.tp-featured .qual { margin: 0 0 10px 0; font-size: 13.5px; font-weight: 600; color: var(--primary-color); }
+.tp-featured .bio { margin: 0; font-size: 14px; line-height: 1.65; color: #6B5B47; }
+
+/* ---------- Teachers grid ---------- */
+.tp-grid-section { max-width: 1080px; margin: 0 auto; padding: 46px 24px; width: 100%; }
+.tp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.tp-card {
+  background-color: #FFFFFF; border: 1px solid #EFE7DA; border-radius: 18px; padding: 26px 20px; text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.tp-card:hover { transform: translateY(-5px); border-color: rgba(201, 155, 77, 0.5); box-shadow: 0 16px 32px rgba(44, 37, 30, 0.06); }
+.tp-card .tp-avatar { width: 74px; height: 74px; font-size: 26px; margin: 0 auto 14px auto; }
+.tp-card h4 { margin: 0 0 6px 0; font-size: 16px; font-weight: 700; color: var(--fg-color); }
+.tp-card p { margin: 0; font-size: 12.5px; line-height: 1.5; color: #6B5B47; }
+.tp-center-btn { display: flex; justify-content: center; margin-top: 34px; }
+.tp-btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; border-radius: 9999px;
+  background-color: var(--primary-color); color: #fff; font-size: 14px; font-weight: 700; text-decoration: none;
+  box-shadow: 0 8px 20px rgba(201, 155, 77, 0.22); transition: all 0.2s ease;
+}
+.tp-btn:hover { background-color: #B3853B; transform: translateY(-2px); }
+
+/* ---------- Learn Online accordion ---------- */
+.tp-learn { max-width: 860px; margin: 0 auto; padding: 30px 24px 46px 24px; width: 100%; }
+.tp-acc { display: flex; flex-direction: column; gap: 14px; }
+.tp-item { background-color: #FFFFFF; border: 1px solid #EFE7DA; border-radius: 16px; overflow: hidden; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+.tp-item.open { border-color: rgba(201, 155, 77, 0.5); box-shadow: 0 12px 26px rgba(44, 37, 30, 0.05); }
+.tp-q { width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 22px; background: none; border: none; text-align: left; cursor: pointer; font-family: var(--font-sans); font-size: clamp(14.5px, 1.7vw, 16px); font-weight: 700; color: var(--fg-color); }
+.tp-chevron { color: var(--primary-color); flex-shrink: 0; transition: transform 0.3s ease; }
+.tp-chevron.open { transform: rotate(180deg); }
+.tp-a { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+.tp-a.open { max-height: 320px; }
+.tp-a-inner { padding: 0 22px 20px 22px; font-size: 14px; line-height: 1.7; color: #5a4a37; }
+
+/* ---------- Looking for ---------- */
+.tp-looking { max-width: 900px; margin: 0 auto; padding: 46px 24px; width: 100%; }
+.tp-looking-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.tp-look-card { background-color: #FFFFFF; border: 1px solid #EFE7DA; border-radius: 18px; padding: 28px; }
+.tp-look-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background-color: rgba(201,155,77,0.12); color: var(--primary-color); margin-bottom: 16px; }
+.tp-look-card h4 { margin: 0 0 8px 0; font-size: 17px; font-weight: 700; color: var(--fg-color); }
+.tp-look-card p { margin: 0 0 18px 0; font-size: 13.5px; line-height: 1.6; color: #6B5B47; }
+.tp-look-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 9999px; background-color: var(--primary-color); color: #fff; font-size: 13px; font-weight: 700; text-decoration: none; box-shadow: 0 8px 20px rgba(201, 155, 77, 0.22); transition: all 0.2s ease; }
+.tp-look-btn:hover { background-color: #B3853B; transform: translateY(-2px); }
+
+/* ---------- Foundation (light cream + gold, matching the hero) ---------- */
+.tp-foundation {
+  padding: 54px 24px; color: var(--fg-color);
+  border-top: 1px solid rgba(201, 155, 77, 0.15);
+  border-bottom: 1px solid rgba(201, 155, 77, 0.15);
+  background:
+    radial-gradient(circle at 15% 20%, rgba(201, 155, 77, 0.10), transparent 45%),
+    radial-gradient(circle at 85% 15%, rgba(169, 123, 46, 0.08), transparent 40%),
+    linear-gradient(180deg, #FDFAF4 0%, #F7F0E6 100%);
+}
+.tp-foundation-inner { max-width: 1040px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+.tp-foundation .lead { font-family: var(--font-serif); font-size: clamp(18px, 2.4vw, 23px); font-weight: 700; line-height: 1.5; margin: 0 0 24px 0; color: var(--fg-color); }
+.tp-foundation .lead b { color: var(--primary-color); }
+.tp-foundation h3 { margin: 0 0 16px 0; font-size: 22px; font-weight: 700; font-family: var(--font-serif); color: var(--fg-color); }
+.tp-join-btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 24px; border-radius: 9999px; background-color: var(--primary-color); color: #fff; font-size: 13px; font-weight: 700; text-decoration: none; box-shadow: 0 8px 20px rgba(201, 155, 77, 0.22); transition: all 0.2s ease; }
+.tp-join-btn:hover { background-color: #B3853B; transform: translateY(-2px); }
+.tp-values { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.tp-value { display: flex; align-items: center; gap: 10px; background-color: #FFFFFF; border: 1px solid #EFE7DA; border-radius: 12px; padding: 14px 16px; box-shadow: 0 6px 16px rgba(44, 37, 30, 0.03); }
+.tp-value-sun { color: var(--primary-color); flex-shrink: 0; }
+.tp-value .ar { font-size: 14px; font-weight: 700; color: var(--fg-color); }
+.tp-value .en { font-size: 11.5px; font-weight: 600; color: #6B5B47; }
+
+/* ---------- FAQ ---------- */
+.tp-faq { padding: 56px 24px 80px 24px; background-color: #F5EFE6; }
+.tp-faq .tp-acc { max-width: 860px; margin: 0 auto; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .tp-grid { grid-template-columns: repeat(2, 1fr); }
+  .tp-looking-grid { grid-template-columns: 1fr; }
+  .tp-foundation-inner { grid-template-columns: 1fr; gap: 26px; }
+  .tp-featured { flex-direction: column; text-align: center; }
+}
+@media (max-width: 560px) {
+  .tp-grid { grid-template-columns: 1fr 1fr; }
+  .tp-values { grid-template-columns: 1fr; }
+}

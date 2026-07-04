@@ -1642,9 +1642,9 @@ export default function Home() {
         </p>
 
         {/* Teachers Cards Grid */}
-        <div className="teachers-grid stagger-group">
+        <div className="teachers-grid">
           {teachers.map((teacher) => (
-            <div key={teacher.id} className="teacher-card reveal-stagger">
+            <div key={teacher.id} className="teacher-card">
               <div className="teacher-avatar-wrap">
                 <img 
                   src={teacher.avatar_url || "/images/teacher_rahman.png"} 

@@ -61,8 +61,9 @@ export default function Footer() {
               <li className="footer-link-item"><Link href="/book-free-trial" className="footer-link">Book a Free Trial</Link></li>
               <li className="footer-link-item"><Link href="/teacher-application" className="footer-link">Teacher Application</Link></li>
               <li className="footer-link-item"><Link href="/about" className="footer-link">About</Link></li>
+              <li className="footer-link-item"><Link href="/teachers" className="footer-link">Teachers</Link></li>
               <li className="footer-link-item"><Link href="/blog" className="footer-link">Blog</Link></li>
-              <li className="footer-link-item"><Link href="#testimonials" className="footer-link">Testimonials</Link></li>
+              <li className="footer-link-item"><Link href="/testimonials" className="footer-link">Testimonials</Link></li>
               <li className="footer-link-item"><Link href="/careers" className="footer-link">Careers</Link></li>
               <li className="footer-link-item"><Link href="/faqs" className="footer-link">FAQs</Link></li>
               <li className="footer-link-item"><Link href="/sitemap" className="footer-link">Sitemap</Link></li>

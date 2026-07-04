@@ -14,27 +14,28 @@ export async function POST(request) {
     }
 
     const supabaseAdmin = getSupabaseAdmin();
-    
-    // Fetch current admin profile
-    const { data: admin, error: fetchError } = await supabaseAdmin
+
+    // Fetch the admin account matching this email (supports multiple admin accounts)
+    const { data: admins, error: fetchError } = await supabaseAdmin
       .from("admin_profile")
       .select("*")
-      .eq("id", "admin")
-      .single();
+      .ilike("email", email.trim());
 
     if (fetchError) {
       console.error("Error fetching admin profile:", fetchError);
       return NextResponse.json(
-        { 
-          success: false, 
-          message: `Database connection failed: ${fetchError.message || JSON.stringify(fetchError)}. Please ensure the 'admin_profile' table is created using the SQL schema.` 
+        {
+          success: false,
+          message: `Database connection failed: ${fetchError.message || JSON.stringify(fetchError)}. Please ensure the 'admin_profile' table is created using the SQL schema.`
         },
         { status: 500 }
       );
     }
 
+    const admin = admins && admins.length ? admins[0] : null;
+
     // Verify credentials
-    if (admin.email.trim().toLowerCase() !== email.trim().toLowerCase() || admin.password !== password) {
+    if (!admin || admin.password !== password) {
       return NextResponse.json(
         { success: false, message: "Invalid email or password." },
         { status: 401 }
@@ -52,7 +53,7 @@ export async function POST(request) {
         otp_code: otp,
         otp_expires_at: expiresAt.toISOString()
       })
-      .eq("id", "admin");
+      .eq("id", admin.id);
 
     if (updateError) {
       console.error("Error updating OTP:", updateError);

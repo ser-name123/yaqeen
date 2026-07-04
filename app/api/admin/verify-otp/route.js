@@ -15,12 +15,13 @@ export async function POST(request) {
 
     const supabaseAdmin = getSupabaseAdmin();
     
-    // Fetch the admin record
-    const { data: admin, error: fetchError } = await supabaseAdmin
+    // Fetch the admin record matching this email
+    const { data: admins, error: fetchError } = await supabaseAdmin
       .from("admin_profile")
       .select("*")
-      .eq("id", "admin")
-      .single();
+      .ilike("email", email.trim());
+
+    const admin = admins && admins.length ? admins[0] : null;
 
     if (fetchError || !admin) {
       return NextResponse.json(
@@ -60,7 +61,7 @@ export async function POST(request) {
         otp_code: null,
         otp_expires_at: null
       })
-      .eq("id", "admin");
+      .eq("id", admin.id);
 
     if (updateError) {
       console.error("Session update error:", updateError);

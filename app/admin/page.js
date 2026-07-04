@@ -43,6 +43,11 @@ export default function AdminDashboard() {
   const [isVerifyingSession, setIsVerifyingSession] = useState(true);
   const [authLoading, setAuthLoading] = useState(false);
 
+  // Admin account management states
+  const [adminAccounts, setAdminAccounts] = useState([]);
+  const [newAdminEmail, setNewAdminEmail] = useState("");
+  const [newAdminPassword, setNewAdminPassword] = useState("");
+
   // Profile management states
   const [profileForm, setProfileForm] = useState({
     email: "",
@@ -81,12 +86,17 @@ export default function AdminDashboard() {
     languages: "",
     experience: "",
     specialization: "",
+    bio: "",
     order_index: 0
   });
 
   // Testimonials management states
   const [testimonials, setTestimonials] = useState([]);
   const [teacherApps, setTeacherApps] = useState([]);
+  const [careerJobs, setCareerJobs] = useState([]);
+  const [isEditingJob, setIsEditingJob] = useState(false);
+  const [editingJobId, setEditingJobId] = useState(null);
+  const [jobForm, setJobForm] = useState({ title: "", job_title: "", meta: "", badge: "Online", description: "", order_index: 0 });
   const [isEditingTestimonial, setIsEditingTestimonial] = useState(false);
   const [editingTestimonialId, setEditingTestimonialId] = useState(null);
   const [testimonialForm, setTestimonialForm] = useState({
@@ -285,6 +295,14 @@ export default function AdminDashboard() {
         .select("*")
         .order("created_at", { ascending: false });
       if (!teacherAppErr) setTeacherApps(teacherAppData || []);
+
+      // 6c. Fetch career job openings (table may not exist yet — fail silently)
+      const { data: jobData, error: jobErr } = await supabase
+        .from("career_jobs")
+        .select("*")
+        .order("order_index", { ascending: true })
+        .order("created_at", { ascending: false });
+      if (!jobErr) setCareerJobs(jobData || []);
 
       // 7. Fetch courses
       const { data: courseData, error: courseErr } = await supabase
@@ -566,11 +584,13 @@ export default function AdminDashboard() {
     setActiveTab(tab);
     localStorage.setItem("aero_admin_tab", tab);
     setMobileNavOpen(false);
+    if (tab === "profile") fetchAdminAccounts();
     setIsEditingBlog(false);
     setIsEditingTeacher(false);
     setIsEditingTestimonial(false);
     setIsEditingCourse(false);
     setIsEditingPlan(false);
+    setIsEditingJob(false);
   };
 
   // Free-trial bookings arrive through the contact form pipeline with a "Free Trial Booking" subject.
@@ -689,6 +709,64 @@ export default function AdminDashboard() {
         background: "#111827",
         color: "#fff"
       });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // --- ADMIN ACCOUNTS ACTIONS ---
+  const fetchAdminAccounts = async () => {
+    const token = localStorage.getItem("aero_admin_token");
+    if (!token) return;
+    try {
+      const res = await fetch("/api/admin/accounts", { headers: { Authorization: `Bearer ${token}` } });
+      const data = await res.json();
+      if (data.success) setAdminAccounts(data.accounts || []);
+    } catch (err) {
+      console.warn("Could not load admin accounts:", err);
+    }
+  };
+
+  const handleCreateAdmin = async (e) => {
+    e.preventDefault();
+    if (!newAdminEmail.trim() || !newAdminPassword.trim()) {
+      adminSwal.fire({ icon: "warning", title: "Missing details", text: "Please enter both email and password.", confirmButtonColor: "var(--primary-color)", background: "#111827", color: "#fff" });
+      return;
+    }
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("aero_admin_token");
+      const res = await fetch("/api/admin/accounts", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ email: newAdminEmail.trim(), password: newAdminPassword.trim() })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.message || "Failed to create account.");
+      setNewAdminEmail("");
+      setNewAdminPassword("");
+      fetchAdminAccounts();
+      adminSwal.fire({ icon: "success", title: "Admin Added", text: "The new admin can now log in with their email & password (an OTP will be emailed to them).", confirmButtonColor: "var(--primary-color)", background: "#111827", color: "#fff" });
+    } catch (err) {
+      adminSwal.fire({ icon: "error", title: "Failed", text: err.message, confirmButtonColor: "var(--primary-color)", background: "#111827", color: "#fff" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteAdmin = async (id) => {
+    const result = await adminSwal.fire({ title: "Remove admin?", text: "This admin will no longer be able to log in.", icon: "warning", showCancelButton: true, confirmButtonColor: "#ef4444", cancelButtonColor: "var(--card-border)", confirmButtonText: "Yes, remove", background: "#111827", color: "#fff" });
+    if (!result.isConfirmed) return;
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("aero_admin_token");
+      const res = await fetch(`/api/admin/accounts?id=${encodeURIComponent(id)}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.message || "Failed to delete account.");
+      fetchAdminAccounts();
+      adminSwal.fire({ icon: "success", title: "Removed", text: data.message, confirmButtonColor: "var(--primary-color)", background: "#111827", color: "#fff" });
+    } catch (err) {
+      adminSwal.fire({ icon: "error", title: "Failed", text: err.message, confirmButtonColor: "var(--primary-color)", background: "#111827", color: "#fff" });
     } finally {
       setLoading(false);
     }
@@ -1011,6 +1089,71 @@ export default function AdminDashboard() {
     }
   };
 
+  // --- CAREER JOBS ACTIONS ---
+  const triggerCreateJob = () => {
+    setJobForm({ title: "", job_title: "", meta: "", badge: "Online", description: "", order_index: careerJobs.length + 1 });
+    setEditingJobId(null);
+    setIsEditingJob(true);
+  };
+
+  const triggerEditJob = (job) => {
+    setJobForm({
+      title: job.title || "", job_title: job.job_title || "", meta: job.meta || "",
+      badge: job.badge || "Online", description: job.description || "", order_index: job.order_index || 0
+    });
+    setEditingJobId(job.id);
+    setIsEditingJob(true);
+  };
+
+  const handleSaveJob = async (e) => {
+    e.preventDefault();
+    if (!jobForm.title.trim()) {
+      adminSwal.fire({ icon: "warning", title: "Missing title", text: "Please enter the job title.", confirmButtonColor: "var(--primary-color)", background: "#111827", color: "#fff" });
+      return;
+    }
+    setLoading(true);
+    try {
+      const payload = {
+        title: jobForm.title.trim(),
+        job_title: jobForm.job_title.trim(),
+        meta: jobForm.meta.trim(),
+        badge: jobForm.badge.trim() || "Online",
+        description: jobForm.description.trim(),
+        order_index: Number(jobForm.order_index) || 0
+      };
+      const { error } = editingJobId
+        ? await supabase.from("career_jobs").update(payload).eq("id", editingJobId)
+        : await supabase.from("career_jobs").insert([payload]);
+      if (error) throw error;
+      setIsEditingJob(false);
+      fetchDashboardData();
+      adminSwal.fire({ icon: "success", title: editingJobId ? "Job Updated" : "Job Added", text: "The Careers page has been updated.", confirmButtonColor: "var(--primary-color)", background: "#111827", color: "#fff" });
+    } catch (err) {
+      const msg = err.message && err.message.toLowerCase().includes("career_jobs")
+        ? "The career_jobs table is not set up yet. Please run the provided SQL in Supabase."
+        : err.message;
+      adminSwal.fire({ icon: "error", title: "Save Failed", text: msg, confirmButtonColor: "var(--primary-color)", background: "#111827", color: "#fff" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteJob = async (id) => {
+    const result = await adminSwal.fire({ title: "Delete this job?", text: "It will be removed from the Careers page.", icon: "warning", showCancelButton: true, confirmButtonColor: "#ef4444", cancelButtonColor: "var(--card-border)", confirmButtonText: "Yes, delete", background: "#111827", color: "#fff" });
+    if (!result.isConfirmed) return;
+    setLoading(true);
+    try {
+      const { error } = await supabase.from("career_jobs").delete().eq("id", id);
+      if (error) throw error;
+      fetchDashboardData();
+      adminSwal.fire({ icon: "success", title: "Deleted!", text: "Job opening has been removed.", confirmButtonColor: "var(--primary-color)", background: "#111827", color: "#fff" });
+    } catch (err) {
+      adminSwal.fire({ icon: "error", title: "Delete Failed", text: err.message, confirmButtonColor: "var(--primary-color)", background: "#111827", color: "#fff" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // --- TEACHERS ACTIONS ---
   const handleAvatarUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -1074,24 +1217,27 @@ export default function AdminDashboard() {
       languages: teacherForm.languages,
       experience: teacherForm.experience,
       specialization: teacherForm.specialization,
+      bio: teacherForm.bio || null,
       order_index: parseInt(teacherForm.order_index) || 0
     };
 
-    try {
+    // Save helper — retries without `bio` if that column hasn't been added yet
+    const saveTeacher = async (data) => {
       if (editingTeacherId) {
-        // Edit mode
-        const { error } = await supabase
-          .from("teachers")
-          .update(payload)
-          .eq("id", editingTeacherId);
-        if (error) throw error;
-      } else {
-        // Create mode
-        const { error } = await supabase
-          .from("teachers")
-          .insert([payload]);
-        if (error) throw error;
+        return supabase.from("teachers").update(data).eq("id", editingTeacherId);
       }
+      return supabase.from("teachers").insert([data]);
+    };
+
+    try {
+      let { error } = await saveTeacher(payload);
+      if (error && String(error.message || "").toLowerCase().includes("bio")) {
+        // The bio column isn't set up yet — save the rest so teacher management still works
+        const { bio, ...withoutBio } = payload;
+        void bio;
+        ({ error } = await saveTeacher(withoutBio));
+      }
+      if (error) throw error;
 
       // Reset Form
       setIsEditingTeacher(false);
@@ -1102,6 +1248,7 @@ export default function AdminDashboard() {
         languages: "",
         experience: "",
         specialization: "",
+        bio: "",
         order_index: 0
       });
       fetchDashboardData();
@@ -1148,6 +1295,7 @@ export default function AdminDashboard() {
       languages: teacher.languages || "",
       experience: teacher.experience || "",
       specialization: teacher.specialization || "",
+      bio: teacher.bio || "",
       order_index: teacher.order_index || 0
     });
     setIsEditingTeacher(true);
@@ -2269,6 +2417,12 @@ export default function AdminDashboard() {
             🧑‍🏫 Teacher Applications
           </button>
           <button
+            onClick={() => handleTabChange("jobs")}
+            style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "jobs" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "jobs" ? "rgba(255,255,255,0.02)" : "transparent" }}
+          >
+            💼 Career Jobs
+          </button>
+          <button
             onClick={() => handleTabChange("seo")}
             style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "seo" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "seo" ? "rgba(255,255,255,0.02)" : "transparent" }}
           >
@@ -2343,6 +2497,7 @@ export default function AdminDashboard() {
               {activeTab === "contacts" && "Contact Query Logs"}
               {activeTab === "freeTrials" && "Free Trial Bookings"}
               {activeTab === "teacherApps" && "Teacher Applications"}
+              {activeTab === "jobs" && (isEditingJob ? (editingJobId ? "Edit Job Opening" : "Add Job Opening") : "Career Job Openings")}
               {activeTab === "seo" && "Site SEO Meta Settings"}
               {activeTab === "teachers" && (isEditingTeacher ? (editingTeacherId ? "Edit Teacher Profile" : "Register New Teacher") : "Teacher Profiles")}
               {activeTab === "courses" && (isEditingCourse ? (editingCourseId ? "Edit Course Details" : "Add New Course") : "Islamic Courses")}
@@ -2356,6 +2511,7 @@ export default function AdminDashboard() {
               {activeTab === "contacts" && "Review customer forms, inquiries, and details."}
               {activeTab === "freeTrials" && "Review free trial class booking requests submitted by visitors."}
               {activeTab === "teacherApps" && "Review teacher job applications with full details, CV and audio files."}
+              {activeTab === "jobs" && "Add, edit and remove the job openings shown on the Careers page."}
               {activeTab === "seo" && "Configure key page head parameters for Google crawlers."}
               {activeTab === "teachers" && "Manage profiles, avatars, languages, experience, and topics of Islamic teachers."}
               {activeTab === "courses" && "Manage online courses, thumbnails, icons, and display order."}
@@ -3015,6 +3171,83 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        {activeTab === "jobs" && (
+          <div>
+            {!isEditingJob ? (
+              <div className="glass-panel" style={{ padding: "24px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                  <h3 style={{ fontSize: "18px", fontWeight: "600" }}>Job Openings</h3>
+                  <button onClick={triggerCreateJob} className="btn-primary" style={{ padding: "8px 16px", fontSize: "13px" }}>+ Add Job</button>
+                </div>
+                {careerJobs.length === 0 ? (
+                  <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>No job openings yet. Click &ldquo;Add Job&rdquo; to create one.</p>
+                ) : (
+                  <div style={{ overflowX: "auto" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
+                      <thead>
+                        <tr style={{ borderBottom: "1px solid var(--card-border)", color: "var(--fg-muted)" }}>
+                          <th style={{ padding: "12px", width: "70px" }}>Order</th>
+                          <th style={{ padding: "12px" }}>Title</th>
+                          <th style={{ padding: "12px" }}>Job Title</th>
+                          <th style={{ padding: "12px", textAlign: "right" }}>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {careerJobs.map((job) => (
+                          <tr key={job.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
+                            <td style={{ padding: "12px" }}>{job.order_index}</td>
+                            <td style={{ padding: "12px", fontWeight: "600" }}>{job.title}</td>
+                            <td style={{ padding: "12px" }}>{job.job_title}</td>
+                            <td style={{ padding: "12px", textAlign: "right", display: "flex", gap: "8px", justifyContent: "flex-end", height: "49px", alignItems: "center" }}>
+                              <button onClick={() => triggerEditJob(job)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>Edit</button>
+                              <button onClick={() => handleDeleteJob(job.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>Delete</button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <form onSubmit={handleSaveJob} className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Title *</label>
+                    <input value={jobForm.title} onChange={(e) => setJobForm((p) => ({ ...p, title: e.target.value }))} placeholder="e.g. Quran Teacher — Female" style={formInputStyle} />
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Job Title</label>
+                    <input value={jobForm.job_title} onChange={(e) => setJobForm((p) => ({ ...p, job_title: e.target.value }))} placeholder="e.g. Quran Study with Tajweed" style={formInputStyle} />
+                  </div>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 160px 100px", gap: "20px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Meta (details line)</label>
+                    <input value={jobForm.meta} onChange={(e) => setJobForm((p) => ({ ...p, meta: e.target.value }))} placeholder="Permanent | 2 Years Exp. | Bilingual" style={formInputStyle} />
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Badge</label>
+                    <input value={jobForm.badge} onChange={(e) => setJobForm((p) => ({ ...p, badge: e.target.value }))} placeholder="Online" style={formInputStyle} />
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Order</label>
+                    <input type="number" value={jobForm.order_index} onChange={(e) => setJobForm((p) => ({ ...p, order_index: e.target.value }))} style={formInputStyle} />
+                  </div>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label style={formLabelStyle}>Description</label>
+                  <textarea value={jobForm.description} onChange={(e) => setJobForm((p) => ({ ...p, description: e.target.value }))} placeholder="Short description of the role and requirements…" style={{ ...formInputStyle, minHeight: "110px", resize: "vertical", lineHeight: 1.6 }} />
+                </div>
+                <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
+                  <button type="button" onClick={() => setIsEditingJob(false)} className="btn-secondary" style={{ padding: "10px 20px", fontSize: "13px" }}>Cancel</button>
+                  <button type="submit" className="btn-primary" style={{ padding: "10px 22px", fontSize: "13px" }}>{editingJobId ? "Update Job" : "Save Job"}</button>
+                </div>
+              </form>
+            )}
+          </div>
+        )}
+
         {/* Contact Inquiry Detail Modal */}
         {selectedContact && (
           <div style={{
@@ -3482,6 +3715,54 @@ export default function AdminDashboard() {
                 Save Settings & Credentials
               </button>
             </form>
+
+            {/* Manage Admin Accounts */}
+            <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
+              <div>
+                <h3 style={{ fontSize: "18px", fontWeight: "600", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px" }}>Manage Admin Accounts</h3>
+                <p style={{ color: "var(--fg-muted)", fontSize: "13px", marginTop: "10px" }}>
+                  Add another admin who can log in to this console. They will sign in with their own email &amp; password and receive an OTP on their email — exactly like you do.
+                </p>
+              </div>
+
+              {/* Existing accounts */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                {adminAccounts.length === 0 ? (
+                  <p style={{ color: "var(--fg-muted)", fontSize: "13px" }}>No admin accounts loaded.</p>
+                ) : (
+                  adminAccounts.map((acc) => (
+                    <div key={acc.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", padding: "12px 14px", border: "1px solid var(--card-border)", borderRadius: "10px", backgroundColor: "rgba(0,0,0,0.015)" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
+                        <span style={{ fontSize: "16px" }}>👤</span>
+                        <span style={{ fontSize: "14px", fontWeight: "600", color: "#2B1F14", wordBreak: "break-all" }}>{acc.email}</span>
+                        {acc.is_self && <span style={{ fontSize: "11px", fontWeight: "700", color: "var(--secondary-color)", backgroundColor: "rgba(85,107,59,0.12)", padding: "2px 8px", borderRadius: "9999px" }}>You</span>}
+                      </div>
+                      {!acc.is_self && (
+                        <button type="button" onClick={() => handleDeleteAdmin(acc.id)} className="btn-secondary" style={{ padding: "6px 12px", fontSize: "12px", color: "#ef4444", flexShrink: 0 }}>
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Add new admin */}
+              <form onSubmit={handleCreateAdmin} style={{ borderTop: "1px solid var(--card-border)", paddingTop: "20px", display: "flex", flexDirection: "column", gap: "16px" }}>
+                <h4 style={{ fontSize: "14px", fontWeight: "700", color: "#2B1F14", margin: 0 }}>Add Admin Account</h4>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>New Admin Email</label>
+                    <input type="email" value={newAdminEmail} onChange={(e) => setNewAdminEmail(e.target.value)} placeholder="newadmin@email.com" style={formInputStyle} />
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Password (min 6 characters)</label>
+                    <input type="text" value={newAdminPassword} onChange={(e) => setNewAdminPassword(e.target.value)} placeholder="Set a password" style={formInputStyle} />
+                  </div>
+                </div>
+                <button type="submit" className="btn-primary" style={{ width: "fit-content" }}>+ Create Admin Account</button>
+              </form>
+            </div>
           </div>
         )}
 
@@ -3605,6 +3886,16 @@ export default function AdminDashboard() {
                       placeholder="e.g. Qur'an, Tajweed"
                       required
                       style={formInputStyle}
+                    />
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Bio / Description (shown on the Featured Teacher card)</label>
+                    <textarea
+                      value={teacherForm.bio}
+                      onChange={(e) => setTeacherForm(prev => ({ ...prev, bio: e.target.value }))}
+                      placeholder="Passionate and dedicated educator with a love for helping students grow and succeed…"
+                      style={{ ...formInputStyle, minHeight: "100px", resize: "vertical", lineHeight: 1.6 }}
                     />
                   </div>
 

@@ -15,8 +15,7 @@ async function validateSession(request, supabaseAdmin) {
     .from("admin_profile")
     .select("*")
     .eq("session_token", token)
-    .eq("id", "admin")
-    .single();
+    .maybeSingle();
 
   if (error || !admin) return null;
 
@@ -107,7 +106,7 @@ export async function PUT(request) {
       );
     }
 
-    // Update email and password
+    // Update the logged-in admin's own email and password
     const { error: updateError } = await supabaseAdmin
       .from("admin_profile")
       .update({
@@ -115,7 +114,7 @@ export async function PUT(request) {
         password: password.trim(),
         updated_at: new Date().toISOString()
       })
-      .eq("id", "admin");
+      .eq("id", admin.id);
 
     if (updateError) {
       console.error("Profile update error:", updateError);
