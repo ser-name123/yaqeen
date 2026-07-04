@@ -69,6 +69,7 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview"); // overview, blogs, contacts, seo, profile
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false); // hamburger drawer on mobile
 
   // Teachers management states
   const [teachers, setTeachers] = useState([]);
@@ -555,12 +556,19 @@ export default function AdminDashboard() {
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     localStorage.setItem("aero_admin_tab", tab);
+    setMobileNavOpen(false);
     setIsEditingBlog(false);
     setIsEditingTeacher(false);
     setIsEditingTestimonial(false);
     setIsEditingCourse(false);
     setIsEditingPlan(false);
   };
+
+  // Free-trial bookings arrive through the contact form pipeline with a "Free Trial Booking" subject.
+  // Split them out so they get their own admin menu, keeping the Contact Inbox for real inquiries only.
+  const FREE_TRIAL_PREFIX = "Free Trial Booking";
+  const freeTrials = contacts.filter((c) => (c.subject || "").startsWith(FREE_TRIAL_PREFIX));
+  const inquiries = contacts.filter((c) => !(c.subject || "").startsWith(FREE_TRIAL_PREFIX));
 
   const handleLogoUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -2057,7 +2065,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div style={{ ...adminThemeStyle, display: "grid", gridTemplateColumns: "240px 1fr" }}>
+    <div className="admin-shell" style={{ ...adminThemeStyle, display: "grid", gridTemplateColumns: "240px 1fr" }}>
       <style dangerouslySetInnerHTML={{ __html: `
         /* Fix secondary buttons styling in admin panel to be legible against cream background */
         .btn-secondary {
@@ -2070,12 +2078,64 @@ export default function AdminDashboard() {
           color: var(--primary-color) !important;
           border-color: var(--primary-color) !important;
         }
+
+        /* ---------- Responsive: tablet & mobile ---------- */
+        @media (max-width: 1024px) {
+          .admin-overview-grid { grid-template-columns: repeat(4, 1fr) !important; }
+        }
+        @media (max-width: 900px) {
+          /* Sidebar becomes a top app-bar; content takes full width */
+          .admin-shell { grid-template-columns: 1fr !important; }
+          .admin-sidebar {
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 200 !important;
+            height: auto !important;
+            border-right: none !important;
+            border-bottom: 1px solid var(--card-border) !important;
+            padding: 12px 14px !important;
+            gap: 10px !important;
+          }
+          /* Show the hamburger toggle */
+          .admin-hamburger { display: flex !important; align-items: center; justify-content: center; }
+          /* Collapsible drawer: hidden until the hamburger opens it */
+          .admin-nav {
+            display: none !important;
+            gap: 4px !important;
+            max-height: 65vh;
+            overflow-y: auto;
+            padding-top: 6px !important;
+            border-top: 1px solid var(--card-border);
+          }
+          .admin-nav.open { display: flex !important; }
+          .admin-nav button {
+            width: 100% !important;
+            border-left: none !important;
+            border-radius: 8px !important;
+          }
+          /* Logout lives inside the drawer */
+          .admin-logout-btn { display: none !important; margin-top: 6px !important; }
+          .admin-nav.open ~ .admin-logout-btn { display: flex !important; }
+          .admin-main { padding: 22px 16px !important; max-height: none !important; }
+          .admin-header { flex-wrap: wrap !important; gap: 10px !important; }
+          .admin-header h2 { font-size: 22px !important; }
+          .admin-overview-grid { grid-template-columns: repeat(3, 1fr) !important; }
+        }
+        @media (max-width: 560px) {
+          .admin-main { padding: 16px 12px !important; }
+          .admin-overview-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          /* Collapse common multi-column form rows to a single column */
+          .admin-main div[style*="1fr 1fr"],
+          .admin-main div[style*="repeat(2, 1fr)"],
+          .admin-main div[style*="repeat(3, 1fr)"] { grid-template-columns: 1fr !important; }
+          .admin-header h2 { font-size: 20px !important; }
+        }
       `}} />
       {/* Sidebar navigation */}
-      <aside style={{ 
-        position: "sticky", 
-        top: 0, 
-        height: "100vh", 
+      <aside className="admin-sidebar" style={{
+        position: "sticky",
+        top: 0,
+        height: "100vh",
         borderRight: "1px solid var(--card-border)", 
         padding: "32px 16px", 
         display: "flex", 
@@ -2084,38 +2144,62 @@ export default function AdminDashboard() {
         backgroundColor: "#f6ede0", // Warm light beige sidebar background
         flexShrink: 0
       }}>
-        <div style={{ paddingLeft: "12px", display: "flex", alignItems: "center", minHeight: "40px" }}>
+        <div className="admin-logo-row" style={{ paddingLeft: "12px", display: "flex", alignItems: "center", justifyContent: "space-between", minHeight: "40px" }}>
           {profileForm.logo_url ? (
             /* eslint-disable-next-line @next/next/no-img-element */
-            <img 
-              src={profileForm.logo_url} 
-              alt={profileForm.logo_text || "Yaqeen"} 
-              style={{ 
-                height: "36px", 
-                maxHeight: "36px", 
-                width: "auto", 
-                objectFit: "contain", 
-                borderRadius: "4px" 
-              }} 
+            <img
+              src={profileForm.logo_url}
+              alt={profileForm.logo_text || "Yaqeen"}
+              style={{
+                height: "36px",
+                maxHeight: "36px",
+                width: "auto",
+                objectFit: "contain",
+                borderRadius: "4px"
+              }}
             />
           ) : (
-            <span style={{ 
-              textTransform: "capitalize", 
-              color: "#2c251e", 
-              fontFamily: "'Playfair Display', serif", 
-              fontWeight: "700", 
-              fontSize: "20px", 
-              display: "flex", 
-              alignItems: "center", 
-              gap: "8px" 
+            <span style={{
+              textTransform: "capitalize",
+              color: "#2c251e",
+              fontFamily: "'Playfair Display', serif",
+              fontWeight: "700",
+              fontSize: "20px",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px"
             }}>
               <span className="logo-dot"></span>
               {profileForm.logo_text || "yaqeen"}
             </span>
           )}
+
+          {/* Hamburger — visible only on mobile via CSS */}
+          <button
+            className="admin-hamburger"
+            onClick={() => setMobileNavOpen((o) => !o)}
+            aria-label="Toggle menu"
+            aria-expanded={mobileNavOpen}
+            style={{
+              display: "none",
+              background: "none",
+              border: "1px solid var(--card-border)",
+              borderRadius: "10px",
+              padding: "8px",
+              cursor: "pointer",
+              color: "#2c251e",
+              lineHeight: 0
+            }}
+          >
+            {mobileNavOpen ? (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+            ) : (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" /></svg>
+            )}
+          </button>
         </div>
 
-        <nav style={{ display: "flex", flexDirection: "column", gap: "8px", listStyle: "none" }}>
+        <nav className={`admin-nav ${mobileNavOpen ? "open" : ""}`} style={{ display: "flex", flexDirection: "column", gap: "8px", listStyle: "none" }}>
           <button
             onClick={() => handleTabChange("overview")}
             style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "overview" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "overview" ? "rgba(255,255,255,0.02)" : "transparent" }}
@@ -2133,6 +2217,12 @@ export default function AdminDashboard() {
             style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "contacts" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "contacts" ? "rgba(255,255,255,0.02)" : "transparent" }}
           >
             📬 Contact Inbox
+          </button>
+          <button
+            onClick={() => handleTabChange("freeTrials")}
+            style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "freeTrials" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "freeTrials" ? "rgba(255,255,255,0.02)" : "transparent" }}
+          >
+            🎯 Free Trial Bookings
           </button>
           <button
             onClick={() => handleTabChange("seo")}
@@ -2199,14 +2289,15 @@ export default function AdminDashboard() {
       </aside>
 
       {/* Main panel content */}
-      <main style={{ padding: "40px", overflowY: "auto", maxHeight: "100vh" }}>
+      <main className="admin-main" style={{ padding: "40px", overflowY: "auto", maxHeight: "100vh" }}>
         {/* Header toolbar */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px", borderBottom: "1px solid var(--card-border)", paddingBottom: "20px" }}>
+        <div className="admin-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px", borderBottom: "1px solid var(--card-border)", paddingBottom: "20px" }}>
           <div>
             <h2 style={{ fontSize: "28px", fontWeight: "700" }}>
               {activeTab === "overview" && "System Overview"}
               {activeTab === "blogs" && (isEditingBlog ? (editingBlogId ? "Edit Blog Post" : "Write New Publication") : "Blog Publications")}
               {activeTab === "contacts" && "Contact Query Logs"}
+              {activeTab === "freeTrials" && "Free Trial Bookings"}
               {activeTab === "seo" && "Site SEO Meta Settings"}
               {activeTab === "teachers" && (isEditingTeacher ? (editingTeacherId ? "Edit Teacher Profile" : "Register New Teacher") : "Teacher Profiles")}
               {activeTab === "courses" && (isEditingCourse ? (editingCourseId ? "Edit Course Details" : "Add New Course") : "Islamic Courses")}
@@ -2218,6 +2309,7 @@ export default function AdminDashboard() {
               {activeTab === "overview" && "Real-time summary metrics across database logs."}
               {activeTab === "blogs" && "Author articles, categories, list points, and search engine fields."}
               {activeTab === "contacts" && "Review customer forms, inquiries, and details."}
+              {activeTab === "freeTrials" && "Review free trial class booking requests submitted by visitors."}
               {activeTab === "seo" && "Configure key page head parameters for Google crawlers."}
               {activeTab === "teachers" && "Manage profiles, avatars, languages, experience, and topics of Islamic teachers."}
               {activeTab === "courses" && "Manage online courses, thumbnails, icons, and display order."}
@@ -2234,7 +2326,7 @@ export default function AdminDashboard() {
         {activeTab === "overview" && (
           <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
             {/* Stats Cards Row */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "12px" }}>
+            <div className="admin-overview-grid" style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "12px" }}>
               <div className="glass-panel" style={{ padding: "16px 12px" }}>
                 <div style={{ color: "var(--fg-muted)", fontSize: "11px" }}>Published Blogs</div>
                 <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "8px", color: "var(--secondary-color)" }}>{blogs.length}</div>
@@ -2670,7 +2762,7 @@ export default function AdminDashboard() {
           <div className="glass-panel" style={{ padding: "24px" }}>
             <h3 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "20px" }}>Received Inquiries</h3>
             
-            {contacts.length === 0 ? (
+            {inquiries.length === 0 ? (
               <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>Inbox empty. All clean!</p>
             ) : (
               <div style={{ overflowX: "auto" }}>
@@ -2685,7 +2777,7 @@ export default function AdminDashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {contacts.map((msg) => (
+                    {inquiries.map((msg) => (
                       <tr key={msg.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
                         <td style={{ padding: "12px", fontWeight: "600" }}>{msg.name}</td>
                         <td style={{ padding: "12px" }}>
@@ -2703,6 +2795,54 @@ export default function AdminDashboard() {
                         </td>
                       </tr>
                     ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === "freeTrials" && (
+          <div className="glass-panel" style={{ padding: "24px" }}>
+            <h3 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "20px" }}>Free Trial Class Bookings</h3>
+
+            {freeTrials.length === 0 ? (
+              <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>No free trial bookings yet.</p>
+            ) : (
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
+                  <thead>
+                    <tr style={{ borderBottom: "1px solid var(--card-border)", color: "var(--fg-muted)" }}>
+                      <th style={{ padding: "12px" }}>Name</th>
+                      <th style={{ padding: "12px" }}>Email</th>
+                      <th style={{ padding: "12px" }}>Interested In</th>
+                      <th style={{ padding: "12px" }}>Booked On</th>
+                      <th style={{ padding: "12px", textAlign: "right" }}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {freeTrials.map((booking) => {
+                      const parts = (booking.subject || "").split("—");
+                      const course = parts.length > 1 ? parts[1].trim() : "General";
+                      return (
+                        <tr key={booking.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
+                          <td style={{ padding: "12px", fontWeight: "600" }}>{booking.name}</td>
+                          <td style={{ padding: "12px" }}>
+                            <a href={`mailto:${booking.email}`} style={{ color: "var(--secondary-color)", textDecoration: "none" }}>{booking.email}</a>
+                          </td>
+                          <td style={{ padding: "12px" }}>{course}</td>
+                          <td style={{ padding: "12px" }}>{new Date(booking.created_at).toLocaleString()}</td>
+                          <td style={{ padding: "12px", textAlign: "right", display: "flex", gap: "8px", justifyContent: "flex-end", height: "49px", alignItems: "center" }}>
+                            <button onClick={() => setSelectedContact(booking)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>
+                              View Detail
+                            </button>
+                            <button onClick={() => handleDeleteContact(booking.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
