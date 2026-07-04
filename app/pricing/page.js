@@ -410,7 +410,7 @@ export default function PricingPage() {
                     ))}
                   </div>
 
-                  <Link href="/#contact" style={{ width: "100%", textDecoration: "none" }}>
+                  <Link href="/contact" style={{ width: "100%", textDecoration: "none" }}>
                     <button className={btnClass}>Choose {plan.name}</button>
                   </Link>
                 </div>
@@ -679,7 +679,7 @@ export default function PricingPage() {
 
         {/* Right: CTA Button */}
         <div className="fdb-cta-wrap">
-          <Link href="/#contact" className="fdb-cta-btn">
+          <Link href="/contact" className="fdb-cta-btn">
             <span className="fdb-cta-text">Claim Your 5%<br />Family Discount</span>
             <svg className="fdb-cta-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <line x1="5" y1="12" x2="19" y2="12" />
