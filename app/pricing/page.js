@@ -473,7 +473,7 @@ export default function PricingPage() {
           <div className="pricing-footnotes reveal-slide-up" style={{
             textAlign: "left",
             alignItems: "stretch",
-            maxWidth: "960px",
+            maxWidth: "1200px",
             margin: "32px auto 0 auto"
           }}>
             <div style={{
