@@ -1986,6 +1986,49 @@ export default function AdminDashboard() {
     );
   }
 
+  // Group contacts by country
+  const getCountryStats = () => {
+    const stats = {};
+    contacts.forEach(c => {
+      const country = c.country || "Unknown";
+      stats[country] = (stats[country] || 0) + 1;
+    });
+    return Object.entries(stats)
+      .map(([country, count]) => ({ country, count }))
+      .sort((a, b) => b.count - a.count);
+  };
+
+  // Group contacts by ISP provider
+  const getProviderStats = () => {
+    const stats = {};
+    contacts.forEach(c => {
+      const provider = c.provider || "Unknown";
+      stats[provider] = (stats[provider] || 0) + 1;
+    });
+    return Object.entries(stats)
+      .map(([provider, count]) => ({ provider, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+  };
+
+  const getCountryFlag = (country) => {
+    if (!country) return "🌐";
+    const codeMap = {
+      "india": "🇮🇳",
+      "united states": "🇺🇸",
+      "united kingdom": "🇬🇧",
+      "united arab emirates": "🇦🇪",
+      "saudi arabia": "🇸🇦",
+      "pakistan": "🇵🇰",
+      "canada": "🇨🇦",
+      "australia": "🇦🇺",
+      "bangladesh": "🇧🇩",
+      "germany": "🇩🇪",
+      "france": "🇫🇷"
+    };
+    return codeMap[country.toLowerCase()] || "🌐";
+  };
+
   return (
     <div style={{ ...adminThemeStyle, display: "grid", gridTemplateColumns: "240px 1fr" }}>
       <style dangerouslySetInnerHTML={{ __html: `
@@ -2195,35 +2238,98 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Recent Contacts Table Preview */}
-            <div className="glass-panel" style={{ padding: "24px" }}>
-              <h3 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "16px" }}>Recent Inquiries</h3>
-              {contacts.length === 0 ? (
-                <p style={{ color: "var(--fg-muted)", fontSize: "14px" }}>No recent contact messages found.</p>
-              ) : (
-                <div style={{ overflowX: "auto" }}>
-                  <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
-                    <thead>
-                      <tr style={{ borderBottom: "1px solid var(--card-border)", color: "var(--fg-muted)" }}>
-                        <th style={{ padding: "12px" }}>Name</th>
-                        <th style={{ padding: "12px" }}>Email</th>
-                        <th style={{ padding: "12px" }}>Subject</th>
-                        <th style={{ padding: "12px" }}>Submitted At</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {contacts.slice(0, 5).map((c) => (
-                        <tr key={c.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
-                          <td style={{ padding: "12px" }}>{c.name}</td>
-                          <td style={{ padding: "12px" }}><a href={`mailto:${c.email}`} style={{ color: "var(--secondary-color)" }}>{c.email}</a></td>
-                          <td style={{ padding: "12px" }}>{c.subject}</td>
-                          <td style={{ padding: "12px" }}>{new Date(c.created_at).toLocaleDateString()}</td>
+            {/* Analytics and Inquiries Container */}
+            <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: "24px" }}>
+              {/* Left Side: Recent Inquiries */}
+              <div className="glass-panel" style={{ padding: "24px" }}>
+                <h3 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "16px" }}>Recent Inquiries</h3>
+                {contacts.length === 0 ? (
+                  <p style={{ color: "var(--fg-muted)", fontSize: "14px" }}>No recent contact messages found.</p>
+                ) : (
+                  <div style={{ overflowX: "auto" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
+                      <thead>
+                        <tr style={{ borderBottom: "1px solid var(--card-border)", color: "var(--fg-muted)" }}>
+                          <th style={{ padding: "12px" }}>Name</th>
+                          <th style={{ padding: "12px" }}>Email</th>
+                          <th style={{ padding: "12px" }}>Subject</th>
+                          <th style={{ padding: "12px" }}>Submitted At</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {contacts.slice(0, 8).map((c) => (
+                          <tr key={c.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
+                            <td style={{ padding: "12px", fontWeight: "600" }}>{c.name}</td>
+                            <td style={{ padding: "12px" }}><a href={`mailto:${c.email}`} style={{ color: "var(--secondary-color)", textDecoration: "none" }}>{c.email}</a></td>
+                            <td style={{ padding: "12px" }}>{c.subject}</td>
+                            <td style={{ padding: "12px" }}>{new Date(c.created_at).toLocaleDateString()}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+
+              {/* Right Side: Geolocation & Provider Analytics */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+                {/* Country Breakdown Panel */}
+                <div className="glass-panel" style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
+                  <h3 style={{ fontSize: "16px", fontWeight: "600", color: "#2B1F14", margin: 0, fontFamily: "var(--font-serif), Georgia, serif" }}>
+                    🌍 Country Geolocation Analytics
+                  </h3>
+                  
+                  {contacts.length === 0 ? (
+                    <p style={{ color: "var(--fg-muted)", fontSize: "13px" }}>No location data logged yet.</p>
+                  ) : (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+                      {getCountryStats().map(({ country, count }) => {
+                        const percent = Math.round((count / contacts.length) * 100);
+                        return (
+                          <div key={country} style={{ fontSize: "13px" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px", fontWeight: "500" }}>
+                              <span>{getCountryFlag(country)} {country}</span>
+                              <span style={{ color: "var(--secondary-color)" }}>{count} {count === 1 ? "user" : "users"} ({percent}%)</span>
+                            </div>
+                            <div style={{ width: "100%", height: "6px", backgroundColor: "rgba(0,0,0,0.03)", borderRadius: "3px", overflow: "hidden" }}>
+                              <div style={{
+                                width: `${percent}%`,
+                                height: "100%",
+                                backgroundColor: "var(--secondary-color)",
+                                borderRadius: "3px"
+                              }} />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
-              )}
+
+                {/* ISP Provider Breakdown Panel */}
+                <div className="glass-panel" style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
+                  <h3 style={{ fontSize: "16px", fontWeight: "600", color: "#2B1F14", margin: 0, fontFamily: "var(--font-serif), Georgia, serif" }}>
+                    🏢 Network Providers (ISPs)
+                  </h3>
+                  
+                  {contacts.length === 0 ? (
+                    <p style={{ color: "var(--fg-muted)", fontSize: "13px" }}>No ISP logs recorded yet.</p>
+                  ) : (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                      {getProviderStats().map(({ provider, count }) => (
+                        <div key={provider} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "13px", padding: "8px 12px", borderRadius: "8px", border: "1px solid var(--card-border)", background: "rgba(255,255,255,0.01)" }}>
+                          <span style={{ fontWeight: "500", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap", maxWidth: "200px" }}>
+                            🔌 {provider}
+                          </span>
+                          <span style={{ fontWeight: "700", color: "#C99B4D", backgroundColor: "rgba(201, 155, 77, 0.08)", padding: "2px 8px", borderRadius: "4px" }}>
+                            {count}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         )}
