@@ -233,7 +233,6 @@ const ArchedCardBackground = () => (
 export default function AboutPage() {
   const { faviconUrl } = useSettings();
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
-  const [expandInstructors, setExpandInstructors] = useState(false);
   const [testimonials, setTestimonials] = useState([
     {
       id: 1,
@@ -329,8 +328,8 @@ export default function AboutPage() {
                 <div className="about-badge">About Us</div>
                 
                 <h1 className="about-heading">
-                  Expert &amp; Caring Instructors.<br />
-                  <span>Passionate educators dedicated to every learner&apos;s success.</span>
+                  Empowering Minds.<br />
+                  <span>Inspiring Futures.</span>
                 </h1>
   
                 {/* Custom line and diamond divider: — ⬥ — */}
@@ -341,7 +340,7 @@ export default function AboutPage() {
                 </div>
   
                 <p className="about-description">
-                  We make Online Quran Classes, Arabic Language, and Islamic Studies simple, engaging, and accessible for everyone. Our Online Quran Academy helps students Learn Quran Online, strengthen faith, and grow in knowledge, confidence, and character.
+                  At Yaqeen Institute, we make learning the Quran, Arabic, and Islamic studies simple, engaging, and accessible for everyone. Our supportive environment nurtures confidence, strengthens faith, and helps learners grow both in knowledge and character.
                 </p>
   
                 {/* Feature Highlights Grid */}
@@ -352,9 +351,9 @@ export default function AboutPage() {
                       <IconPeopleWhite />
                     </div>
                     <div className="feature-info">
-                       <span className="feature-title">Expert &amp; Caring Instructors</span>
-                       <span className="feature-subtext">Passionate educators dedicated to every learner&apos;s success.</span>
-                     </div>
+                      <span className="feature-title">Expert & Caring Instructors</span>
+                      <span className="feature-subtext">Passionate educators dedicated to every learner's success.</span>
+                    </div>
                   </div>
   
                   <div className="about-feature-item">
