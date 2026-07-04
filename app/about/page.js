@@ -351,63 +351,9 @@ export default function AboutPage() {
                     <div className="feature-icon-circle green">
                       <IconPeopleWhite />
                     </div>
-                    <div className="feature-info" style={{ gap: "4px" }}>
+                    <div className="feature-info">
                        <span className="feature-title">Expert &amp; Caring Instructors</span>
-                       <span className="feature-subtext" style={{ lineHeight: "1.4" }}>Passionate educators dedicated to every learner&apos;s success.</span>
-                       {/* Text with inline Read more at end of line 2 */}
-                       <div style={{ position: "relative" }}>
-                         <div
-                           style={{
-                             maxHeight: expandInstructors ? "300px" : "32px",
-                             overflow: "hidden",
-                             transition: "max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1)",
-                           }}
-                         >
-                           <span className="feature-subtext" style={{ lineHeight: "1.4", display: "block" }}>
-                             Learn from certified Quran, Arabic, and Islamic Studies teachers delivering Online Quran Classes, Quran Lessons Online, and personalized guidance. Our experienced instructors help children and adults Learn Quran Online with confidence, Tajweed, and lasting Islamic knowledge.
-                           </span>
-                         </div>
-                         {/* Inline "Read more" — overlaid at end of last visible line */}
-                         {!expandInstructors && (
-                           <div
-                             onClick={() => setExpandInstructors(true)}
-                             style={{
-                               position: "absolute",
-                               bottom: 0,
-                               right: 0,
-                               height: "16px",
-                               background: "linear-gradient(to right, transparent, #ffffff 35%)",
-                               display: "flex",
-                               alignItems: "center",
-                               paddingLeft: "28px",
-                               cursor: "pointer",
-                             }}
-                           >
-                             <span style={{ fontSize: "10.5px", fontWeight: "700", color: "var(--primary-color)" }}>
-                               Read more ›
-                             </span>
-                           </div>
-                         )}
-                         {/* "Show less" after full text */}
-                         {expandInstructors && (
-                           <span
-                             onClick={() => setExpandInstructors(false)}
-                             style={{
-                               display: "inline-flex",
-                               alignItems: "center",
-                               gap: "3px",
-                               marginTop: "3px",
-                               fontSize: "10.5px",
-                               fontWeight: "700",
-                               color: "var(--primary-color)",
-                               cursor: "pointer",
-                             }}
-                           >
-                             <svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M2 7L5 4L8 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                             Show less
-                           </span>
-                         )}
-                       </div>
+                       <span className="feature-subtext">Passionate educators dedicated to every learner&apos;s success.</span>
                      </div>
                   </div>
   
