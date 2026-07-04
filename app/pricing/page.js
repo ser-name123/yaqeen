@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import "./pricing.css";
+import { supabase } from "@/lib/supabase";
 
 // Seamless, intricate Islamic geometric lace star pattern URL (Girih tiling with overlapping circles)
 const LACE_BACKGROUND_PATTERN = 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'160\' height=\'160\' viewBox=\'0 0 160 160\'%3E%3Cg fill=\'none\' stroke=\'%23C99B4D\' stroke-width=\'0.5\' stroke-opacity=\'0.08\'%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'80\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'80\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'80\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'80\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'80\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'80\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'80\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'80\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'80\'/%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'40\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'40\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'40\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'40\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'40\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'40\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'40\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'40\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'40\'/%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'20\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'20\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'20\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'20\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'20\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'20\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'20\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'20\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'20\'/%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'10\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'10\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'10\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'10\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'10\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'10\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'10\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'10\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'10\'/%3E%3Crect x=\'68\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(0 80 80)\'/%3E%3Crect x=\'68\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(45 80 80)\'/%3E%3Crect x=\'-12\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(0 0 0)\'/%3E%3Crect x=\'-12\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(45 0 0)\'/%3E%3Crect x=\'148\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(0 160 0)\'/%3E%3Crect x=\'148\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(45 160 0)\'/%3E%3Crect x=\'-12\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(0 0 160)\'/%3E%3Crect x=\'-12\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(45 0 160)\'/%3E%3Crect x=\'148\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(0 160 160)\'/%3E%3Crect x=\'148\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(45 160 160)\'/%3E%3Crect x=\'68\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(0 80 0)\'/%3E%3Crect x=\'68\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(45 80 0)\'/%3E%3Crect x=\'-12\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(0 0 80)\'/%3E%3Crect x=\'-12\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(45 0 80)\'/%3E%3Crect x=\'148\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(0 160 80)\'/%3E%3Crect x=\'148\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(45 160 80)\'/%3E%3Crect x=\'68\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(0 80 160)\'/%3E%3Crect x=\'68\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(45 80 160)\'/%3E%3Crect x=\'74\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(0 80 80)\'/%3E%3Crect x=\'74\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(45 80 80)\'/%3E%3Crect x=\'-6\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(0 0 0)\'/%3E%3Crect x=\'-6\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(45 0 0)\'/%3E%3Crect x=\'154\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(0 160 0)\'/%3E%3Crect x=\'154\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(45 160 0)\'/%3E%3Crect x=\'-6\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(0 0 160)\'/%3E%3Crect x=\'-6\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(45 0 160)\'/%3E%3Crect x=\'154\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(0 160 160)\'/%3E%3Crect x=\'154\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(45 160 160)\'/%3E%3Crect x=\'74\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(0 80 0)\'/%3E%3Crect x=\'74\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(45 80 0)\'/%3E%3Crect x=\'-6\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(0 0 80)\'/%3E%3Crect x=\'-6\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(45 0 80)\'/%3E%3Crect x=\'154\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(0 160 80)\'/%3E%3Crect x=\'154\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(45 160 80)\'/%3E%3Crect x=\'74\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(0 80 160)\'/%3E%3Crect x=\'74\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(45 80 160)\'/%3E%3C/g%3E%3C/svg%3E")';
@@ -150,7 +151,165 @@ const IconChevron = ({ size = 20, className }) => (
 
 export default function PricingPage() {
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
-  
+  const [plans, setPlans] = useState([
+    {
+      id: 1,
+      name: "Basic",
+      subtitle: "Entry Level Package",
+      price: "8.00",
+      period: "/hour",
+      icon: "plane",
+      badge: null,
+      features: [
+        { text: "Proficient Arabic (Native) Teacher", included: true },
+        { text: "E-Certificate", included: true },
+        { text: "E-Syllabus Access", included: true },
+        { text: "Direct Chat with Teacher and Coach", included: true },
+        { text: "Lesson Reschedules", included: false },
+        { text: "Coaching and Planning Sessions", included: false },
+        { text: "Progress Report", included: false },
+        { text: "Lesson Cancellation", included: false },
+        { text: "Family Discount", included: false },
+        { text: "Top 5 Star Rated Teacher", included: false },
+        { text: "Video Recordings", included: false }
+      ]
+    },
+    {
+      id: 2,
+      name: "Essentials",
+      subtitle: "Core Feature Set",
+      price: "9.00",
+      period: "/hour",
+      icon: "star",
+      badge: null,
+      features: [
+        { text: "Proficient Arabic (Native) Teacher", included: true },
+        { text: "E-Certificate", included: true },
+        { text: "E-Syllabus Access", included: true },
+        { text: "Direct Chat with Teacher and Coach", included: true },
+        { text: "Up to 2 Lesson Reschedules per Month*", included: true },
+        { text: "Coaching and Planning Sessions", included: false },
+        { text: "Progress Report", included: false },
+        { text: "Lesson Cancellation", included: false },
+        { text: "Family Discounts", included: false },
+        { text: "Top 5 Star Rated Teacher", included: false },
+        { text: "Video Recordings", included: false }
+      ]
+    },
+    {
+      id: 3,
+      name: "Premium",
+      subtitle: "Advanced Benefits",
+      price: "11.00",
+      period: "/hour",
+      icon: "diamond",
+      badge: "Best Value",
+      features: [
+        { text: "Proficient Arabic (Native) Teacher", included: true },
+        { text: "E-Certificate", included: true },
+        { text: "E-Syllabus Access", included: true },
+        { text: "Direct Chat with Teacher and Coach", included: true },
+        { text: "Up to 4 Lesson Reschedules per Month*", included: true },
+        { text: "Coaching and Planning Sessions Twice a Year", included: true },
+        { text: "Progress Report Twice a Year", included: true },
+        { text: "Up to 1 Lesson Cancellation per Month**", included: true },
+        { text: "5% Family Discounts***", included: true },
+        { text: "Top 5 Star Rated Teacher", included: false },
+        { text: "Video Recordings", included: false }
+      ]
+    },
+    {
+      id: 4,
+      name: "Platinum",
+      subtitle: "Top-tier Access",
+      price: "14.00",
+      period: "/hour",
+      icon: "crown",
+      badge: null,
+      features: [
+        { text: "Proficient Arabic (Native) Teacher", included: true },
+        { text: "E-Certificate", included: true },
+        { text: "E-Syllabus Access", included: true },
+        { text: "Direct Chat with Teacher and Coach", included: true },
+        { text: "Unlimited Reschedules per Month*", included: true },
+        { text: "Coaching and Planning Sessions Every Quarter", included: true },
+        { text: "Progress Report Every Quarter", included: true },
+        { text: "Up to 3 Lesson Cancellations per Month**", included: true },
+        { text: "10% Family Discounts***", included: true },
+        { text: "Top 5 Star Rated Teacher", included: true },
+        { text: "Video Recordings", included: true }
+      ]
+    }
+  ]);
+  const [testimonials, setTestimonials] = useState([
+    {
+      id: 1,
+      name: "Ayesha Khan",
+      role: "Mother of 2",
+      content: "Yaqeen has helped my child develop a strong understanding of Islam in a fun and meaningful way. Highly recommended!",
+      avatar_url: "/images/testi_ayesha.png"
+    },
+    {
+      id: 2,
+      name: "Hassan Ali",
+      role: "Adult Learner",
+      content: "The lessons are clear, engaging and practical. I appreciate how easy it is to stay consistent with my learning.",
+      avatar_url: "/images/testi_hassan.png"
+    },
+    {
+      id: 3,
+      name: "Maryam Zahra",
+      role: "Parent",
+      content: "We love how the whole family can learn together. Yaqeen has brought us closer to our faith and each other.",
+      avatar_url: "/images/testi_maryam.png"
+    }
+  ]);
+
+  useEffect(() => {
+    async function fetchTestimonials() {
+      try {
+        const { data, error } = await supabase
+          .from("testimonials")
+          .select("*")
+          .order("order_index", { ascending: true })
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        if (data && data.length > 0) {
+          const filtered = data.filter(t => {
+            if (!t.page_target) return false;
+            const targets = t.page_target.split(",").map(x => x.trim().toLowerCase());
+            return targets.includes("all") || targets.includes("pricing");
+          });
+          setTestimonials(filtered);
+        }
+      } catch (err) {
+        console.warn("Could not load testimonials from Supabase, using default lists:", err);
+      }
+    }
+    fetchTestimonials();
+  }, []);
+
+  useEffect(() => {
+    async function fetchPlans() {
+      try {
+        const { data, error } = await supabase
+          .from("pricing_plans")
+          .select("*")
+          .order("order_index", { ascending: true })
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        if (data && data.length > 0) {
+          setPlans(data);
+        }
+      } catch (err) {
+        console.warn("Could not load pricing plans from Supabase, using defaults:", err);
+      }
+    }
+    fetchPlans();
+  }, []);
+
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -210,280 +369,53 @@ export default function PricingPage() {
 
           {/* Pricing Grid */}
           <div className="pricing-grid stagger-group">
-            
-            {/* Plan 1: BASIC */}
-            <div className="plan-card plan-basic reveal-stagger">
-              <div className="plan-icon-wrap">
-                <IconPaperPlane />
-              </div>
-              <h3 className="plan-title">Basic</h3>
-              <span className="plan-subtitle">Entry Level Package</span>
-              <div className="plan-divider" />
-              <div className="plan-price-row">
-                <span className="plan-price">
-                  <span className="price-currency">$</span>8.00
-                </span>
-                <span className="plan-price-period">/hour</span>
-              </div>
+            {plans.map((plan) => {
+              const lowerName = (plan.name || "").toLowerCase();
+              const isPremium = lowerName === "premium";
+              const cardClass = `plan-card plan-${lowerName} ${isPremium ? "highlighted-card" : ""} reveal-stagger`;
+              const btnClass = `plan-btn btn-${lowerName}`;
               
-              {/* Features */}
-              <div className="plan-features">
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">Proficient Arabic (Native) Teacher</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">E-Certificate</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">E-Syllabus Access</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">Direct Chat with Teacher and Coach</span>
-                </div>
-                <div className="feature-row">
-                  <IconCross />
-                  <span className="feature-text excluded">Lesson Reschedules</span>
-                </div>
-                <div className="feature-row">
-                  <IconCross />
-                  <span className="feature-text excluded">Coaching and Planning Sessions</span>
-                </div>
-                <div className="feature-row">
-                  <IconCross />
-                  <span className="feature-text excluded">Progress Report</span>
-                </div>
-                <div className="feature-row">
-                  <IconCross />
-                  <span className="feature-text excluded">Lesson Cancellation</span>
-                </div>
-                <div className="feature-row">
-                  <IconCross />
-                  <span className="feature-text excluded">Family Discount</span>
-                </div>
-                <div className="feature-row">
-                  <IconCross />
-                  <span className="feature-text excluded">Top 5 Star Rated Teacher</span>
-                </div>
-                <div className="feature-row">
-                  <IconCross />
-                  <span className="feature-text excluded">Video Recordings</span>
-                </div>
-              </div>
+              return (
+                <div key={plan.id} className={cardClass}>
+                  {plan.badge && <div className="best-value-badge">{plan.badge}</div>}
+                  
+                  <div className="plan-icon-wrap">
+                    {plan.icon === "plane" && <IconPaperPlane />}
+                    {plan.icon === "star" && <IconStarAward />}
+                    {plan.icon === "diamond" && <IconDiamond />}
+                    {plan.icon === "crown" && <IconCrown />}
+                  </div>
+                  
+                  <h3 className="plan-title">{plan.name}</h3>
+                  {plan.subtitle && <span className="plan-subtitle">{plan.subtitle}</span>}
+                  
+                  <div className="plan-divider" />
+                  
+                  <div className="plan-price-row">
+                    <span className="plan-price">
+                      <span className="price-currency">$</span>{plan.price}
+                    </span>
+                    {plan.period && <span className="plan-price-period">{plan.period}</span>}
+                  </div>
+                  
+                  {/* Features */}
+                  <div className="plan-features">
+                    {(plan.features || []).map((feature, fIdx) => (
+                      <div key={fIdx} className="feature-row">
+                        {feature.included ? <IconCheck /> : <IconCross />}
+                        <span className={`feature-text ${feature.included ? "included" : "excluded"}`}>
+                          {feature.text}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
 
-              <Link href="/#contact" style={{ width: "100%", textDecoration: "none" }}>
-                <button className="plan-btn btn-basic">Choose Basic</button>
-              </Link>
-            </div>
-
-            {/* Plan 2: ESSENTIALS */}
-            <div className="plan-card plan-essentials reveal-stagger">
-              <div className="plan-icon-wrap">
-                <IconStarAward />
-              </div>
-              <h3 className="plan-title">Essentials</h3>
-              <span className="plan-subtitle">Core Feature Set</span>
-              <div className="plan-divider" />
-              <div className="plan-price-row">
-                <span className="plan-price">
-                  <span className="price-currency">$</span>9.00
-                </span>
-                <span className="plan-price-period">/hour</span>
-              </div>
-              
-              {/* Features */}
-              <div className="plan-features">
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">Proficient Arabic (Native) Teacher</span>
+                  <Link href="/#contact" style={{ width: "100%", textDecoration: "none" }}>
+                    <button className={btnClass}>Choose {plan.name}</button>
+                  </Link>
                 </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">E-Certificate</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">E-Syllabus Access</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">Direct Chat with Teacher and Coach</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">Up to 2 Lesson Reschedules per Month*</span>
-                </div>
-                <div className="feature-row">
-                  <IconCross />
-                  <span className="feature-text excluded">Coaching and Planning Sessions</span>
-                </div>
-                <div className="feature-row">
-                  <IconCross />
-                  <span className="feature-text excluded">Progress Report</span>
-                </div>
-                <div className="feature-row">
-                  <IconCross />
-                  <span className="feature-text excluded">Lesson Cancellation</span>
-                </div>
-                <div className="feature-row">
-                  <IconCross />
-                  <span className="feature-text excluded">Family Discounts</span>
-                </div>
-                <div className="feature-row">
-                  <IconCross />
-                  <span className="feature-text excluded">Top 5 Star Rated Teacher</span>
-                </div>
-                <div className="feature-row">
-                  <IconCross />
-                  <span className="feature-text excluded">Video Recordings</span>
-                </div>
-              </div>
-
-              <Link href="/#contact" style={{ width: "100%", textDecoration: "none" }}>
-                <button className="plan-btn btn-essentials">Choose Essentials</button>
-              </Link>
-            </div>
-
-            {/* Plan 3: PREMIUM */}
-            <div className="plan-card plan-premium highlighted-card reveal-stagger">
-              <div className="best-value-badge">Best Value</div>
-              <div className="plan-icon-wrap">
-                <IconDiamond />
-              </div>
-              <h3 className="plan-title">Premium</h3>
-              <span className="plan-subtitle">Advanced Benefits</span>
-              <div className="plan-divider" />
-              <div className="plan-price-row">
-                <span className="plan-price">
-                  <span className="price-currency">$</span>11.00
-                </span>
-                <span className="plan-price-period">/hour</span>
-              </div>
-              
-              {/* Features */}
-              <div className="plan-features">
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">Proficient Arabic (Native) Teacher</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">E-Certificate</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">E-Syllabus Access</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">Direct Chat with Teacher and Coach</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">Up to 4 Lesson Reschedules per Month*</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">Coaching and Planning Sessions Twice a Year</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">Progress Report Twice a Year</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">Up to 1 Lesson Cancellation per Month**</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">5% Family Discounts***</span>
-                </div>
-                <div className="feature-row">
-                  <IconCross />
-                  <span className="feature-text excluded">Top 5 Star Rated Teacher</span>
-                </div>
-                <div className="feature-row">
-                  <IconCross />
-                  <span className="feature-text excluded">Video Recordings</span>
-                </div>
-              </div>
-
-              <Link href="/#contact" style={{ width: "100%", textDecoration: "none" }}>
-                <button className="plan-btn btn-premium">Choose Premium</button>
-              </Link>
-            </div>
-
-            {/* Plan 4: PLATINUM */}
-            <div className="plan-card plan-platinum reveal-stagger">
-              <div className="plan-icon-wrap">
-                <IconCrown />
-              </div>
-              <h3 className="plan-title">Platinum</h3>
-              <span className="plan-subtitle">Top-tier Access</span>
-              <div className="plan-divider" />
-              <div className="plan-price-row">
-                <span className="plan-price">
-                  <span className="price-currency">$</span>14.00
-                </span>
-                <span className="plan-price-period">/hour</span>
-              </div>
-              
-              {/* Features */}
-              <div className="plan-features">
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">Proficient Arabic (Native) Teacher</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">E-Certificate</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">E-Syllabus Access</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">Direct Chat with Teacher and Coach</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">Unlimited Reschedules per Month*</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">Coaching and Planning Sessions Every Quarter</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">Progress Report Every Quarter</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">Up to 3 Lesson Cancellation per Month**</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">10% Family Discounts***</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">Top 5 Star Rated Teacher</span>
-                </div>
-                <div className="feature-row">
-                  <IconCheck />
-                  <span className="feature-text included">Video Recordings</span>
-                </div>
-              </div>
-
-              <Link href="/#contact" style={{ width: "100%", textDecoration: "none" }}>
-                <button className="plan-btn btn-platinum">Choose Platinum</button>
-              </Link>
-            </div>
-
+              );
+            })}
           </div>
 
           {/* Bottom Trust Banner */}
@@ -584,71 +516,30 @@ export default function PricingPage() {
 
         {/* Testimonials Grid */}
         <div className="testi-grid stagger-group">
-          
-          {/* Card 1: Ayesha Khan */}
-          <div className="testi-card reveal-stagger">
-            <span className="testi-quote-mark">“</span>
-            <p className="testi-text">
-              Yaqeen has helped my child develop a strong understanding of Islam in a fun and meaningful way. Highly recommended!
-            </p>
-            <div className="testi-card-divider" />
-            <div className="testi-author-row">
-              <div className="testi-avatar-wrap">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/images/testi_ayesha.png" alt="Ayesha Khan" className="testi-avatar" />
-              </div>
-              <div className="testi-author-info">
-                <span className="testi-author-name">Ayesha Khan</span>
-                <span className="testi-author-role">Mother of 2</span>
+          {testimonials.map((t) => (
+            <div key={t.id} className="testi-card reveal-stagger">
+              <span className="testi-quote-mark">“</span>
+              <p className="testi-text">{t.content}</p>
+              <div className="testi-card-divider" />
+              <div className="testi-author-row">
+                <div className="testi-avatar-wrap">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={t.avatar_url || "/images/testi_ayesha.png"} alt={t.name} className="testi-avatar" />
+                </div>
+                <div className="testi-author-info">
+                  <span className="testi-author-name">{t.name}</span>
+                  <span className="testi-author-role">{t.role}</span>
+                </div>
               </div>
             </div>
-          </div>
-
-          {/* Card 2: Hassan Ali */}
-          <div className="testi-card reveal-stagger">
-            <span className="testi-quote-mark">“</span>
-            <p className="testi-text">
-              The lessons are clear, engaging and practical. I appreciate how easy it is to stay consistent with my learning.
-            </p>
-            <div className="testi-card-divider" />
-            <div className="testi-author-row">
-              <div className="testi-avatar-wrap">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/images/testi_hassan.png" alt="Hassan Ali" className="testi-avatar" />
-              </div>
-              <div className="testi-author-info">
-                <span className="testi-author-name">Hassan Ali</span>
-                <span className="testi-author-role">Adult Learner</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 3: Maryam Zahra */}
-          <div className="testi-card reveal-stagger">
-            <span className="testi-quote-mark">“</span>
-            <p className="testi-text">
-              We love how the whole family can learn together. Yaqeen has brought us closer to our faith and each other.
-            </p>
-            <div className="testi-card-divider" />
-            <div className="testi-author-row">
-              <div className="testi-avatar-wrap">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/images/testi_maryam.png" alt="Maryam Zahra" className="testi-avatar" />
-              </div>
-              <div className="testi-author-info">
-                <span className="testi-author-name">Maryam Zahra</span>
-                <span className="testi-author-role">Parent</span>
-              </div>
-            </div>
-          </div>
-
+          ))}
         </div>
 
         {/* Pagination Dots */}
         <div className="testi-dots reveal-slide-up">
-          <div className="testi-dot active" />
-          <div className="testi-dot" />
-          <div className="testi-dot" />
+          {testimonials.map((_, idx) => (
+            <div key={idx} className={`testi-dot ${idx === 0 ? "active" : ""}`} />
+          ))}
         </div>
 
       </section>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
 import { useSettings } from "@/lib/settings-context";
 
 // Premium Search Icon (Magnifying Glass)
@@ -85,7 +86,7 @@ const IconSparkle = ({ size = 12, color = "#C99B4D" }) => (
   </svg>
 );
 
-const coursesList = [
+const defaultCoursesList = [
   {
     num: "01",
     title: "Quran Learning with Tajweed",
@@ -459,10 +460,142 @@ const IconChevron = ({ size = 20, className }) => (
   </svg>
 );
 
+const defaultTeachers = [
+  {
+    id: 1,
+    name: "Ustadh Rahman Ali",
+    avatar_url: "/images/teacher_rahman.png",
+    languages: "Arabic, English, Urdu",
+    experience: "8+ Years",
+    specialization: "Qur'an, Tajweed"
+  },
+  {
+    id: 2,
+    name: "Ustadha Aisha Khan",
+    avatar_url: "/images/teacher_aisha.png",
+    languages: "Arabic, English",
+    experience: "6+ Years",
+    specialization: "Tafseer, Hadith"
+  },
+  {
+    id: 3,
+    name: "Ustadh Saad Ahmed",
+    avatar_url: "/images/teacher_saad.png",
+    languages: "Arabic, English, Urdu",
+    experience: "10+ Years",
+    specialization: "Fiqh, Seerah"
+  },
+  {
+    id: 4,
+    name: "Ustadha Maryam Zahra",
+    avatar_url: "/images/teacher_maryam.png",
+    languages: "Arabic, English, Urdu",
+    experience: "7+ Years",
+    specialization: "Islamic Studies"
+  }
+];
+
 export default function CoursesPage() {
   const { faviconUrl } = useSettings();
   const [searchQuery, setSearchQuery] = useState("");
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
+  const [teachers, setTeachers] = useState(defaultTeachers);
+  const [testimonials, setTestimonials] = useState([
+    {
+      id: 1,
+      name: "Ayesha Khan",
+      role: "Mother of 2",
+      content: "Yaqeen has helped my child develop a strong understanding of Islam in a fun and meaningful way. Highly recommended!",
+      avatar_url: "/images/testi_ayesha.png"
+    },
+    {
+      id: 2,
+      name: "Hassan Ali",
+      role: "Adult Learner",
+      content: "The lessons are clear, engaging and practical. I appreciate how easy it is to stay consistent with my learning.",
+      avatar_url: "/images/testi_hassan.png"
+    },
+    {
+      id: 3,
+      name: "Maryam Zahra",
+      role: "Parent",
+      content: "We love how the whole family can learn together. Yaqeen has brought us closer to our faith and each other.",
+      avatar_url: "/images/testi_maryam.png"
+    }
+  ]);
+  const [coursesList, setCoursesList] = useState(defaultCoursesList);
+
+  useEffect(() => {
+    async function fetchTestimonials() {
+      try {
+        const { data, error } = await supabase
+          .from("testimonials")
+          .select("*")
+          .order("order_index", { ascending: true })
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        if (data && data.length > 0) {
+          const filtered = data.filter(t => {
+            if (!t.page_target) return false;
+            const targets = t.page_target.split(",").map(x => x.trim().toLowerCase());
+            return targets.includes("all") || targets.includes("courses");
+          });
+          setTestimonials(filtered);
+        }
+      } catch (err) {
+        console.warn("Could not load testimonials from Supabase, using default lists:", err);
+      }
+    }
+    fetchTestimonials();
+  }, []);
+
+  useEffect(() => {
+    async function fetchTeachers() {
+      try {
+        const { data, error } = await supabase
+          .from("teachers")
+          .select("*")
+          .order("order_index", { ascending: true })
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        if (data && data.length > 0) {
+          setTeachers(data);
+        }
+      } catch (err) {
+        console.warn("Could not load teachers from Supabase, using default lists:", err);
+      }
+    }
+    fetchTeachers();
+  }, []);
+
+  useEffect(() => {
+    async function fetchCourses() {
+      try {
+        const { data, error } = await supabase
+          .from("courses")
+          .select("*")
+          .order("order_index", { ascending: true })
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        if (data && data.length > 0) {
+          const formatted = data.map((c, idx) => ({
+            id: c.id,
+            num: String(idx + 1).padStart(2, '0'),
+            title: c.title,
+            image: c.image_url || "/images/course_quran.png",
+            icon: c.icon
+          }));
+          setCoursesList(formatted);
+        }
+      } catch (err) {
+        console.warn("Could not load courses from Supabase, using default lists:", err);
+      }
+    }
+    fetchCourses();
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -823,62 +956,6 @@ export default function CoursesPage() {
           ))}
         </div>
 
-        {/* Add New Course Dotted Button */}
-        <div
-          style={{
-            width: "100%",
-            maxWidth: "1200px",
-            margin: "0 auto",
-            backgroundColor: "rgba(201, 155, 77, 0.01)",
-            borderRadius: "16px",
-            border: "1.5px dashed rgba(201, 155, 77, 0.6)",
-            padding: "20px 24px",
-            boxSizing: "border-box",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            transition: "all 0.3s ease"
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.backgroundColor = "rgba(201, 155, 77, 0.03)";
-            e.currentTarget.style.borderColor = "#C99B4D";
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.backgroundColor = "rgba(201, 155, 77, 0.01)";
-            e.currentTarget.style.borderColor = "rgba(201, 155, 77, 0.6)";
-          }}
-        >
-          {/* Circular Dashed Plus Button */}
-          <div style={{
-            width: "36px",
-            height: "36px",
-            borderRadius: "50%",
-            border: "1.5px dashed #C99B4D",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#C99B4D",
-            fontSize: "18px",
-            fontWeight: "300",
-            marginBottom: "8px"
-          }}>
-            +
-          </div>
-          <span style={{
-            fontSize: "15px",
-            fontWeight: "700",
-            color: "#4A5D3B",
-            fontFamily: "var(--font-sans), sans-serif"
-          }}>Add New Course</span>
-          <span style={{
-            fontSize: "11px",
-            color: "#8C7D6B",
-            marginTop: "2px",
-            fontFamily: "var(--font-sans), sans-serif"
-          }}>Expand your offerings</span>
-        </div>
 
       </section>
 
@@ -1419,111 +1496,36 @@ export default function CoursesPage() {
 
         {/* Teachers Cards Grid */}
         <div className="teachers-grid stagger-group">
-          
-          {/* Card 1: Ustadh Rahman Ali */}
-          <div className="teacher-card reveal-stagger">
-            <div className="teacher-avatar-wrap">
-              <img src="/images/teacher_rahman.png" alt="Ustadh Rahman Ali" className="teacher-avatar" />
-            </div>
-            <div className="teacher-info">
-              <h3 className="teacher-name">Ustadh Rahman Ali</h3>
-              <div className="teacher-accent-line" />
-              
-              <div className="teacher-details">
-                <div className="teacher-detail-item">
-                  <IconGlobe size={16} className="teacher-detail-icon" />
-                  <span><strong>Languages:</strong> Arabic, English, Urdu</span>
-                </div>
-                <div className="teacher-detail-item">
-                  <IconBriefcase size={16} className="teacher-detail-icon" />
-                  <span><strong>Experience:</strong> 8+ Years</span>
-                </div>
-                <div className="teacher-detail-item">
-                  <IconStarOutline size={16} className="teacher-detail-icon" />
-                  <span><strong>Specialization:</strong> Qur'an, Tajweed</span>
+          {teachers.map((teacher) => (
+            <div key={teacher.id} className="teacher-card reveal-stagger">
+              <div className="teacher-avatar-wrap">
+                <img 
+                  src={teacher.avatar_url || "/images/teacher_rahman.png"} 
+                  alt={teacher.name} 
+                  className="teacher-avatar" 
+                />
+              </div>
+              <div className="teacher-info">
+                <h3 className="teacher-name">{teacher.name}</h3>
+                <div className="teacher-accent-line" />
+                
+                <div className="teacher-details">
+                  <div className="teacher-detail-item">
+                    <IconGlobe size={16} className="teacher-detail-icon" />
+                    <span><strong>Languages:</strong> {teacher.languages}</span>
+                  </div>
+                  <div className="teacher-detail-item">
+                    <IconBriefcase size={16} className="teacher-detail-icon" />
+                    <span><strong>Experience:</strong> {teacher.experience}</span>
+                  </div>
+                  <div className="teacher-detail-item">
+                    <IconStarOutline size={16} className="teacher-detail-icon" />
+                    <span><strong>Specialization:</strong> {teacher.specialization}</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Card 2: Ustadha Aisha Khan */}
-          <div className="teacher-card reveal-stagger">
-            <div className="teacher-avatar-wrap">
-              <img src="/images/teacher_aisha.png" alt="Ustadha Aisha Khan" className="teacher-avatar" />
-            </div>
-            <div className="teacher-info">
-              <h3 className="teacher-name">Ustadha Aisha Khan</h3>
-              <div className="teacher-accent-line" />
-              
-              <div className="teacher-details">
-                <div className="teacher-detail-item">
-                  <IconGlobe size={16} className="teacher-detail-icon" />
-                  <span><strong>Languages:</strong> Arabic, English</span>
-                </div>
-                <div className="teacher-detail-item">
-                  <IconBriefcase size={16} className="teacher-detail-icon" />
-                  <span><strong>Experience:</strong> 6+ Years</span>
-                </div>
-                <div className="teacher-detail-item">
-                  <IconStarOutline size={16} className="teacher-detail-icon" />
-                  <span><strong>Specialization:</strong> Tafseer, Hadith</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 3: Ustadh Saad Ahmed */}
-          <div className="teacher-card reveal-stagger">
-            <div className="teacher-avatar-wrap">
-              <img src="/images/teacher_saad.png" alt="Ustadh Saad Ahmed" className="teacher-avatar" />
-            </div>
-            <div className="teacher-info">
-              <h3 className="teacher-name">Ustadh Saad Ahmed</h3>
-              <div className="teacher-accent-line" />
-              
-              <div className="teacher-details">
-                <div className="teacher-detail-item">
-                  <IconGlobe size={16} className="teacher-detail-icon" />
-                  <span><strong>Languages:</strong> Arabic, English, Urdu</span>
-                </div>
-                <div className="teacher-detail-item">
-                  <IconBriefcase size={16} className="teacher-detail-icon" />
-                  <span><strong>Experience:</strong> 10+ Years</span>
-                </div>
-                <div className="teacher-detail-item">
-                  <IconStarOutline size={16} className="teacher-detail-icon" />
-                  <span><strong>Specialization:</strong> Fiqh, Seerah</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 4: Ustadha Maryam Zahra */}
-          <div className="teacher-card reveal-stagger">
-            <div className="teacher-avatar-wrap">
-              <img src="/images/teacher_maryam.png" alt="Ustadha Maryam Zahra" className="teacher-avatar" />
-            </div>
-            <div className="teacher-info">
-              <h3 className="teacher-name">Ustadha Maryam Zahra</h3>
-              <div className="teacher-accent-line" />
-              
-              <div className="teacher-details">
-                <div className="teacher-detail-item">
-                  <IconGlobe size={16} className="teacher-detail-icon" />
-                  <span><strong>Languages:</strong> Arabic, English, Urdu</span>
-                </div>
-                <div className="teacher-detail-item">
-                  <IconBriefcase size={16} className="teacher-detail-icon" />
-                  <span><strong>Experience:</strong> 7+ Years</span>
-                </div>
-                <div className="teacher-detail-item">
-                  <IconStarOutline size={16} className="teacher-detail-icon" />
-                  <span><strong>Specialization:</strong> Islamic Studies</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
+          ))}
         </div>
       </section>
 
@@ -1864,68 +1866,30 @@ export default function CoursesPage() {
 
         {/* Testimonials Grid */}
         <div className="testi-grid">
-          
-          {/* Card 1: Ayesha Khan */}
-          <div className="testi-card">
-            <span className="testi-quote-mark">“</span>
-            <p className="testi-text">
-              Yaqeen has helped my child develop a strong understanding of Islam in a fun and meaningful way. Highly recommended!
-            </p>
-            <div className="testi-card-divider" />
-            <div className="testi-author-row">
-              <div className="testi-avatar-wrap">
-                <img src="/images/testi_ayesha.png" alt="Ayesha Khan" className="testi-avatar" />
-              </div>
-              <div className="testi-author-info">
-                <span className="testi-author-name">Ayesha Khan</span>
-                <span className="testi-author-role">Mother of 2</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 2: Hassan Ali */}
-          <div className="testi-card">
-            <span className="testi-quote-mark">“</span>
-            <p className="testi-text">
-              The lessons are clear, engaging and practical. I appreciate how easy it is to stay consistent with my learning.
-            </p>
-            <div className="testi-card-divider" />
-            <div className="testi-author-row">
-              <div className="testi-avatar-wrap">
-                <img src="/images/testi_hassan.png" alt="Hassan Ali" className="testi-avatar" />
-              </div>
-              <div className="testi-author-info">
-                <span className="testi-author-name">Hassan Ali</span>
-                <span className="testi-author-role">Adult Learner</span>
+          {testimonials.map((t) => (
+            <div key={t.id} className="testi-card">
+              <span className="testi-quote-mark">“</span>
+              <p className="testi-text">{t.content}</p>
+              <div className="testi-card-divider" />
+              <div className="testi-author-row">
+                <div className="testi-avatar-wrap">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={t.avatar_url || "/images/testi_ayesha.png"} alt={t.name} className="testi-avatar" />
+                </div>
+                <div className="testi-author-info">
+                  <span className="testi-author-name">{t.name}</span>
+                  <span className="testi-author-role">{t.role}</span>
+                </div>
               </div>
             </div>
-          </div>
-
-          {/* Card 3: Maryam Zahra */}
-          <div className="testi-card">
-            <span className="testi-quote-mark">“</span>
-            <p className="testi-text">
-              We love how the whole family can learn together. Yaqeen has brought us closer to our faith and each other.
-            </p>
-            <div className="testi-card-divider" />
-            <div className="testi-author-row">
-              <div className="testi-avatar-wrap">
-                <img src="/images/testi_maryam.png" alt="Maryam Zahra" className="testi-avatar" />
-              </div>
-              <div className="testi-author-info">
-                <span className="testi-author-name">Maryam Zahra</span>
-                <span className="testi-author-role">Parent</span>
-              </div>
-            </div>
-          </div>
-
+          ))}
         </div>
 
         {/* Pagination Dots */}
         <div className="testi-dots">
-          <div className="testi-dot active" />
-          <div className="testi-dot" />
-          <div className="testi-dot" />
+          {testimonials.map((_, idx) => (
+            <div key={idx} className={`testi-dot ${idx === 0 ? "active" : ""}`} />
+          ))}
         </div>
 
       </section>

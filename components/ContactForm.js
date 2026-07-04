@@ -37,10 +37,50 @@ export default function ContactForm() {
     setStatus("loading");
     setErrorMessage("");
 
+    // Telemetry gathering
+    let userIp = "Unknown / Client-side only";
+    let browserInfo = "Unknown Browser";
+    let systemInfo = "Unknown System";
+
+    try {
+      // 1. Fetch IP Address
+      const ipResponse = await fetch("https://api.ipify.org?format=json");
+      if (ipResponse.ok) {
+        const ipData = await ipResponse.json();
+        userIp = ipData.ip || userIp;
+      }
+    } catch (ipErr) {
+      console.warn("Could not retrieve IP address dynamically:", ipErr);
+    }
+
+    try {
+      // 2. Gather browser information
+      if (typeof window !== "undefined" && window.navigator) {
+        browserInfo = window.navigator.userAgent || browserInfo;
+        
+        // 3. Gather system information
+        const platform = window.navigator.platform || "unknown-platform";
+        const language = window.navigator.language || "unknown-language";
+        const screenWidth = window.screen?.width || 0;
+        const screenHeight = window.screen?.height || 0;
+        systemInfo = `Platform: ${platform} | Language: ${language} | Screen Resolution: ${screenWidth}x${screenHeight}`;
+      }
+    } catch (sysErr) {
+      console.warn("Could not retrieve system info dynamically:", sysErr);
+    }
+
     try {
       const { error } = await supabase
         .from("contacts")
-        .insert([{ name, email, subject, message }]);
+        .insert([{ 
+          name, 
+          email, 
+          subject, 
+          message,
+          ip_address: userIp,
+          browser_info: browserInfo,
+          system_info: systemInfo
+        }]);
 
       if (error) throw error;
 

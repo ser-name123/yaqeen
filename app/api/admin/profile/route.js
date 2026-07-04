@@ -54,7 +54,15 @@ export async function GET(request) {
       email: admin.email,
       password: admin.password,
       logo_text: settings?.logo_text || "yaqeen",
-      logo_url: settings?.logo_url || ""
+      logo_url: settings?.logo_url || "",
+      contact_email: settings?.contact_email || "info@yaqeeninstitute.com",
+      contact_phone: settings?.contact_phone || "+447488818192",
+      contact_hours: settings?.contact_hours || "24x7 - We're always here for you.",
+      contact_support: settings?.contact_support || "We serve students from around the world.",
+      social_facebook: settings?.social_facebook || "",
+      social_instagram: settings?.social_instagram || "",
+      social_youtube: settings?.social_youtube || "",
+      social_whatsapp: settings?.social_whatsapp || ""
     });
   } catch (error) {
     console.error("Profile GET error:", error);
@@ -77,7 +85,20 @@ export async function PUT(request) {
       );
     }
 
-    const { email, password, logo_text, logo_url } = await request.json();
+    const { 
+      email, 
+      password, 
+      logo_text, 
+      logo_url,
+      contact_email,
+      contact_phone,
+      contact_hours,
+      contact_support,
+      social_facebook,
+      social_instagram,
+      social_youtube,
+      social_whatsapp
+    } = await request.json();
 
     if (!email || !password) {
       return NextResponse.json(
@@ -111,6 +132,14 @@ export async function PUT(request) {
         id: "global",
         logo_text: logo_text || "yaqeen",
         logo_url: logo_url || null,
+        contact_email: contact_email || "info@yaqeeninstitute.com",
+        contact_phone: contact_phone || "+447488818192",
+        contact_hours: contact_hours || "24x7 - We're always here for you.",
+        contact_support: contact_support || "We serve students from around the world.",
+        social_facebook: social_facebook || "",
+        social_instagram: social_instagram || "",
+        social_youtube: social_youtube || "",
+        social_whatsapp: social_whatsapp || "",
         updated_at: new Date().toISOString()
       });
 

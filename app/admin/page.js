@@ -44,7 +44,20 @@ export default function AdminDashboard() {
   const [authLoading, setAuthLoading] = useState(false);
 
   // Profile management states
-  const [profileForm, setProfileForm] = useState({ email: "", password: "", logo_text: "", logo_url: "" });
+  const [profileForm, setProfileForm] = useState({
+    email: "",
+    password: "",
+    logo_text: "",
+    logo_url: "",
+    contact_email: "",
+    contact_phone: "",
+    contact_hours: "",
+    contact_support: "",
+    social_facebook: "",
+    social_instagram: "",
+    social_youtube: "",
+    social_whatsapp: ""
+  });
   const [logoText, setLogoText] = useState("yaqeen");
   const [logoUrl, setLogoUrl] = useState("");
 
@@ -56,6 +69,69 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview"); // overview, blogs, contacts, seo, profile
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+
+  // Teachers management states
+  const [teachers, setTeachers] = useState([]);
+  const [isEditingTeacher, setIsEditingTeacher] = useState(false);
+  const [editingTeacherId, setEditingTeacherId] = useState(null);
+  const [teacherForm, setTeacherForm] = useState({
+    name: "",
+    avatar_url: "",
+    languages: "",
+    experience: "",
+    specialization: "",
+    order_index: 0
+  });
+
+  // Testimonials management states
+  const [testimonials, setTestimonials] = useState([]);
+  const [isEditingTestimonial, setIsEditingTestimonial] = useState(false);
+  const [editingTestimonialId, setEditingTestimonialId] = useState(null);
+  const [testimonialForm, setTestimonialForm] = useState({
+    name: "",
+    role: "",
+    content: "",
+    avatar_url: "",
+    page_targets: {
+      all: true,
+      home: false,
+      about: false,
+      courses: false,
+      pricing: false
+    },
+    order_index: 0
+  });
+
+  // Courses management states
+  const [courses, setCourses] = useState([]);
+  const [isEditingCourse, setIsEditingCourse] = useState(false);
+  const [editingCourseId, setEditingCourseId] = useState(null);
+  const [courseForm, setCourseForm] = useState({
+    title: "",
+    image_url: "",
+    icon: "book",
+    order_index: 0
+  });
+
+  // Pricing plans states
+  const [plans, setPlans] = useState([]);
+  const [isEditingPlan, setIsEditingPlan] = useState(false);
+  const [editingPlanId, setEditingPlanId] = useState(null);
+  const [planForm, setPlanForm] = useState({
+    name: "",
+    subtitle: "",
+    price: "",
+    period: "/hour",
+    icon: "plane",
+    badge: "",
+    features: [],
+    order_index: 0
+  });
+  const [newFeatureText, setNewFeatureText] = useState("");
+  const [newFeatureIncluded, setNewFeatureIncluded] = useState(true);
+
+  // Selected contact details popup state
+  const [selectedContact, setSelectedContact] = useState(null);
 
   // Blog editor form states
   const [isEditingBlog, setIsEditingBlog] = useState(false);
@@ -183,6 +259,38 @@ export default function AdminDashboard() {
           favicon_url: seoData.favicon_url || ""
         });
       }
+
+      // 5. Fetch teachers
+      const { data: teacherData, error: teacherErr } = await supabase
+        .from("teachers")
+        .select("*")
+        .order("order_index", { ascending: true })
+        .order("created_at", { ascending: false });
+      if (!teacherErr) setTeachers(teacherData || []);
+
+      // 6. Fetch testimonials
+      const { data: testimonialData, error: testimonialErr } = await supabase
+        .from("testimonials")
+        .select("*")
+        .order("order_index", { ascending: true })
+        .order("created_at", { ascending: false });
+      if (!testimonialErr) setTestimonials(testimonialData || []);
+
+      // 7. Fetch courses
+      const { data: courseData, error: courseErr } = await supabase
+        .from("courses")
+        .select("*")
+        .order("order_index", { ascending: true })
+        .order("created_at", { ascending: false });
+      if (!courseErr) setCourses(courseData || []);
+
+      // 8. Fetch pricing plans
+      const { data: planData, error: planErr } = await supabase
+        .from("pricing_plans")
+        .select("*")
+        .order("order_index", { ascending: true })
+        .order("created_at", { ascending: false });
+      if (!planErr) setPlans(planData || []);
     } catch (err) {
       console.error("Error loading dashboard data:", err);
     } finally {
@@ -205,7 +313,15 @@ export default function AdminDashboard() {
           email: data.email,
           password: data.password,
           logo_text: data.logo_text || "",
-          logo_url: data.logo_url || ""
+          logo_url: data.logo_url || "",
+          contact_email: data.contact_email || "",
+          contact_phone: data.contact_phone || "",
+          contact_hours: data.contact_hours || "",
+          contact_support: data.contact_support || "",
+          social_facebook: data.social_facebook || "",
+          social_instagram: data.social_instagram || "",
+          social_youtube: data.social_youtube || "",
+          social_whatsapp: data.social_whatsapp || ""
         });
         setLogoText(data.logo_text || "yaqeen");
         setLogoUrl(data.logo_url || "");
@@ -423,6 +539,10 @@ export default function AdminDashboard() {
     setActiveTab(tab);
     localStorage.setItem("aero_admin_tab", tab);
     setIsEditingBlog(false);
+    setIsEditingTeacher(false);
+    setIsEditingTestimonial(false);
+    setIsEditingCourse(false);
+    setIsEditingPlan(false);
   };
 
   const handleLogoUpload = async (e) => {
@@ -493,7 +613,15 @@ export default function AdminDashboard() {
           email: profileForm.email,
           password: profileForm.password,
           logo_text: profileForm.logo_text,
-          logo_url: profileForm.logo_url
+          logo_url: profileForm.logo_url,
+          contact_email: profileForm.contact_email,
+          contact_phone: profileForm.contact_phone,
+          contact_hours: profileForm.contact_hours,
+          contact_support: profileForm.contact_support,
+          social_facebook: profileForm.social_facebook,
+          social_instagram: profileForm.social_instagram,
+          social_youtube: profileForm.social_youtube,
+          social_whatsapp: profileForm.social_whatsapp
         })
       });
       const data = await res.json();
@@ -820,6 +948,781 @@ export default function AdminDashboard() {
     }
   };
 
+  // --- TEACHERS ACTIONS ---
+  const handleAvatarUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `teacher_${Date.now()}.${fileExt}`;
+      const filePath = `teachers/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("blog-images")
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data } = supabase.storage
+        .from("blog-images")
+        .getPublicUrl(filePath);
+
+      setTeacherForm((prev) => ({
+        ...prev,
+        avatar_url: data.publicUrl
+      }));
+    } catch (err) {
+      console.error("Avatar upload failed:", err);
+      adminSwal.fire({
+        icon: "error",
+        title: "Upload Failed",
+        text: err.message || "Failed to upload avatar.",
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSaveTeacher = async (e) => {
+    e.preventDefault();
+    if (!teacherForm.name || !teacherForm.languages || !teacherForm.experience || !teacherForm.specialization) {
+      adminSwal.fire({
+        icon: "warning",
+        title: "Missing Fields",
+        text: "Name, Languages, Experience, and Specialization are required!",
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+      return;
+    }
+
+    setLoading(true);
+    const payload = {
+      name: teacherForm.name,
+      avatar_url: teacherForm.avatar_url || null,
+      languages: teacherForm.languages,
+      experience: teacherForm.experience,
+      specialization: teacherForm.specialization,
+      order_index: parseInt(teacherForm.order_index) || 0
+    };
+
+    try {
+      if (editingTeacherId) {
+        // Edit mode
+        const { error } = await supabase
+          .from("teachers")
+          .update(payload)
+          .eq("id", editingTeacherId);
+        if (error) throw error;
+      } else {
+        // Create mode
+        const { error } = await supabase
+          .from("teachers")
+          .insert([payload]);
+        if (error) throw error;
+      }
+
+      // Reset Form
+      setIsEditingTeacher(false);
+      setEditingTeacherId(null);
+      setTeacherForm({
+        name: "",
+        avatar_url: "",
+        languages: "",
+        experience: "",
+        specialization: "",
+        order_index: 0
+      });
+      fetchDashboardData();
+      adminSwal.fire({
+        icon: "success",
+        title: "Saved!",
+        text: "Teacher profile saved successfully.",
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+    } catch (err) {
+      adminSwal.fire({
+        icon: "error",
+        title: "Error Saving",
+        text: err.message,
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const triggerCreateTeacher = () => {
+    setEditingTeacherId(null);
+    setTeacherForm({
+      name: "",
+      avatar_url: "",
+      languages: "",
+      experience: "",
+      specialization: "",
+      order_index: 0
+    });
+    setIsEditingTeacher(true);
+  };
+
+  const triggerEditTeacher = (teacher) => {
+    setEditingTeacherId(teacher.id);
+    setTeacherForm({
+      name: teacher.name || "",
+      avatar_url: teacher.avatar_url || "",
+      languages: teacher.languages || "",
+      experience: teacher.experience || "",
+      specialization: teacher.specialization || "",
+      order_index: teacher.order_index || 0
+    });
+    setIsEditingTeacher(true);
+  };
+
+  const handleDeleteTeacher = async (id) => {
+    const result = await adminSwal.fire({
+      title: "Are you sure?",
+      text: "Delete this teacher profile?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "var(--card-border)",
+      confirmButtonText: "Yes, delete it!",
+      background: "#111827",
+      color: "#fff"
+    });
+    if (!result.isConfirmed) return;
+
+    setLoading(true);
+    try {
+      const { error } = await supabase.from("teachers").delete().eq("id", id);
+      if (error) throw error;
+      fetchDashboardData();
+      adminSwal.fire({
+        icon: "success",
+        title: "Deleted!",
+        text: "Teacher profile has been deleted.",
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+    } catch (err) {
+      adminSwal.fire({
+        icon: "error",
+        title: "Delete Failed",
+        text: err.message,
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // --- TESTIMONIALS ACTIONS ---
+  const handleTestimonialAvatarUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `testi_${Date.now()}.${fileExt}`;
+      const filePath = `testimonials/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("blog-images")
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data } = supabase.storage
+        .from("blog-images")
+        .getPublicUrl(filePath);
+
+      setTestimonialForm((prev) => ({
+        ...prev,
+        avatar_url: data.publicUrl
+      }));
+    } catch (err) {
+      console.error("Testimonial avatar upload failed:", err);
+      adminSwal.fire({
+        icon: "error",
+        title: "Upload Failed",
+        text: err.message || "Failed to upload avatar.",
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSaveTestimonial = async (e) => {
+    e.preventDefault();
+    if (!testimonialForm.name || !testimonialForm.role || !testimonialForm.content) {
+      adminSwal.fire({
+        icon: "warning",
+        title: "Missing Fields",
+        text: "Name, Role, and Content are required!",
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+      return;
+    }
+
+    // Check if at least one page is targeted
+    const targets = testimonialForm.page_targets;
+    const hasTargets = targets.all || targets.home || targets.about || targets.courses || targets.pricing;
+    if (!hasTargets) {
+      adminSwal.fire({
+        icon: "warning",
+        title: "Target Pages Required",
+        text: "Please select at least one page or choose 'Show on All Pages'!",
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+      return;
+    }
+
+    setLoading(true);
+    
+    // Serialize page targets
+    let pageTargetStr = "all";
+    if (!targets.all) {
+      const activeTargets = [];
+      if (targets.home) activeTargets.push("home");
+      if (targets.about) activeTargets.push("about");
+      if (targets.courses) activeTargets.push("courses");
+      if (targets.pricing) activeTargets.push("pricing");
+      pageTargetStr = activeTargets.join(",");
+    }
+
+    const payload = {
+      name: testimonialForm.name,
+      role: testimonialForm.role,
+      content: testimonialForm.content,
+      avatar_url: testimonialForm.avatar_url || null,
+      page_target: pageTargetStr,
+      order_index: parseInt(testimonialForm.order_index) || 0
+    };
+
+    try {
+      if (editingTestimonialId) {
+        // Edit mode
+        const { error } = await supabase
+          .from("testimonials")
+          .update(payload)
+          .eq("id", editingTestimonialId);
+        if (error) throw error;
+      } else {
+        // Create mode
+        const { error } = await supabase
+          .from("testimonials")
+          .insert([payload]);
+        if (error) throw error;
+      }
+
+      setIsEditingTestimonial(false);
+      setEditingTestimonialId(null);
+      setTestimonialForm({
+        name: "",
+        role: "",
+        content: "",
+        avatar_url: "",
+        page_targets: {
+          all: true,
+          home: false,
+          about: false,
+          courses: false,
+          pricing: false
+        },
+        order_index: 0
+      });
+      fetchDashboardData();
+      adminSwal.fire({
+        icon: "success",
+        title: "Saved!",
+        text: "Testimonial saved successfully.",
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+    } catch (err) {
+      adminSwal.fire({
+        icon: "error",
+        title: "Error Saving",
+        text: err.message,
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const triggerCreateTestimonial = () => {
+    setEditingTestimonialId(null);
+    setTestimonialForm({
+      name: "",
+      role: "",
+      content: "",
+      avatar_url: "",
+      page_targets: {
+        all: true,
+        home: false,
+        about: false,
+        courses: false,
+        pricing: false
+      },
+      order_index: 0
+    });
+    setIsEditingTestimonial(true);
+  };
+
+  const triggerEditTestimonial = (testi) => {
+    setEditingTestimonialId(testi.id);
+    
+    // Parse page targets string
+    const targets = {
+      all: false,
+      home: false,
+      about: false,
+      courses: false,
+      pricing: false
+    };
+    
+    if (testi.page_target === "all") {
+      targets.all = true;
+    } else if (testi.page_target) {
+      const parts = testi.page_target.split(",").map(p => p.trim().toLowerCase());
+      parts.forEach(p => {
+        if (p in targets) targets[p] = true;
+      });
+    } else {
+      targets.all = true; // Fallback
+    }
+
+    setTestimonialForm({
+      name: testi.name || "",
+      role: testi.role || "",
+      content: testi.content || "",
+      avatar_url: testi.avatar_url || "",
+      page_targets: targets,
+      order_index: testi.order_index || 0
+    });
+    setIsEditingTestimonial(true);
+  };
+
+  const handleDeleteTestimonial = async (id) => {
+    const result = await adminSwal.fire({
+      title: "Are you sure?",
+      text: "Delete this testimonial?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "var(--card-border)",
+      confirmButtonText: "Yes, delete it!",
+      background: "#111827",
+      color: "#fff"
+    });
+    if (!result.isConfirmed) return;
+
+    setLoading(true);
+    try {
+      const { error } = await supabase.from("testimonials").delete().eq("id", id);
+      if (error) throw error;
+      fetchDashboardData();
+      adminSwal.fire({
+        icon: "success",
+        title: "Deleted!",
+        text: "Testimonial has been deleted.",
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+    } catch (err) {
+      adminSwal.fire({
+        icon: "error",
+        title: "Delete Failed",
+        text: err.message,
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // --- COURSES ACTIONS ---
+  const handleCourseImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `course_${Date.now()}.${fileExt}`;
+      const filePath = `courses/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("blog-images")
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data } = supabase.storage
+        .from("blog-images")
+        .getPublicUrl(filePath);
+
+      setCourseForm((prev) => ({
+        ...prev,
+        image_url: data.publicUrl
+      }));
+    } catch (err) {
+      console.error("Course image upload failed:", err);
+      adminSwal.fire({
+        icon: "error",
+        title: "Upload Failed",
+        text: err.message || "Failed to upload course image.",
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSaveCourse = async (e) => {
+    e.preventDefault();
+    if (!courseForm.title) {
+      adminSwal.fire({
+        icon: "warning",
+        title: "Missing Fields",
+        text: "Course Title is required!",
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+      return;
+    }
+
+    setLoading(true);
+    const payload = {
+      title: courseForm.title,
+      image_url: courseForm.image_url || null,
+      icon: courseForm.icon || "book",
+      order_index: parseInt(courseForm.order_index) || 0
+    };
+
+    try {
+      if (editingCourseId) {
+        // Edit mode
+        const { error } = await supabase
+          .from("courses")
+          .update(payload)
+          .eq("id", editingCourseId);
+        if (error) throw error;
+      } else {
+        // Create mode
+        const { error } = await supabase
+          .from("courses")
+          .insert([payload]);
+        if (error) throw error;
+      }
+
+      setIsEditingCourse(false);
+      setEditingCourseId(null);
+      setCourseForm({
+        title: "",
+        image_url: "",
+        icon: "book",
+        order_index: 0
+      });
+      fetchDashboardData();
+      adminSwal.fire({
+        icon: "success",
+        title: "Saved!",
+        text: "Course saved successfully.",
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+    } catch (err) {
+      adminSwal.fire({
+        icon: "error",
+        title: "Error Saving",
+        text: err.message,
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const triggerCreateCourse = () => {
+    setEditingCourseId(null);
+    setCourseForm({
+      title: "",
+      image_url: "",
+      icon: "book",
+      order_index: 0
+    });
+    setIsEditingCourse(true);
+  };
+
+  const triggerEditCourse = (course) => {
+    setEditingCourseId(course.id);
+    setCourseForm({
+      title: course.title || "",
+      image_url: course.image_url || "",
+      icon: course.icon || "book",
+      order_index: course.order_index || 0
+    });
+    setIsEditingCourse(true);
+  };
+
+  const handleDeleteCourse = async (id) => {
+    const result = await adminSwal.fire({
+      title: "Are you sure?",
+      text: "Delete this course?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "var(--card-border)",
+      confirmButtonText: "Yes, delete it!",
+      background: "#111827",
+      color: "#fff"
+    });
+    if (!result.isConfirmed) return;
+
+    setLoading(true);
+    try {
+      const { error } = await supabase.from("courses").delete().eq("id", id);
+      if (error) throw error;
+      fetchDashboardData();
+      adminSwal.fire({
+        icon: "success",
+        title: "Deleted!",
+        text: "Course has been deleted.",
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+    } catch (err) {
+      adminSwal.fire({
+        icon: "error",
+        title: "Delete Failed",
+        text: err.message,
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // --- PRICING PLANS ACTIONS ---
+  const handleAddPlanFeature = () => {
+    if (!newFeatureText.trim()) return;
+    setPlanForm((prev) => ({
+      ...prev,
+      features: [...prev.features, { text: newFeatureText.trim(), included: newFeatureIncluded }]
+    }));
+    setNewFeatureText("");
+  };
+
+  const handleRemovePlanFeature = (indexToRemove) => {
+    setPlanForm((prev) => ({
+      ...prev,
+      features: prev.features.filter((_, idx) => idx !== indexToRemove)
+    }));
+  };
+
+  const handleTogglePlanFeatureIncluded = (idxToToggle) => {
+    setPlanForm((prev) => ({
+      ...prev,
+      features: prev.features.map((f, idx) => 
+        idx === idxToToggle ? { ...f, included: !f.included } : f
+      )
+    }));
+  };
+
+  const handleSavePlan = async (e) => {
+    e.preventDefault();
+    if (!planForm.name || !planForm.price) {
+      adminSwal.fire({
+        icon: "warning",
+        title: "Missing Fields",
+        text: "Plan Name and Price are required!",
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+      return;
+    }
+
+    setLoading(true);
+    const payload = {
+      name: planForm.name,
+      subtitle: planForm.subtitle || null,
+      price: planForm.price,
+      period: planForm.period || "/hour",
+      icon: planForm.icon || "plane",
+      badge: planForm.badge || null,
+      features: planForm.features,
+      order_index: parseInt(planForm.order_index) || 0
+    };
+
+    try {
+      if (editingPlanId) {
+        // Edit mode
+        const { error } = await supabase
+          .from("pricing_plans")
+          .update(payload)
+          .eq("id", editingPlanId);
+        if (error) throw error;
+      } else {
+        // Create mode
+        const { error } = await supabase
+          .from("pricing_plans")
+          .insert([payload]);
+        if (error) throw error;
+      }
+
+      setIsEditingPlan(false);
+      setEditingPlanId(null);
+      setPlanForm({
+        name: "",
+        subtitle: "",
+        price: "",
+        period: "/hour",
+        icon: "plane",
+        badge: "",
+        features: [],
+        order_index: 0
+      });
+      fetchDashboardData();
+      adminSwal.fire({
+        icon: "success",
+        title: "Saved!",
+        text: "Pricing plan saved successfully.",
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+    } catch (err) {
+      adminSwal.fire({
+        icon: "error",
+        title: "Error Saving",
+        text: err.message,
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const triggerCreatePlan = () => {
+    setEditingPlanId(null);
+    setPlanForm({
+      name: "",
+      subtitle: "",
+      price: "",
+      period: "/hour",
+      icon: "plane",
+      badge: "",
+      features: [],
+      order_index: 0
+    });
+    setNewFeatureText("");
+    setIsEditingPlan(true);
+  };
+
+  const triggerEditPlan = (plan) => {
+    setEditingPlanId(plan.id);
+    setPlanForm({
+      name: plan.name || "",
+      subtitle: plan.subtitle || "",
+      price: plan.price || "",
+      period: plan.period || "/hour",
+      icon: plan.icon || "plane",
+      badge: plan.badge || "",
+      features: plan.features || [],
+      order_index: plan.order_index || 0
+    });
+    setNewFeatureText("");
+    setIsEditingPlan(true);
+  };
+
+  const handleDeletePlan = async (id) => {
+    const result = await adminSwal.fire({
+      title: "Are you sure?",
+      text: "Delete this pricing plan?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "var(--card-border)",
+      confirmButtonText: "Yes, delete it!",
+      background: "#111827",
+      color: "#fff"
+    });
+    if (!result.isConfirmed) return;
+
+    setLoading(true);
+    try {
+      const { error } = await supabase.from("pricing_plans").delete().eq("id", id);
+      if (error) throw error;
+      fetchDashboardData();
+      adminSwal.fire({
+        icon: "success",
+        title: "Deleted!",
+        text: "Pricing plan has been deleted.",
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+    } catch (err) {
+      adminSwal.fire({
+        icon: "error",
+        title: "Delete Failed",
+        text: err.message,
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Handle favicon upload
   const handleFaviconUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -1085,6 +1988,19 @@ export default function AdminDashboard() {
 
   return (
     <div style={{ ...adminThemeStyle, display: "grid", gridTemplateColumns: "240px 1fr" }}>
+      <style dangerouslySetInnerHTML={{ __html: `
+        /* Fix secondary buttons styling in admin panel to be legible against cream background */
+        .btn-secondary {
+          color: var(--fg-color) !important;
+          border-color: var(--card-border) !important;
+          background: rgba(0, 0, 0, 0.02) !important;
+        }
+        .btn-secondary:hover {
+          background: rgba(0, 0, 0, 0.05) !important;
+          color: var(--primary-color) !important;
+          border-color: var(--primary-color) !important;
+        }
+      `}} />
       {/* Sidebar navigation */}
       <aside style={{ 
         position: "sticky", 
@@ -1155,6 +2071,30 @@ export default function AdminDashboard() {
             🌐 SEO Manager
           </button>
           <button
+            onClick={() => handleTabChange("teachers")}
+            style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "teachers" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "teachers" ? "rgba(255,255,255,0.02)" : "transparent" }}
+          >
+            🎓 Manage Teachers
+          </button>
+          <button
+            onClick={() => handleTabChange("courses")}
+            style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "courses" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "courses" ? "rgba(255,255,255,0.02)" : "transparent" }}
+          >
+            📚 Manage Courses
+          </button>
+          <button
+            onClick={() => handleTabChange("testimonials")}
+            style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "testimonials" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "testimonials" ? "rgba(255,255,255,0.02)" : "transparent" }}
+          >
+            💬 Manage Testimonials
+          </button>
+          <button
+            onClick={() => handleTabChange("plans")}
+            style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "plans" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "plans" ? "rgba(255,255,255,0.02)" : "transparent" }}
+          >
+            💵 Manage Plans
+          </button>
+          <button
             onClick={() => handleTabChange("profile")}
             style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "profile" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "profile" ? "rgba(255,255,255,0.02)" : "transparent" }}
           >
@@ -1198,6 +2138,10 @@ export default function AdminDashboard() {
               {activeTab === "blogs" && (isEditingBlog ? (editingBlogId ? "Edit Blog Post" : "Write New Publication") : "Blog Publications")}
               {activeTab === "contacts" && "Contact Query Logs"}
               {activeTab === "seo" && "Site SEO Meta Settings"}
+              {activeTab === "teachers" && (isEditingTeacher ? (editingTeacherId ? "Edit Teacher Profile" : "Register New Teacher") : "Teacher Profiles")}
+              {activeTab === "courses" && (isEditingCourse ? (editingCourseId ? "Edit Course Details" : "Add New Course") : "Islamic Courses")}
+              {activeTab === "testimonials" && (isEditingTestimonial ? (editingTestimonialId ? "Edit Testimonial" : "Add New Testimonial") : "Client Testimonials")}
+              {activeTab === "plans" && (isEditingPlan ? (editingPlanId ? "Edit Pricing Plan" : "Create Pricing Plan") : "Pricing Plans")}
               {activeTab === "profile" && "Profile Credentials Settings"}
             </h2>
             <p style={{ color: "var(--fg-muted)", fontSize: "14px", marginTop: "4px" }}>
@@ -1205,6 +2149,10 @@ export default function AdminDashboard() {
               {activeTab === "blogs" && "Author articles, categories, list points, and search engine fields."}
               {activeTab === "contacts" && "Review customer forms, inquiries, and details."}
               {activeTab === "seo" && "Configure key page head parameters for Google crawlers."}
+              {activeTab === "teachers" && "Manage profiles, avatars, languages, experience, and topics of Islamic teachers."}
+              {activeTab === "courses" && "Manage online courses, thumbnails, icons, and display order."}
+              {activeTab === "testimonials" && "Manage customer testimonials and select target pages for display."}
+              {activeTab === "plans" && "Configure pricing plans, rates, ribbons, and itemized feature checklists."}
               {activeTab === "profile" && "Manage your login email and password."}
             </p>
           </div>
@@ -1216,18 +2164,34 @@ export default function AdminDashboard() {
         {activeTab === "overview" && (
           <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
             {/* Stats Cards Row */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "24px" }}>
-              <div className="glass-panel" style={{ padding: "24px" }}>
-                <div style={{ color: "var(--fg-muted)", fontSize: "13px" }}>Published Blogs</div>
-                <div style={{ fontSize: "36px", fontWeight: "800", marginTop: "8px", color: "var(--secondary-color)" }}>{blogs.length}</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "12px" }}>
+              <div className="glass-panel" style={{ padding: "16px 12px" }}>
+                <div style={{ color: "var(--fg-muted)", fontSize: "11px" }}>Published Blogs</div>
+                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "8px", color: "var(--secondary-color)" }}>{blogs.length}</div>
               </div>
-              <div className="glass-panel" style={{ padding: "24px" }}>
-                <div style={{ color: "var(--fg-muted)", fontSize: "13px" }}>Contact Submissions</div>
-                <div style={{ fontSize: "36px", fontWeight: "800", marginTop: "8px", color: "var(--accent-color)" }}>{contacts.length}</div>
+              <div className="glass-panel" style={{ padding: "16px 12px" }}>
+                <div style={{ color: "var(--fg-muted)", fontSize: "11px" }}>Registered Teachers</div>
+                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "8px", color: "#C99B4D" }}>{teachers.length}</div>
               </div>
-              <div className="glass-panel" style={{ padding: "24px" }}>
-                <div style={{ color: "var(--fg-muted)", fontSize: "13px" }}>Waitlist Leads</div>
-                <div style={{ fontSize: "36px", fontWeight: "800", marginTop: "8px", color: "var(--primary-color)" }}>{leadsCount}</div>
+              <div className="glass-panel" style={{ padding: "16px 12px" }}>
+                <div style={{ color: "var(--fg-muted)", fontSize: "11px" }}>Client Testimonials</div>
+                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "8px", color: "#8c5d31" }}>{testimonials.length}</div>
+              </div>
+              <div className="glass-panel" style={{ padding: "16px 12px" }}>
+                <div style={{ color: "var(--fg-muted)", fontSize: "11px" }}>Active Courses</div>
+                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "8px", color: "#4A5D3B" }}>{courses.length}</div>
+              </div>
+              <div className="glass-panel" style={{ padding: "16px 12px" }}>
+                <div style={{ color: "var(--fg-muted)", fontSize: "11px" }}>Active Plans</div>
+                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "8px", color: "#C99B4D" }}>{plans.length}</div>
+              </div>
+              <div className="glass-panel" style={{ padding: "16px 12px" }}>
+                <div style={{ color: "var(--fg-muted)", fontSize: "11px" }}>Contact Forms</div>
+                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "8px", color: "var(--accent-color)" }}>{contacts.length}</div>
+              </div>
+              <div className="glass-panel" style={{ padding: "16px 12px" }}>
+                <div style={{ color: "var(--fg-muted)", fontSize: "11px" }}>Waitlist Leads</div>
+                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "8px", color: "var(--primary-color)" }}>{leadsCount}</div>
               </div>
             </div>
 
@@ -1382,7 +2346,7 @@ export default function AdminDashboard() {
                     <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                       <label style={formLabelStyle}>Featured Image URL</label>
                       <input
-                        type="url"
+                        type="text"
                         name="featured_image"
                         value={blogForm.featured_image}
                         onChange={handleBlogFormChange}
@@ -1590,28 +2554,207 @@ export default function AdminDashboard() {
             {contacts.length === 0 ? (
               <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>Inbox empty. All clean!</p>
             ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                {contacts.map((msg) => (
-                  <div key={msg.id} style={{ padding: "20px", border: "1px solid var(--card-border)", borderRadius: "12px", background: "rgba(255,255,255,0.01)" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
-                      <div>
-                        <h4 style={{ fontSize: "16px", fontWeight: "600" }}>{msg.name}</h4>
-                        <span style={{ fontSize: "12px", color: "var(--fg-muted)" }}>
-                          Email: <a href={`mailto:${msg.email}`} style={{ color: "var(--secondary-color)" }}>{msg.email}</a> | Date: {new Date(msg.created_at).toLocaleString()}
-                        </span>
-                      </div>
-                      <button onClick={() => handleDeleteContact(msg.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>
-                        Delete Record
-                      </button>
-                    </div>
-                    <div style={{ borderTop: "1px solid rgba(255,255,255,0.03)", paddingTop: "12px" }}>
-                      <div style={{ fontSize: "14px", fontWeight: "600", color: "var(--fg-color)", marginBottom: "4px" }}>Subject: {msg.subject}</div>
-                      <p style={{ color: "var(--fg-muted)", fontSize: "14px", lineHeight: "1.6", whiteSpace: "pre-wrap" }}>{msg.message}</p>
-                    </div>
-                  </div>
-                ))}
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
+                  <thead>
+                    <tr style={{ borderBottom: "1px solid var(--card-border)", color: "var(--fg-muted)" }}>
+                      <th style={{ padding: "12px" }}>Name</th>
+                      <th style={{ padding: "12px" }}>Email</th>
+                      <th style={{ padding: "12px" }}>Subject</th>
+                      <th style={{ padding: "12px" }}>Date</th>
+                      <th style={{ padding: "12px", textAlign: "right" }}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {contacts.map((msg) => (
+                      <tr key={msg.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
+                        <td style={{ padding: "12px", fontWeight: "600" }}>{msg.name}</td>
+                        <td style={{ padding: "12px" }}>
+                          <a href={`mailto:${msg.email}`} style={{ color: "var(--secondary-color)", textDecoration: "none" }}>{msg.email}</a>
+                        </td>
+                        <td style={{ padding: "12px" }}>{msg.subject}</td>
+                        <td style={{ padding: "12px" }}>{new Date(msg.created_at).toLocaleString()}</td>
+                        <td style={{ padding: "12px", textAlign: "right", display: "flex", gap: "8px", justifyContent: "flex-end", height: "49px", alignItems: "center" }}>
+                          <button onClick={() => setSelectedContact(msg)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>
+                            View Detail
+                          </button>
+                          <button onClick={() => handleDeleteContact(msg.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Contact Inquiry Detail Modal */}
+        {selectedContact && (
+          <div style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.4)",
+            backdropFilter: "blur(4px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+            padding: "20px",
+            boxSizing: "border-box"
+          }}>
+            <div className="glass-panel" style={{
+              width: "100%",
+              maxWidth: "650px",
+              backgroundColor: "#FFFDF9",
+              border: "1px solid #EADDC8",
+              borderRadius: "20px",
+              boxShadow: "0 20px 50px rgba(44, 37, 30, 0.15)",
+              display: "flex",
+              flexDirection: "column",
+              maxHeight: "90vh",
+              overflow: "hidden"
+            }}>
+              {/* Modal Header */}
+              <div style={{
+                padding: "20px 24px",
+                borderBottom: "1px solid var(--card-border)",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center"
+              }}>
+                <h3 style={{ fontSize: "18px", fontWeight: "700", color: "#2B1F14", margin: 0, fontFamily: "var(--font-serif), Georgia, serif" }}>
+                  Inquiry Detail
+                </h3>
+                <button 
+                  onClick={() => setSelectedContact(null)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    fontSize: "24px",
+                    color: "var(--fg-muted)",
+                    cursor: "pointer",
+                    padding: 0,
+                    lineHeight: 1
+                  }}
+                >
+                  &times;
+                </button>
+              </div>
+
+              {/* Modal Body */}
+              <div style={{
+                padding: "24px",
+                overflowY: "auto",
+                display: "flex",
+                flexDirection: "column",
+                gap: "20px",
+                textAlign: "left"
+              }}>
+                {/* Contact Basics */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                  <div>
+                    <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "700", color: "var(--fg-muted)" }}>Sender Name</span>
+                    <div style={{ fontSize: "15px", fontWeight: "600", color: "#2B1F14", marginTop: "4px" }}>{selectedContact.name}</div>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "700", color: "var(--fg-muted)" }}>Email Address</span>
+                    <div style={{ fontSize: "15px", fontWeight: "600", marginTop: "4px" }}>
+                      <a href={`mailto:${selectedContact.email}`} style={{ color: "var(--secondary-color)", textDecoration: "none" }}>
+                        {selectedContact.email}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                  <div>
+                    <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "700", color: "var(--fg-muted)" }}>Subject</span>
+                    <div style={{ fontSize: "15px", fontWeight: "600", color: "#2B1F14", marginTop: "4px" }}>{selectedContact.subject}</div>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "700", color: "var(--fg-muted)" }}>Date Submitted</span>
+                    <div style={{ fontSize: "15px", fontWeight: "600", color: "#2B1F14", marginTop: "4px" }}>
+                      {new Date(selectedContact.created_at).toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Message Body */}
+                <div style={{ borderTop: "1px solid var(--card-border)", paddingTop: "16px" }}>
+                  <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "700", color: "var(--fg-muted)" }}>Message Content</span>
+                  <p style={{
+                    fontSize: "14.5px",
+                    lineHeight: "1.6",
+                    color: "#4A3B2C",
+                    backgroundColor: "rgba(0,0,0,0.015)",
+                    border: "1px solid var(--card-border)",
+                    borderRadius: "10px",
+                    padding: "14px",
+                    marginTop: "6px",
+                    whiteSpace: "pre-wrap",
+                    maxHeight: "200px",
+                    overflowY: "auto"
+                  }}>
+                    {selectedContact.message}
+                  </p>
+                </div>
+
+                {/* Telemetry metadata block */}
+                <div style={{
+                  borderTop: "1px solid var(--card-border)",
+                  paddingTop: "16px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "10px"
+                }}>
+                  <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "700", color: "var(--fg-muted)" }}>User Telemetry Metadata</span>
+                  
+                  <div style={{
+                    padding: "14px",
+                    backgroundColor: "#FAF6F0",
+                    border: "1px solid rgba(201, 155, 77, 0.2)",
+                    borderRadius: "10px",
+                    fontSize: "13px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "8px"
+                  }}>
+                    <div>
+                      🌐 <strong>IP Address:</strong> <span style={{ fontFamily: "monospace", color: "#C99B4D", fontWeight: "600" }}>{selectedContact.ip_address || "N/A (Local / Legacy)"}</span>
+                    </div>
+                    <div>
+                      💻 <strong>System Specs:</strong> <span style={{ color: "#2B1F14" }}>{selectedContact.system_info || "N/A"}</span>
+                    </div>
+                    <div style={{ borderTop: "1px dashed rgba(201, 155, 77, 0.15)", paddingTop: "8px", overflowX: "auto" }}>
+                      🔍 <strong>User-Agent:</strong> <br />
+                      <span style={{ fontFamily: "monospace", fontSize: "11px", color: "var(--fg-muted)" }}>{selectedContact.browser_info || "N/A"}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Modal Footer */}
+              <div style={{
+                padding: "16px 24px",
+                borderTop: "1px solid var(--card-border)",
+                display: "flex",
+                justifyContent: "flex-end"
+              }}>
+                <button 
+                  onClick={() => setSelectedContact(null)} 
+                  className="btn-primary" 
+                  style={{ padding: "10px 24px" }}
+                >
+                  Close Inquiry
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
@@ -1762,7 +2905,7 @@ export default function AdminDashboard() {
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                     <label style={formLabelStyle}>Logo Image URL</label>
                     <input
-                      type="url"
+                      type="text"
                       value={profileForm.logo_url}
                       onChange={(e) => setProfileForm((prev) => ({ ...prev, logo_url: e.target.value }))}
                       placeholder="https://example.com/logo.png"
@@ -1807,10 +2950,957 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
+              <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
+                <h3 style={{ fontSize: "18px", fontWeight: "600", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px" }}>Contact Details & Social Media Links</h3>
+                
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Contact Email Address</label>
+                    <input
+                      type="email"
+                      value={profileForm.contact_email}
+                      onChange={(e) => setProfileForm((prev) => ({ ...prev, contact_email: e.target.value }))}
+                      placeholder="info@yaqeeninstitute.com"
+                      style={formInputStyle}
+                    />
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Contact Phone / WhatsApp</label>
+                    <input
+                      type="text"
+                      value={profileForm.contact_phone}
+                      onChange={(e) => setProfileForm((prev) => ({ ...prev, contact_phone: e.target.value }))}
+                      placeholder="+447488818192"
+                      style={formInputStyle}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Working Hours Details</label>
+                    <input
+                      type="text"
+                      value={profileForm.contact_hours}
+                      onChange={(e) => setProfileForm((prev) => ({ ...prev, contact_hours: e.target.value }))}
+                      placeholder="24x7 - We're always here for you."
+                      style={formInputStyle}
+                    />
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Worldwide Support Subtitle</label>
+                    <input
+                      type="text"
+                      value={profileForm.contact_support}
+                      onChange={(e) => setProfileForm((prev) => ({ ...prev, contact_support: e.target.value }))}
+                      placeholder="We serve students from around the world."
+                      style={formInputStyle}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", borderTop: "1px dashed var(--card-border)", paddingTop: "20px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Facebook Profile URL</label>
+                    <input
+                      type="text"
+                      value={profileForm.social_facebook}
+                      onChange={(e) => setProfileForm((prev) => ({ ...prev, social_facebook: e.target.value }))}
+                      placeholder="https://facebook.com/..."
+                      style={formInputStyle}
+                    />
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Instagram Profile URL</label>
+                    <input
+                      type="text"
+                      value={profileForm.social_instagram}
+                      onChange={(e) => setProfileForm((prev) => ({ ...prev, social_instagram: e.target.value }))}
+                      placeholder="https://instagram.com/..."
+                      style={formInputStyle}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>YouTube Channel URL</label>
+                    <input
+                      type="text"
+                      value={profileForm.social_youtube}
+                      onChange={(e) => setProfileForm((prev) => ({ ...prev, social_youtube: e.target.value }))}
+                      placeholder="https://youtube.com/..."
+                      style={formInputStyle}
+                    />
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>WhatsApp Chat Link / Number</label>
+                    <input
+                      type="text"
+                      value={profileForm.social_whatsapp}
+                      onChange={(e) => setProfileForm((prev) => ({ ...prev, social_whatsapp: e.target.value }))}
+                      placeholder="https://wa.me/..."
+                      style={formInputStyle}
+                    />
+                  </div>
+                </div>
+              </div>
+
               <button type="submit" className="btn-primary" style={{ width: "fit-content", alignSelf: "flex-end" }}>
                 Save Settings & Credentials
               </button>
             </form>
+          </div>
+        )}
+
+        {/* TAB: MANAGE TEACHERS */}
+        {activeTab === "teachers" && (
+          <div>
+            {!isEditingTeacher ? (
+              // Teachers List Screen
+              <div className="glass-panel" style={{ padding: "24px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                  <h3 style={{ fontSize: "18px", fontWeight: "600" }}>Islamic Teachers</h3>
+                  <button onClick={triggerCreateTeacher} className="btn-primary" style={{ padding: "8px 16px", fontSize: "13px" }}>
+                    + Register Teacher
+                  </button>
+                </div>
+
+                {teachers.length === 0 ? (
+                  <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>No teacher profiles found. Click Register Teacher to add one.</p>
+                ) : (
+                  <div style={{ overflowX: "auto" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
+                      <thead>
+                        <tr style={{ borderBottom: "1px solid var(--card-border)", color: "var(--fg-muted)" }}>
+                          <th style={{ padding: "12px" }}>Avatar</th>
+                          <th style={{ padding: "12px" }}>Name</th>
+                          <th style={{ padding: "12px" }}>Languages</th>
+                          <th style={{ padding: "12px" }}>Experience</th>
+                          <th style={{ padding: "12px" }}>Specialization</th>
+                          <th style={{ padding: "12px" }}>Sort Order</th>
+                          <th style={{ padding: "12px", textAlign: "right" }}>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {teachers.map((t) => (
+                          <tr key={t.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
+                            <td style={{ padding: "12px" }}>
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img 
+                                src={t.avatar_url || "/images/teacher_rahman.png"} 
+                                alt={t.name} 
+                                style={{ width: "40px", height: "40px", borderRadius: "50%", objectFit: "cover", border: "1px solid var(--card-border)" }} 
+                              />
+                            </td>
+                            <td style={{ padding: "12px", fontWeight: "600" }}>{t.name}</td>
+                            <td style={{ padding: "12px" }}>{t.languages}</td>
+                            <td style={{ padding: "12px" }}>{t.experience}</td>
+                            <td style={{ padding: "12px" }}>{t.specialization}</td>
+                            <td style={{ padding: "12px" }}>{t.order_index}</td>
+                            <td style={{ padding: "12px", textAlign: "right", display: "flex", gap: "8px", justifyContent: "flex-end", height: "64px", alignItems: "center" }}>
+                              <button onClick={() => triggerEditTeacher(t)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>Edit</button>
+                              <button onClick={() => handleDeleteTeacher(t.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>Delete</button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            ) : (
+              // Teacher Register / Edit Form
+              <form onSubmit={handleSaveTeacher} style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+                <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
+                  <h3 style={{ fontSize: "18px", fontWeight: "600", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px" }}>Teacher Details</h3>
+                  
+                  <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "20px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Full Name *</label>
+                      <input
+                        type="text"
+                        value={teacherForm.name}
+                        onChange={(e) => setTeacherForm(prev => ({ ...prev, name: e.target.value }))}
+                        placeholder="e.g. Ustadh Rahman Ali"
+                        required
+                        style={formInputStyle}
+                      />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Sort Order Index</label>
+                      <input
+                        type="number"
+                        value={teacherForm.order_index}
+                        onChange={(e) => setTeacherForm(prev => ({ ...prev, order_index: e.target.value }))}
+                        placeholder="e.g. 1"
+                        style={formInputStyle}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Languages *</label>
+                      <input
+                        type="text"
+                        value={teacherForm.languages}
+                        onChange={(e) => setTeacherForm(prev => ({ ...prev, languages: e.target.value }))}
+                        placeholder="e.g. Arabic, English, Urdu"
+                        required
+                        style={formInputStyle}
+                      />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Experience *</label>
+                      <input
+                        type="text"
+                        value={teacherForm.experience}
+                        onChange={(e) => setTeacherForm(prev => ({ ...prev, experience: e.target.value }))}
+                        placeholder="e.g. 8+ Years"
+                        required
+                        style={formInputStyle}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Specialization / Subjects *</label>
+                    <input
+                      type="text"
+                      value={teacherForm.specialization}
+                      onChange={(e) => setTeacherForm(prev => ({ ...prev, specialization: e.target.value }))}
+                      placeholder="e.g. Qur'an, Tajweed"
+                      required
+                      style={formInputStyle}
+                    />
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Avatar Image URL</label>
+                      <input
+                        type="text"
+                        value={teacherForm.avatar_url}
+                        onChange={(e) => setTeacherForm(prev => ({ ...prev, avatar_url: e.target.value }))}
+                        placeholder="https://images.unsplash.com/... or /images/..."
+                        style={formInputStyle}
+                      />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Or Upload Local Avatar Image</label>
+                      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleAvatarUpload}
+                          disabled={uploading}
+                          style={{
+                            ...formInputStyle,
+                            padding: "8px 12px",
+                            flex: 1,
+                            fontSize: "13px"
+                          }}
+                        />
+                        {uploading && <span style={{ color: "var(--secondary-color)", fontSize: "12px" }}>Uploading...</span>}
+                      </div>
+                    </div>
+                  </div>
+
+                  {teacherForm.avatar_url && (
+                    <div style={{ marginTop: "4px", border: "1px solid var(--card-border)", borderRadius: "8px", padding: "8px", width: "fit-content", display: "flex", gap: "12px", alignItems: "center", backgroundColor: "rgba(255,255,255,0.01)" }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={teacherForm.avatar_url} alt="Preview" style={{ width: "60px", height: "60px", borderRadius: "50%", objectFit: "cover" }} />
+                      <div style={{ display: "flex", flexDirection: "column" }}>
+                        <span style={{ fontSize: "11px", color: "var(--fg-muted)" }}>Avatar Preview</span>
+                        <button type="button" onClick={() => setTeacherForm(prev => ({ ...prev, avatar_url: "" }))} style={{ color: "#ef4444", border: "none", background: "none", fontSize: "11px", cursor: "pointer", textAlign: "left", padding: 0 }}>Remove Image</button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Action buttons */}
+                <div style={{ display: "flex", gap: "16px", justifyContent: "flex-end" }}>
+                  <button type="button" onClick={() => { setIsEditingTeacher(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="btn-secondary" style={{ padding: "12px 24px" }}>
+                    Cancel & Return
+                  </button>
+                  <button type="submit" className="btn-primary" style={{ padding: "12px 32px" }}>
+                    {editingTeacherId ? "Save Profile" : "Register Teacher"}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        )}
+
+        {/* TAB: MANAGE TESTIMONIALS */}
+        {activeTab === "testimonials" && (
+          <div>
+            {!isEditingTestimonial ? (
+              // Testimonials List Screen
+              <div className="glass-panel" style={{ padding: "24px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                  <h3 style={{ fontSize: "18px", fontWeight: "600" }}>Client Testimonials</h3>
+                  <button onClick={triggerCreateTestimonial} className="btn-primary" style={{ padding: "8px 16px", fontSize: "13px" }}>
+                    + Add Testimonial
+                  </button>
+                </div>
+
+                {testimonials.length === 0 ? (
+                  <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>No testimonials found. Click Add Testimonial to create one.</p>
+                ) : (
+                  <div style={{ overflowX: "auto" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
+                      <thead>
+                        <tr style={{ borderBottom: "1px solid var(--card-border)", color: "var(--fg-muted)" }}>
+                          <th style={{ padding: "12px" }}>Avatar</th>
+                          <th style={{ padding: "12px" }}>Author Name</th>
+                          <th style={{ padding: "12px" }}>Role</th>
+                          <th style={{ padding: "12px" }}>Content Snippet</th>
+                          <th style={{ padding: "12px" }}>Target Pages</th>
+                          <th style={{ padding: "12px" }}>Sort Order</th>
+                          <th style={{ padding: "12px", textAlign: "right" }}>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {testimonials.map((t) => (
+                          <tr key={t.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
+                            <td style={{ padding: "12px" }}>
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img 
+                                src={t.avatar_url || "/images/testi_ayesha.png"} 
+                                alt={t.name} 
+                                style={{ width: "40px", height: "40px", borderRadius: "50%", objectFit: "cover", border: "1px solid var(--card-border)" }} 
+                              />
+                            </td>
+                            <td style={{ padding: "12px", fontWeight: "600" }}>{t.name}</td>
+                            <td style={{ padding: "12px" }}>{t.role}</td>
+                            <td style={{ padding: "12px", maxWidth: "250px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.content}</td>
+                            <td style={{ padding: "12px" }}>
+                              <span style={{ padding: "3px 8px", background: "rgba(201, 155, 77, 0.08)", border: "1px solid rgba(201, 155, 77, 0.2)", borderRadius: "4px", fontSize: "11px", color: "#8c5d31", fontWeight: "600", textTransform: "uppercase" }}>
+                                {t.page_target === "all" ? "All Pages" : t.page_target}
+                              </span>
+                            </td>
+                            <td style={{ padding: "12px" }}>{t.order_index}</td>
+                            <td style={{ padding: "12px", textAlign: "right", display: "flex", gap: "8px", justifyContent: "flex-end", height: "64px", alignItems: "center" }}>
+                              <button onClick={() => triggerEditTestimonial(t)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>Edit</button>
+                              <button onClick={() => handleDeleteTestimonial(t.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>Delete</button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            ) : (
+              // Testimonial Register / Edit Form
+              <form onSubmit={handleSaveTestimonial} style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+                <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
+                  <h3 style={{ fontSize: "18px", fontWeight: "600", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px" }}>Testimonial Details</h3>
+                  
+                  <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "20px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Author Full Name *</label>
+                      <input
+                        type="text"
+                        value={testimonialForm.name}
+                        onChange={(e) => setTestimonialForm(prev => ({ ...prev, name: e.target.value }))}
+                        placeholder="e.g. Ayesha Khan"
+                        required
+                        style={formInputStyle}
+                      />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Sort Order Index</label>
+                      <input
+                        type="number"
+                        value={testimonialForm.order_index}
+                        onChange={(e) => setTestimonialForm(prev => ({ ...prev, order_index: e.target.value }))}
+                        placeholder="e.g. 1"
+                        style={formInputStyle}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Author Description / Role *</label>
+                    <input
+                      type="text"
+                      value={testimonialForm.role}
+                      onChange={(e) => setTestimonialForm(prev => ({ ...prev, role: e.target.value }))}
+                      placeholder="e.g. Mother of 2, Adult Learner, Parent"
+                      required
+                      style={formInputStyle}
+                    />
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Testimonial Content *</label>
+                    <textarea
+                      rows="4"
+                      value={testimonialForm.content}
+                      onChange={(e) => setTestimonialForm(prev => ({ ...prev, content: e.target.value }))}
+                      placeholder="Write customer review..."
+                      required
+                      style={formTextareaStyle}
+                    />
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Avatar Image URL</label>
+                      <input
+                        type="text"
+                        value={testimonialForm.avatar_url}
+                        onChange={(e) => setTestimonialForm(prev => ({ ...prev, avatar_url: e.target.value }))}
+                        placeholder="https://images.unsplash.com/... or /images/..."
+                        style={formInputStyle}
+                      />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Or Upload Local Avatar Image</label>
+                      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleTestimonialAvatarUpload}
+                          disabled={uploading}
+                          style={{
+                            ...formInputStyle,
+                            padding: "8px 12px",
+                            flex: 1,
+                            fontSize: "13px"
+                          }}
+                        />
+                        {uploading && <span style={{ color: "var(--secondary-color)", fontSize: "12px" }}>Uploading...</span>}
+                      </div>
+                    </div>
+                  </div>
+
+                  {testimonialForm.avatar_url && (
+                    <div style={{ marginTop: "4px", border: "1px solid var(--card-border)", borderRadius: "8px", padding: "8px", width: "fit-content", display: "flex", gap: "12px", alignItems: "center", backgroundColor: "rgba(255,255,255,0.01)" }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={testimonialForm.avatar_url} alt="Preview" style={{ width: "60px", height: "60px", borderRadius: "50%", objectFit: "cover" }} />
+                      <div style={{ display: "flex", flexDirection: "column" }}>
+                        <span style={{ fontSize: "11px", color: "var(--fg-muted)" }}>Avatar Preview</span>
+                        <button type="button" onClick={() => setTestimonialForm(prev => ({ ...prev, avatar_url: "" }))} style={{ color: "#ef4444", border: "none", background: "none", fontSize: "11px", cursor: "pointer", textAlign: "left", padding: 0 }}>Remove Image</button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Target Pages Checkboxes */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px", borderTop: "1px solid var(--card-border)", paddingTop: "20px", marginTop: "10px" }}>
+                    <label style={formLabelStyle}>Target Pages for Display *</label>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "24px", marginTop: "8px" }}>
+                      <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontSize: "14px", fontWeight: "600" }}>
+                        <input
+                          type="checkbox"
+                          checked={testimonialForm.page_targets.all}
+                          onChange={(e) => setTestimonialForm(prev => ({
+                            ...prev,
+                            page_targets: {
+                              ...prev.page_targets,
+                              all: e.target.checked,
+                              home: false,
+                              about: false,
+                              courses: false,
+                              pricing: false
+                            }
+                          }))}
+                        />
+                        Show on All Pages
+                      </label>
+
+                      <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontSize: "14px", opacity: testimonialForm.page_targets.all ? 0.5 : 1 }}>
+                        <input
+                          type="checkbox"
+                          disabled={testimonialForm.page_targets.all}
+                          checked={testimonialForm.page_targets.home}
+                          onChange={(e) => setTestimonialForm(prev => ({
+                            ...prev,
+                            page_targets: { ...prev.page_targets, home: e.target.checked }
+                          }))}
+                        />
+                        Home Page
+                      </label>
+
+                      <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontSize: "14px", opacity: testimonialForm.page_targets.all ? 0.5 : 1 }}>
+                        <input
+                          type="checkbox"
+                          disabled={testimonialForm.page_targets.all}
+                          checked={testimonialForm.page_targets.about}
+                          onChange={(e) => setTestimonialForm(prev => ({
+                            ...prev,
+                            page_targets: { ...prev.page_targets, about: e.target.checked }
+                          }))}
+                        />
+                        About Page
+                      </label>
+
+                      <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontSize: "14px", opacity: testimonialForm.page_targets.all ? 0.5 : 1 }}>
+                        <input
+                          type="checkbox"
+                          disabled={testimonialForm.page_targets.all}
+                          checked={testimonialForm.page_targets.courses}
+                          onChange={(e) => setTestimonialForm(prev => ({
+                            ...prev,
+                            page_targets: { ...prev.page_targets, courses: e.target.checked }
+                          }))}
+                        />
+                        Courses Page
+                      </label>
+
+                      <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontSize: "14px", opacity: testimonialForm.page_targets.all ? 0.5 : 1 }}>
+                        <input
+                          type="checkbox"
+                          disabled={testimonialForm.page_targets.all}
+                          checked={testimonialForm.page_targets.pricing}
+                          onChange={(e) => setTestimonialForm(prev => ({
+                            ...prev,
+                            page_targets: { ...prev.page_targets, pricing: e.target.checked }
+                          }))}
+                        />
+                        Pricing Page
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action buttons */}
+                <div style={{ display: "flex", gap: "16px", justifyContent: "flex-end" }}>
+                  <button type="button" onClick={() => { setIsEditingTestimonial(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="btn-secondary" style={{ padding: "12px 24px" }}>
+                    Cancel & Return
+                  </button>
+                  <button type="submit" className="btn-primary" style={{ padding: "12px 32px" }}>
+                    {editingTestimonialId ? "Save Testimonial" : "Add Testimonial"}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        )}
+
+        {/* TAB: MANAGE COURSES */}
+        {activeTab === "courses" && (
+          <div>
+            {!isEditingCourse ? (
+              // Courses List Screen
+              <div className="glass-panel" style={{ padding: "24px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                  <h3 style={{ fontSize: "18px", fontWeight: "600" }}>Active Courses</h3>
+                  <button onClick={triggerCreateCourse} className="btn-primary" style={{ padding: "8px 16px", fontSize: "13px" }}>
+                    + Add Course
+                  </button>
+                </div>
+
+                {courses.length === 0 ? (
+                  <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>No courses found. Click Add Course to create one.</p>
+                ) : (
+                  <div style={{ overflowX: "auto" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
+                      <thead>
+                        <tr style={{ borderBottom: "1px solid var(--card-border)", color: "var(--fg-muted)" }}>
+                          <th style={{ padding: "12px" }}>Thumbnail</th>
+                          <th style={{ padding: "12px" }}>Course Title</th>
+                          <th style={{ padding: "12px" }}>Icon Tag</th>
+                          <th style={{ padding: "12px" }}>Sort Order</th>
+                          <th style={{ padding: "12px", textAlign: "right" }}>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {courses.map((c) => (
+                          <tr key={c.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
+                            <td style={{ padding: "12px" }}>
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img 
+                                src={c.image_url || "/images/course_quran.png"} 
+                                alt={c.title} 
+                                style={{ width: "70px", height: "45px", borderRadius: "6px", objectFit: "cover", border: "1px solid var(--card-border)" }} 
+                              />
+                            </td>
+                            <td style={{ padding: "12px", fontWeight: "600" }}>{c.title}</td>
+                            <td style={{ padding: "12px" }}>
+                              <span style={{ padding: "3px 8px", background: "rgba(74, 93, 59, 0.08)", border: "1px solid rgba(74, 93, 59, 0.2)", borderRadius: "4px", fontSize: "11px", color: "#4A5D3B", fontWeight: "600", textTransform: "uppercase" }}>
+                                {c.icon}
+                              </span>
+                            </td>
+                            <td style={{ padding: "12px" }}>{c.order_index}</td>
+                            <td style={{ padding: "12px", textAlign: "right", display: "flex", gap: "8px", justifyContent: "flex-end", height: "69px", alignItems: "center" }}>
+                              <button onClick={() => triggerEditCourse(c)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>Edit</button>
+                              <button onClick={() => handleDeleteCourse(c.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>Delete</button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            ) : (
+              // Course Create / Edit Form
+              <form onSubmit={handleSaveCourse} style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+                <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
+                  <h3 style={{ fontSize: "18px", fontWeight: "600", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px" }}>Course Details</h3>
+                  
+                  <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "20px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Course Title *</label>
+                      <input
+                        type="text"
+                        value={courseForm.title}
+                        onChange={(e) => setCourseForm(prev => ({ ...prev, title: e.target.value }))}
+                        placeholder="e.g. Quran Learning with Tajweed"
+                        required
+                        style={formInputStyle}
+                      />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Sort Order Index</label>
+                      <input
+                        type="number"
+                        value={courseForm.order_index}
+                        onChange={(e) => setCourseForm(prev => ({ ...prev, order_index: e.target.value }))}
+                        placeholder="e.g. 1"
+                        style={formInputStyle}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Badge Icon Type *</label>
+                    <select
+                      value={courseForm.icon}
+                      onChange={(e) => setCourseForm(prev => ({ ...prev, icon: e.target.value }))}
+                      style={{
+                        ...formInputStyle,
+                        backgroundColor: "#fdfcf9",
+                        color: "var(--fg-color)",
+                        cursor: "pointer"
+                      }}
+                    >
+                      <option value="book">Book Icon (Quran)</option>
+                      <option value="dad">Arabic Dad Letter (Arabic Language)</option>
+                      <option value="mosque">Mosque Icon (Islamic Studies)</option>
+                      <option value="badge">Badge/Star Icon (Hifz/Memorization)</option>
+                      <option value="pencil">Pencil Icon (Noorani Qaida)</option>
+                    </select>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Thumbnail Image URL</label>
+                      <input
+                        type="text"
+                        value={courseForm.image_url}
+                        onChange={(e) => setCourseForm(prev => ({ ...prev, image_url: e.target.value }))}
+                        placeholder="https://images.unsplash.com/... or /images/..."
+                        style={formInputStyle}
+                      />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Or Upload Local Image Thumbnail</label>
+                      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleCourseImageUpload}
+                          disabled={uploading}
+                          style={{
+                            ...formInputStyle,
+                            padding: "8px 12px",
+                            flex: 1,
+                            fontSize: "13px"
+                          }}
+                        />
+                        {uploading && <span style={{ color: "var(--secondary-color)", fontSize: "12px" }}>Uploading...</span>}
+                      </div>
+                    </div>
+                  </div>
+
+                  {courseForm.image_url && (
+                    <div style={{ marginTop: "4px", border: "1px solid var(--card-border)", borderRadius: "8px", padding: "8px", width: "fit-content", display: "flex", gap: "12px", alignItems: "center", backgroundColor: "rgba(255,255,255,0.01)" }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={courseForm.image_url} alt="Preview" style={{ width: "90px", height: "60px", borderRadius: "6px", objectFit: "cover" }} />
+                      <div style={{ display: "flex", flexDirection: "column" }}>
+                        <span style={{ fontSize: "11px", color: "var(--fg-muted)" }}>Thumbnail Preview</span>
+                        <button type="button" onClick={() => setCourseForm(prev => ({ ...prev, image_url: "" }))} style={{ color: "#ef4444", border: "none", background: "none", fontSize: "11px", cursor: "pointer", textAlign: "left", padding: 0 }}>Remove Image</button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Action buttons */}
+                <div style={{ display: "flex", gap: "16px", justifyContent: "flex-end" }}>
+                  <button type="button" onClick={() => { setIsEditingCourse(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="btn-secondary" style={{ padding: "12px 24px" }}>
+                    Cancel & Return
+                  </button>
+                  <button type="submit" className="btn-primary" style={{ padding: "12px 32px" }}>
+                    {editingCourseId ? "Save Course" : "Add Course"}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        )}
+
+        {/* TAB: MANAGE PLANS */}
+        {activeTab === "plans" && (
+          <div>
+            {!isEditingPlan ? (
+              // Plans List Screen
+              <div className="glass-panel" style={{ padding: "24px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                  <h3 style={{ fontSize: "18px", fontWeight: "600" }}>Pricing Packages</h3>
+                  <button onClick={triggerCreatePlan} className="btn-primary" style={{ padding: "8px 16px", fontSize: "13px" }}>
+                    + Create Package
+                  </button>
+                </div>
+
+                {plans.length === 0 ? (
+                  <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>No pricing packages found. Click Create Package to add one.</p>
+                ) : (
+                  <div style={{ overflowX: "auto" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
+                      <thead>
+                        <tr style={{ borderBottom: "1px solid var(--card-border)", color: "var(--fg-muted)" }}>
+                          <th style={{ padding: "12px" }}>Package Name</th>
+                          <th style={{ padding: "12px" }}>Subtitle</th>
+                          <th style={{ padding: "12px" }}>Rate Price</th>
+                          <th style={{ padding: "12px" }}>Icon</th>
+                          <th style={{ padding: "12px" }}>Ribbon Badge</th>
+                          <th style={{ padding: "12px" }}>Features Count</th>
+                          <th style={{ padding: "12px" }}>Sort Order</th>
+                          <th style={{ padding: "12px", textAlign: "right" }}>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {plans.map((p) => (
+                          <tr key={p.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
+                            <td style={{ padding: "12px", fontWeight: "600" }}>{p.name}</td>
+                            <td style={{ padding: "12px" }}>{p.subtitle}</td>
+                            <td style={{ padding: "12px", fontWeight: "600" }}>${p.price}{p.period}</td>
+                            <td style={{ padding: "12px" }}>
+                              <span style={{ padding: "3px 8px", background: "rgba(201, 155, 77, 0.08)", border: "1px solid rgba(201, 155, 77, 0.2)", borderRadius: "4px", fontSize: "11px", color: "#8c5d31", fontWeight: "600", textTransform: "uppercase" }}>
+                                {p.icon}
+                              </span>
+                            </td>
+                            <td style={{ padding: "12px" }}>
+                              {p.badge ? (
+                                <span style={{ padding: "3px 8px", background: "rgba(74, 93, 59, 0.08)", border: "1px solid rgba(74, 93, 59, 0.2)", borderRadius: "4px", fontSize: "11px", color: "#4A5D3B", fontWeight: "600" }}>
+                                  {p.badge}
+                                </span>
+                              ) : (
+                                <span style={{ color: "var(--fg-muted)", fontSize: "12px" }}>—</span>
+                              )}
+                            </td>
+                            <td style={{ padding: "12px" }}>{p.features?.length || 0} items</td>
+                            <td style={{ padding: "12px" }}>{p.order_index}</td>
+                            <td style={{ padding: "12px", textAlign: "right", display: "flex", gap: "8px", justifyContent: "flex-end", height: "53px", alignItems: "center" }}>
+                              <button onClick={() => triggerEditPlan(p)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>Edit</button>
+                              <button onClick={() => handleDeletePlan(p.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>Delete</button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            ) : (
+              // Plan Create / Edit Form
+              <form onSubmit={handleSavePlan} style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+                <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
+                  <h3 style={{ fontSize: "18px", fontWeight: "600", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px" }}>Package Details</h3>
+                  
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Plan Name *</label>
+                      <input
+                        type="text"
+                        value={planForm.name}
+                        onChange={(e) => setPlanForm(prev => ({ ...prev, name: e.target.value }))}
+                        placeholder="e.g. Basic"
+                        required
+                        style={formInputStyle}
+                      />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Subtitle / Description</label>
+                      <input
+                        type="text"
+                        value={planForm.subtitle}
+                        onChange={(e) => setPlanForm(prev => ({ ...prev, subtitle: e.target.value }))}
+                        placeholder="e.g. Entry Level Package"
+                        style={formInputStyle}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "20px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Price Rate ($) *</label>
+                      <input
+                        type="text"
+                        value={planForm.price}
+                        onChange={(e) => setPlanForm(prev => ({ ...prev, price: e.target.value }))}
+                        placeholder="e.g. 8.00"
+                        required
+                        style={formInputStyle}
+                      />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Rate Period</label>
+                      <input
+                        type="text"
+                        value={planForm.period}
+                        onChange={(e) => setPlanForm(prev => ({ ...prev, period: e.target.value }))}
+                        placeholder="e.g. /hour"
+                        style={formInputStyle}
+                      />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Sort Order Index</label>
+                      <input
+                        type="number"
+                        value={planForm.order_index}
+                        onChange={(e) => setPlanForm(prev => ({ ...prev, order_index: e.target.value }))}
+                        placeholder="e.g. 1"
+                        style={formInputStyle}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Brand Header Icon *</label>
+                      <select
+                        value={planForm.icon}
+                        onChange={(e) => setPlanForm(prev => ({ ...prev, icon: e.target.value }))}
+                        style={{
+                          ...formInputStyle,
+                          backgroundColor: "#fdfcf9",
+                          color: "var(--fg-color)",
+                          cursor: "pointer"
+                        }}
+                      >
+                        <option value="plane">Paper Plane Icon (Basic)</option>
+                        <option value="star">Star Award Icon (Essentials)</option>
+                        <option value="diamond">Diamond Icon (Premium)</option>
+                        <option value="crown">Crown Icon (Platinum)</option>
+                      </select>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Ribbon Badge Text (Best Value, Popular, etc.)</label>
+                      <input
+                        type="text"
+                        value={planForm.badge}
+                        onChange={(e) => setPlanForm(prev => ({ ...prev, badge: e.target.value }))}
+                        placeholder="e.g. Best Value (or leave empty)"
+                        style={formInputStyle}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Features list checklist manager */}
+                <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
+                  <h3 style={{ fontSize: "18px", fontWeight: "600", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px" }}>Itemized Features Checklist</h3>
+                  
+                  {planForm.features.length === 0 ? (
+                    <p style={{ color: "var(--fg-muted)", fontSize: "13px", fontStyle: "italic", padding: "10px 0" }}>No feature points configured yet. Use the add panel below to define points.</p>
+                  ) : (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                      {planForm.features.map((item, idx) => (
+                        <div key={idx} style={{ display: "flex", alignItems: "center", justifyItems: "space-between", padding: "10px 16px", border: "1px solid var(--card-border)", borderRadius: "8px", backgroundColor: "rgba(0,0,0,0.01)", gap: "12px" }}>
+                          {/* Toggle Checkmark vs Cross */}
+                          <button 
+                            type="button" 
+                            onClick={() => handleTogglePlanFeatureIncluded(idx)} 
+                            style={{ 
+                              background: "none", 
+                              border: "none", 
+                              cursor: "pointer", 
+                              fontSize: "14px", 
+                              color: item.included ? "#4A5D3B" : "#ef4444",
+                              display: "flex", 
+                              alignItems: "center",
+                              gap: "6px",
+                              padding: 0
+                            }}
+                          >
+                            <span style={{ fontSize: "18px" }}>{item.included ? "✔️" : "❌"}</span>
+                            <span style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase" }}>{item.included ? "Included" : "Excluded"}</span>
+                          </button>
+                          
+                          <span style={{ flexGrow: 1, fontSize: "14px", color: item.included ? "var(--fg-color)" : "var(--fg-muted)", textDecoration: item.included ? "none" : "line-through", textDecorationColor: "rgba(0,0,0,0.15)" }}>
+                            {item.text}
+                          </span>
+
+                          <button 
+                            type="button" 
+                            onClick={() => handleRemovePlanFeature(idx)} 
+                            style={{ background: "none", border: "none", color: "#ef4444", fontSize: "12px", cursor: "pointer", fontWeight: "600", padding: "4px 8px" }}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Add Feature Item Panel */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "12px", borderTop: "1px solid var(--card-border)", paddingTop: "20px", marginTop: "10px" }}>
+                    <label style={formLabelStyle}>Add Feature Point</label>
+                    <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+                      <input
+                        type="text"
+                        value={newFeatureText}
+                        onChange={(e) => setNewFeatureText(e.target.value)}
+                        placeholder="e.g. Proficient Arabic (Native) Teacher"
+                        style={{ ...formInputStyle, flexGrow: 1 }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleAddPlanFeature();
+                          }
+                        }}
+                      />
+                      <label style={{ display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", fontSize: "13px", fontWeight: "600", userSelect: "none" }}>
+                        <input
+                          type="checkbox"
+                          checked={newFeatureIncluded}
+                          onChange={(e) => setNewFeatureIncluded(e.target.checked)}
+                        />
+                        Mark Included
+                      </label>
+                      <button 
+                        type="button" 
+                        onClick={handleAddPlanFeature} 
+                        className="btn-primary" 
+                        style={{ padding: "10px 20px", fontSize: "13px" }}
+                      >
+                        + Add Item
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action buttons */}
+                <div style={{ display: "flex", gap: "16px", justifyContent: "flex-end" }}>
+                  <button type="button" onClick={() => { setIsEditingPlan(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="btn-secondary" style={{ padding: "12px 24px" }}>
+                    Cancel & Return
+                  </button>
+                  <button type="submit" className="btn-primary" style={{ padding: "12px 32px" }}>
+                    {editingPlanId ? "Save Package" : "Create Package"}
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         )}
       </main>

@@ -1,8 +1,23 @@
 "use client";
 
 import Link from "next/link";
+import { useSettings } from "@/lib/settings-context";
 
 export default function Footer() {
+  const { 
+    contactEmail, 
+    contactPhone, 
+    socialFacebook, 
+    socialInstagram, 
+    socialYoutube, 
+    socialWhatsapp 
+  } = useSettings();
+
+  const displayFacebook = socialFacebook || "https://facebook.com";
+  const displayInstagram = socialInstagram || "https://instagram.com";
+  const displayYoutube = socialYoutube || "https://youtube.com";
+  const displayWhatsapp = socialWhatsapp || "https://wa.me/447488818192";
+
   return (
     <footer className="footer">
       <div className="footer-container">
@@ -73,7 +88,7 @@ export default function Footer() {
                   <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                 </svg>
               </div>
-              <span className="footer-help-text">UK +44 74 88 818192</span>
+              <span className="footer-help-text">{contactPhone || "UK +44 74 88 818192"}</span>
             </div>
 
             <div className="footer-help-item">
@@ -83,7 +98,9 @@ export default function Footer() {
                   <polyline points="22,6 12,13 2,6" />
                 </svg>
               </div>
-              <span className="footer-help-text">Email: contact@yaqeeninstitute.online</span>
+              <span className="footer-help-text">
+                <a href={`mailto:${contactEmail || "contact@yaqeeninstitute.online"}`} style={{ color: "inherit", textDecoration: "none" }}>{contactEmail || "contact@yaqeeninstitute.online"}</a>
+              </span>
             </div>
 
             <div className="footer-help-divider">
@@ -109,49 +126,28 @@ export default function Footer() {
             
             <div className="footer-social-row">
               {/* WhatsApp */}
-              <a href="https://wa.me/447488818192" target="_blank" rel="noopener noreferrer" className="footer-social-circle whatsapp" aria-label="WhatsApp">
+              <a href={displayWhatsapp} target="_blank" rel="noopener noreferrer" className="footer-social-circle whatsapp" aria-label="WhatsApp">
                 <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12.031 2c-5.517 0-9.993 4.476-9.993 9.993 0 1.763.459 3.479 1.332 4.996l-1.37 5.007 5.128-1.346a9.92 9.92 0 0 0 4.903 1.328h.005c5.515 0 9.991-4.476 9.991-9.993 0-2.674-1.042-5.188-2.932-7.078-1.89-1.89-4.405-2.932-7.076-2.932zm4.904 13.064c-.269.761-1.385 1.4-1.9 1.452-.464.048-.7.218-2.783-.628-2.148-.872-3.486-3.08-3.593-3.223-.107-.143-.872-1.161-.872-2.213 0-1.052.554-1.57.751-1.782.197-.213.43-.269.574-.269.143 0 .287.005.412.011.127.005.297-.048.464.356.172.417.59 1.439.64 1.543.053.104.088.228.018.368-.07.139-.105.228-.21.35-.105.122-.22.274-.315.374-.105.109-.215.228-.093.439.122.21.541.893 1.157 1.442.795.707 1.463.926 1.667 1.03.205.104.325.088.446-.053.122-.143.522-.607.662-.813.14-.205.281-.172.473-.101.192.071 1.221.576 1.43.681.21.104.35.156.402.246.053.09.053.522-.216 1.283z"/>
                 </svg>
               </a>
 
               {/* Facebook */}
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="footer-social-circle facebook" aria-label="Facebook">
+              <a href={displayFacebook} target="_blank" rel="noopener noreferrer" className="footer-social-circle facebook" aria-label="Facebook">
                 <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/>
                 </svg>
               </a>
 
-              {/* Twitter / X */}
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="footer-social-circle twitter" aria-label="Twitter">
-                <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                </svg>
-              </a>
-
-              {/* LinkedIn */}
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="footer-social-circle linkedin" aria-label="LinkedIn">
-                <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-                </svg>
-              </a>
-
-              {/* Pinterest */}
-              <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer" className="footer-social-circle pinterest" aria-label="Pinterest">
-                <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12.017 0C5.396 0 0 5.397 0 12.017c0 5.078 3.158 9.41 7.618 11.162-.105-.947-.199-2.399.041-3.429.218-.93 1.425-6.041 1.425-6.041s-.363-.727-.363-1.802c0-1.688.979-2.948 2.193-2.948 1.033 0 1.533.776 1.533 1.706 0 1.039-.66 2.593-.999 4.032-.285 1.208.6 2.192 1.791 2.192 2.15 0 3.805-2.268 3.805-5.542 0-2.9-2.083-4.927-5.057-4.927-3.446 0-5.47 2.585-5.47 5.258 0 1.041.4 2.158.9 2.758.1.12.115.223.085.345-.094.393-.3.1.301-1.21.393-.435.105-.975.105-1.57 0-2.894-2.102-5.578-6.09-5.578-4.419 0-7.73 3.149-7.73 7.241 0 4.148 2.621 7.04 6.257 7.04 1.134 0 2.201-.39 2.825-1.015l1.59 1.59c-2.025 1.93-4.96 3.114-8.174 3.114-6.621 0-12.017-5.396-12.017-12.017C0 5.397 5.396 0 12.017 0z"/>
-                </svg>
-              </a>
-
               {/* Instagram */}
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="footer-social-circle instagram" aria-label="Instagram">
+              <a href={displayInstagram} target="_blank" rel="noopener noreferrer" className="footer-social-circle instagram" aria-label="Instagram">
                 <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
                 </svg>
               </a>
 
               {/* YouTube */}
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="footer-social-circle youtube" aria-label="YouTube">
+              <a href={displayYoutube} target="_blank" rel="noopener noreferrer" className="footer-social-circle youtube" aria-label="YouTube">
                 <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.108C19.522 3.5 12 3.5 12 3.5s-7.522 0-9.388.555a3.002 3.002 0 0 0-2.11 2.108C0 8.029 0 12 0 12s0 3.971.502 5.837a3.003 3.003 0 0 0 2.11 2.108C4.478 20.5 12 20.5 12 20.5s7.522 0 9.388-.555a3.003 3.003 0 0 0 2.11-2.108C24 15.971 24 12 24 12s0-3.971-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
                 </svg>

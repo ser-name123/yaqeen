@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import "./about.css";
 import { useSettings } from "@/lib/settings-context";
+import { supabase } from "@/lib/supabase";
 
 // Seamless, intricate Islamic geometric lace star pattern URL (Girih tiling with overlapping circles)
 const LACE_BACKGROUND_PATTERN = 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'160\' height=\'160\' viewBox=\'0 0 160 160\'%3E%3Cg fill=\'none\' stroke=\'%23C99B4D\' stroke-width=\'0.5\' stroke-opacity=\'0.08\'%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'80\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'80\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'80\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'80\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'80\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'80\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'80\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'80\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'80\'/%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'40\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'40\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'40\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'40\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'40\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'40\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'40\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'40\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'40\'/%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'20\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'20\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'20\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'20\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'20\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'20\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'20\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'20\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'20\'/%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'10\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'10\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'10\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'10\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'10\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'10\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'10\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'10\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'10\'/%3E%3Crect x=\'68\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(0 80 80)\'/%3E%3Crect x=\'68\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(45 80 80)\'/%3E%3Crect x=\'-12\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(0 0 0)\'/%3E%3Crect x=\'-12\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(45 0 0)\'/%3E%3Crect x=\'148\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(0 160 0)\'/%3E%3Crect x=\'148\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(45 160 0)\'/%3E%3Crect x=\'-12\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(0 0 160)\'/%3E%3Crect x=\'-12\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(45 0 160)\'/%3E%3Crect x=\'148\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(0 160 160)\'/%3E%3Crect x=\'148\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(45 160 160)\'/%3E%3Crect x=\'68\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(0 80 0)\'/%3E%3Crect x=\'68\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(45 80 0)\'/%3E%3Crect x=\'-12\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(0 0 80)\'/%3E%3Crect x=\'-12\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(45 0 80)\'/%3E%3Crect x=\'148\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(0 160 80)\'/%3E%3Crect x=\'148\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(45 160 80)\'/%3E%3Crect x=\'68\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(0 80 160)\'/%3E%3Crect x=\'68\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(45 80 160)\'/%3E%3Crect x=\'74\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(0 80 80)\'/%3E%3Crect x=\'74\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(45 80 80)\'/%3E%3Crect x=\'-6\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(0 0 0)\'/%3E%3Crect x=\'-6\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(45 0 0)\'/%3E%3Crect x=\'154\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(0 160 0)\'/%3E%3Crect x=\'154\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(45 160 0)\'/%3E%3Crect x=\'-6\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(0 0 160)\'/%3E%3Crect x=\'-6\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(45 0 160)\'/%3E%3Crect x=\'154\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(0 160 160)\'/%3E%3Crect x=\'154\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(45 160 160)\'/%3E%3Crect x=\'74\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(0 80 0)\'/%3E%3Crect x=\'74\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(45 80 0)\'/%3E%3Crect x=\'-6\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(0 0 80)\'/%3E%3Crect x=\'-6\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(45 0 80)\'/%3E%3Crect x=\'154\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(0 160 80)\'/%3E%3Crect x=\'154\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(45 160 80)\'/%3E%3Crect x=\'74\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(0 80 160)\'/%3E%3Crect x=\'74\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(45 80 160)\'/%3E%3C/g%3E%3C/svg%3E")';
@@ -232,6 +233,54 @@ const ArchedCardBackground = () => (
 export default function AboutPage() {
   const { faviconUrl } = useSettings();
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
+  const [testimonials, setTestimonials] = useState([
+    {
+      id: 1,
+      name: "Ayesha Khan",
+      role: "Mother of 2",
+      content: "Yaqeen has helped my child develop a strong understanding of Islam in a fun and meaningful way. Highly recommended!",
+      avatar_url: "/images/testi_ayesha.png"
+    },
+    {
+      id: 2,
+      name: "Hassan Ali",
+      role: "Adult Learner",
+      content: "The lessons are clear, engaging and practical. I appreciate how easy it is to stay consistent with my learning.",
+      avatar_url: "/images/testi_hassan.png"
+    },
+    {
+      id: 3,
+      name: "Maryam Zahra",
+      role: "Parent",
+      content: "We love how the whole family can learn together. Yaqeen has brought us closer to our faith and each other.",
+      avatar_url: "/images/testi_maryam.png"
+    }
+  ]);
+
+  useEffect(() => {
+    async function fetchTestimonials() {
+      try {
+        const { data, error } = await supabase
+          .from("testimonials")
+          .select("*")
+          .order("order_index", { ascending: true })
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        if (data && data.length > 0) {
+          const filtered = data.filter(t => {
+            if (!t.page_target) return false;
+            const targets = t.page_target.split(",").map(x => x.trim().toLowerCase());
+            return targets.includes("all") || targets.includes("about");
+          });
+          setTestimonials(filtered);
+        }
+      } catch (err) {
+        console.warn("Could not load testimonials from Supabase, using default lists:", err);
+      }
+    }
+    fetchTestimonials();
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -658,71 +707,30 @@ export default function AboutPage() {
 
             {/* Testimonials Grid */}
             <div className="testi-grid stagger-group" style={{ width: "100%" }}>
-              
-              {/* Card 1: Ayesha Khan */}
-              <div className="testi-card reveal-stagger">
-                <span className="testi-quote-mark">“</span>
-                <p className="testi-text">
-                  Yaqeen has helped my child develop a strong understanding of Islam in a fun and meaningful way. Highly recommended!
-                </p>
-                <div className="testi-card-divider" />
-                <div className="testi-author-row">
-                  <div className="testi-avatar-wrap">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/images/testi_ayesha.png" alt="Ayesha Khan" className="testi-avatar" />
-                  </div>
-                  <div className="testi-author-info">
-                    <span className="testi-author-name">Ayesha Khan</span>
-                    <span className="testi-author-role">Mother of 2</span>
+              {testimonials.map((t) => (
+                <div key={t.id} className="testi-card reveal-stagger">
+                  <span className="testi-quote-mark">“</span>
+                  <p className="testi-text">{t.content}</p>
+                  <div className="testi-card-divider" />
+                  <div className="testi-author-row">
+                    <div className="testi-avatar-wrap">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={t.avatar_url || "/images/testi_ayesha.png"} alt={t.name} className="testi-avatar" />
+                    </div>
+                    <div className="testi-author-info">
+                      <span className="testi-author-name">{t.name}</span>
+                      <span className="testi-author-role">{t.role}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Card 2: Hassan Ali */}
-              <div className="testi-card reveal-stagger">
-                <span className="testi-quote-mark">“</span>
-                <p className="testi-text">
-                  The lessons are clear, engaging and practical. I appreciate how easy it is to stay consistent with my learning.
-                </p>
-                <div className="testi-card-divider" />
-                <div className="testi-author-row">
-                  <div className="testi-avatar-wrap">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/images/testi_hassan.png" alt="Hassan Ali" className="testi-avatar" />
-                  </div>
-                  <div className="testi-author-info">
-                    <span className="testi-author-name">Hassan Ali</span>
-                    <span className="testi-author-role">Adult Learner</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Card 3: Maryam Zahra */}
-              <div className="testi-card reveal-stagger">
-                <span className="testi-quote-mark">“</span>
-                <p className="testi-text">
-                  We love how the whole family can learn together. Yaqeen has brought us closer to our faith and each other.
-                </p>
-                <div className="testi-card-divider" />
-                <div className="testi-author-row">
-                  <div className="testi-avatar-wrap">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/images/testi_maryam.png" alt="Maryam Zahra" className="testi-avatar" />
-                  </div>
-                  <div className="testi-author-info">
-                    <span className="testi-author-name">Maryam Zahra</span>
-                    <span className="testi-author-role">Parent</span>
-                  </div>
-                </div>
-              </div>
-
+              ))}
             </div>
 
             {/* Pagination Dots */}
             <div className="testi-dots reveal-slide-up" style={{ marginTop: "32px" }}>
-              <div className="testi-dot active" />
-              <div className="testi-dot" />
-              <div className="testi-dot" />
+              {testimonials.map((_, idx) => (
+                <div key={idx} className={`testi-dot ${idx === 0 ? "active" : ""}`} />
+              ))}
             </div>
 
           </div>

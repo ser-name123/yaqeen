@@ -3,8 +3,20 @@
 import { useEffect } from "react";
 import "./contact.css";
 import ContactForm from "@/components/ContactForm";
+import { useSettings } from "@/lib/settings-context";
 
 export default function ContactPage() {
+  const { 
+    contactEmail, 
+    contactPhone, 
+    contactHours, 
+    contactSupport,
+    socialFacebook,
+    socialInstagram,
+    socialYoutube,
+    socialWhatsapp
+  } = useSettings();
+
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -133,23 +145,7 @@ export default function ContactPage() {
           <p className="contact-section-subtitle">We'd love to hear from you.</p>
 
           <div className="contact-info-list stagger-group">
-            {/* Address */}
-            <div className="contact-info-item reveal-stagger">
-              <div className="contact-info-icon-wrapper">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                  <circle cx="12" cy="10" r="3" />
-                </svg>
-              </div>
-              <div className="contact-info-text-group">
-                <span className="contact-info-item-label">Address</span>
-                <span className="contact-info-item-value">
-                  128, City Road, London, EC1V 2NX, UNITED KINGDOM.
-                </span>
-              </div>
-            </div>
-
-            {/* Email Us */}
+             {/* Email Us */}
             <div className="contact-info-item reveal-stagger">
               <div className="contact-info-icon-wrapper">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -159,7 +155,9 @@ export default function ContactPage() {
               </div>
               <div className="contact-info-text-group">
                 <span className="contact-info-item-label">Email Us</span>
-                <span className="contact-info-item-value">info@yaqeeninstitute.com</span>
+                <span className="contact-info-item-value">
+                  <a href={`mailto:${contactEmail}`} style={{ color: "inherit", textDecoration: "none" }}>{contactEmail}</a>
+                </span>
               </div>
             </div>
 
@@ -172,7 +170,7 @@ export default function ContactPage() {
               </div>
               <div className="contact-info-text-group">
                 <span className="contact-info-item-label">Call / WhatsApp</span>
-                <span className="contact-info-item-value">+447488818192</span>
+                <span className="contact-info-item-value">{contactPhone}</span>
               </div>
             </div>
 
@@ -186,7 +184,7 @@ export default function ContactPage() {
               </div>
               <div className="contact-info-text-group">
                 <span className="contact-info-item-label">Working Hours</span>
-                <span className="contact-info-item-value">24x7 – We're always here for you.</span>
+                <span className="contact-info-item-value">{contactHours}</span>
               </div>
             </div>
 
@@ -201,36 +199,44 @@ export default function ContactPage() {
               </div>
               <div className="contact-info-text-group">
                 <span className="contact-info-item-label">Worldwide Support</span>
-                <span className="contact-info-item-value">We serve students from around the world.</span>
+                <span className="contact-info-item-value">{contactSupport}</span>
               </div>
             </div>
           </div>
 
           {/* Social Media Links */}
           <div className="contact-social-group">
-            <a href="#" className="contact-social-btn" aria-label="Facebook">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-              </svg>
-            </a>
-            <a href="#" className="contact-social-btn" aria-label="Instagram">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-              </svg>
-            </a>
-            <a href="#" className="contact-social-btn" aria-label="YouTube">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
-                <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="currentColor" />
-              </svg>
-            </a>
-            <a href="#" className="contact-social-btn" aria-label="WhatsApp">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-              </svg>
-            </a>
+            {socialFacebook && (
+              <a href={socialFacebook} target="_blank" rel="noopener noreferrer" className="contact-social-btn" aria-label="Facebook">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                </svg>
+              </a>
+            )}
+            {socialInstagram && (
+              <a href={socialInstagram} target="_blank" rel="noopener noreferrer" className="contact-social-btn" aria-label="Instagram">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                </svg>
+              </a>
+            )}
+            {socialYoutube && (
+              <a href={socialYoutube} target="_blank" rel="noopener noreferrer" className="contact-social-btn" aria-label="YouTube">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
+                  <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="currentColor" />
+                </svg>
+              </a>
+            )}
+            {socialWhatsapp && (
+              <a href={socialWhatsapp} target="_blank" rel="noopener noreferrer" className="contact-social-btn" aria-label="WhatsApp">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                </svg>
+              </a>
+            )}
           </div>
         </div>
 

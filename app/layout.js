@@ -55,6 +55,15 @@ export default async function RootLayout({ children }) {
   let logoUrl = "";
   let faviconUrl = "";
 
+  let contactEmail = "info@yaqeeninstitute.com";
+  let contactPhone = "+447488818192";
+  let contactHours = "24x7 - We're always here for you.";
+  let contactSupport = "We serve students from around the world.";
+  let socialFacebook = "";
+  let socialInstagram = "";
+  let socialYoutube = "";
+  let socialWhatsapp = "";
+
   try {
     // Run DB queries in parallel using cached results (revalidate: 60s)
     const [siteData, seoData] = await Promise.all([
@@ -65,6 +74,14 @@ export default async function RootLayout({ children }) {
     if (siteData) {
       logoText = siteData.logo_text || "yaqeen";
       logoUrl = siteData.logo_url || "";
+      contactEmail = siteData.contact_email || contactEmail;
+      contactPhone = siteData.contact_phone || contactPhone;
+      contactHours = siteData.contact_hours || contactHours;
+      contactSupport = siteData.contact_support || contactSupport;
+      socialFacebook = siteData.social_facebook || "";
+      socialInstagram = siteData.social_instagram || "";
+      socialYoutube = siteData.social_youtube || "";
+      socialWhatsapp = siteData.social_whatsapp || "";
     }
 
     if (seoData && seoData.favicon_url) {
@@ -77,7 +94,19 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en" className={`${poppins.variable} ${lora.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <SettingsProvider logoText={logoText} logoUrl={logoUrl} faviconUrl={faviconUrl}>
+        <SettingsProvider 
+          logoText={logoText} 
+          logoUrl={logoUrl} 
+          faviconUrl={faviconUrl}
+          contactEmail={contactEmail}
+          contactPhone={contactPhone}
+          contactHours={contactHours}
+          contactSupport={contactSupport}
+          socialFacebook={socialFacebook}
+          socialInstagram={socialInstagram}
+          socialYoutube={socialYoutube}
+          socialWhatsapp={socialWhatsapp}
+        >
           <LayoutWrapper logoText={logoText} logoUrl={logoUrl} faviconUrl={faviconUrl}>
             {children}
           </LayoutWrapper>
