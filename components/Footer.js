@@ -66,7 +66,7 @@ export default function Footer() {
               <li className="footer-link-item"><Link href="/testimonials" className="footer-link">Testimonials</Link></li>
               <li className="footer-link-item"><Link href="/careers" className="footer-link">Careers</Link></li>
               <li className="footer-link-item"><Link href="/faqs" className="footer-link">FAQs</Link></li>
-              <li className="footer-link-item"><Link href="/sitemap" className="footer-link">Sitemap</Link></li>
+              <li className="footer-link-item"><a href="/sitemap.xml" target="_blank" rel="noopener noreferrer" className="footer-link">Sitemap</a></li>
             </ul>
           </div>
 

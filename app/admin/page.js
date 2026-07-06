@@ -33,6 +33,15 @@ const adminSwal = {
   }
 };
 
+// Blank course form — used for create/reset. Detail-page content fields are optional.
+const EMPTY_COURSE_FORM = {
+  title: "", image_url: "", icon: "book", order_index: 0,
+  short_description: "", description: "",
+  level: "", class_duration: "", course_duration: "", mode: "", age_group: "",
+  learn_points: "", requirements: "", who_for: "",
+  content_details: "", course_modules: "", faqs: ""
+};
+
 export default function AdminDashboard() {
   // Authentication states
   const [emailInput, setEmailInput] = useState("");
@@ -118,12 +127,7 @@ export default function AdminDashboard() {
   const [courses, setCourses] = useState([]);
   const [isEditingCourse, setIsEditingCourse] = useState(false);
   const [editingCourseId, setEditingCourseId] = useState(null);
-  const [courseForm, setCourseForm] = useState({
-    title: "",
-    image_url: "",
-    icon: "book",
-    order_index: 0
-  });
+  const [courseForm, setCourseForm] = useState(EMPTY_COURSE_FORM);
 
   // Pricing plans states
   const [plans, setPlans] = useState([]);
@@ -1641,37 +1645,51 @@ export default function AdminDashboard() {
     }
 
     setLoading(true);
-    const payload = {
+    const base = {
       title: courseForm.title,
       image_url: courseForm.image_url || null,
       icon: courseForm.icon || "book",
       order_index: parseInt(courseForm.order_index) || 0
     };
+    const payload = {
+      ...base,
+      short_description: courseForm.short_description || null,
+      description: courseForm.description || null,
+      level: courseForm.level || null,
+      class_duration: courseForm.class_duration || null,
+      course_duration: courseForm.course_duration || null,
+      mode: courseForm.mode || null,
+      age_group: courseForm.age_group || null,
+      learn_points: courseForm.learn_points || null,
+      requirements: courseForm.requirements || null,
+      who_for: courseForm.who_for || null,
+      content_details: courseForm.content_details || null,
+      course_modules: courseForm.course_modules || null,
+      faqs: courseForm.faqs || null
+    };
+
+    // Save helper — retries with only the base columns if the detail columns
+    // haven't been added to the DB yet, so course management never breaks.
+    const saveCourse = async (data) => {
+      if (editingCourseId) {
+        return supabase.from("courses").update(data).eq("id", editingCourseId);
+      }
+      return supabase.from("courses").insert([data]);
+    };
 
     try {
-      if (editingCourseId) {
-        // Edit mode
-        const { error } = await supabase
-          .from("courses")
-          .update(payload)
-          .eq("id", editingCourseId);
-        if (error) throw error;
-      } else {
-        // Create mode
-        const { error } = await supabase
-          .from("courses")
-          .insert([payload]);
-        if (error) throw error;
+      let { error } = await saveCourse(payload);
+      if (error && /column|schema cache|could not find/i.test(String(error.message || ""))) {
+        ({ error } = await saveCourse(base));
+        if (!error) {
+          adminSwal.fire({ icon: "info", title: "Saved (basic fields)", text: "Course saved. To store the detailed content & FAQ, please run the courses table SQL migration in Supabase.", confirmButtonColor: "var(--primary-color)", background: "#111827", color: "#fff" });
+        }
       }
+      if (error) throw error;
 
       setIsEditingCourse(false);
       setEditingCourseId(null);
-      setCourseForm({
-        title: "",
-        image_url: "",
-        icon: "book",
-        order_index: 0
-      });
+      setCourseForm(EMPTY_COURSE_FORM);
       fetchDashboardData();
       adminSwal.fire({
         icon: "success",
@@ -1697,12 +1715,7 @@ export default function AdminDashboard() {
 
   const triggerCreateCourse = () => {
     setEditingCourseId(null);
-    setCourseForm({
-      title: "",
-      image_url: "",
-      icon: "book",
-      order_index: 0
-    });
+    setCourseForm(EMPTY_COURSE_FORM);
     setIsEditingCourse(true);
   };
 
@@ -1712,7 +1725,20 @@ export default function AdminDashboard() {
       title: course.title || "",
       image_url: course.image_url || "",
       icon: course.icon || "book",
-      order_index: course.order_index || 0
+      order_index: course.order_index || 0,
+      short_description: course.short_description || "",
+      description: course.description || "",
+      level: course.level || "",
+      class_duration: course.class_duration || "",
+      course_duration: course.course_duration || "",
+      mode: course.mode || "",
+      age_group: course.age_group || "",
+      learn_points: course.learn_points || "",
+      requirements: course.requirements || "",
+      who_for: course.who_for || "",
+      content_details: course.content_details || "",
+      course_modules: course.course_modules || "",
+      faqs: course.faqs || ""
     });
     setIsEditingCourse(true);
   };
@@ -4351,6 +4377,80 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                   )}
+                </div>
+
+                {/* ---- Course Detail Page Content (optional) ---- */}
+                <div style={{ borderTop: "1px solid var(--card-border)", paddingTop: "20px", display: "flex", flexDirection: "column", gap: "18px" }}>
+                  <div>
+                    <h4 style={{ fontSize: "15px", fontWeight: "700", margin: 0 }}>Course Detail Page Content</h4>
+                    <p style={{ color: "var(--fg-muted)", fontSize: "12.5px", marginTop: "6px" }}>These fields power the course detail page. Leave any field blank to use the default template text.</p>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Short Description (hero subtitle)</label>
+                    <textarea value={courseForm.short_description} onChange={(e) => setCourseForm(p => ({ ...p, short_description: e.target.value }))} placeholder="One or two lines shown under the course title in the hero." style={{ ...formInputStyle, minHeight: "70px", resize: "vertical", lineHeight: 1.6 }} />
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Level</label>
+                      <input value={courseForm.level} onChange={(e) => setCourseForm(p => ({ ...p, level: e.target.value }))} placeholder="e.g. Intermediate" style={formInputStyle} />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Class Duration</label>
+                      <input value={courseForm.class_duration} onChange={(e) => setCourseForm(p => ({ ...p, class_duration: e.target.value }))} placeholder="e.g. 45–60 min" style={formInputStyle} />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Course Duration</label>
+                      <input value={courseForm.course_duration} onChange={(e) => setCourseForm(p => ({ ...p, course_duration: e.target.value }))} placeholder="e.g. 3–6 Months" style={formInputStyle} />
+                    </div>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Mode</label>
+                      <input value={courseForm.mode} onChange={(e) => setCourseForm(p => ({ ...p, mode: e.target.value }))} placeholder="e.g. Online" style={formInputStyle} />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Age Group</label>
+                      <input value={courseForm.age_group} onChange={(e) => setCourseForm(p => ({ ...p, age_group: e.target.value }))} placeholder="e.g. Teens & Adults" style={formInputStyle} />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Description</label>
+                    <textarea value={courseForm.description} onChange={(e) => setCourseForm(p => ({ ...p, description: e.target.value }))} placeholder="Main description. Separate paragraphs with a blank line." style={{ ...formInputStyle, minHeight: "110px", resize: "vertical", lineHeight: 1.6 }} />
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>What You&apos;ll Learn <span style={{ color: "var(--fg-muted)", fontWeight: 400 }}>(one point per line)</span></label>
+                    <textarea value={courseForm.learn_points} onChange={(e) => setCourseForm(p => ({ ...p, learn_points: e.target.value }))} placeholder={"Improve reading fluency\nDevelop conversational skills\n..."} style={{ ...formInputStyle, minHeight: "110px", resize: "vertical", lineHeight: 1.6 }} />
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Requirements <span style={{ color: "var(--fg-muted)", fontWeight: 400 }}>(one per line)</span></label>
+                      <textarea value={courseForm.requirements} onChange={(e) => setCourseForm(p => ({ ...p, requirements: e.target.value }))} placeholder={"A laptop or smartphone\nStable internet\n..."} style={{ ...formInputStyle, minHeight: "110px", resize: "vertical", lineHeight: 1.6 }} />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Who This Course Is For <span style={{ color: "var(--fg-muted)", fontWeight: 400 }}>(one per line)</span></label>
+                      <textarea value={courseForm.who_for} onChange={(e) => setCourseForm(p => ({ ...p, who_for: e.target.value }))} placeholder={"Beginners\nIntermediate learners\n..."} style={{ ...formInputStyle, minHeight: "110px", resize: "vertical", lineHeight: 1.6 }} />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Detailed Content <span style={{ color: "var(--fg-muted)", fontWeight: 400 }}>(paragraphs separated by a blank line)</span></label>
+                    <textarea value={courseForm.content_details} onChange={(e) => setCourseForm(p => ({ ...p, content_details: e.target.value }))} placeholder="Longer descriptive content shown lower on the page." style={{ ...formInputStyle, minHeight: "120px", resize: "vertical", lineHeight: 1.6 }} />
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Course Content / Modules <span style={{ color: "var(--fg-muted)", fontWeight: 400 }}>(one per line — format: Title | Description)</span></label>
+                    <textarea value={courseForm.course_modules} onChange={(e) => setCourseForm(p => ({ ...p, course_modules: e.target.value }))} placeholder={"Reading Skills | Learn to read fluently\nWriting Skills | Build strong writing\n..."} style={{ ...formInputStyle, minHeight: "120px", resize: "vertical", lineHeight: 1.6 }} />
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Course FAQs <span style={{ color: "var(--fg-muted)", fontWeight: 400 }}>(one per line — format: Question | Answer)</span></label>
+                    <textarea value={courseForm.faqs} onChange={(e) => setCourseForm(p => ({ ...p, faqs: e.target.value }))} placeholder={"What does this course cover? | It covers...\nIs it suitable for beginners? | Yes...\n..."} style={{ ...formInputStyle, minHeight: "130px", resize: "vertical", lineHeight: 1.6 }} />
+                  </div>
                 </div>
 
                 {/* Action buttons */}

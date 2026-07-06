@@ -406,6 +406,14 @@ const IconHeartOutline = ({ size = 16 }) => (
   </svg>
 );
 
+const IconBulb = ({ size = 16 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 18h6" />
+    <path d="M10 22h4" />
+    <path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2v.3h6v-.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2Z" />
+  </svg>
+);
+
 const defaultTeachers = [
   {
     id: 1,
@@ -441,12 +449,113 @@ const defaultTeachers = [
   }
 ];
 
+// Languages that cycle (flip) in the hero heading
+const HERO_LANGUAGES = ["English", "Arabic", "Urdu", "French", "Chinese", "Marathi", "Tamil", "Malayalam"];
+
+// "Online Quran Classes – Learn, Grow & Excel" cards — expandable (+ toggle)
+const OQC_CARDS = [
+  {
+    Icon: IconBookOpen,
+    title: "Expert Online Quran Classes",
+    text: "Join our Online Quran Classes with qualified teachers through a trusted Online Quran Academy. Whether you want to Learn Quran Online, enroll in Quran Courses Online, or find the Best Online Quran Classes, our personalized lessons help children and adults build confidence, improve recitation, and develop a lifelong connection with the Holy Quran."
+  },
+  {
+    Icon: IconCalendarClock,
+    title: "Flexible Learning for Every Student",
+    text: "Our Quran Lessons Online offer flexible schedules with one-to-one Online Quran Teaching for learners of all ages. Choose Online Quran Classes for Beginners, Online Quran Classes for Adults, or search for a Quran Teacher Near Me to enjoy interactive sessions, structured learning, and expert guidance from anywhere in the world."
+  },
+  {
+    Icon: IconShieldCheck,
+    title: "Master Tajweed and Quran Memorization",
+    text: "Strengthen your recitation through our Online Tajweed Course and Quran Memorization Course. Learn Quran with Tajweed using step-by-step guidance from experienced instructors. Our engaging Quran Online Lessons combine practical exercises, personalized feedback, and regular progress tracking to help every student achieve excellence."
+  },
+  {
+    Icon: IconGroupUsers,
+    title: "Learn Quranic Arabic with Qualified Teachers",
+    text: "Deepen your understanding of the Quran by choosing to Learn Quranic Arabic Online with experienced male and Female Quran Teacher Near Me options available. Our Quran Study Online programs combine Online Quran Classes, Quran Courses Online, and Learn Quran Online methods to make learning effective, enjoyable, and accessible for everyone."
+  }
+];
+
+// "Why Choose Us" feature items — expandable (3 lines + toggle)
+const CHOOSE_FEATURES = [
+  {
+    Icon: IconSpeechChoose,
+    title: "Learn in Your Own Language",
+    text: "Study with confidence through online Quran classes, online Arabic classes, and Islamic Studies online in the language you understand best. Yaqeen Institute provides multilingual learning with qualified teachers, making Quran learning easier, more engaging, and effective for students worldwide."
+  },
+  {
+    Icon: IconTeacher,
+    title: "Qualified Teachers",
+    text: "Learn from experienced, certified Quran teachers and Arabic language instructors dedicated to delivering high-quality online Quran classes, Tajweed lessons, Islamic Studies, and Arabic language courses. Our expert educators ensure every student receives personalized guidance for lasting academic and spiritual growth."
+  },
+  {
+    Icon: IconCalendarClock,
+    title: "Flexible Scheduling",
+    text: "Our online Quran academy offers flexible class timings that fit your daily routine. Book online Quran classes, Arabic lessons, or Islamic Studies at your convenience, making it easier for children, adults, and busy families to learn without disrupting their schedules."
+  },
+  {
+    Icon: IconLaptopUser,
+    title: "One-to-One Classes",
+    text: "Receive personalized instruction through one-to-one online Quran classes, Quran reading with Tajweed, Arabic language learning, and Islamic education. Individual attention helps students improve faster, build confidence, strengthen understanding, and achieve their learning goals more effectively."
+  },
+  {
+    Icon: IconTwoUsers,
+    title: "Male & Female Teachers",
+    text: "Choose qualified male or female Quran teachers according to your preference for online Quran learning, Arabic classes, Hifz Quran, and Islamic Studies. We provide a comfortable, respectful, and supportive learning environment for students of every age and background."
+  },
+  {
+    Icon: IconGroupUsers,
+    title: "Classes for All Ages",
+    text: "Yaqeen Institute offers online Quran classes for kids, teenagers, and adults, including Quran reading, Tajweed, Arabic language courses, Islamic Studies, and Hifz Quran. Structured programs ensure every learner progresses confidently regardless of age or experience."
+  },
+  {
+    Icon: IconTrendUp,
+    title: "Progress Tracking",
+    text: "Track your success with regular assessments, performance reports, and personalized feedback throughout your online Quran learning journey. Our progress tracking helps students improve Quran recitation, Arabic language skills, Islamic knowledge, and overall academic development with measurable results."
+  },
+  {
+    Icon: IconPlayVideo,
+    title: "Interactive Learning",
+    text: "Enjoy engaging online Quran classes, interactive Arabic language lessons, and modern Islamic Studies designed to keep students motivated. Our live sessions, practical activities, and experienced teachers create an enjoyable learning experience that improves understanding, participation, and long-term retention."
+  }
+];
+
 export default function Home() {
   const { faviconUrl } = useSettings();
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
   const [newsEmail, setNewsEmail] = useState("");
   const [newsSubmitted, setNewsSubmitted] = useState(false);
   const [teachers, setTeachers] = useState(defaultTeachers);
+  const [langIndex, setLangIndex] = useState(0);
+  const [langNoAnim, setLangNoAnim] = useState(false);
+  const [langCardOpen, setLangCardOpen] = useState(false);
+  const [openFeature, setOpenFeature] = useState(null);
+  const toggleFeature = (i) => setOpenFeature((prev) => (prev === i ? null : i));
+  const [openOqc, setOpenOqc] = useState(0);
+  const toggleOqc = (i) => setOpenOqc((prev) => (prev === i ? null : i));
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setLangIndex((i) => i + 1);
+    }, 2000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Seamless infinite roll: when we land on the duplicated first item,
+  // snap back to 0 without animation once the transition finishes.
+  useEffect(() => {
+    if (langIndex === HERO_LANGUAGES.length) {
+      const t = setTimeout(() => {
+        setLangNoAnim(true);
+        setLangIndex(0);
+      }, 640);
+      return () => clearTimeout(t);
+    }
+    if (langNoAnim) {
+      const t = setTimeout(() => setLangNoAnim(false), 40);
+      return () => clearTimeout(t);
+    }
+  }, [langIndex, langNoAnim]);
 
   useEffect(() => {
     async function fetchTeachers() {
@@ -542,9 +651,20 @@ export default function Home() {
                 Learn in Your Own{" "}
                 <span style={{ position: "relative", color: "#C99B4D", display: "inline-block" }}>
                   Language
-                  <svg style={{ position: "absolute", bottom: "-6px", left: 0, width: "100%", height: "8px" }} viewBox="0 0 100 10" preserveAspectRatio="none">
-                    <path d="M0,5 C30,8 70,2 100,5" stroke="#C99B4D" strokeWidth="3" fill="none" strokeLinecap="round" />
+                  <svg style={{ position: "absolute", bottom: "-9px", left: 0, width: "100%", height: "11px" }} viewBox="0 0 120 12" preserveAspectRatio="none">
+                    <path d="M0,7 C10,1 20,1 30,7 C40,13 50,13 60,7 C70,1 80,1 90,7 C100,13 110,13 120,7" stroke="#C99B4D" strokeWidth="2.2" fill="none" strokeLinecap="round" />
                   </svg>
+                </span>
+                <span className="hero-lang-roll" style={{ display: "inline-block", height: "1.3em", overflow: "hidden", verticalAlign: "bottom", minWidth: "4.5em", textAlign: "left", color: "#556B3B" }}>
+                  <span style={{
+                    display: "flex", flexDirection: "column",
+                    transform: `translateY(-${langIndex * 1.3}em)`,
+                    transition: langNoAnim ? "none" : "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)"
+                  }}>
+                    {[...HERO_LANGUAGES, HERO_LANGUAGES[0]].map((l, i) => (
+                      <span key={i} style={{ height: "1.3em", lineHeight: "1.3em", display: "block" }}>{l}</span>
+                    ))}
+                  </span>
                 </span>
               </h3>
 
@@ -726,6 +846,50 @@ export default function Home() {
           </p>
 
         </div>
+
+        {/* Feature Card + Benefits (bottom strip) */}
+        <div className="lang-features reveal-slide-up">
+          {/* Card */}
+          <div className={`lang-feature-card ${langCardOpen ? "open" : ""}`}>
+            <div className="lang-feature-icon">
+              <IconBookOpen size={26} />
+            </div>
+            <div className="lang-feature-body">
+              <h4>Learn Quran Online</h4>
+              <p>Choose the words you understand best and learn with ease, clarity, and confidence.</p>
+              <div className="lang-feature-more">
+                <p>Master the Qur&apos;an in the language you understand through our online Quran academy. Join online Quran classes, Quran lessons online, and learn Quran with Tajweed from qualified teachers, anytime, anywhere.</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              className="lang-feature-toggle"
+              onClick={() => setLangCardOpen((o) => !o)}
+              aria-expanded={langCardOpen}
+              aria-label={langCardOpen ? "Show less" : "Show more"}
+            >
+              {langCardOpen ? "−" : "+"}
+            </button>
+          </div>
+
+          {/* Benefits */}
+          <div className="lang-benefits">
+            <div className="lang-benefit">
+              <span className="lang-benefit-icon"><IconBookOpen size={20} /></span>
+              <span>Clearer<br />Understanding</span>
+            </div>
+            <span className="lang-benefit-div" />
+            <div className="lang-benefit">
+              <span className="lang-benefit-icon gold"><IconHeartOutline size={20} /></span>
+              <span>Stronger<br />Connection</span>
+            </div>
+            <span className="lang-benefit-div" />
+            <div className="lang-benefit">
+              <span className="lang-benefit-icon"><IconBulb size={20} /></span>
+              <span>Lasting<br />Impact</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* =========================================================================
@@ -797,12 +961,12 @@ export default function Home() {
           color: "#5C4D3C",
           textAlign: "center",
           margin: "0 0 60px 0",
-          maxWidth: "600px",
+          maxWidth: "1000px",
           lineHeight: "1.6",
           fontWeight: "500",
           fontFamily: "var(--font-sans), sans-serif"
         }}>
-          Comprehensive learning in {"Qur'an"}, Islamic Studies, and Arabic Language.
+          Explore expert-led Online Quran Classes, Quran Memorization, Tajweed, Arabic Language, and Islamic Studies with interactive live sessions, certified tutors, flexible timings, and multilingual learning support.
         </p>
 
         {/* Cards Grid */}
@@ -812,7 +976,7 @@ export default function Home() {
           <div className="teach-card reveal-stagger" style={{
             backgroundColor: "#FFF8F4",
             borderRadius: "28px",
-            border: "1.5px solid #F5EBDD",
+            border: "2.5px solid #EADFCB",
             boxShadow: "0 10px 30px rgba(44, 37, 30, 0.03)",
             display: "flex",
             flexDirection: "column",
@@ -871,7 +1035,7 @@ export default function Home() {
                   color: "#2B1F14",
                   margin: "0 0 10px 0",
                   fontFamily: "var(--font-serif), Georgia, serif"
-                }}>{"Qur'an"}</h3>
+                }}>Learn Quran</h3>
                 
                 <div style={{ width: "40px", height: "3px", backgroundColor: "#C99B4D", marginBottom: "20px", borderRadius: "999px" }} />
 
@@ -882,7 +1046,7 @@ export default function Home() {
                   fontWeight: "500",
                   margin: "0 0 24px 0",
                   minHeight: "44px"
-                }}>Master recitation, memorization, and reading fundamentals.</p>
+                }}>Quran online classes for recitation, memorization, Tajweed, and reading fundamentals with certified Quran teachers for kids and adults.</p>
 
                 <div style={{ height: "1px", backgroundColor: "#F5EBDD", margin: "0 0 20px 0" }} />
 
@@ -924,7 +1088,7 @@ export default function Home() {
           <div className="teach-card reveal-stagger" style={{
             backgroundColor: "#FFF8F4",
             borderRadius: "28px",
-            border: "1.5px solid #F5EBDD",
+            border: "2.5px solid #EADFCB",
             boxShadow: "0 10px 30px rgba(44, 37, 30, 0.03)",
             display: "flex",
             flexDirection: "column",
@@ -994,7 +1158,7 @@ export default function Home() {
                   fontWeight: "500",
                   margin: "0 0 24px 0",
                   minHeight: "44px"
-                }}>Learn faith, character, and practical Islamic knowledge.</p>
+                }}>Islamic Studies online classes covering Aqeedah, Fiqh, Seerah, Hadith, Islamic manners, and character development for kids and adults.</p>
 
                 <div style={{ height: "1px", backgroundColor: "#F5EBDD", margin: "0 0 20px 0" }} />
 
@@ -1036,7 +1200,7 @@ export default function Home() {
           <div className="teach-card reveal-stagger" style={{
             backgroundColor: "#FFF8F4",
             borderRadius: "28px",
-            border: "1.5px solid #F5EBDD",
+            border: "2.5px solid #EADFCB",
             boxShadow: "0 10px 30px rgba(44, 37, 30, 0.03)",
             display: "flex",
             flexDirection: "column",
@@ -1106,7 +1270,7 @@ export default function Home() {
                   fontWeight: "500",
                   margin: "0 0 24px 0",
                   minHeight: "44px"
-                }}>Gain fluency through spoken, academic, and professional Arabic.</p>
+                }}>Arabic Language online classes for speaking, reading, writing, grammar, vocabulary, and conversation with qualified Arabic teachers.</p>
 
                 <div style={{ height: "1px", backgroundColor: "#F5EBDD", margin: "0 0 20px 0" }} />
 
@@ -1226,94 +1390,31 @@ export default function Home() {
         {/* Features Card Container */}
         <div className="choose-features-container reveal-slide-up">
           <div className="features-grid stagger-group">
-            
-            {/* Feature 1 */}
-            <div className="feature-item reveal-stagger">
-              <div className="feature-icon-box">
-                <IconSpeechChoose size={24} />
-              </div>
-              <div className="feature-content">
-                <h4 className="feature-title">Learn in Your Own Language</h4>
-                <p className="feature-text">Understand better and learn with confidence in the language you know.</p>
-              </div>
-            </div>
 
-            {/* Feature 2 */}
-            <div className="feature-item reveal-stagger">
-              <div className="feature-icon-box">
-                <IconTeacher size={24} />
-              </div>
-              <div className="feature-content">
-                <h4 className="feature-title">Qualified Teachers</h4>
-                <p className="feature-text">Experienced and certified teachers who are passionate about teaching.</p>
-              </div>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="feature-item reveal-stagger">
-              <div className="feature-icon-box">
-                <IconCalendarClock size={24} />
-              </div>
-              <div className="feature-content">
-                <h4 className="feature-title">Flexible Scheduling</h4>
-                <p className="feature-text">Book classes at times that suit your routine and never miss a lesson.</p>
-              </div>
-            </div>
-
-            {/* Feature 4 */}
-            <div className="feature-item reveal-stagger">
-              <div className="feature-icon-box">
-                <IconLaptopUser size={24} />
-              </div>
-              <div className="feature-content">
-                <h4 className="feature-title">One-to-One Classes</h4>
-                <p className="feature-text">Personalized attention for faster progress and deeper understanding.</p>
-              </div>
-            </div>
-
-            {/* Feature 5 */}
-            <div className="feature-item reveal-stagger">
-              <div className="feature-icon-box">
-                <IconTwoUsers size={24} />
-              </div>
-              <div className="feature-content">
-                <h4 className="feature-title">Male &amp; Female Teachers</h4>
-                <p className="feature-text">Choose from a wide range of male and female teachers as per your preference.</p>
-              </div>
-            </div>
-
-            {/* Feature 6 */}
-            <div className="feature-item reveal-stagger">
-              <div className="feature-icon-box">
-                <IconGroupUsers size={24} />
-              </div>
-              <div className="feature-content">
-                <h4 className="feature-title">Classes for All Ages</h4>
-                <p className="feature-text">Programs designed for kids, teens and adults at every level.</p>
-              </div>
-            </div>
-
-            {/* Feature 7 */}
-            <div className="feature-item reveal-stagger">
-              <div className="feature-icon-box">
-                <IconTrendUp size={24} />
-              </div>
-              <div className="feature-content">
-                <h4 className="feature-title">Progress Tracking</h4>
-                <p className="feature-text">Regular assessments and detailed reports to track your progress.</p>
-              </div>
-            </div>
-
-            {/* Feature 8 */}
-            <div className="feature-item reveal-stagger">
-              <div className="feature-icon-box">
-                <IconPlayVideo size={24} />
-              </div>
-              <div className="feature-content">
-                <h4 className="feature-title">Interactive Learning</h4>
-                <p className="feature-text">Engaging, modern and interactive classes that make learning enjoyable.</p>
-              </div>
-            </div>
+            {CHOOSE_FEATURES.map((f, i) => {
+              const isOpen = openFeature === i;
+              const FeatureIcon = f.Icon;
+              return (
+                <div className={`feature-item ${isOpen ? "expanded" : ""}`} key={i}>
+                  <div className="feature-icon-box">
+                    <FeatureIcon size={24} />
+                  </div>
+                  <div className="feature-content">
+                    <h4 className="feature-title">{f.title}</h4>
+                    <p className={`feature-text ${isOpen ? "expanded" : ""}`}>{f.text}</p>
+                  </div>
+                  <button
+                    type="button"
+                    className="feature-toggle"
+                    onClick={() => toggleFeature(i)}
+                    aria-expanded={isOpen}
+                    aria-label={isOpen ? "Show less" : "Show more"}
+                  >
+                    {isOpen ? "−" : "+"}
+                  </button>
+                </div>
+              );
+            })}
 
           </div>
         </div>
@@ -1638,7 +1739,7 @@ export default function Home() {
 
         {/* Section Subtitle / Description */}
         <p className="teachers-desc reveal-slide-up">
-          Our teachers are qualified, experienced, and passionate about helping you grow in your Islamic knowledge.
+          Our qualified Quran, Arabic, and Islamic Studies teachers provide personalized online Quran classes, Quran lessons online, Tajweed, memorization, and Islamic guidance, helping kids and adults build knowledge, confidence, and strong Islamic character.
         </p>
 
         {/* Teachers Cards Grid */}
@@ -1673,6 +1774,60 @@ export default function Home() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* =========================================================================
+         SECTION 7B: ONLINE QURAN CLASSES — LEARN, GROW & EXCEL
+         ========================================================================= */}
+      <section className="oqc-section">
+        <h2 className="oqc-title reveal-slide-up">
+          Online Quran Classes &ndash;<br />
+          <span>Learn, Grow &amp; Excel</span>
+        </h2>
+
+        <div className="oqc-wrap">
+          {/* Left: student image */}
+          <div className="oqc-image reveal-slide-up">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/images/cta_student_boy.png" alt="Learn Quran online with Yaqeen Institute" />
+          </div>
+
+          {/* Right: expandable cards */}
+          <div className="oqc-cards">
+            {OQC_CARDS.map((c, i) => {
+              const isOpen = openOqc === i;
+              const CardIcon = c.Icon;
+              return (
+                <div className={`oqc-card ${isOpen ? "open" : ""}`} key={i}>
+                  <div className="oqc-card-icon">
+                    <CardIcon size={26} />
+                  </div>
+                  <div className="oqc-card-body">
+                    <h3>{c.title}</h3>
+                    <div className={`oqc-card-text ${isOpen ? "open" : ""}`}>
+                      <p>{c.text}</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className="oqc-card-toggle"
+                    onClick={() => toggleOqc(i)}
+                    aria-expanded={isOpen}
+                    aria-label={isOpen ? "Show less" : "Show more"}
+                  >
+                    {isOpen ? "−" : "+"}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="oqc-cta reveal-slide-up">
+          <Link href="/book-free-trial" className="oqc-cta-btn">
+            Join Now &amp; Start Your Quran Journey
+          </Link>
         </div>
       </section>
 
@@ -1878,77 +2033,115 @@ export default function Home() {
         <div className="faq-container stagger-group">
           
           {/* FAQ 1 */}
-          <div 
-            className="faq-item reveal-stagger" 
+          <div
+            className="faq-item reveal-stagger"
             onClick={() => setOpenFaqIndex(openFaqIndex === 0 ? null : 0)}
           >
             <div className="faq-question-row">
               <div className="faq-icon-badge">
-                <IconCalendar size={20} />
+                <IconBookOpen size={20} />
               </div>
-              <span className="faq-question-text">Is the class schedule suitable for me?</span>
+              <span className="faq-question-text">What courses does Yaqeen Institute offer?</span>
               <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 0 ? "open" : ""}`} />
             </div>
             <div className={`faq-answer-wrapper ${openFaqIndex === 0 ? "open" : ""}`}>
               <p className="faq-answer-text">
-                Yes. We offer highly flexible class schedules. You can choose your preferred days and times, and we have teachers available 24/7 across different time zones to fit your busy routine.
+                {"Yaqeen Institute offers online Quran classes, Quran courses online, Quran lessons online, Quran memorization course (Hifz), online Tajweed course, Islamic Studies, and Quranic Arabic for children, adults, and beginners worldwide."}
               </p>
             </div>
           </div>
 
           {/* FAQ 2 */}
-          <div 
-            className="faq-item reveal-stagger" 
+          <div
+            className="faq-item reveal-stagger"
             onClick={() => setOpenFaqIndex(openFaqIndex === 1 ? null : 1)}
-          >
-            <div className="faq-question-row">
-              <div className="faq-icon-badge">
-                <IconUser size={20} />
-              </div>
-              <span className="faq-question-text">How do I begin?</span>
-              <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 1 ? "open" : ""}`} />
-            </div>
-            <div className={`faq-answer-wrapper ${openFaqIndex === 1 ? "open" : ""}`}>
-              <p className="faq-answer-text">
-                Getting started is very simple. Just click the 'Book Your Free Session Now' button below, fill out a short form with your contact details and preferences, and our academic advisor will contact you within 24 hours to schedule your free trial class.
-              </p>
-            </div>
-          </div>
-
-          {/* FAQ 3 */}
-          <div 
-            className="faq-item reveal-stagger" 
-            onClick={() => setOpenFaqIndex(openFaqIndex === 2 ? null : 2)}
           >
             <div className="faq-question-row">
               <div className="faq-icon-badge">
                 <IconVideoPlay size={20} />
               </div>
-              <span className="faq-question-text">Are these classes pre-recorded?</span>
+              <span className="faq-question-text">How are the classes conducted?</span>
+              <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 1 ? "open" : ""}`} />
+            </div>
+            <div className={`faq-answer-wrapper ${openFaqIndex === 1 ? "open" : ""}`}>
+              <p className="faq-answer-text">
+                {"Our online Quran academy provides one-to-one live sessions with experienced teachers through interactive virtual classrooms. Students enjoy flexible scheduling, personalized learning, and engaging Quran online lessons from anywhere."}
+              </p>
+            </div>
+          </div>
+
+          {/* FAQ 3 */}
+          <div
+            className="faq-item reveal-stagger"
+            onClick={() => setOpenFaqIndex(openFaqIndex === 2 ? null : 2)}
+          >
+            <div className="faq-question-row">
+              <div className="faq-icon-badge">
+                <IconTwoUsers size={20} />
+              </div>
+              <span className="faq-question-text">{"Who can join Yaqeen Institute's classes?"}</span>
               <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 2 ? "open" : ""}`} />
             </div>
             <div className={`faq-answer-wrapper ${openFaqIndex === 2 ? "open" : ""}`}>
               <p className="faq-answer-text">
-                No, all our classes are 100% live and interactive, conducted one-on-one via Zoom or our portal. This ensures personalized attention and allows you to ask questions and receive instant feedback from your teacher.
+                {"Everyone is welcome! We offer online Quran classes for adults, children, teenagers, and beginners. Whether you're starting from Noorani Qaidah or looking to learn Quran online with confidence, we have the right course for you."}
               </p>
             </div>
           </div>
 
           {/* FAQ 4 */}
-          <div 
-            className="faq-item reveal-stagger" 
+          <div
+            className="faq-item reveal-stagger"
             onClick={() => setOpenFaqIndex(openFaqIndex === 3 ? null : 3)}
           >
             <div className="faq-question-row">
               <div className="faq-icon-badge">
-                <IconMapPin size={20} />
+                <IconCalendar size={20} />
               </div>
-              <span className="faq-question-text">Where is the headquarter of your business?</span>
+              <span className="faq-question-text">Can I choose my own class time?</span>
               <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 3 ? "open" : ""}`} />
             </div>
             <div className={`faq-answer-wrapper ${openFaqIndex === 3 ? "open" : ""}`}>
               <p className="faq-answer-text">
-                Our digital headquarters and academic operations are based in London, UK, but our teachers and students are spread globally across the UK, USA, Canada, Middle East, and South Asia, providing a truly international learning experience.
+                {"Yes. Our online Quran teaching programs are designed around your schedule. You can choose class timings that suit your time zone, making it convenient for students and families across the world."}
+              </p>
+            </div>
+          </div>
+
+          {/* FAQ 5 */}
+          <div
+            className="faq-item reveal-stagger"
+            onClick={() => setOpenFaqIndex(openFaqIndex === 4 ? null : 4)}
+          >
+            <div className="faq-question-row">
+              <div className="faq-icon-badge">
+                <IconTrendUp size={20} />
+              </div>
+              <span className="faq-question-text">How do you track student progress?</span>
+              <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 4 ? "open" : ""}`} />
+            </div>
+            <div className={`faq-answer-wrapper ${openFaqIndex === 4 ? "open" : ""}`}>
+              <p className="faq-answer-text">
+                {"Each student receives personalized guidance with regular assessments, progress reports, and teacher feedback. Our structured Quran study online approach ensures continuous improvement in recitation, Tajweed, memorization, and understanding."}
+              </p>
+            </div>
+          </div>
+
+          {/* FAQ 6 */}
+          <div
+            className="faq-item reveal-stagger"
+            onClick={() => setOpenFaqIndex(openFaqIndex === 5 ? null : 5)}
+          >
+            <div className="faq-question-row">
+              <div className="faq-icon-badge">
+                <IconMail size={20} />
+              </div>
+              <span className="faq-question-text">How can I get support if I have a question?</span>
+              <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 5 ? "open" : ""}`} />
+            </div>
+            <div className={`faq-answer-wrapper ${openFaqIndex === 5 ? "open" : ""}`}>
+              <p className="faq-answer-text">
+                {"Our support team is available to assist you before and after enrolment. Whether you're searching for a Quran teacher near me, a female Quran teacher near me, or need help selecting the right course, we're here to guide you every step of the way."}
               </p>
             </div>
           </div>

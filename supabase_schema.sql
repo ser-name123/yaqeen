@@ -366,6 +366,21 @@ CREATE TABLE IF NOT EXISTS public.courses (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+-- Migration: course detail page content fields (managed from admin Manage Courses)
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS short_description TEXT;
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS level TEXT;
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS class_duration TEXT;
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS course_duration TEXT;
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS mode TEXT;
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS age_group TEXT;
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS learn_points TEXT;
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS requirements TEXT;
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS who_for TEXT;
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS content_details TEXT;
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS course_modules TEXT;
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS faqs TEXT;
+
 -- Enable RLS
 ALTER TABLE public.courses ENABLE ROW LEVEL SECURITY;
 

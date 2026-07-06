@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { useSettings } from "@/lib/settings-context";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
@@ -485,6 +486,7 @@ export default function CoursesPage() {
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
   const [teachers, setTeachers] = useState(defaultTeachers);
   const [coursesList, setCoursesList] = useState(defaultCoursesList);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchTeachers() {
@@ -707,6 +709,7 @@ export default function CoursesPage() {
             <div
               key={idx}
               className="reveal-stagger"
+              onClick={() => router.push(`/courses/${course.id || course.num}`)}
               style={{
                 backgroundColor: "#FFFFFF",
                 borderRadius: "24px",

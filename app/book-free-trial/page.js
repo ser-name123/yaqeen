@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import "./book-free-trial.css";
 import { COUNTRIES, DIAL_CODES } from "./countries";
 
@@ -150,6 +151,7 @@ export default function BookFreeTrialPage() {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const formCardRef = useRef(null);
+  const router = useRouter();
 
   // Gently bring the form (just below the navbar) into view on step change — no jump to page top
   const scrollToForm = () => {
@@ -236,7 +238,7 @@ export default function BookFreeTrialPage() {
         throw new Error(data.message || "Something went wrong. Please try again.");
       }
       setSubmitted(true);
-      scrollToForm();
+      router.push("/book-free-trial/thank-you");
     } catch (err) {
       setSubmitError(err.message || "Could not submit your booking. Please try again.");
     } finally {
