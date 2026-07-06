@@ -128,7 +128,7 @@
   background-color: rgba(201, 155, 77, 0.08);
   color: var(--primary-color);
   font-size: 11.5px;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: 1.5px;
   padding: 6px 16px;
   border-radius: 20px;
@@ -139,7 +139,7 @@
 
 .about-heading {
   font-size: 46px; /* Perfectly scaled font size */
-  font-weight: 700; /* Medium-bold elegant weight for serif */
+  font-weight: 500; /* Medium-bold elegant weight for serif */
   line-height: 1.18;
   color: var(--fg-color);
   font-family: var(--font-serif); /* Serif font matching the mockup */
@@ -238,7 +238,7 @@
 
 .feature-title {
   font-size: 13.5px;
-  font-weight: 700;
+  font-weight: 500;
   color: var(--fg-color);
   font-family: var(--font-sans);
 }
@@ -273,7 +273,7 @@
   cursor: pointer;
   font-family: var(--font-sans);
   font-size: 11.5px;
-  font-weight: 700;
+  font-weight: 500;
   color: var(--primary-color);
   transition: color 0.25s ease;
 }
@@ -358,7 +358,7 @@
 .banner-quote-text {
   font-family: var(--font-sans);
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.75;
   color: var(--fg-color);
   flex-grow: 0;
@@ -520,7 +520,7 @@
 
 .about-row-heading {
   font-size: 36px;
-  font-weight: 700;
+  font-weight: 500;
   color: var(--fg-color);
   font-family: var(--font-serif);
   line-height: 1.2;
@@ -761,7 +761,7 @@
 .arched-card-heading {
   font-family: var(--font-serif);
   font-size: 24px;
-  font-weight: 700;
+  font-weight: 500;
   margin: 16px 0 12px 0;
   letter-spacing: 0.5px;
 }
@@ -825,7 +825,7 @@
   background-color: rgba(201, 155, 77, 0.08);
   color: var(--primary-color);
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: 1.5px;
   padding: 6px 16px;
   border-radius: 20px;
@@ -838,7 +838,7 @@
 .mv-heading {
   font-family: var(--font-serif);
   font-size: 42px; /* Increased to match mockup prominent font size */
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.18;
   color: var(--fg-color);
   margin-bottom: 16px;
@@ -893,7 +893,7 @@
 
 .guides-header-title {
   font-family: var(--font-sans);
-  font-weight: 700;
+  font-weight: 500;
   font-size: 12.5px;
   letter-spacing: 1.5px;
   color: var(--fg-color);
@@ -945,7 +945,7 @@
 
 .guides-title {
   font-family: var(--font-sans);
-  font-weight: 700;
+  font-weight: 500;
   font-size: 13.5px;
   color: var(--fg-color);
   margin-bottom: 6px;
@@ -1096,7 +1096,7 @@
 .cta-heading {
   font-family: var(--font-serif);
   font-size: 32px;
-  font-weight: 700;
+  font-weight: 500;
   color: var(--fg-color);
   margin: 0;
   line-height: 1.2;
@@ -1171,7 +1171,7 @@
 
 .cta-feature-text {
   font-family: var(--font-sans);
-  font-weight: 700;
+  font-weight: 500;
   font-size: 11px;
   line-height: 1.4;
   color: var(--fg-color);

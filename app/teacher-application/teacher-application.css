@@ -31,7 +31,7 @@
   border: 1px solid rgba(85, 107, 59, 0.28);
   color: var(--secondary-color);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: 1.5px;
   text-transform: uppercase;
 }
@@ -40,7 +40,7 @@
   margin: 18px 0 0 0;
   font-family: var(--font-serif);
   font-size: clamp(30px, 5vw, 48px);
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.15;
   max-width: 780px;
 }
@@ -65,7 +65,7 @@
 /* ---------- Section 2: Why / benefits ---------- */
 .ta-why { padding: 56px 24px; max-width: 1160px; margin: 0 auto; width: 100%; }
 .ta-section-head { text-align: center; margin-bottom: 40px; }
-.ta-section-head h2 { margin: 0; font-family: var(--font-serif); font-size: clamp(26px, 3.4vw, 36px); font-weight: 700; }
+.ta-section-head h2 { margin: 0; font-family: var(--font-serif); font-size: clamp(26px, 3.4vw, 36px); font-weight: 500; }
 .ta-section-head h2 span { color: var(--primary-color); }
 .ta-section-head p { margin: 12px auto 0 auto; max-width: 580px; font-size: 15px; line-height: 1.6; color: #6B5B47; }
 
@@ -79,7 +79,7 @@
 .ta-why-icon { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px auto; color: #FFFFFF; }
 .ta-why-icon.green { background-color: var(--secondary-color); box-shadow: 0 8px 18px rgba(85, 107, 59, 0.18); }
 .ta-why-icon.gold { background-color: var(--primary-color); box-shadow: 0 8px 18px rgba(201, 155, 77, 0.18); }
-.ta-why-card h3 { margin: 0 0 8px 0; font-size: 18px; font-weight: 700; font-family: var(--font-serif); }
+.ta-why-card h3 { margin: 0 0 8px 0; font-size: 18px; font-weight: 500; font-family: var(--font-serif); }
 .ta-why-card p { margin: 0; font-size: 13.5px; line-height: 1.6; color: #6B5B47; }
 
 /* ---------- Section 3: Form ---------- */
@@ -93,7 +93,7 @@
 /* Progress bar — 4 numbered steps */
 .ta-progress { margin-bottom: 34px; }
 .ta-progress-labels { display: flex; justify-content: space-between; margin-bottom: 10px; padding: 0 4px; }
-.ta-progress-label { flex: 1; text-align: center; font-size: 12.5px; font-weight: 700; color: var(--fg-muted); transition: color 0.3s ease; }
+.ta-progress-label { flex: 1; text-align: center; font-size: 12.5px; font-weight: 500; color: var(--fg-muted); transition: color 0.3s ease; }
 .ta-progress-label:first-child { text-align: left; }
 .ta-progress-label:last-child { text-align: right; }
 .ta-progress-label.active { color: var(--secondary-color); }
@@ -102,7 +102,7 @@
 .ta-progress-node {
   width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 700; color: #7d715f;
+  font-size: 13px; font-weight: 500; color: #7d715f;
   background-color: #E7DCC9; transition: all 0.3s ease;
 }
 .ta-progress-node.active { background-color: var(--secondary-color); color: #fff; box-shadow: 0 0 0 4px rgba(85, 107, 59, 0.15); }
@@ -110,14 +110,14 @@
 .ta-progress-seg .fill { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); transition: width 0.4s ease; }
 
 /* Step heading */
-.ta-step-title { margin: 0; font-size: 21px; font-weight: 700; font-family: var(--font-serif); color: var(--fg-color); }
+.ta-step-title { margin: 0; font-size: 21px; font-weight: 500; font-family: var(--font-serif); color: var(--fg-color); }
 .ta-step-desc { margin: 6px 0 0 0; font-size: 14px; color: #6B5B47; }
 .ta-step-rule { height: 1px; background-color: rgba(201, 155, 77, 0.2); margin: 16px 0 24px 0; }
 
 /* Fields */
 .ta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .ta-field { margin-bottom: 20px; }
-.ta-label { display: block; margin-bottom: 8px; font-size: 13.5px; font-weight: 700; color: var(--fg-color); }
+.ta-label { display: block; margin-bottom: 8px; font-size: 13.5px; font-weight: 500; color: var(--fg-color); }
 .ta-label .req { color: #C0392B; margin-left: 2px; }
 
 .ta-input, .ta-select, .ta-textarea {
@@ -185,7 +185,7 @@
 .ta-btn {
   display: inline-flex; align-items: center; gap: 9px;
   padding: 13px 30px; border-radius: 9999px; font-family: var(--font-sans);
-  font-size: 14px; font-weight: 700; cursor: pointer; border: none;
+  font-size: 14px; font-weight: 500; cursor: pointer; border: none;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 .ta-btn-primary { background-color: var(--primary-color); color: #fff; box-shadow: 0 8px 20px rgba(201, 155, 77, 0.25); }
@@ -197,7 +197,7 @@
 /* Success */
 .ta-success { text-align: center; padding: 24px 8px; }
 .ta-success-icon { width: 84px; height: 84px; border-radius: 50%; background-color: rgba(85, 107, 59, 0.12); border: 2px solid var(--secondary-color); display: flex; align-items: center; justify-content: center; margin: 0 auto 22px auto; color: var(--secondary-color); }
-.ta-success h3 { margin: 0 0 10px 0; font-family: var(--font-serif); font-size: 26px; font-weight: 700; }
+.ta-success h3 { margin: 0 0 10px 0; font-family: var(--font-serif); font-size: 26px; font-weight: 500; }
 .ta-success p { margin: 0 auto 24px auto; max-width: 460px; font-size: 15px; line-height: 1.7; color: #6B5B47; }
 
 /* Responsive */

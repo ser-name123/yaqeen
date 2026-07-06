@@ -22,7 +22,7 @@
 
 /* What Next */
 .ty-next { padding: 56px 24px; max-width: 1080px; margin: 0 auto; width: 100%; }
-.ty-next h2 { text-align: center; margin: 0 0 34px 0; font-family: var(--font-serif); font-size: clamp(24px, 3.4vw, 34px); font-weight: 700; }
+.ty-next h2 { text-align: center; margin: 0 0 34px 0; font-family: var(--font-serif); font-size: clamp(24px, 3.4vw, 34px); font-weight: 500; }
 .ty-next h2 span { color: var(--primary-color); }
 .ty-next-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .ty-next-card {
@@ -34,26 +34,26 @@
 .ty-next-icon { width: 66px; height: 66px; border-radius: 50%; margin: 0 auto 18px auto; display: flex; align-items: center; justify-content: center; color: #fff; }
 .ty-next-icon.green { background-color: var(--secondary-color); box-shadow: 0 8px 18px rgba(85, 107, 59, 0.18); }
 .ty-next-icon.gold { background-color: var(--primary-color); box-shadow: 0 8px 18px rgba(201, 155, 77, 0.18); }
-.ty-next-card h3 { margin: 0 0 8px 0; font-size: 17px; font-weight: 700; color: var(--fg-color); font-family: var(--font-serif); }
+.ty-next-card h3 { margin: 0 0 8px 0; font-size: 17px; font-weight: 500; color: var(--fg-color); font-family: var(--font-serif); }
 .ty-next-card h3 span { color: var(--primary-color); }
 .ty-next-card p { margin: 0; font-size: 13.5px; line-height: 1.6; color: #6B5B47; }
 
 /* Testimonials */
 .ty-testi { padding: 20px 24px 56px 24px; text-align: center; }
-.ty-badge { display: inline-flex; padding: 6px 16px; border-radius: 9999px; background-color: rgba(201, 155, 77, 0.14); color: #A97B2E; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
-.ty-testi h2 { margin: 14px 0 6px 0; font-family: var(--font-serif); font-size: clamp(24px, 3.4vw, 34px); font-weight: 700; }
+.ty-badge { display: inline-flex; padding: 6px 16px; border-radius: 9999px; background-color: rgba(201, 155, 77, 0.14); color: #A97B2E; font-size: 12px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; }
+.ty-testi h2 { margin: 14px 0 6px 0; font-family: var(--font-serif); font-size: clamp(24px, 3.4vw, 34px); font-weight: 500; }
 .ty-testi h2 span { color: var(--primary-color); }
 .ty-testi > p { margin: 0 auto 30px auto; max-width: 560px; font-size: 15px; color: #6B5B47; }
 
 /* FAQ */
 .ty-faq { padding: 60px 24px 80px 24px; background-color: #F5EFE6; }
 .ty-faq-head { text-align: center; margin-bottom: 36px; }
-.ty-faq-head h2 { margin: 14px 0 0 0; font-family: var(--font-serif); font-size: clamp(24px, 3.4vw, 34px); font-weight: 700; }
+.ty-faq-head h2 { margin: 14px 0 0 0; font-family: var(--font-serif); font-size: clamp(24px, 3.4vw, 34px); font-weight: 500; }
 .ty-faq-head h2 span { color: var(--primary-color); }
 .ty-faq-list { max-width: 840px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
 .ty-faq-item { background-color: #FFFFFF; border: 1px solid #EFE7DA; border-radius: 16px; overflow: hidden; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
 .ty-faq-item.open { border-color: rgba(201, 155, 77, 0.5); box-shadow: 0 12px 26px rgba(44, 37, 30, 0.05); }
-.ty-faq-q { width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 22px; background: none; border: none; text-align: left; cursor: pointer; font-family: var(--font-sans); font-size: clamp(15px, 1.9vw, 17px); font-weight: 700; color: var(--fg-color); }
+.ty-faq-q { width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 22px; background: none; border: none; text-align: left; cursor: pointer; font-family: var(--font-sans); font-size: clamp(15px, 1.9vw, 17px); font-weight: 500; color: var(--fg-color); }
 .ty-chevron { color: var(--primary-color); flex-shrink: 0; transition: transform 0.3s ease; }
 .ty-chevron.open { transform: rotate(180deg); }
 .ty-faq-a { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
@@ -61,7 +61,7 @@
 .ty-faq-a-inner { padding: 0 22px 20px 22px; font-size: 14.5px; line-height: 1.75; color: #5a4a37; }
 
 /* Buttons */
-.ty-btn { display: inline-flex; align-items: center; gap: 9px; padding: 13px 30px; border-radius: 9999px; background-color: var(--secondary-color); color: #fff; font-size: 14px; font-weight: 700; text-decoration: none; box-shadow: 0 8px 20px rgba(85, 107, 59, 0.2); transition: all 0.2s ease; }
+.ty-btn { display: inline-flex; align-items: center; gap: 9px; padding: 13px 30px; border-radius: 9999px; background-color: var(--secondary-color); color: #fff; font-size: 14px; font-weight: 500; text-decoration: none; box-shadow: 0 8px 20px rgba(85, 107, 59, 0.2); transition: all 0.2s ease; }
 .ty-btn:hover { transform: translateY(-2px); background-color: #45592f; color: #fff; }
 .ty-hero-actions { display: flex; gap: 12px; justify-content: center; margin-top: 26px; flex-wrap: wrap; }
 .ty-btn.gold { background-color: var(--primary-color); color: #fff; box-shadow: 0 8px 20px rgba(201, 155, 77, 0.22); }

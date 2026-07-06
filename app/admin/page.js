@@ -2133,7 +2133,7 @@ export default function AdminDashboard() {
                   textTransform: "capitalize", 
                   color: "#2c251e", 
                   fontFamily: "'Playfair Display', serif", 
-                  fontWeight: "700", 
+                  fontWeight: "500", 
                   fontSize: "24px", 
                   display: "flex", 
                   alignItems: "center", 
@@ -2200,7 +2200,7 @@ export default function AdminDashboard() {
                     ...loginInputStyle,
                     fontSize: "24px",
                     letterSpacing: "8px",
-                    fontWeight: "700"
+                    fontWeight: "500"
                   }}
                 />
               </div>
@@ -2375,7 +2375,7 @@ export default function AdminDashboard() {
               textTransform: "capitalize",
               color: "#2c251e",
               fontFamily: "'Playfair Display', serif",
-              fontWeight: "700",
+              fontWeight: "500",
               fontSize: "20px",
               display: "flex",
               alignItems: "center",
@@ -2494,7 +2494,7 @@ export default function AdminDashboard() {
             width: "100%", 
             padding: "12px 16px",
             fontSize: "14px",
-            fontWeight: "700",
+            fontWeight: "500",
             borderRadius: "9999px",
             border: "1px solid #e3dbc9",
             backgroundColor: "#f0ebd8",
@@ -2517,7 +2517,7 @@ export default function AdminDashboard() {
         {/* Header toolbar */}
         <div className="admin-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px", borderBottom: "1px solid var(--card-border)", paddingBottom: "20px" }}>
           <div>
-            <h2 style={{ fontSize: "28px", fontWeight: "700" }}>
+            <h2 style={{ fontSize: "28px", fontWeight: "500" }}>
               {activeTab === "overview" && "System Overview"}
               {activeTab === "blogs" && (isEditingBlog ? (editingBlogId ? "Edit Blog Post" : "Write New Publication") : "Blog Publications")}
               {activeTab === "contacts" && "Contact Query Logs"}
@@ -3127,7 +3127,7 @@ export default function AdminDashboard() {
           <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "rgba(0, 0, 0, 0.4)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999, padding: "20px", boxSizing: "border-box" }}>
             <div className="glass-panel" style={{ width: "100%", maxWidth: "720px", backgroundColor: "#FFFDF9", border: "1px solid #EADDC8", borderRadius: "20px", boxShadow: "0 20px 50px rgba(44, 37, 30, 0.15)", display: "flex", flexDirection: "column", maxHeight: "90vh", overflow: "hidden" }}>
               <div style={{ padding: "20px 24px", borderBottom: "1px solid var(--card-border)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <h3 style={{ fontSize: "18px", fontWeight: "700", color: "#2B1F14", margin: 0, fontFamily: "var(--font-serif), Georgia, serif" }}>
+                <h3 style={{ fontSize: "18px", fontWeight: "500", color: "#2B1F14", margin: 0, fontFamily: "var(--font-serif), Georgia, serif" }}>
                   {`${selectedTeacherApp.first_name || ""} ${selectedTeacherApp.last_name || ""}`.trim()} — Application
                 </h3>
                 <button onClick={() => setSelectedTeacherApp(null)} style={{ background: "none", border: "none", fontSize: "24px", color: "var(--fg-muted)", cursor: "pointer", padding: 0, lineHeight: 1 }}>&times;</button>
@@ -3157,7 +3157,7 @@ export default function AdminDashboard() {
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px 18px" }}>
                         {rows.filter(([, v]) => v).map(([label, v]) => (
                           <div key={label}>
-                            <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "700", color: "var(--fg-muted)" }}>{label}</span>
+                            <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "500", color: "var(--fg-muted)" }}>{label}</span>
                             <div style={{ fontSize: "14px", fontWeight: "600", color: "#2B1F14", marginTop: "3px", wordBreak: "break-word" }}>{v}</div>
                           </div>
                         ))}
@@ -3165,13 +3165,13 @@ export default function AdminDashboard() {
 
                       {a.about_me && (
                         <div style={{ borderTop: "1px solid var(--card-border)", marginTop: "18px", paddingTop: "14px" }}>
-                          <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "700", color: "var(--fg-muted)" }}>About Me</span>
+                          <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "500", color: "var(--fg-muted)" }}>About Me</span>
                           <p style={{ fontSize: "14px", color: "#4A3B2C", marginTop: "6px", whiteSpace: "pre-wrap", lineHeight: 1.6 }}>{a.about_me}</p>
                         </div>
                       )}
                       {a.ideal_candidate && (
                         <div style={{ borderTop: "1px solid var(--card-border)", marginTop: "14px", paddingTop: "14px" }}>
-                          <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "700", color: "var(--fg-muted)" }}>Ideal Candidate</span>
+                          <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "500", color: "var(--fg-muted)" }}>Ideal Candidate</span>
                           <p style={{ fontSize: "14px", color: "#4A3B2C", marginTop: "6px", whiteSpace: "pre-wrap", lineHeight: 1.6 }}>{a.ideal_candidate}</p>
                         </div>
                       )}
@@ -3311,7 +3311,7 @@ export default function AdminDashboard() {
                 justifyContent: "space-between",
                 alignItems: "center"
               }}>
-                <h3 style={{ fontSize: "18px", fontWeight: "700", color: "#2B1F14", margin: 0, fontFamily: "var(--font-serif), Georgia, serif" }}>
+                <h3 style={{ fontSize: "18px", fontWeight: "500", color: "#2B1F14", margin: 0, fontFamily: "var(--font-serif), Georgia, serif" }}>
                   Inquiry Detail
                 </h3>
                 <button 
@@ -3342,11 +3342,11 @@ export default function AdminDashboard() {
                 {/* Contact Basics */}
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                   <div>
-                    <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "700", color: "var(--fg-muted)" }}>Sender Name</span>
+                    <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "500", color: "var(--fg-muted)" }}>Sender Name</span>
                     <div style={{ fontSize: "15px", fontWeight: "600", color: "#2B1F14", marginTop: "4px" }}>{selectedContact.name}</div>
                   </div>
                   <div>
-                    <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "700", color: "var(--fg-muted)" }}>Email Address</span>
+                    <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "500", color: "var(--fg-muted)" }}>Email Address</span>
                     <div style={{ fontSize: "15px", fontWeight: "600", marginTop: "4px" }}>
                       <a href={`mailto:${selectedContact.email}`} style={{ color: "var(--secondary-color)", textDecoration: "none" }}>
                         {selectedContact.email}
@@ -3357,11 +3357,11 @@ export default function AdminDashboard() {
 
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                   <div>
-                    <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "700", color: "var(--fg-muted)" }}>Subject</span>
+                    <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "500", color: "var(--fg-muted)" }}>Subject</span>
                     <div style={{ fontSize: "15px", fontWeight: "600", color: "#2B1F14", marginTop: "4px" }}>{selectedContact.subject}</div>
                   </div>
                   <div>
-                    <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "700", color: "var(--fg-muted)" }}>Date Submitted</span>
+                    <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "500", color: "var(--fg-muted)" }}>Date Submitted</span>
                     <div style={{ fontSize: "15px", fontWeight: "600", color: "#2B1F14", marginTop: "4px" }}>
                       {new Date(selectedContact.created_at).toLocaleString()}
                     </div>
@@ -3370,7 +3370,7 @@ export default function AdminDashboard() {
 
                 {/* Message Body */}
                 <div style={{ borderTop: "1px solid var(--card-border)", paddingTop: "16px" }}>
-                  <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "700", color: "var(--fg-muted)" }}>Message Content</span>
+                  <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "500", color: "var(--fg-muted)" }}>Message Content</span>
                   <p style={{
                     fontSize: "14.5px",
                     lineHeight: "1.6",
@@ -3394,7 +3394,7 @@ export default function AdminDashboard() {
                   flexDirection: "column",
                   gap: "10px"
                 }}>
-                  <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "700", color: "var(--fg-muted)" }}>User Telemetry Metadata</span>
+                  <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "500", color: "var(--fg-muted)" }}>User Telemetry Metadata</span>
                   
                   <div style={{
                     padding: "14px",
@@ -3761,7 +3761,7 @@ export default function AdminDashboard() {
                       <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
                         <span style={{ fontSize: "16px" }}>👤</span>
                         <span style={{ fontSize: "14px", fontWeight: "600", color: "#2B1F14", wordBreak: "break-all" }}>{acc.email}</span>
-                        {acc.is_self && <span style={{ fontSize: "11px", fontWeight: "700", color: "var(--secondary-color)", backgroundColor: "rgba(85,107,59,0.12)", padding: "2px 8px", borderRadius: "9999px" }}>You</span>}
+                        {acc.is_self && <span style={{ fontSize: "11px", fontWeight: "500", color: "var(--secondary-color)", backgroundColor: "rgba(85,107,59,0.12)", padding: "2px 8px", borderRadius: "9999px" }}>You</span>}
                       </div>
                       {!acc.is_self && (
                         <button type="button" onClick={() => handleDeleteAdmin(acc.id)} className="btn-secondary" style={{ padding: "6px 12px", fontSize: "12px", color: "#ef4444", flexShrink: 0 }}>
@@ -3775,7 +3775,7 @@ export default function AdminDashboard() {
 
               {/* Add new admin */}
               <form onSubmit={handleCreateAdmin} style={{ borderTop: "1px solid var(--card-border)", paddingTop: "20px", display: "flex", flexDirection: "column", gap: "16px" }}>
-                <h4 style={{ fontSize: "14px", fontWeight: "700", color: "#2B1F14", margin: 0 }}>Add Admin Account</h4>
+                <h4 style={{ fontSize: "14px", fontWeight: "500", color: "#2B1F14", margin: 0 }}>Add Admin Account</h4>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                     <label style={formLabelStyle}>New Admin Email</label>
@@ -4382,7 +4382,7 @@ export default function AdminDashboard() {
                 {/* ---- Course Detail Page Content (optional) ---- */}
                 <div style={{ borderTop: "1px solid var(--card-border)", paddingTop: "20px", display: "flex", flexDirection: "column", gap: "18px" }}>
                   <div>
-                    <h4 style={{ fontSize: "15px", fontWeight: "700", margin: 0 }}>Course Detail Page Content</h4>
+                    <h4 style={{ fontSize: "15px", fontWeight: "500", margin: 0 }}>Course Detail Page Content</h4>
                     <p style={{ color: "var(--fg-muted)", fontSize: "12.5px", marginTop: "6px" }}>These fields power the course detail page. Leave any field blank to use the default template text.</p>
                   </div>
 
@@ -4653,7 +4653,7 @@ export default function AdminDashboard() {
                             }}
                           >
                             <span style={{ fontSize: "18px" }}>{item.included ? "✔️" : "❌"}</span>
-                            <span style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase" }}>{item.included ? "Included" : "Excluded"}</span>
+                            <span style={{ fontSize: "11px", fontWeight: "500", textTransform: "uppercase" }}>{item.included ? "Included" : "Excluded"}</span>
                           </button>
                           
                           <span style={{ flexGrow: 1, fontSize: "14px", color: item.included ? "var(--fg-color)" : "var(--fg-muted)", textDecoration: item.included ? "none" : "line-through", textDecorationColor: "rgba(0,0,0,0.15)" }}>

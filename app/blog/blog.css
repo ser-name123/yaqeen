@@ -74,7 +74,7 @@
 .blog-hero-title {
   font-family: var(--font-serif);
   font-size: 58px;
-  font-weight: 700;
+  font-weight: 500;
   color: var(--fg-color);
   line-height: 1.1;
   margin: 0;
@@ -387,7 +387,7 @@
 .blog-card-title {
   font-family: var(--font-sans);
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.4;
   color: var(--fg-color);
   margin: 0 0 10px 0;

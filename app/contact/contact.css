@@ -33,7 +33,7 @@
 
 .contact-hero-label {
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 500;
   color: var(--primary-color);
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -44,7 +44,7 @@
 .contact-hero-title {
   font-family: var(--font-serif), serif;
   font-size: 52px;
-  font-weight: 700;
+  font-weight: 500;
   color: var(--fg-color);
   line-height: 1.15;
   margin-bottom: 8px;
@@ -137,7 +137,7 @@
 .contact-section-title {
   font-family: var(--font-serif), serif;
   font-size: 28px;
-  font-weight: 700;
+  font-weight: 500;
   color: var(--fg-color);
   margin-bottom: 4px;
 }
@@ -389,7 +389,7 @@
 
 .contact-faq-question {
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 500;
   color: var(--fg-color);
   line-height: 1.4;
   margin-bottom: 12px;

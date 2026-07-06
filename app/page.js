@@ -618,7 +618,7 @@ export default function Home() {
                 backgroundColor: "rgba(250, 245, 238, 0.6)", 
                 marginBottom: "28px" 
               }}>
-                <span style={{ fontSize: "14px", fontWeight: "700", color: "#C99B4D", letterSpacing: "0.5px" }}>Learn in Any Language</span>
+                <span style={{ fontSize: "14px", fontWeight: "500", color: "#C99B4D", letterSpacing: "0.5px" }}>Learn in Any Language</span>
                 <span style={{ color: "#C99B4D", display: "flex", alignItems: "center" }}><IconGlobe /></span>
               </div>
 
@@ -640,7 +640,7 @@ export default function Home() {
               {/* Subheading */}
               <h3 style={{ 
                 fontSize: "24px", 
-                fontWeight: "700", 
+                fontWeight: "500", 
                 color: "#2B1F14", 
                 marginBottom: "16px", 
                 display: "flex", 
@@ -691,7 +691,7 @@ export default function Home() {
                   borderRadius: "9999px",
                   backgroundColor: "#C99B4D",
                   color: "#FFFFFF",
-                  fontWeight: "700",
+                  fontWeight: "500",
                   fontSize: "16px",
                   boxShadow: "0 10px 20px rgba(201, 155, 77, 0.25)",
                   transition: "transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease"
@@ -717,19 +717,19 @@ export default function Home() {
                   <div style={{ width: "36px", height: "36px", borderRadius: "50%", backgroundColor: "#C99B4D", display: "flex", alignItems: "center", color: "#FFF", flexShrink: 0, justifyContent: "center" }}>
                     <IconPeople />
                   </div>
-                  <span style={{ fontSize: "14px", fontWeight: "700", color: "#2B1F14" }}>For All Ages</span>
+                  <span style={{ fontSize: "14px", fontWeight: "500", color: "#2B1F14" }}>For All Ages</span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                   <div style={{ width: "36px", height: "36px", borderRadius: "50%", backgroundColor: "#556B3B", display: "flex", alignItems: "center", color: "#FFF", flexShrink: 0, justifyContent: "center" }}>
                     <IconMonitor />
                   </div>
-                  <span style={{ fontSize: "14px", fontWeight: "700", color: "#2B1F14" }}>Live Online Classes</span>
+                  <span style={{ fontSize: "14px", fontWeight: "500", color: "#2B1F14" }}>Live Online Classes</span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                   <div style={{ width: "36px", height: "36px", borderRadius: "50%", backgroundColor: "#2B1F14", display: "flex", alignItems: "center", color: "#FFF", flexShrink: 0, justifyContent: "center" }}>
                     <IconChat />
                   </div>
-                  <span style={{ fontSize: "14px", fontWeight: "700", color: "#2B1F14" }}>Learn in Any Language</span>
+                  <span style={{ fontSize: "14px", fontWeight: "500", color: "#2B1F14" }}>Learn in Any Language</span>
                 </div>
               </div>
 
@@ -842,7 +842,7 @@ export default function Home() {
           <p className="lang-desc">
             You can learn and understand<br />
             {"Qur'an, Islamic Studies & Arabic"}<br />
-            in <span style={{ color: "#556B3B", fontWeight: "700" }}>the language you understand best.</span>
+            in <span style={{ color: "#556B3B", fontWeight: "500" }}>the language you understand best.</span>
           </p>
 
         </div>
@@ -927,7 +927,7 @@ export default function Home() {
           )}
           <span style={{ 
             textTransform: "uppercase", 
-            fontWeight: "700", 
+            fontWeight: "500", 
             color: "#2B1F14", 
             fontSize: "15px", 
             letterSpacing: "2px",
@@ -1080,7 +1080,7 @@ export default function Home() {
               justifyContent: "center",
               alignItems: "center"
             }}>
-              <span style={{ fontSize: "13px", fontWeight: "700", color: "#C99B4D", letterSpacing: "0.5px" }}>✦ and many more courses</span>
+              <span style={{ fontSize: "13px", fontWeight: "500", color: "#C99B4D", letterSpacing: "0.5px" }}>✦ and many more courses</span>
             </div>
           </div>
 
@@ -1192,7 +1192,7 @@ export default function Home() {
               justifyContent: "center",
               alignItems: "center"
             }}>
-              <span style={{ fontSize: "13px", fontWeight: "700", color: "#C99B4D", letterSpacing: "0.5px" }}>✦ and many more courses</span>
+              <span style={{ fontSize: "13px", fontWeight: "500", color: "#C99B4D", letterSpacing: "0.5px" }}>✦ and many more courses</span>
             </div>
           </div>
 
@@ -1304,7 +1304,7 @@ export default function Home() {
               justifyContent: "center",
               alignItems: "center"
             }}>
-              <span style={{ fontSize: "13px", fontWeight: "700", color: "#C99B4D", letterSpacing: "0.5px" }}>✦ and many more courses</span>
+              <span style={{ fontSize: "13px", fontWeight: "500", color: "#C99B4D", letterSpacing: "0.5px" }}>✦ and many more courses</span>
             </div>
           </div>
 
@@ -1445,7 +1445,7 @@ export default function Home() {
           )}
           <span style={{ 
             textTransform: "uppercase", 
-            fontWeight: "700", 
+            fontWeight: "500", 
             color: "#2B1F14", 
             fontSize: "15px", 
             letterSpacing: "2px",
@@ -1456,7 +1456,7 @@ export default function Home() {
         {/* Subtitle Text */}
         <div className="reveal-slide-up" style={{
           fontSize: "14px",
-          fontWeight: "700",
+          fontWeight: "500",
           color: "#C99B4D",
           letterSpacing: "2.5px",
           textTransform: "uppercase",

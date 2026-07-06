@@ -275,7 +275,9 @@ export default function PricingPage() {
     animatedElements.forEach(el => observer.observe(el));
 
     return () => observer.disconnect();
-  }, []);
+    // Re-run after async data loads so newly-rendered plan cards (from Supabase)
+    // also get observed and revealed — otherwise they stay at opacity:0.
+  }, [plans]);
 
   return (
     <div className="pricing-page-container" style={{ backgroundImage: LACE_BACKGROUND_PATTERN }}>

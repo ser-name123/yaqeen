@@ -407,7 +407,7 @@ export default function AboutPage() {
               )}
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", lineHeight: "1.1" }}>
                 <span className="banner-logo-text" style={{ fontSize: "14px", fontWeight: "800", color: "#2B1F14" }}>YAQEEN</span>
-                <span className="banner-logo-text" style={{ fontSize: "10px", fontWeight: "700", color: "#C99B4D" }}>INSTITUTE</span>
+                <span className="banner-logo-text" style={{ fontSize: "10px", fontWeight: "500", color: "#C99B4D" }}>INSTITUTE</span>
               </div>
             </div>
   
@@ -754,7 +754,7 @@ export default function AboutPage() {
                   borderRadius: "9999px",
                   backgroundColor: "#C99B4D",
                   color: "#FFFFFF",
-                  fontWeight: "700",
+                  fontWeight: "500",
                   fontSize: "14px",
                   boxShadow: "0 6px 16px rgba(201, 155, 77, 0.2)",
                   transition: "all 0.3s ease"

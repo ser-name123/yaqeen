@@ -98,7 +98,7 @@
 /* Main title styling */
 .blog-details-title {
   font-size: 44px;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.25;
   color: #221A15;
   margin-bottom: 12px;
@@ -255,7 +255,7 @@
 
 .blog-details-section-title {
   font-size: 22px;
-  font-weight: 700;
+  font-weight: 500;
   color: #1A1A1A;
   margin: 0;
 }
@@ -357,7 +357,7 @@
 }
 
 .blog-details-tags-row .label {
-  font-weight: 700;
+  font-weight: 500;
   font-size: 15px;
   font-family: 'Inter', sans-serif;
   color: #2C251E;
@@ -449,7 +449,7 @@
 
 .blog-details-nav-card .nav-title {
   font-size: 14.5px;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.3;
   color: #2C251E;
   margin: 0;
@@ -516,7 +516,7 @@
 
 .sidebar-panel-card .header-title {
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 500;
   color: #2C251E;
   margin: 0;
   letter-spacing: -0.2px;
@@ -655,7 +655,7 @@
 
 .related-item-card .related-title {
   font-size: 14.5px;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.35;
   color: #2C251E;
   margin: 0;

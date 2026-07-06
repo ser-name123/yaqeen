@@ -14,9 +14,9 @@
 .pp-badge {
   display: inline-flex; align-items: center; gap: 8px; padding: 7px 16px; border-radius: 9999px;
   background-color: rgba(201, 155, 77, 0.12); border: 1px solid rgba(201, 155, 77, 0.3);
-  color: #A97B2E; font-size: 12px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+  color: #A97B2E; font-size: 12px; font-weight: 500; letter-spacing: 1.2px; text-transform: uppercase;
 }
-.pp-hero h1 { margin: 18px 0 6px 0; font-family: var(--font-serif); font-size: clamp(30px, 5vw, 46px); font-weight: 700; line-height: 1.15; }
+.pp-hero h1 { margin: 18px 0 6px 0; font-family: var(--font-serif); font-size: clamp(30px, 5vw, 46px); font-weight: 500; line-height: 1.15; }
 .pp-hero h1 span { color: var(--primary-color); }
 .pp-hero p { margin: 0; max-width: 620px; font-size: 15.5px; line-height: 1.7; color: #6B5B47; }
 
@@ -32,7 +32,7 @@
 .pp-toc a.active {
   background-color: rgba(201, 155, 77, 0.15);
   color: var(--primary-color);
-  font-weight: 700;
+  font-weight: 500;
   box-shadow: inset 3px 0 0 var(--primary-color);
 }
 .pp-toc ol::-webkit-scrollbar { width: 6px; }
@@ -49,7 +49,7 @@
 .pp-section { padding-top: 28px; margin-top: 28px; border-top: 1px solid #F0E9DC; scroll-margin-top: 90px; }
 .pp-section:first-of-type { border-top: none; margin-top: 0; padding-top: 0; }
 .pp-section h2 {
-  margin: 0 0 16px 0; font-family: var(--font-serif); font-size: clamp(19px, 2.4vw, 24px); font-weight: 700; color: var(--fg-color);
+  margin: 0 0 16px 0; font-family: var(--font-serif); font-size: clamp(19px, 2.4vw, 24px); font-weight: 500; color: var(--fg-color);
   display: flex; align-items: baseline; gap: 10px;
 }
 .pp-section h2 .num { color: var(--primary-color); font-size: 0.85em; font-weight: 800; }
@@ -60,7 +60,7 @@
 
 /* Contact block */
 .pp-contact { margin: 6px 0 16px 0; background-color: #FBF6EE; border: 1px solid rgba(201, 155, 77, 0.25); border-radius: 14px; padding: 20px 22px; }
-.pp-contact .name { font-weight: 700; color: var(--fg-color); font-size: 15px; margin-bottom: 4px; }
+.pp-contact .name { font-weight: 500; color: var(--fg-color); font-size: 15px; margin-bottom: 4px; }
 .pp-contact div { font-size: 14.5px; line-height: 1.7; color: #4f4234; }
 .pp-contact a { color: var(--primary-color); text-decoration: none; }
 .pp-contact a:hover { text-decoration: underline; }

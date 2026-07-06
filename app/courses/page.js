@@ -548,7 +548,9 @@ export default function CoursesPage() {
     animatedElements.forEach(el => observer.observe(el));
 
     return () => observer.disconnect();
-  }, []);
+    // Re-run after async data loads so newly-rendered cards (teachers/courses from
+    // Supabase) also get observed and revealed — otherwise they stay at opacity:0.
+  }, [teachers, coursesList]);
 
   return (
     <main style={{ minHeight: "100vh", backgroundColor: "#FAF5EE", display: "flex", flexDirection: "column" }}>
@@ -589,7 +591,7 @@ export default function CoursesPage() {
           </svg>
           <span style={{ 
             textTransform: "uppercase", 
-            fontWeight: "700", 
+            fontWeight: "500", 
             color: "#55683B", 
             fontSize: "12px", 
             letterSpacing: "1.5px",
@@ -778,7 +780,7 @@ export default function CoursesPage() {
               }}>
                 {/* Left: Serial Number & Gold Line */}
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "6px", flexShrink: 0 }}>
-                  <span style={{ fontSize: "14px", fontWeight: "700", color: "#C99B4D", fontFamily: "var(--font-sans), sans-serif", lineHeight: "1" }}>
+                  <span style={{ fontSize: "14px", fontWeight: "500", color: "#C99B4D", fontFamily: "var(--font-sans), sans-serif", lineHeight: "1" }}>
                     {course.num}
                   </span>
                   <div style={{ width: "16px", height: "1.5px", backgroundColor: "#C99B4D" }} />
@@ -787,7 +789,7 @@ export default function CoursesPage() {
                 {/* Middle: Course Title */}
                 <h3 style={{
                   fontSize: "18px",
-                  fontWeight: "700",
+                  fontWeight: "500",
                   color: "#2B1F14",
                   margin: 0,
                   fontFamily: "var(--font-serif), Georgia, serif",
@@ -1232,7 +1234,7 @@ export default function CoursesPage() {
                 fontFamily: "var(--font-sans), sans-serif",
                 textAlign: "left"
               }}>
-                Our mission is to <span style={{ color: "#C99B4D", fontWeight: "700" }}>empower</span> learners with knowledge and skills that inspire <span style={{ color: "#C99B4D", fontWeight: "700" }}>purpose</span>, bring <span style={{ color: "#C99B4D", fontWeight: "700" }}>positive change</span>, and build a <span style={{ color: "#C99B4D", fontWeight: "700" }}>better future</span>.
+                Our mission is to <span style={{ color: "#C99B4D", fontWeight: "500" }}>empower</span> learners with knowledge and skills that inspire <span style={{ color: "#C99B4D", fontWeight: "500" }}>purpose</span>, bring <span style={{ color: "#C99B4D", fontWeight: "500" }}>positive change</span>, and build a <span style={{ color: "#C99B4D", fontWeight: "500" }}>better future</span>.
               </p>
             </div>
 
@@ -1269,7 +1271,7 @@ export default function CoursesPage() {
                   <IconShieldCheck size={18} color="#4A5D3B" />
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", lineHeight: "1.2" }}>
-                  <span style={{ fontSize: "12px", fontWeight: "700", color: "#4A3B2C", fontFamily: "var(--font-sans), sans-serif" }}>Trusted</span>
+                  <span style={{ fontSize: "12px", fontWeight: "500", color: "#4A3B2C", fontFamily: "var(--font-sans), sans-serif" }}>Trusted</span>
                   <span style={{ fontSize: "12px", fontWeight: "500", color: "#6B5B47", fontFamily: "var(--font-sans), sans-serif" }}>Institute</span>
                 </div>
               </div>
@@ -1290,7 +1292,7 @@ export default function CoursesPage() {
                   <IconUserOutline size={18} color="#C99B4D" />
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", lineHeight: "1.2" }}>
-                  <span style={{ fontSize: "12px", fontWeight: "700", color: "#4A3B2C", fontFamily: "var(--font-sans), sans-serif" }}>Qualified</span>
+                  <span style={{ fontSize: "12px", fontWeight: "500", color: "#4A3B2C", fontFamily: "var(--font-sans), sans-serif" }}>Qualified</span>
                   <span style={{ fontSize: "12px", fontWeight: "500", color: "#6B5B47", fontFamily: "var(--font-sans), sans-serif" }}>Teachers</span>
                 </div>
               </div>
@@ -1311,7 +1313,7 @@ export default function CoursesPage() {
                   <IconHeartOutline size={17} color="#4A5D3B" />
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", lineHeight: "1.2" }}>
-                  <span style={{ fontSize: "12px", fontWeight: "700", color: "#4A3B2C", fontFamily: "var(--font-sans), sans-serif" }}>Learners</span>
+                  <span style={{ fontSize: "12px", fontWeight: "500", color: "#4A3B2C", fontFamily: "var(--font-sans), sans-serif" }}>Learners</span>
                   <span style={{ fontSize: "12px", fontWeight: "500", color: "#6B5B47", fontFamily: "var(--font-sans), sans-serif" }}>Worldwide</span>
                 </div>
               </div>
@@ -1524,7 +1526,7 @@ export default function CoursesPage() {
                     <IconUserOutline size={18} color="#C99B4D" />
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", lineHeight: "1.2" }}>
-                    <span style={{ fontSize: "12px", fontWeight: "700", color: "#4A3B2C", fontFamily: "var(--font-sans), sans-serif" }}>Qualified</span>
+                    <span style={{ fontSize: "12px", fontWeight: "500", color: "#4A3B2C", fontFamily: "var(--font-sans), sans-serif" }}>Qualified</span>
                     <span style={{ fontSize: "12px", fontWeight: "500", color: "#6B5B47", fontFamily: "var(--font-sans), sans-serif" }}>Teachers</span>
                   </div>
                 </div>
@@ -1546,7 +1548,7 @@ export default function CoursesPage() {
                     <IconShieldCheck size={18} color="#4A5D3B" />
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", lineHeight: "1.2" }}>
-                    <span style={{ fontSize: "12px", fontWeight: "700", color: "#4A3B2C", fontFamily: "var(--font-sans), sans-serif" }}>Safe & Supportive</span>
+                    <span style={{ fontSize: "12px", fontWeight: "500", color: "#4A3B2C", fontFamily: "var(--font-sans), sans-serif" }}>Safe & Supportive</span>
                     <span style={{ fontSize: "12px", fontWeight: "500", color: "#6B5B47", fontFamily: "var(--font-sans), sans-serif" }}>Environment</span>
                   </div>
                 </div>
@@ -1568,7 +1570,7 @@ export default function CoursesPage() {
                     <IconBookOutline size={18} color="#C99B4D" />
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", lineHeight: "1.2" }}>
-                    <span style={{ fontSize: "12px", fontWeight: "700", color: "#4A3B2C", fontFamily: "var(--font-sans), sans-serif" }}>Learn Anytime,</span>
+                    <span style={{ fontSize: "12px", fontWeight: "500", color: "#4A3B2C", fontFamily: "var(--font-sans), sans-serif" }}>Learn Anytime,</span>
                     <span style={{ fontSize: "12px", fontWeight: "500", color: "#6B5B47", fontFamily: "var(--font-sans), sans-serif" }}>Anywhere</span>
                   </div>
                 </div>
@@ -1620,7 +1622,7 @@ export default function CoursesPage() {
                 borderRadius: "16px",
                 padding: "18px 32px",
                 color: "#FFFFFF",
-                fontWeight: "700",
+                fontWeight: "500",
                 fontSize: "16px",
                 fontFamily: "var(--font-sans), sans-serif",
                 display: "inline-flex",
@@ -1680,7 +1682,7 @@ export default function CoursesPage() {
               </div>
               <span style={{
                 fontSize: "14px",
-                fontWeight: "700",
+                fontWeight: "500",
                 color: "#4A5D3B",
                 fontFamily: "var(--font-sans), sans-serif"
               }}>
