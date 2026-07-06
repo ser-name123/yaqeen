@@ -57,6 +57,11 @@ body {
   flex-direction: column;
 }
 
+/* Global heading weight — force all h1 to weight 500 (overrides class & inline styles) */
+h1 {
+  font-weight: 500 !important;
+}
+
 /* Animations */
 @keyframes float {
   0% { transform: translateY(0px); }
