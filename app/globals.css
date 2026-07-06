@@ -1899,7 +1899,8 @@ h4 {
   width: 100%;
   padding: 45px 24px 90px 24px; /* Reduced top padding from 80px to 45px */
   background-color: #FAF5EE;
-  background-image: url('/images/teach_bg.png');
+  background-image: url('/images/teach_bg.png?v=2');
+
   background-size: 100% 100%; /* Stretch to fit container exactly so corner pattern is fully visible */
   background-position: center;
   background-repeat: no-repeat;
