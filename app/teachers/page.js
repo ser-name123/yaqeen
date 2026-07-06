@@ -91,7 +91,8 @@ function Avatar({ url, name, className }) {
 
 export default function TeachersPage() {
   const [teachers, setTeachers] = useState(DEFAULT_TEACHERS);
-  const [openLearn, setOpenLearn] = useState(0);
+  const [openLearn, setOpenLearn] = useState(null);
+
   const [openFaq, setOpenFaq] = useState(null);
 
   useEffect(() => {
@@ -231,9 +232,17 @@ export default function TeachersPage() {
             return (
               <div key={i} className={`tp-item ${open ? "open" : ""}`}>
                 <button type="button" className="tp-q" aria-expanded={open} onClick={() => setOpenLearn(open ? null : i)}>
-                  <span className="tp-q-icon">{f.icon}</span>
-                  <span className="tp-q-text"><span className="t">{f.q}</span><span className="d">{f.d}</span></span>
-                  <IconChevron className={`tp-chevron ${open ? "open" : ""}`} />
+                  <div className="tp-q-icon-wrap">
+                    <span className="tp-q-icon">{f.icon}</span>
+                  </div>
+                  <div className="tp-q-separator" />
+                  <div className="tp-q-text">
+                    <h3 className="t">{f.q}</h3>
+                    <p className="d">{f.d}</p>
+                  </div>
+                  <div className={`tp-q-toggle ${open ? "open" : ""}`}>
+                    <IconChevron className="tp-chevron" />
+                  </div>
                 </button>
                 <div className={`tp-a ${open ? "open" : ""}`}><div className="tp-a-inner">{f.a}</div></div>
               </div>
