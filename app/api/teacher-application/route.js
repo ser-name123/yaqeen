@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase";
+import { sendMail, getAdminRecipients } from "@/lib/mailer";
+import { teacherAppAdminEmail, teacherAppUserEmail } from "@/lib/email-templates";
+
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://yaqeeninstitute.online").replace(/\/$/, "");
 
 const FIELDS = [
   "first_name", "last_name", "gender", "email", "dial_code", "mobile", "country",
@@ -41,6 +45,33 @@ export async function POST(request) {
         );
       }
       throw error;
+    }
+
+    // ---- Send notification + acknowledgment emails via Brevo (non-blocking) ----
+    let settings = null;
+    try {
+      const { data } = await supabase.from("site_settings").select("*").eq("id", "global").single();
+      settings = data;
+    } catch (e) {
+      console.error("Teacher-app settings fetch error:", e);
+    }
+
+    const adminRecipients = await getAdminRecipients(supabase);
+
+    try {
+      const adminMail = teacherAppAdminEmail({ data: row, settings, siteUrl: SITE_URL });
+      await sendMail({ to: adminRecipients, subject: adminMail.subject, html: adminMail.html, text: adminMail.text, replyTo: adminMail.replyTo });
+    } catch (e) {
+      console.error("Teacher-app ADMIN email failed:", e && e.message ? e.message : e);
+    }
+
+    if (row.email) {
+      try {
+        const userMail = teacherAppUserEmail({ data: row, settings, siteUrl: SITE_URL });
+        await sendMail({ to: row.email, subject: userMail.subject, html: userMail.html, text: userMail.text });
+      } catch (e) {
+        console.error("Teacher-app USER email failed:", e && e.message ? e.message : e);
+      }
     }
 
     return NextResponse.json({ success: true, message: "Application submitted successfully." });

@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase";
 
 // Set NEXT_PUBLIC_SITE_URL in your environment to your live domain.
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://yaqeeninstitute.com").replace(/\/$/, "");
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://yaqeeninstitute.online").replace(/\/$/, "");
 
 // Public, indexable routes (admin, thank-you and dynamic templates excluded)
 const STATIC_ROUTES = [

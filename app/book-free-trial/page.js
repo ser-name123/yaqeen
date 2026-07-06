@@ -206,29 +206,12 @@ export default function BookFreeTrialPage() {
     setSubmitting(true);
     setSubmitError("");
 
-    const message =
-      `New Free Trial Booking\n` +
-      `-----------------------------\n` +
-      `Name: ${form.firstName} ${form.lastName}\n` +
-      `Email: ${form.email}\n` +
-      `Phone: ${form.dialCode} ${form.phone}\n` +
-      `Country: ${form.country}\n` +
-      `Interested In: ${form.learn}\n` +
-      `Session For: ${form.sessionFor}\n` +
-      `Preferred Teacher: ${form.teacher}\n` +
-      `How they found us: ${form.source || "Not specified"}\n` +
-      `Preferred Date: ${form.date}\n` +
-      `Preferred Time: ${form.hh}:${form.mm} ${form.ap}`;
-
     try {
-      const response = await fetch("/api/contact", {
+      const response = await fetch("/api/free-trial", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: `${form.firstName} ${form.lastName}`.trim(),
-          email: form.email,
-          subject: `Free Trial Booking — ${form.learn || "General"}`,
-          message,
+          ...form,
           browser_info: typeof navigator !== "undefined" ? navigator.userAgent : "Unknown",
           system_info: typeof navigator !== "undefined" ? navigator.platform : "Unknown"
         })

@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase";
+import { sendMail, getAdminRecipients } from "@/lib/mailer";
+import { contactAdminEmail, contactUserEmail } from "@/lib/email-templates";
+
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://yaqeeninstitute.online").replace(/\/$/, "");
 
 export async function POST(request) {
   try {
@@ -97,6 +101,36 @@ export async function POST(request) {
       }]);
 
     if (error) throw error;
+
+    // ---- Send notification + acknowledgment emails via Brevo (non-blocking) ----
+    // Skip email for free-trial bookings — those are handled by /api/free-trial.
+    if (!(subject || "").startsWith("Free Trial Booking")) {
+      let settings = null;
+      try {
+        const { data } = await supabase.from("site_settings").select("*").eq("id", "global").single();
+        settings = data;
+      } catch (e) {
+        console.error("Contact settings fetch error:", e);
+      }
+
+      const adminRecipients = await getAdminRecipients(supabase);
+      const location = [city, state, country].filter((v) => v && v !== "Unknown").join(", ");
+      const data = { name, email, subject, message };
+
+      try {
+        const adminMail = contactAdminEmail({ data, settings, siteUrl: SITE_URL, meta: { ip, location } });
+        await sendMail({ to: adminRecipients, subject: adminMail.subject, html: adminMail.html, text: adminMail.text, replyTo: adminMail.replyTo });
+      } catch (e) {
+        console.error("Contact ADMIN email failed:", e && e.message ? e.message : e);
+      }
+
+      try {
+        const userMail = contactUserEmail({ data, settings, siteUrl: SITE_URL });
+        await sendMail({ to: email, subject: userMail.subject, html: userMail.html, text: userMail.text });
+      } catch (e) {
+        console.error("Contact USER email failed:", e && e.message ? e.message : e);
+      }
+    }
 
     return NextResponse.json({ success: true, message: "Inquiry submitted successfully." });
   } catch (err) {
