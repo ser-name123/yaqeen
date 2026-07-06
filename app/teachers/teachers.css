@@ -61,15 +61,28 @@
 .tp-collage { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 400px; margin-left: auto; }
 .tp-collage-col { display: flex; flex-direction: column; gap: 18px; }
 .tp-collage-col:nth-child(2) { margin-top: 30px; }
-.tp-collage-img { position: relative; border-radius: 18px; overflow: hidden; aspect-ratio: 1 / 1.12; background-color: #E7DECF; border: 4px solid #fff; }
-.tp-collage-col:nth-child(1) .tp-collage-img { box-shadow: -11px 11px 0 -2px rgba(85, 107, 59, 0.22), 0 12px 26px rgba(44, 37, 30, 0.08); }
-.tp-collage-col:nth-child(2) .tp-collage-img { box-shadow: 11px -11px 0 -2px rgba(201, 155, 77, 0.24), 0 12px 26px rgba(44, 37, 30, 0.08); }
-.tp-collage-img img { width: 100%; height: 100%; object-fit: cover; }
+.tp-collage-img {
+  position: relative; z-index: 0; border-radius: 22px; aspect-ratio: 1 / 1.12;
+  background-color: #F3ECDD; border: 5px solid #F7F1E6;
+  box-shadow: 0 12px 26px rgba(44, 37, 30, 0.08);
+}
+/* Sage-green filled block behind, offset to bottom-left */
+.tp-collage-img::before {
+  content: ""; position: absolute; inset: 0; transform: translate(-16px, 16px);
+  border-radius: 24px; background-color: #C9D3BC; z-index: -1;
+}
+/* Thin green outline behind, offset to top-right */
+.tp-collage-img::after {
+  content: ""; position: absolute; inset: 0; transform: translate(16px, -16px);
+  border-radius: 24px; border: 2px solid rgba(85, 107, 59, 0.6); z-index: -2;
+}
+.tp-collage-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 16px; display: block; }
 .tp-collage-fallback { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-family: var(--font-serif); font-size: 40px; font-weight: 800; color: var(--secondary-color); background: linear-gradient(160deg, #EBE3D3, #DDD3BE); }
 
 /* ==================== TEACHERS GRID ==================== */
 .tp-teachers { max-width: 1160px; margin: 0 auto; padding: 60px 24px; width: 100%; }
-.tp-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+.tp-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 22px; }
+.tp-grid > * { flex: 0 0 calc((100% - 3 * 22px) / 4); max-width: calc((100% - 3 * 22px) / 4); }
 .tp-card {
   background-color: #FFFFFF; border: 1px solid #EFE7DA; border-radius: 18px; padding: 26px 20px; text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
@@ -95,6 +108,9 @@
 .tp-commit h3 span { color: var(--primary-color); display: block; }
 .tp-join-btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 26px; border-radius: 12px; background-color: var(--secondary-color); color: #fff; font-size: 14px; font-weight: 500; text-decoration: none; transition: all 0.2s ease; }
 .tp-join-btn:hover { background-color: #45592f; transform: translateY(-2px); }
+.tp-commit-right { display: flex; flex-direction: column; gap: 20px; }
+.tp-commit-img { border-radius: 18px; overflow: hidden; box-shadow: 0 14px 32px rgba(44, 37, 30, 0.08); }
+.tp-commit-img img { width: 100%; height: auto; display: block; }
 .tp-values { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .tp-value { display: flex; align-items: center; gap: 14px; background-color: #FFFFFF; border: 1px solid #EFE7DA; border-radius: 14px; padding: 18px; box-shadow: 0 8px 20px rgba(44, 37, 30, 0.03); }
 .tp-value-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
@@ -147,12 +163,12 @@
 @media (max-width: 1000px) {
   .tp-hero-inner { grid-template-columns: 1fr; gap: 34px; }
   .tp-hero-title { font-size: clamp(48px, 14vw, 72px); }
-  .tp-grid { grid-template-columns: repeat(2, 1fr); }
+  .tp-grid > * { flex-basis: calc((100% - 22px) / 2); max-width: calc((100% - 22px) / 2); }
   .tp-commit-inner { grid-template-columns: 1fr; gap: 28px; }
 }
 @media (max-width: 640px) {
   .tp-hero-features { grid-template-columns: repeat(2, 1fr); }
-  .tp-grid { grid-template-columns: 1fr 1fr; }
+  .tp-grid > * { flex-basis: calc((100% - 22px) / 2); max-width: calc((100% - 22px) / 2); }
   .tp-values { grid-template-columns: 1fr; }
   .tp-choose-grid { grid-template-columns: 1fr; }
   .tp-a-inner, .tp-faq-a-inner { padding-left: 22px; }

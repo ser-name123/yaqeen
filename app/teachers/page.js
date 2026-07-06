@@ -198,16 +198,22 @@ export default function TeachersPage() {
             <h3>Our Core <span>Commitment</span></h3>
             <Link href="/careers" className="tp-join-btn">Join Our Team <IconArrow /></Link>
           </div>
-          <div className="tp-values">
-            {VALUES.map((v) => (
-              <div className="tp-value" key={v.ar}>
-                <div className={`tp-value-icon ${v.color}`}>{v.icon}</div>
-                <div>
-                  <div className="ar">{v.ar}</div>
-                  <div className="en">{v.en}</div>
+          <div className="tp-commit-right">
+            <div className="tp-commit-img">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/images/commit_difference.png" alt="Make a difference" />
+            </div>
+            <div className="tp-values">
+              {VALUES.map((v) => (
+                <div className="tp-value" key={v.ar}>
+                  <div className={`tp-value-icon ${v.color}`}>{v.icon}</div>
+                  <div>
+                    <div className="ar">{v.ar}</div>
+                    <div className="en">{v.en}</div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
