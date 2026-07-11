@@ -21,7 +21,7 @@
 .ty-hero p { margin: 0; font-size: 15.5px; color: #6B5B47; }
 
 /* What Next */
-.ty-next { padding: 56px 24px; max-width: 1080px; margin: 0 auto; width: 100%; }
+.ty-next { padding: 56px 24px; max-width: 1350px; margin: 0 auto; width: 100%; }
 .ty-next h2 { text-align: center; margin: 0 0 34px 0; font-family: var(--font-serif); font-size: clamp(24px, 3.4vw, 34px); font-weight: 500; }
 .ty-next h2 span { color: var(--primary-color); }
 .ty-next-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }

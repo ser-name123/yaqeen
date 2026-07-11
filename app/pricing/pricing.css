@@ -14,7 +14,7 @@
 
 .pricing-card {
   width: 100%;
-  max-width: 1450px; /* Increased max-width to make the 4 cards wider */
+  max-width: 1350px; /* Standardized to Home Page content width */
   padding: 24px 24px 20px 24px; /* Reduced top padding from 60px to 24px */
   background-color: transparent; /* Transparent so container background shows through */
   border: none; /* Remove outer card borders */
@@ -650,7 +650,7 @@
 /* Family Discount Banner Styles */
 .family-discount-banner {
   width: 100%;
-  max-width: 1450px;
+  max-width: 1350px;
   background-color: #FAF5EE; /* Muted warm cream background matching other cards */
   border: 1px solid #EFEAE2;
   border-radius: 24px;

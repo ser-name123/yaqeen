@@ -63,7 +63,7 @@
 .ta-stat svg { color: var(--secondary-color); flex-shrink: 0; }
 
 /* ---------- Section 2: Why / benefits ---------- */
-.ta-why { padding: 56px 24px; max-width: 1160px; margin: 0 auto; width: 100%; }
+.ta-why { padding: 56px 24px; max-width: 1350px; margin: 0 auto; width: 100%; }
 .ta-section-head { text-align: center; margin-bottom: 40px; }
 .ta-section-head h2 { margin: 0; font-family: var(--font-serif); font-size: clamp(26px, 3.4vw, 36px); font-weight: 500; }
 .ta-section-head h2 span { color: var(--primary-color); }

@@ -38,7 +38,7 @@
 .tpg-hero p { margin: 0; max-width: 600px; font-size: 16px; line-height: 1.7; color: #6B5B47; }
 
 /* ---------- Grid ---------- */
-.tpg-grid-section { max-width: 1120px; margin: 0 auto; padding: 48px 24px; width: 100%; }
+.tpg-grid-section { max-width: 1350px; margin: 0 auto; padding: 48px 24px; width: 100%; }
 .tpg-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

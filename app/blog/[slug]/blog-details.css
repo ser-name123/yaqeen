@@ -31,7 +31,7 @@
   display: grid;
   grid-template-columns: 1.9fr 1fr;
   gap: 48px;
-  max-width: 1400px;
+  max-width: 1350px;
   margin: 0 auto;
   position: relative;
   z-index: 2;

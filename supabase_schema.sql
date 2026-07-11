@@ -593,3 +593,4 @@ INSERT INTO public.career_jobs (id, title, job_title, meta, badge, description, 
 ON CONFLICT (id) DO NOTHING;
 
 SELECT setval(pg_get_serial_sequence('public.career_jobs', 'id'), COALESCE(MAX(id), 1)) FROM public.career_jobs;
+ 

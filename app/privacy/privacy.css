@@ -21,7 +21,7 @@
 .pp-hero p { margin: 0; max-width: 620px; font-size: 15.5px; line-height: 1.7; color: #6B5B47; }
 
 /* Layout: TOC + content */
-.pp-layout { max-width: 1440px; margin: 0 auto; padding: 44px 40px 80px 40px; display: grid; grid-template-columns: 290px 1fr; gap: 48px; align-items: start; }
+.pp-layout { max-width: 1350px; margin: 0 auto; padding: 44px 40px 80px 40px; display: grid; grid-template-columns: 290px 1fr; gap: 48px; align-items: start; }
 
 /* Table of contents */
 .pp-toc { position: sticky; top: 90px; background-color: #FFFFFF; border: 1px solid #EFE7DA; border-radius: 16px; padding: 20px 18px; box-shadow: 0 8px 22px rgba(44, 37, 30, 0.03); }

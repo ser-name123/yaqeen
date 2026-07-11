@@ -14,7 +14,7 @@
 /* Gold outer page border frame with perfectly sharp 90-degree corners and the requested brand cream background */
 .about-page-border-frame {
   width: 100%;
-  max-width: 1800px; /* Further increased max-width from 1680px to 1800px to maximize the widescreen horizontal span */
+  max-width: 1350px; /* Standardized to Home Page content width */
   border: none; /* Outer gold page frame border removed */
   border-radius: 0;
   padding: 0; /* Frame border removed, so no inner padding needed */
@@ -628,7 +628,7 @@
     "mission guides vision";
   gap: 28px; /* Optimized gap to give more horizontal width to the center column */
   width: 100%;
-  max-width: 1728px; /* Expanded to absolute physical capacity of the card container */
+  max-width: 100%; /* Stretches to fill the standardized container card */
   margin: 0 auto; /* Centers the grid inside the white about-card */
   align-items: start;
   position: relative;

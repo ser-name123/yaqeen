@@ -30,7 +30,7 @@
 .cr-intro p b { color: var(--primary-color); }
 
 /* ---------- Gallery ---------- */
-.cr-gallery { max-width: 1180px; margin: 0 auto; padding: 20px 24px 40px 24px; display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.cr-gallery { max-width: 1350px; margin: 0 auto; padding: 20px 24px 40px 24px; display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
 .cr-gallery-img { width: 220px; height: 160px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 24px rgba(44, 37, 30, 0.06); flex-shrink: 0; }
 .cr-gallery-img.tall { transform: scale(1.06); border: 2px solid rgba(201, 155, 77, 0.4); }
 .cr-gallery-img img { width: 100%; height: 100%; object-fit: cover; }
@@ -42,7 +42,7 @@
 .cr-head p { margin: 12px auto 0 auto; max-width: 620px; font-size: 15px; line-height: 1.6; color: #6B5B47; }
 
 /* ---------- Foundation values ---------- */
-.cr-foundation { max-width: 980px; margin: 0 auto; padding: 44px 24px; width: 100%; }
+.cr-foundation { max-width: 1350px; margin: 0 auto; padding: 44px 24px; width: 100%; }
 .cr-values { display: flex; flex-direction: column; gap: 14px; }
 .cr-value { display: grid; grid-template-columns: 220px 1fr; gap: 16px; align-items: stretch; }
 .cr-value-label {
@@ -69,7 +69,7 @@
     linear-gradient(180deg, #FDFAF4 0%, #F7F0E6 100%);
 }
 .cr-why .cr-head p { color: #6B5B47; }
-.cr-why-grid { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.cr-why-grid { max-width: 1350px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
 .cr-why-card {
   text-align: center; padding: 26px 20px; border-radius: 18px;
   background-color: #FFFFFF; border: 1px solid #EFE7DA;
@@ -88,7 +88,7 @@
 
 /* ---------- Jobs ---------- */
 .cr-jobs { padding: 60px 24px; background-color: #F5EFE6; }
-.cr-jobs-grid { max-width: 1040px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.cr-jobs-grid { max-width: 1350px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
 .cr-job {
   background-color: #FFFFFF; border: 1px solid #EFE7DA; border-radius: 18px; padding: 24px;
   display: flex; flex-direction: column; transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;

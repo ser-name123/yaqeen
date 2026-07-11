@@ -124,7 +124,7 @@
    ========================================================================= */
 .contact-grid-section {
   padding: 40px 4% 30px 4%;
-  max-width: 1550px;
+  max-width: 1350px;
   width: 100%;
   margin: 0 auto;
   display: grid;
@@ -348,7 +348,7 @@
    ========================================================================= */
 .contact-faq-section {
   padding: 0 4% 40px 4%;
-  max-width: 1550px;
+  max-width: 1350px;
   width: 100%;
   margin: 0 auto;
   background-color: var(--bg-color);
@@ -407,7 +407,7 @@
    ========================================================================= */
 .contact-cta-section {
   padding: 0 4% 50px 4%;
-  max-width: 1550px;
+  max-width: 1350px;
   width: 100%;
   margin: 0 auto;
   background-color: var(--bg-color);
