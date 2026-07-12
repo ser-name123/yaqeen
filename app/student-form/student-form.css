@@ -1,0 +1,161 @@
+/* ==========================================================================
+   Student Registration Form Specific Overrides (Extends book-free-trial.css)
+   ========================================================================== */
+
+@import "../book-free-trial/book-free-trial.css";
+
+/* Hours per Week Selector Buttons */
+.hours-selector {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 8px 0;
+}
+
+.hour-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid #D5C2AD;
+  background-color: #FBF8F3;
+  font-size: 15px;
+  font-weight: 600;
+  color: #2B1F14;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.hour-btn:hover {
+  background-color: #EADDC8;
+  border-color: #C99B4D;
+}
+
+.hour-btn.active {
+  background-color: #4A5D3B;
+  border-color: #4A5D3B;
+  color: #FFFFFF;
+  box-shadow: 0 4px 10px rgba(74, 93, 59, 0.2);
+}
+
+/* Pricing Grid & Calculators */
+.pricing-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.pricing-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.pricing-option-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 60%;
+}
+
+.pricing-calc-box {
+  width: 100px;
+  padding: 8px 12px;
+  background-color: #FAF5EE;
+  border: 1px solid #EADDC8;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 600;
+  color: #2B1F14;
+  font-size: 14.5px;
+}
+
+/* Weekday Selection Buttons */
+.days-selector {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 4px 0;
+}
+
+.day-btn {
+  padding: 8px 16px;
+  border: 1px solid #D5C2AD;
+  background-color: #FFFFFF;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2B1F14;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.day-btn:hover {
+  background-color: #FBF8F3;
+  border-color: #4A5D3B;
+}
+
+.day-btn.active {
+  background-color: #4A5D3B;
+  border-color: #4A5D3B;
+  color: #FFFFFF;
+  box-shadow: 0 3px 8px rgba(74, 93, 59, 0.15);
+}
+
+/* Date and Time Picker Alignment overrides */
+.time-picker-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.time-select {
+  flex-grow: 1;
+}
+
+.radio-group {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.radio-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14.5px;
+  color: #2B1F14;
+  cursor: pointer;
+}
+
+.radio-input {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #D5C2AD;
+  border-radius: 50%;
+  outline: none;
+  background-color: #FFFFFF;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.radio-input:checked {
+  border-color: #4A5D3B;
+  background-color: #4A5D3B;
+}
+
+.radio-input:checked::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+}

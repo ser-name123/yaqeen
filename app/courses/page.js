@@ -7,6 +7,19 @@ import { supabase } from "@/lib/supabase";
 import { useSettings } from "@/lib/settings-context";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 
+const slugify = (text) => {
+  if (!text) return "";
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w\-]+/g, "")
+    .replace(/\-\-+/g, "-")
+    .replace(/^-+/, "")
+    .replace(/-+$/, "");
+};
+
 // Custom Book Outline Icon
 const IconBookOutline = ({ size = 22, color = "#C99B4D" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -561,7 +574,7 @@ export default function CoursesPage() {
       <section style={{
         position: "relative",
         padding: "50px 24px 35px 24px",
-        backgroundImage: "url('/images/courses_hero_bg.png')",
+        /* backgroundImage: "url('/images/courses_hero_bg.png')", */
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -711,7 +724,7 @@ export default function CoursesPage() {
             <div
               key={idx}
               className="reveal-stagger"
-              onClick={() => router.push(`/courses/${course.id || course.num}`)}
+              onClick={() => router.push(`/courses/${slugify(course.title)}`)}
               style={{
                 backgroundColor: "#FFFFFF",
                 borderRadius: "24px",
@@ -824,7 +837,7 @@ export default function CoursesPage() {
          ========================================================================= */}
       <section style={{
         padding: "50px 24px 60px 24px",
-        backgroundImage: "url('/images/learn_bg.png')",
+        /* backgroundImage: "url('/images/learn_bg.png')", */
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -1018,7 +1031,7 @@ export default function CoursesPage() {
       <section style={{
         position: "relative",
         padding: "35px 24px 35px 24px",
-        backgroundImage: "url('/images/achieve_bg.png')",
+        /* backgroundImage: "url('/images/achieve_bg.png')", */
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -1433,7 +1446,7 @@ export default function CoursesPage() {
         <div className="cta-banner-wrapper" style={{
           width: "100%",
           maxWidth: "1200px",
-          backgroundImage: "url('/images/achieve_bg.png')",
+          /* backgroundImage: "url('/images/achieve_bg.png')", */
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",

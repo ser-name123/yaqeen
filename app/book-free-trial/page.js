@@ -40,10 +40,10 @@ const TEACHER_OPTIONS = ["Male", "Female", "Either"];
 const SOURCE_OPTIONS = ["Friends", "Social Media", "Email", "Google", "Others"];
 
 const HOURS = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0"));
-const MINUTES = Array.from({ length: 12 }, (_, i) => String(i * 5).padStart(2, "0"));
+const MINUTES = ["00", "30"];
 
 const INITIAL_FORM = {
-  firstName: "", lastName: "", email: "", dialCode: "+44", phone: "", country: "",
+  firstName: "", lastName: "", email: "", dialCode: "", phone: "", country: "",
   learn: "", sessionFor: "", teacher: "", source: "",
   date: "", hh: "", mm: "", ap: ""
 };
@@ -150,6 +150,57 @@ export default function BookFreeTrialPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    async function detectCountry() {
+      const res = await fetch("/api/detect-country").catch(() => null);
+      if (res && res.ok) {
+        try {
+          const data = await res.json();
+          if (data && data.success && data.country) {
+            const matchedCountry = data.country;
+            const match = COUNTRIES.find((c) => c.name.toLowerCase() === matchedCountry.toLowerCase());
+            if (match) {
+              setForm((f) => ({
+                ...f,
+                country: match.name,
+                dialCode: match.dial
+              }));
+            }
+          }
+        } catch (e) {
+          console.warn("Failed to parse detect-country API response on free-trial page", e);
+        }
+      }
+    }
+    detectCountry();
+  }, []);
+
+  const handleCountryChange = (cName) => {
+    setForm((f) => {
+      const match = COUNTRIES.find((c) => c.name === cName);
+      return {
+        ...f,
+        country: cName,
+        dialCode: match ? match.dial : f.dialCode
+      };
+    });
+    if (errors.country) setErrors((e) => ({ ...e, country: "" }));
+  };
+
+  const handleDialCodeChange = (code) => {
+    setForm((f) => {
+      const match = COUNTRIES.find((c) => c.dial === code);
+      return {
+        ...f,
+        dialCode: code,
+        country: match ? match.name : f.country
+      };
+    });
+    if (errors.country) setErrors((e) => ({ ...e, country: "" }));
+  };
   const formCardRef = useRef(null);
   const router = useRouter();
 
@@ -236,6 +287,26 @@ export default function BookFreeTrialPage() {
     setSubmitted(false);
     setSubmitError("");
   };
+
+  if (!mounted) {
+    return (
+      <main className="bft-page">
+        {/* ============ SECTION 1: HERO ============ */}
+        <section className="bft-hero">
+          <span className="bft-badge"><IconSpark /> Free Trial Class</span>
+          <h1 className="bft-hero-title">
+            Book Your <span>Free Trial</span> Class Today
+          </h1>
+          <div className="bft-hero-divider">
+            <span className="line" /><span className="diamond" /><span className="line" />
+          </div>
+          <p className="bft-hero-sub" style={{ textAlign: "center", marginTop: "10px" }}>
+            Loading booking form details, please wait...
+          </p>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="bft-page">
@@ -329,7 +400,7 @@ export default function BookFreeTrialPage() {
                       <CustomSelect
                         rootClassName="bft-cs-phone"
                         value={form.dialCode}
-                        onChange={(v) => set("dialCode", v)}
+                        onChange={handleDialCodeChange}
                         options={DIAL_CODES.map((c) => ({ value: c, label: c }))}
                         placeholder="Code"
                         searchPlaceholder="Search code…"
@@ -348,7 +419,7 @@ export default function BookFreeTrialPage() {
                     <label className="bft-label">Country<span className="req">*</span></label>
                     <CustomSelect
                       value={form.country}
-                      onChange={(v) => set("country", v)}
+                      onChange={handleCountryChange}
                       options={[...COUNTRIES.map((c) => ({ value: c.name, label: c.name })), { value: "Other", label: "Other" }]}
                       placeholder="Choose your country"
                       invalid={!!errors.country}

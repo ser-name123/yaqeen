@@ -77,6 +77,19 @@ function Avatar({ url }) {
   );
 }
 
+const slugify = (text) => {
+  if (!text) return "";
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w\-]+/g, "")
+    .replace(/\-\-+/g, "-")
+    .replace(/^-+/, "")
+    .replace(/-+$/, "");
+};
+
 export default function CourseDetailPage() {
   const params = useParams();
   const id = params?.id;
@@ -89,13 +102,26 @@ export default function CourseDetailPage() {
     let active = true;
     async function load() {
       try {
-        const [{ data: one }, { data: many }] = await Promise.all([
-          supabase.from("courses").select("*").eq("id", id).maybeSingle(),
-          supabase.from("courses").select("*").order("order_index", { ascending: true }).limit(6)
-        ]);
+        const { data: many, error: manyErr } = await supabase
+          .from("courses")
+          .select("*")
+          .order("order_index", { ascending: true });
+        
+        if (manyErr) throw manyErr;
+
         if (!active) return;
+
+        let one = null;
+        if (id) {
+          if (/^\d+$/.test(id)) {
+            one = many.find((item) => String(item.id) === id);
+          } else {
+            one = many.find((item) => slugify(item.title) === id);
+          }
+        }
+
         if (one) setCourse(one);
-        if (many) setAllCourses(many);
+        if (many) setAllCourses(many.slice(0, 6));
       } catch (err) {
         console.warn("Could not load course:", err);
       }
@@ -228,7 +254,7 @@ export default function CourseDetailPage() {
             <div className="cd-side-card">
               <h4>Our Best Courses</h4>
               {others.map((o) => (
-                <Link href={`/courses/${o.id}`} className="cd-best-item" key={o.id}>
+                <Link href={`/courses/${slugify(o.title)}`} className="cd-best-item" key={o.id}>
                   <Avatar url={o.image_url} />
                   <div className="cd-best-info">
                     <div className="t">{o.title}</div>

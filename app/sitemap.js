@@ -1,5 +1,18 @@
 import { supabase } from "@/lib/supabase";
 
+const slugify = (text) => {
+  if (!text) return "";
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w\-]+/g, "")
+    .replace(/\-\-+/g, "-")
+    .replace(/^-+/, "")
+    .replace(/-+$/, "");
+};
+
 // Set NEXT_PUBLIC_SITE_URL in your environment to your live domain.
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://yaqeeninstitute.online").replace(/\/$/, "");
 
@@ -34,13 +47,13 @@ export default async function sitemap() {
   // Dynamic pages — courses and blog posts (fail silently if the DB is unavailable)
   try {
     const [{ data: courses }, { data: blogs }] = await Promise.all([
-      supabase.from("courses").select("id"),
+      supabase.from("courses").select("id, title"),
       supabase.from("blogs").select("slug, created_at")
     ]);
 
     if (courses) {
       for (const c of courses) {
-        entries.push({ url: `${SITE_URL}/courses/${c.id}`, lastModified: now, changeFrequency: "monthly", priority: 0.6 });
+        entries.push({ url: `${SITE_URL}/courses/${slugify(c.title)}`, lastModified: now, changeFrequency: "monthly", priority: 0.6 });
       }
     }
     if (blogs) {

@@ -102,6 +102,7 @@ export default function AdminDashboard() {
   // Testimonials management states
   const [testimonials, setTestimonials] = useState([]);
   const [teacherApps, setTeacherApps] = useState([]);
+  const [studentApps, setStudentApps] = useState([]);
   const [careerJobs, setCareerJobs] = useState([]);
   const [isEditingJob, setIsEditingJob] = useState(false);
   const [editingJobId, setEditingJobId] = useState(null);
@@ -149,6 +150,7 @@ export default function AdminDashboard() {
   // Selected contact details popup state
   const [selectedContact, setSelectedContact] = useState(null);
   const [selectedTeacherApp, setSelectedTeacherApp] = useState(null);
+  const [selectedStudentApp, setSelectedStudentApp] = useState(null);
 
   // Blog editor form states
   const [isEditingBlog, setIsEditingBlog] = useState(false);
@@ -299,6 +301,13 @@ export default function AdminDashboard() {
         .select("*")
         .order("created_at", { ascending: false });
       if (!teacherAppErr) setTeacherApps(teacherAppData || []);
+
+      // 6d. Fetch student applications (table may not exist yet — fail silently)
+      const { data: studentAppData, error: studentAppErr } = await supabase
+        .from("student_applications")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (!studentAppErr) setStudentApps(studentAppData || []);
 
       // 6c. Fetch career job openings (table may not exist yet — fail silently)
       const { data: jobData, error: jobErr } = await supabase
@@ -1086,6 +1095,35 @@ export default function AdminDashboard() {
       setSelectedTeacherApp(null);
       fetchDashboardData();
       adminSwal.fire({ icon: "success", title: "Deleted!", text: "Teacher application has been deleted.", confirmButtonColor: "var(--primary-color)", background: "#111827", color: "#fff" });
+    } catch (err) {
+      adminSwal.fire({ icon: "error", title: "Delete Failed", text: err.message, confirmButtonColor: "var(--primary-color)", background: "#111827", color: "#fff" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Delete a student application record
+  const handleDeleteStudentApp = async (id) => {
+    const result = await adminSwal.fire({
+      title: "Are you sure?",
+      text: "Delete this student registration record?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "var(--card-border)",
+      confirmButtonText: "Yes, delete it!",
+      background: "#111827",
+      color: "#fff"
+    });
+    if (!result.isConfirmed) return;
+
+    setLoading(true);
+    try {
+      const { error } = await supabase.from("student_applications").delete().eq("id", id);
+      if (error) throw error;
+      setSelectedStudentApp(null);
+      fetchDashboardData();
+      adminSwal.fire({ icon: "success", title: "Deleted!", text: "Student registration has been deleted.", confirmButtonColor: "var(--primary-color)", background: "#111827", color: "#fff" });
     } catch (err) {
       adminSwal.fire({ icon: "error", title: "Delete Failed", text: err.message, confirmButtonColor: "var(--primary-color)", background: "#111827", color: "#fff" });
     } finally {
@@ -2443,6 +2481,12 @@ export default function AdminDashboard() {
             🧑‍🏫 Teacher Applications
           </button>
           <button
+            onClick={() => handleTabChange("studentApps")}
+            style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "studentApps" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "studentApps" ? "rgba(255,255,255,0.02)" : "transparent" }}
+          >
+            🧒 Student Registrations
+          </button>
+          <button
             onClick={() => handleTabChange("jobs")}
             style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "jobs" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "jobs" ? "rgba(255,255,255,0.02)" : "transparent" }}
           >
@@ -2523,6 +2567,7 @@ export default function AdminDashboard() {
               {activeTab === "contacts" && "Contact Query Logs"}
               {activeTab === "freeTrials" && "Free Trial Bookings"}
               {activeTab === "teacherApps" && "Teacher Applications"}
+              {activeTab === "studentApps" && "Student Registrations"}
               {activeTab === "jobs" && (isEditingJob ? (editingJobId ? "Edit Job Opening" : "Add Job Opening") : "Career Job Openings")}
               {activeTab === "seo" && "Site SEO Meta Settings"}
               {activeTab === "teachers" && (isEditingTeacher ? (editingTeacherId ? "Edit Teacher Profile" : "Register New Teacher") : "Teacher Profiles")}
@@ -2537,6 +2582,7 @@ export default function AdminDashboard() {
               {activeTab === "contacts" && "Review customer forms, inquiries, and details."}
               {activeTab === "freeTrials" && "Review free trial class booking requests submitted by visitors."}
               {activeTab === "teacherApps" && "Review teacher job applications with full details, CV and audio files."}
+              {activeTab === "studentApps" && "Review student registration form submissions with course, plan, and scheduling details."}
               {activeTab === "jobs" && "Add, edit and remove the job openings shown on the Careers page."}
               {activeTab === "seo" && "Configure key page head parameters for Google crawlers."}
               {activeTab === "teachers" && "Manage profiles, avatars, languages, experience, and topics of Islamic teachers."}
@@ -2546,8 +2592,35 @@ export default function AdminDashboard() {
               {activeTab === "profile" && "Manage your login email and password."}
             </p>
           </div>
-
-          {loading && <span style={{ color: "var(--secondary-color)", fontSize: "13px" }}>Syncing Database...</span>}
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            {activeTab === "studentApps" && (
+              <a 
+                href="/student-form" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="btn-primary"
+                style={{ 
+                  textDecoration: "none", 
+                  display: "inline-flex", 
+                  alignItems: "center", 
+                  justifyContent: "center",
+                  padding: "10px 20px",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  borderRadius: "8px",
+                  backgroundColor: "#4A5D3B",
+                  color: "#FFFFFF",
+                  border: "none",
+                  cursor: "pointer",
+                  boxShadow: "0 2px 8px rgba(74, 93, 59, 0.2)",
+                  transition: "background-color 0.2s ease"
+                }}
+              >
+                👁️ View Page
+              </a>
+            )}
+            {loading && <span style={{ color: "var(--secondary-color)", fontSize: "13px" }}>Syncing Database...</span>}
+          </div>
         </div>
 
         {/* TAB 1: OVERVIEW */}
@@ -3119,6 +3192,98 @@ export default function AdminDashboard() {
                 </table>
               </div>
             )}
+          </div>
+        )}
+
+        {activeTab === "studentApps" && (
+          <div className="glass-panel" style={{ padding: "24px" }}>
+            <h3 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "20px" }}>Student Registrations</h3>
+
+            {studentApps.length === 0 ? (
+              <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>No student registrations yet.</p>
+            ) : (
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
+                  <thead>
+                    <tr style={{ borderBottom: "1px solid var(--card-border)", color: "var(--fg-muted)" }}>
+                      <th style={{ padding: "12px" }}>Name</th>
+                      <th style={{ padding: "12px" }}>Email</th>
+                      <th style={{ padding: "12px" }}>Course</th>
+                      <th style={{ padding: "12px" }}>Plan</th>
+                      <th style={{ padding: "12px" }}>Price/Month</th>
+                      <th style={{ padding: "12px" }}>Applied On</th>
+                      <th style={{ padding: "12px", textAlign: "right" }}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {studentApps.map((app) => (
+                      <tr key={app.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
+                        <td style={{ padding: "12px", fontWeight: "600" }}>{`${app.first_name || ""} ${app.last_name || ""}`.trim() || "—"}</td>
+                        <td style={{ padding: "12px" }}>
+                          <a href={`mailto:${app.email}`} style={{ color: "var(--secondary-color)", textDecoration: "none" }}>{app.email}</a>
+                        </td>
+                        <td style={{ padding: "12px" }}>{app.course || "—"}</td>
+                        <td style={{ padding: "12px" }}>{app.pricing_plan || "—"}</td>
+                        <td style={{ padding: "12px" }}>${app.monthly_price || "0"}</td>
+                        <td style={{ padding: "12px" }}>{new Date(app.created_at).toLocaleString()}</td>
+                        <td style={{ padding: "12px", textAlign: "right", display: "flex", gap: "8px", justifyContent: "flex-end", height: "49px", alignItems: "center" }}>
+                          <button onClick={() => setSelectedStudentApp(app)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>
+                            View Detail
+                          </button>
+                          <button onClick={() => handleDeleteStudentApp(app.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Student Application Detail Modal */}
+        {selectedStudentApp && (
+          <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "rgba(0, 0, 0, 0.4)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999, padding: "20px", boxSizing: "border-box" }}>
+            <div className="glass-panel" style={{ width: "100%", maxWidth: "720px", backgroundColor: "#FFFDF9", border: "1px solid #EADDC8", borderRadius: "20px", boxShadow: "0 20px 50px rgba(44, 37, 30, 0.15)", display: "flex", flexDirection: "column", maxHeight: "90vh", overflow: "hidden" }}>
+              <div style={{ padding: "20px 24px", borderBottom: "1px solid var(--card-border)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <h3 style={{ fontSize: "18px", fontWeight: "500", color: "#2B1F14", margin: 0, fontFamily: "var(--font-serif), Georgia, serif" }}>
+                  {`${selectedStudentApp.first_name || ""} ${selectedStudentApp.last_name || ""}`.trim()} — Student Details
+                </h3>
+                <button onClick={() => setSelectedStudentApp(null)} style={{ background: "none", border: "none", fontSize: "24px", color: "var(--fg-muted)", cursor: "pointer", padding: 0, lineHeight: 1 }}>&times;</button>
+              </div>
+
+              <div style={{ padding: "24px", overflowY: "auto", textAlign: "left" }}>
+                {(() => {
+                  const a = selectedStudentApp;
+                  const rows = [
+                    ["Gender", a.gender], ["Email", a.email], ["Mobile", `${a.dial_code || ""} ${a.mobile || ""}`.trim()],
+                    ["Country", a.country], ["Age Group", a.age_group],
+                    ["Course", a.course], ["Hours / Week", a.hours_per_week],
+                    ["Pricing Plan", a.pricing_plan], ["Estimated Price/Month", `$${a.monthly_price}`],
+                    ["Preferred Days", a.preferred_days], ["Preferred Start Date", a.preferred_date],
+                    ["Preferred Daily Time", a.preferred_time], ["Applied On", new Date(a.created_at).toLocaleString()]
+                  ];
+                  return (
+                    <>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px 18px" }}>
+                        {rows.filter(([, v]) => v).map(([label, v]) => (
+                          <div key={label}>
+                            <span style={{ fontSize: "11px", textTransform: "uppercase", fontWeight: "500", color: "var(--fg-muted)" }}>{label}</span>
+                            <div style={{ fontSize: "14px", fontWeight: "600", color: "#2B1F14", marginTop: "3px", wordBreak: "break-word" }}>{v}</div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "22px" }}>
+                        <button onClick={() => handleDeleteStudentApp(a.id)} className="btn-secondary" style={{ padding: "8px 16px", fontSize: "13px", color: "#ef4444" }}>Delete Registration</button>
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
+            </div>
           </div>
         )}
 

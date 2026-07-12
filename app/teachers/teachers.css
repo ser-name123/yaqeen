@@ -27,7 +27,7 @@
 /* ==================== HERO ==================== */
 .tp-hero {
   padding: 56px 24px 50px 24px;
-  background-image: url("/images/teach_bg.png");
+  /* background-image: url("/images/teach_bg.png"); */
   background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;
