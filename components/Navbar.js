@@ -67,7 +67,7 @@ export default function Navbar({ faviconUrl = "" }) {
             onMouseEnter={() => setDiscoverOpen(true)}
             onMouseLeave={() => setDiscoverOpen(false)}
           >
-            <button type="button" className={`nav-dropdown-trigger ${discoverOpen ? "active" : ""}`} onClick={() => setDiscoverOpen((o) => !o)} aria-expanded={discoverOpen}>
+            <button type="button" className={`nav-dropdown-trigger ${discoverOpen ? "active" : ""}`} onClick={() => setDiscoverOpen((o) => !o)} aria-expanded={discoverOpen} suppressHydrationWarning>
               Discover <IconCaret />
             </button>
             <div className="nav-dropdown-menu">
