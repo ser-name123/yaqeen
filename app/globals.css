@@ -57,24 +57,24 @@ body {
   flex-direction: column;
 }
 
-/* Global heading weight — force all h1 to weight 500 (overrides class & inline styles) */
+/* Global heading weight — force all h1 to weight 700 (overrides class & inline styles) */
 h1 {
-  font-weight: 500 !important;
+  font-weight: 700 !important;
 }
 
-/* Global heading weight — force all h2 to weight 400 (overrides class & inline styles) */
+/* Global heading weight — force all h2 to weight 600 (overrides class & inline styles) */
 h2 {
-  font-weight: 400 !important;
+  font-weight: 600 !important;
 }
 
-/* Global heading weight — force all h3 to weight 300 (overrides class & inline styles) */
+/* Global heading weight — force all h3 to weight 600 (overrides class & inline styles) */
 h3 {
-  font-weight: 300 !important;
+  font-weight: 600 !important;
 }
 
-/* Global heading weight — force all h4 to weight 200 (100 less than h3, overrides class & inline styles) */
+/* Global heading weight — force all h4 to weight 600 (overrides class & inline styles) */
 h4 {
-  font-weight: 200 !important;
+  font-weight: 600 !important;
 }
 
 /* Animations */
@@ -208,17 +208,127 @@ h4 {
 }
 
 /* Navbar Styling */
-.header {
-  position: fixed;
+/* Floating Header Wrapper */
+.header-wrapper-outer {
+  position: sticky;
   top: 0;
-  left: 0;
   width: 100%;
   z-index: 1000;
-  background: rgba(3, 7, 18, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--card-border);
-  transition: var(--transition-smooth);
+  background-color: transparent; /* Removed background color */
+  border-bottom: none;
+  padding: 10px 24px;
+  box-sizing: border-box;
+}
+
+/* Floating Pill Container */
+.header-pill-container {
+  max-width: 1350px;
+  width: 100%;
+  margin: 0 auto;
+  background-color: #FAF5EE; /* Light warm cream */
+  border: 1.5px solid #EFE7DA;
+  border-radius: 9999px; /* Rounded pill shape */
+  padding: 14px 24px; /* Increased vertical padding to increase height */
+  box-shadow: 0 4px 20px rgba(44, 37, 30, 0.04);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* Nav Links inside pill header */
+.header-nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.header-nav-link {
+  text-decoration: none;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #5C4D3C !important; /* Dark warm grey */
+  transition: color 0.2s ease;
+  letter-spacing: 0.2px;
+}
+
+.header-nav-link:hover, .header-nav-link.active {
+  color: #C99B4D !important; /* Active/Hover gold color */
+}
+
+/* Divider inside header menu */
+.header-item-divider {
+  width: 1px;
+  height: 14px;
+  background-color: #E3D8C6;
+}
+
+/* Right side actions */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Green Phone Pill Button */
+.header-phone-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 16px 4px 4px !important; /* Tight padding left for circle badge */
+  border-radius: 9999px;
+  border: 1.5px solid #556B3B; /* Green border */
+  background-color: #FAF8F5;
+  color: #556B3B !important; /* Green text */
+  font-size: 13.5px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.header-phone-pill:hover {
+  background-color: #556B3B;
+  color: #fff !important;
+}
+
+.header-phone-icon-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #556B3B;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.header-phone-pill:hover .header-phone-icon-badge {
+  background-color: #fff;
+  color: #556B3B;
+}
+
+/* Gold Book CTA */
+.header-cta-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 24px;
+  border-radius: 9999px;
+  background-color: #C99B4D;
+  color: #ffffff !important;
+  font-size: 13.5px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(201, 155, 77, 0.2);
+  transition: all 0.2s ease;
+}
+
+.header-cta-pill:hover {
+  background-color: #B3853B;
+  transform: translateY(-1px);
 }
 
 .nav-container {
@@ -719,7 +829,8 @@ h4 {
 .bottom-banner-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  gap: 20px;
+  align-items: stretch;
 }
 
 @media (max-width: 1024px) {
@@ -734,6 +845,55 @@ h4 {
     grid-template-columns: 1fr;
     gap: 12px;
   }
+}
+
+/* Outer containment box */
+.bottom-banner-wrapper {
+  max-width: 1350px;
+  width: 100%;
+  margin: 0 auto;
+  background-color: transparent;
+  border: none;
+  padding: 20px;
+  position: relative;
+  z-index: 10;
+  box-sizing: border-box;
+}
+
+/* Individual beige/cream cards with soft drop shadow and vertical gradient */
+.bottom-banner-card {
+  background: linear-gradient(to right, #FAF5EE 0%, #EAD8C3 100%) !important; /* Elegant horizontal gradient */
+  border: 1.5px solid #E2D2C0 !important; /* Premium subtle border */
+  border-radius: 12px !important; /* Rounded card corners */
+  padding: 24px 20px !important;
+  box-shadow: 0 12px 28px rgba(43, 31, 20, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important; /* Deeper bottom drop shadow */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Left-align content */
+  justify-content: center;
+  box-sizing: border-box;
+  text-align: left;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bottom-banner-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(43, 31, 20, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+.bottom-banner-card h4 {
+  margin: 0 0 6px 0 !important;
+  font-size: 16px !important;
+  font-weight: 700 !important; /* Bold title */
+  color: #2B1F14 !important;
+}
+
+.bottom-banner-card p {
+  margin: 0 !important;
+  font-size: 13px !important;
+  font-weight: 400 !important; /* Regular body font */
+  color: #5C4D3C !important;
+  line-height: 1.4 !important;
 }
 
 /* ==========================================================================
@@ -756,8 +916,8 @@ h4 {
 
 .lang-overlay {
   position: absolute;
-  left: 14%;
-  top: 30%; /* Shifted further up from 38% to 30% as requested by the user for perfect vertical spacing */
+  left: 7%;
+  top: 14%; /* Shifted further up from 20% to 14% as requested */
   transform: translateY(-50%);
   width: 38%;
   display: flex;
@@ -823,6 +983,7 @@ h4 {
   width: 100%;
   box-shadow: 0 12px 30px rgba(44, 37, 30, 0.06);
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  pointer-events: auto; /* Enable interactive clicks when overlay is overlaying */
 }
 .lang-feature-card.open { border-color: rgba(201, 155, 77, 0.45); box-shadow: 0 16px 36px rgba(44, 37, 30, 0.09); }
 
@@ -906,6 +1067,7 @@ h4 {
   align-items: center;
   gap: clamp(16px, 2vw, 30px);
   flex-wrap: wrap;
+  pointer-events: auto; /* Enable interactive clicks when overlay is overlaying */
 }
 
 .lang-benefit {
@@ -1132,11 +1294,12 @@ h4 {
 
 .choose-label {
   font-size: clamp(14px, 1.1vw, 16px);
-  font-weight: 500;
+  font-weight: 700;
   color: #2B1F14;
   margin: 0;
-  max-width: 160px;
+  max-width: none;
   line-height: 1.4;
+  white-space: nowrap;
 }
 
 /* Accent underline under specific columns (1 and 4) */
@@ -1206,7 +1369,7 @@ h4 {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 48px 32px;
-  align-items: start;
+  align-items: stretch;
 }
 
 .feature-item {
@@ -2479,7 +2642,7 @@ h4 {
 
 .faq-question-text {
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
   color: #2B1F14;
   margin-left: 20px;
   font-family: var(--font-sans), sans-serif;
@@ -3530,23 +3693,40 @@ h4 {
 .ss-option:hover { background-color: rgba(201, 155, 77, 0.10); }
 .ss-option.sel { background-color: rgba(85, 107, 59, 0.12); font-weight: 600; color: var(--secondary-color); }
 
-/* Hero rotating/rolling language word (counter/slot style) styled like a premium button */
+/* Hero rotating/rolling language wrapper */
 .hero-lang-roll {
   display: inline-block;
-  height: 1.4em;
+  height: 46px; /* Precise height */
   overflow: hidden;
   vertical-align: middle;
-  min-width: 6.5em;
-  text-align: center;
-  color: #FFFFFF !important;
-  background-color: var(--secondary-color); /* Brand Olive Green #556B3B */
-  border-radius: 30px; /* Elegant pill shape */
-  padding: 0 16px;
-  margin-left: 8px;
-  box-shadow: 0 4px 15px rgba(85, 107, 59, 0.2);
-  border: 1.5px solid rgba(255, 255, 255, 0.15);
-  font-weight: 600;
+  min-width: 150px; /* Width to accommodate longer names like Malayalam */
+  margin-left: 10px;
   position: relative;
+}
+
+/* Individual language button item */
+.hero-lang-roll-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 46px; /* Matches wrapper height */
+  box-sizing: border-box;
+  color: #FFFFFF !important;
+  background-color: var(--primary-color); /* Brand Gold #C99B4D */
+  border-radius: 9999px; /* Pill shape matching Get Started button */
+  padding: 0 24px;
+  box-shadow: 0 6px 15px rgba(201, 155, 77, 0.25);
+  font-weight: 500; /* Clean medium weight, matches Get Started button */
+  white-space: nowrap;
+  font-family: var(--font-sans), sans-serif;
+  font-size: 16px;
+  margin-bottom: 20px; /* Space gap between button items so they do not overlap during transitions */
+}
+
+/* Alternating colors: even button items get Brand Olive Green #556B3B */
+.hero-lang-roll-btn:nth-child(even) {
+  background-color: #556B3B;
+  box-shadow: 0 6px 15px rgba(85, 107, 59, 0.25);
 }
 
 .hero-lang-roll > span {

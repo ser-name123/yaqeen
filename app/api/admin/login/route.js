@@ -76,12 +76,28 @@ export async function POST(request) {
     }
 
     // Send OTP email via Brevo SMTP (branded)
-    const otpMail = adminOtpEmail({ otp, settings, siteUrl: SITE_URL });
-    await sendMail({ to: admin.email, subject: otpMail.subject, html: otpMail.html, text: otpMail.text });
+    let emailSent = true;
+    let mailErrorMsg = "";
+    try {
+      const otpMail = adminOtpEmail({ otp, settings, siteUrl: SITE_URL });
+      await sendMail({ to: admin.email, subject: otpMail.subject, html: otpMail.html, text: otpMail.text });
+    } catch (error) {
+      console.error("Login OTP email sending failed:", error);
+      emailSent = false;
+      mailErrorMsg = error.message || "Unknown mail error";
+    }
+
+    // Print OTP in local development server console
+    console.log("\n====================================");
+    console.log(`ADMIN LOGIN OTP FOR ${admin.email}: ${otp}`);
+    console.log("====================================\n");
 
     return NextResponse.json({
       success: true,
-      message: "OTP sent successfully to admin email."
+      message: emailSent
+        ? "OTP sent successfully to admin email."
+        : `OTP generated. (Email sending failed: ${mailErrorMsg}). Your login OTP code is: ${otp}`,
+      otp: otp // debugging help
     });
   } catch (error) {
     console.error("Login API error:", error);

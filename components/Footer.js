@@ -16,7 +16,7 @@ export default function Footer() {
   const displayFacebook = socialFacebook || "https://facebook.com";
   const displayInstagram = socialInstagram || "https://instagram.com";
   const displayYoutube = socialYoutube || "https://youtube.com";
-  const displayWhatsapp = socialWhatsapp || "https://wa.me/447488818192";
+  const displayWhatsapp = socialWhatsapp || "https://wa.me/447700183483";
 
   return (
     <footer className="footer">
@@ -189,7 +189,7 @@ export default function Footer() {
               <div className="footer-whatsapp-badge">
                 <span>Need Help? <strong>Chat with us</strong></span>
               </div>
-              <a href="https://wa.me/447488818192" target="_blank" rel="noopener noreferrer" className="footer-whatsapp-circle-btn">
+              <a href="https://wa.me/447700183483" target="_blank" rel="noopener noreferrer" className="footer-whatsapp-circle-btn">
                 <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12.031 2c-5.517 0-9.993 4.476-9.993 9.993 0 1.763.459 3.479 1.332 4.996l-1.37 5.007 5.128-1.346a9.92 9.92 0 0 0 4.903 1.328h.005c5.515 0 9.991-4.476 9.991-9.993 0-2.674-1.042-5.188-2.932-7.078-1.89-1.89-4.405-2.932-7.076-2.932zm4.904 13.064c-.269.761-1.385 1.4-1.9 1.452-.464.048-.7.218-2.783-.628-2.148-.872-3.486-3.08-3.593-3.223-.107-.143-.872-1.161-.872-2.213 0-1.052.554-1.57.751-1.782.197-.213.43-.269.574-.269.143 0 .287.005.412.011.127.005.297-.048.464.356.172.417.59 1.439.64 1.543.053.104.088.228.018.368-.07.139-.105.228-.21.35-.105.122-.22.274-.315.374-.105.109-.215.228-.093.439.122.21.541.893 1.157 1.442.795.707 1.463.926 1.667 1.03.205.104.325.088.446-.053.122-.143.522-.607.662-.813.14-.205.281-.172.473-.101.192.071 1.221.576 1.43.681.21.104.35.156.402.246.053.09.053.522-.216 1.283z"/>
                 </svg>

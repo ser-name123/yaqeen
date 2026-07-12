@@ -595,13 +595,10 @@ export default function Home() {
   return (
     <div style={{ minHeight: "100vh" }}>
       
-      {/* =========================================================================
-         SECTION 1: HERO CONTAINER
-         ========================================================================= */}
-      <section className="hero-wrapper" style={{ minHeight: "calc(100vh - 80px)", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+      <section className="hero-wrapper" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
         
         {/* Main Content Area */}
-        <main style={{ maxWidth: "1350px", width: "100%", margin: "0 auto", padding: "60px 24px", flexGrow: 1, display: "flex", alignItems: "center" }}>
+        <main style={{ maxWidth: "1350px", width: "100%", margin: "0 auto", padding: "120px 24px 10px 24px", flexGrow: 1, display: "flex", alignItems: "center" }}>
           <div className="hero-grid" style={{ width: "100%" }}>
             
             {/* Left Column (Content) */}
@@ -612,11 +609,12 @@ export default function Home() {
                 display: "inline-flex", 
                 alignItems: "center", 
                 gap: "8px", 
-                border: "1px solid rgba(201, 155, 77, 0.35)", 
+                border: "1px solid #C99B4D", 
                 borderRadius: "9999px", 
                 padding: "8px 18px", 
-                backgroundColor: "rgba(250, 245, 238, 0.6)", 
-                marginBottom: "28px" 
+                backgroundColor: "#FFFFFF", 
+                boxShadow: "0 4px 12px rgba(43, 31, 20, 0.05)",
+                marginBottom: "12px" 
               }}>
                 <span style={{ fontSize: "14px", fontWeight: "500", color: "#C99B4D", letterSpacing: "0.5px" }}>Learn in Any Language</span>
                 <span style={{ color: "#C99B4D", display: "flex", alignItems: "center" }}><IconGlobe /></span>
@@ -625,7 +623,7 @@ export default function Home() {
               {/* Main Headline */}
               <h1 style={{ 
                 fontSize: "60px", 
-                fontWeight: "900", 
+                fontWeight: "700", 
                 color: "#111111", 
                 lineHeight: "1.15", 
                 marginBottom: "24px", 
@@ -659,11 +657,11 @@ export default function Home() {
                   <span style={{
                     display: "flex",
                     flexDirection: "column",
-                    transform: `translateY(-${langIndex * 1.4}em)`,
+                    transform: `translateY(-${langIndex * 66}px)`,
                     transition: langNoAnim ? "none" : "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)"
                   }}>
                     {[...HERO_LANGUAGES, HERO_LANGUAGES[0]].map((l, i) => (
-                      <span key={i} style={{ height: "1.4em", lineHeight: "1.4em", display: "block" }}>{l}</span>
+                      <span key={i} className="hero-lang-roll-btn">{l}</span>
                     ))}
                   </span>
                 </span>
@@ -676,7 +674,7 @@ export default function Home() {
                 lineHeight: "1.6", 
                 maxWidth: "480px", 
                 marginBottom: "36px", 
-                fontWeight: "600" 
+                fontWeight: "500" 
               }}>
                 Quality Islamic education for all ages, from the comfort of your home.
               </p>
@@ -744,62 +742,31 @@ export default function Home() {
 
         {/* Bottom Floating Banner */}
         <div style={{ width: "100%", padding: "0 24px 40px 24px" }}>
-          <div style={{
-            maxWidth: "1300px",
-            width: "100%",
-            margin: "0 auto",
-            backgroundColor: "#FAF4EB", /* Warm peach-cream background matching the mockup exactly */
-            border: "1px solid #EAD8C3", /* Thin gold-beige border */
-            borderRadius: "28px",
-            padding: "24px 32px",
-            boxShadow: "0 15px 40px rgba(139, 115, 85, 0.06)", /* Premium soft warm shadow */
-            position: "relative",
-            zIndex: 10,
-          }}>
+          <div className="bottom-banner-wrapper">
             <div className="bottom-banner-grid">
               
               {/* Card 1 */}
-              <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                <div style={{ width: "64px", height: "64px", borderRadius: "50%", border: "1.5px solid #C99B4D", backgroundColor: "rgba(201, 155, 77, 0.05)", display: "flex", alignItems: "center", justifyContent: "center", color: "#C99B4D", flexShrink: 0 }}>
-                  <IconShieldCheck size={32} />
-                </div>
-                <div>
-                  <h4 style={{ margin: 0, fontSize: "15px", fontWeight: "800", color: "#2B1F14" }}>No Hidden Fees</h4>
-                  <p style={{ margin: "2px 0 0 0", fontSize: "12px", color: "#5C4D3C", fontWeight: "600" }}>What you see is what you pay.</p>
-                </div>
+              <div className="bottom-banner-card">
+                <h4>No Hidden Fees</h4>
+                <p>What you see is what you pay.</p>
               </div>
 
               {/* Card 2 */}
-              <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                <div style={{ width: "64px", height: "64px", borderRadius: "50%", border: "1.5px solid #4A5D3B", backgroundColor: "rgba(74, 93, 59, 0.05)", display: "flex", alignItems: "center", justifyContent: "center", color: "#4A5D3B", flexShrink: 0 }}>
-                  <IconPeople size={30} />
-                </div>
-                <div>
-                  <h4 style={{ margin: 0, fontSize: "15px", fontWeight: "800", color: "#2B1F14" }}>Family Discounts</h4>
-                  <p style={{ margin: "2px 0 0 0", fontSize: "12px", color: "#5C4D3C", fontWeight: "600" }}>Save more when you learn together.</p>
-                </div>
+              <div className="bottom-banner-card">
+                <h4>Family Discounts</h4>
+                <p>Save more when you learn together.</p>
               </div>
 
               {/* Card 3 */}
-              <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                <div style={{ width: "64px", height: "64px", borderRadius: "50%", border: "1.5px solid #C99B4D", backgroundColor: "rgba(201, 155, 77, 0.05)", display: "flex", alignItems: "center", justifyContent: "center", color: "#C99B4D", flexShrink: 0 }}>
-                  <IconCalendar size={32} />
-                </div>
-                <div>
-                  <h4 style={{ margin: 0, fontSize: "15px", fontWeight: "800", color: "#2B1F14" }}>Flexible Plans</h4>
-                  <p style={{ margin: "2px 0 0 0", fontSize: "12px", color: "#5C4D3C", fontWeight: "600" }}>Choose what works for you.</p>
-                </div>
+              <div className="bottom-banner-card">
+                <h4>Flexible Plans</h4>
+                <p>Choose what works for you.</p>
               </div>
 
               {/* Card 4 */}
-              <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                <div style={{ width: "64px", height: "64px", borderRadius: "50%", border: "1.5px solid #4A5D3B", backgroundColor: "rgba(74, 93, 59, 0.05)", display: "flex", alignItems: "center", justifyContent: "center", color: "#4A5D3B", flexShrink: 0 }}>
-                  <IconCertificate size={32} />
-                </div>
-                <div>
-                  <h4 style={{ margin: 0, fontSize: "15px", fontWeight: "800", color: "#2B1F14" }}>Quality Education</h4>
-                  <p style={{ margin: "2px 0 0 0", fontSize: "12px", color: "#5C4D3C", fontWeight: "600" }}>Learn from qualified teachers.</p>
-                </div>
+              <div className="bottom-banner-card">
+                <h4>Quality Education</h4>
+                <p>Learn from qualified teachers.</p>
               </div>
 
             </div>
@@ -846,12 +813,8 @@ export default function Home() {
             in <span style={{ color: "#556B3B", fontWeight: "500" }}>the language you understand best.</span>
           </p>
 
-        </div>
-
-        {/* Feature Card + Benefits (bottom strip) */}
-        <div className="lang-features reveal-slide-up">
           {/* Card */}
-          <div className={`lang-feature-card ${langCardOpen ? "open" : ""}`}>
+          <div className={`lang-feature-card ${langCardOpen ? "open" : ""}`} style={{ marginTop: "clamp(24px, 3.5vw, 48px)" }}>
             <div className="lang-feature-icon">
               <IconBookOpen size={26} />
             </div>
@@ -875,7 +838,7 @@ export default function Home() {
           </div>
 
           {/* Benefits */}
-          <div className="lang-benefits">
+          <div className="lang-benefits" style={{ marginTop: "clamp(35px, 5vw, 65px)" }}>
             <div className="lang-benefit">
               <span className="lang-benefit-icon"><IconBookOpen size={20} /></span>
               <span>Clearer<br />Understanding</span>
@@ -891,6 +854,7 @@ export default function Home() {
               <span>Lasting<br />Impact</span>
             </div>
           </div>
+
         </div>
       </section>
 

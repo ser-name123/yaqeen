@@ -211,7 +211,7 @@ CREATE TABLE IF NOT EXISTS public.site_settings (
     logo_text TEXT DEFAULT 'yaqeen',
     logo_url TEXT,
     contact_email TEXT DEFAULT 'info@yaqeeninstitute.com',
-    contact_phone TEXT DEFAULT '+447488818192',
+    contact_phone TEXT DEFAULT '+44 7700 183483',
     contact_hours TEXT DEFAULT '24x7 - We''re always here for you.',
     contact_support TEXT DEFAULT 'We serve students from around the world.',
     social_facebook TEXT DEFAULT '',
@@ -223,7 +223,7 @@ CREATE TABLE IF NOT EXISTS public.site_settings (
 
 -- Migration statement to add columns to existing table
 ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS contact_email TEXT DEFAULT 'info@yaqeeninstitute.com';
-ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS contact_phone TEXT DEFAULT '+447488818192';
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS contact_phone TEXT DEFAULT '+44 7700 183483';
 ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS contact_hours TEXT DEFAULT '24x7 - We''re always here for you.';
 ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS contact_support TEXT DEFAULT 'We serve students from around the world.';
 ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS social_facebook TEXT DEFAULT '';

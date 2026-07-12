@@ -56,7 +56,7 @@ export default async function RootLayout({ children }) {
   let faviconUrl = "";
 
   let contactEmail = "info@yaqeeninstitute.com";
-  let contactPhone = "+447488818192";
+  let contactPhone = "+44 7700 183483";
   let contactHours = "24x7 - We're always here for you.";
   let contactSupport = "We serve students from around the world.";
   let socialFacebook = "";

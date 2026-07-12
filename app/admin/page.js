@@ -472,7 +472,7 @@ export default function AdminDashboard() {
         adminSwal.fire({
           icon: "success",
           title: "OTP Sent!",
-          text: "Verification code sent to " + emailInput,
+          text: data.message || ("Verification code sent to " + emailInput),
           confirmButtonColor: "var(--primary-color)",
           background: "#111827",
           color: "#fff"
@@ -3658,7 +3658,7 @@ export default function AdminDashboard() {
                       type="text"
                       value={profileForm.contact_phone}
                       onChange={(e) => setProfileForm((prev) => ({ ...prev, contact_phone: e.target.value }))}
-                      placeholder="+447488818192"
+                      placeholder="+44 7700 183483"
                       style={formInputStyle}
                     />
                   </div>
