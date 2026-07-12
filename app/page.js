@@ -655,14 +655,15 @@ export default function Home() {
                     <path d="M0,7 C10,1 20,1 30,7 C40,13 50,13 60,7 C70,1 80,1 90,7 C100,13 110,13 120,7" stroke="#C99B4D" strokeWidth="2.2" fill="none" strokeLinecap="round" />
                   </svg>
                 </span>
-                <span className="hero-lang-roll" style={{ display: "inline-block", height: "1.3em", overflow: "hidden", verticalAlign: "bottom", minWidth: "4.5em", textAlign: "left", color: "#556B3B" }}>
+                <span className="hero-lang-roll">
                   <span style={{
-                    display: "flex", flexDirection: "column",
-                    transform: `translateY(-${langIndex * 1.3}em)`,
+                    display: "flex",
+                    flexDirection: "column",
+                    transform: `translateY(-${langIndex * 1.4}em)`,
                     transition: langNoAnim ? "none" : "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)"
                   }}>
                     {[...HERO_LANGUAGES, HERO_LANGUAGES[0]].map((l, i) => (
-                      <span key={i} style={{ height: "1.3em", lineHeight: "1.3em", display: "block" }}>{l}</span>
+                      <span key={i} style={{ height: "1.4em", lineHeight: "1.4em", display: "block" }}>{l}</span>
                     ))}
                   </span>
                 </span>

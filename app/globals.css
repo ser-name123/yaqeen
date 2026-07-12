@@ -3530,8 +3530,29 @@ h4 {
 .ss-option:hover { background-color: rgba(201, 155, 77, 0.10); }
 .ss-option.sel { background-color: rgba(85, 107, 59, 0.12); font-weight: 600; color: var(--secondary-color); }
 
-/* Hero rotating/rolling language word (counter/slot style) */
-.hero-lang-roll > span { will-change: transform; }
+/* Hero rotating/rolling language word (counter/slot style) styled like a premium button */
+.hero-lang-roll {
+  display: inline-block;
+  height: 1.4em;
+  overflow: hidden;
+  vertical-align: middle;
+  min-width: 6.5em;
+  text-align: center;
+  color: #FFFFFF !important;
+  background-color: var(--secondary-color); /* Brand Olive Green #556B3B */
+  border-radius: 30px; /* Elegant pill shape */
+  padding: 0 16px;
+  margin-left: 8px;
+  box-shadow: 0 4px 15px rgba(85, 107, 59, 0.2);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  font-weight: 600;
+  position: relative;
+}
+
+.hero-lang-roll > span {
+  will-change: transform;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-lang-roll > span { transition: none !important; }
 }
