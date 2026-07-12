@@ -204,7 +204,7 @@ export default function CourseDetailPage() {
                 const open = openContent === i;
                 return (
                   <div className={`cd-acc-item ${open ? "open" : ""}`} key={i}>
-                    <button type="button" className="cd-acc-q" onClick={() => setOpenContent(open ? null : i)} aria-expanded={open}>
+                    <button type="button" className="cd-acc-q" onClick={() => setOpenContent(open ? null : i)} aria-expanded={open} suppressHydrationWarning>
                       <span>{m.t}</span>
                       <IconChevron className={`cd-acc-chevron ${open ? "open" : ""}`} />
                     </button>
@@ -259,7 +259,7 @@ export default function CourseDetailPage() {
             const open = openFaq === i;
             return (
               <div className={`cd-faq-item ${open ? "open" : ""}`} key={i}>
-                <button type="button" className="cd-faq-q" onClick={() => setOpenFaq(open ? null : i)} aria-expanded={open}>
+                <button type="button" className="cd-faq-q" onClick={() => setOpenFaq(open ? null : i)} aria-expanded={open} suppressHydrationWarning>
                   <span>{f.q}</span>
                   <IconChevron className={`cd-acc-chevron ${open ? "open" : ""}`} />
                 </button>

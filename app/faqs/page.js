@@ -172,6 +172,7 @@ export default function FaqsPage() {
                     className="faqp-q"
                     aria-expanded={open}
                     onClick={() => setOpenId(open ? null : id)}
+                    suppressHydrationWarning
                   >
                     <span>{f.q}</span>
                     <IconChevron className={`faqp-chevron ${open ? "open" : ""}`} />

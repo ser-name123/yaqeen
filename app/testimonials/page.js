@@ -105,7 +105,7 @@ export default function TestimonialsPage() {
             const open = openId === i;
             return (
               <div key={i} className={`tpg-item ${open ? "open" : ""}`}>
-                <button type="button" className="tpg-q" aria-expanded={open} onClick={() => setOpenId(open ? null : i)}>
+                <button type="button" className="tpg-q" aria-expanded={open} onClick={() => setOpenId(open ? null : i)} suppressHydrationWarning>
                   <span>{f.q}</span>
                   <IconChevron className={`tpg-chevron ${open ? "open" : ""}`} />
                 </button>

@@ -176,7 +176,7 @@ export default function CareersPage() {
             const open = openId === i;
             return (
               <div key={i} className={`cr-item ${open ? "open" : ""}`}>
-                <button type="button" className="cr-q" aria-expanded={open} onClick={() => setOpenId(open ? null : i)}>
+                <button type="button" className="cr-q" aria-expanded={open} onClick={() => setOpenId(open ? null : i)} suppressHydrationWarning>
                   <span>{f.q}</span>
                   <IconChevron className={`cr-chevron ${open ? "open" : ""}`} />
                 </button>

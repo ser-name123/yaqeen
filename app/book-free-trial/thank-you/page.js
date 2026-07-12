@@ -76,7 +76,7 @@ export default function ThankYouPage() {
             const open = openFaq === i;
             return (
               <div className={`ty-faq-item ${open ? "open" : ""}`} key={i}>
-                <button type="button" className="ty-faq-q" aria-expanded={open} onClick={() => setOpenFaq(open ? null : i)}>
+                <button type="button" className="ty-faq-q" aria-expanded={open} onClick={() => setOpenFaq(open ? null : i)} suppressHydrationWarning>
                   <span>{f.q}</span>
                   <IconChevron className={`ty-chevron ${open ? "open" : ""}`} />
                 </button>

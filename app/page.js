@@ -867,6 +867,7 @@ export default function Home() {
               onClick={() => setLangCardOpen((o) => !o)}
               aria-expanded={langCardOpen}
               aria-label={langCardOpen ? "Show less" : "Show more"}
+              suppressHydrationWarning
             >
               {langCardOpen ? "−" : "+"}
             </button>
@@ -1410,6 +1411,7 @@ export default function Home() {
                     onClick={() => toggleFeature(i)}
                     aria-expanded={isOpen}
                     aria-label={isOpen ? "Show less" : "Show more"}
+                    suppressHydrationWarning
                   >
                     {isOpen ? "−" : "+"}
                   </button>
@@ -1816,6 +1818,7 @@ export default function Home() {
                     onClick={() => toggleOqc(i)}
                     aria-expanded={isOpen}
                     aria-label={isOpen ? "Show less" : "Show more"}
+                    suppressHydrationWarning
                   >
                     {isOpen ? "−" : "+"}
                   </button>

@@ -231,7 +231,7 @@ export default function TeachersPage() {
             const open = openLearn === i;
             return (
               <div key={i} className={`tp-item ${open ? "open" : ""}`}>
-                <button type="button" className="tp-q" aria-expanded={open} onClick={() => setOpenLearn(open ? null : i)}>
+                <button type="button" className="tp-q" aria-expanded={open} onClick={() => setOpenLearn(open ? null : i)} suppressHydrationWarning>
                   <div className="tp-q-icon-wrap">
                     <span className="tp-q-icon">{f.icon}</span>
                   </div>
@@ -283,7 +283,7 @@ export default function TeachersPage() {
             const open = openFaq === i;
             return (
               <div key={i} className={`tp-faq-item ${open ? "open" : ""}`}>
-                <button type="button" className="tp-faq-q" aria-expanded={open} onClick={() => setOpenFaq(open ? null : i)}>
+                <button type="button" className="tp-faq-q" aria-expanded={open} onClick={() => setOpenFaq(open ? null : i)} suppressHydrationWarning>
                   <span className={`tp-faq-icon ${f.color}`}>{f.icon}</span>
                   <span className="tp-faq-qtext">{f.q}</span>
                   <IconChevron className={`tp-chevron ${open ? "open" : ""}`} />
