@@ -605,7 +605,7 @@ export default function Home() {
           width: "400px",
           height: "400px",
           borderRadius: "50%",
-          backgroundColor: "rgba(201, 155, 77, 0.09)",
+          backgroundColor: "var(--primary-glow)",
           zIndex: 1,
           pointerEvents: "none"
         }} />
@@ -616,7 +616,7 @@ export default function Home() {
           width: "300px",
           height: "300px",
           borderRadius: "50%",
-          backgroundColor: "rgba(85, 107, 59, 0.08)",
+          backgroundColor: "var(--secondary-glow)",
           zIndex: 1,
           pointerEvents: "none"
         }} />
