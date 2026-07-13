@@ -44,8 +44,9 @@ export default function CTABanner() {
       alignItems: "center",
       width: "100%",
       boxSizing: "border-box",
-      padding: "0 24px 15px 24px", // Reduced top and bottom padding to bring banner closer to page content and footer
-      marginTop: "-45px" // Pulls the global banner up to cancel out the bottom padding of the section above it
+      padding: "50px 24px 50px 24px", // Added top and bottom padding to give clean spacing
+      marginTop: "10px", // Let the section breathe by removing aggressive pull-up
+      marginBottom: "10px" // Added bottom spacing above footer
     }}>
       {/* Responsive styling for the CTA Banner */}
       <style dangerouslySetInnerHTML={{__html: `

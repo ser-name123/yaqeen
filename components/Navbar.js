@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSettings } from "@/lib/settings-context";
@@ -31,7 +31,11 @@ export default function Navbar({ faviconUrl = "" }) {
   const phone = contactPhone || "+44 7700 183483";
   const telHref = `tel:${phone.replace(/[^\d+]/g, "")}`;
   const pathname = usePathname();
-  const isHomePage = pathname === "/";
+  const [isHomePage, setIsHomePage] = useState(false);
+
+  useEffect(() => {
+    setIsHomePage(pathname === "/");
+  }, [pathname]);
 
   return (
     <header 
