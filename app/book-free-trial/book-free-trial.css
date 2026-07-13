@@ -17,10 +17,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  background:
-    radial-gradient(circle at 15% 20%, rgba(201, 155, 77, 0.10), transparent 45%),
-    radial-gradient(circle at 85% 15%, rgba(85, 107, 59, 0.08), transparent 40%),
-    linear-gradient(180deg, #FDFAF4 0%, #F7F0E6 100%);
+  background-color: #fefefe;
 }
 
 .bft-badge {
@@ -305,7 +302,7 @@
   font-family: var(--font-sans);
   font-size: 14px;
   color: var(--fg-color);
-  background-color: #FDFBF7;
+  background-color: #FFFFFF;
   outline: none;
   transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
@@ -379,7 +376,7 @@
   margin-bottom: 6px;
   border: 1.5px solid #EADDC8;
   border-radius: 9px;
-  background-color: #FDFBF7;
+  background-color: #FFFFFF;
   color: var(--fg-muted);
 }
 
@@ -454,7 +451,7 @@
   padding: 11px 18px;
   border: 1.5px solid #EADDC8;
   border-radius: 12px;
-  background-color: #FDFBF7;
+  background-color: #FFFFFF;
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;

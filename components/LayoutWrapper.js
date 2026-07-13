@@ -105,8 +105,8 @@ export default function LayoutWrapper({ children, logoText, logoUrl, faviconUrl 
               animation: spin-loader 1.1s cubic-bezier(0.5, 0.1, 0.4, 0.9) infinite;
             }
             .loader-logo {
-              width: 60px;
-              height: 60px;
+              width: 50px;
+              height: 50px;
               object-fit: contain;
               animation: pulse-logo 1.8s ease-in-out infinite;
             }

@@ -3173,13 +3173,12 @@ h4 {
 .footer {
   width: 100%;
   padding: 60px 24px 40px 24px; /* Clean bottom padding */
-  background-color: #faf4eb; /* Soft cream background */
-  border-top: 1px solid #EADDC8; /* Subtle top divider */
+  background-color: #2B1F14; /* Brand Deep Brown matching website theme */
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #5C4D3C; /* Warm dark grey for clean legibility */
+  color: #D7CFC0; /* Warm light beige for clean legibility */
 }
 
 .footer-container {
@@ -3264,7 +3263,7 @@ h4 {
 
 .footer-link {
   font-size: 14.5px;
-  color: #5C4D3C; /* Warm dark grey */
+  color: #D7CFC0; /* Warm light beige */
   text-decoration: none;
   font-weight: 600;
   transition: color 0.2s ease;
@@ -3272,7 +3271,7 @@ h4 {
 }
 
 .footer-link:hover {
-  color: var(--primary-color); /* Gold on hover */
+  color: #FFFFFF; /* White on hover */
 }
 
 /* 3. Help Center Elements */
@@ -3283,13 +3282,13 @@ h4 {
 }
 
 .footer-help-phone {
-  color: #5C4D3C;
+  color: #D7CFC0;
   font-weight: 600;
   margin-bottom: 4px;
 }
 
 .footer-help-email {
-  color: #5C4D3C;
+  color: #D7CFC0;
   font-weight: 600;
 }
 
@@ -3300,7 +3299,7 @@ h4 {
 }
 
 .footer-help-email a:hover {
-  color: var(--primary-color);
+  color: #FFFFFF;
 }
 
 .footer-legal-links {
@@ -3315,24 +3314,24 @@ h4 {
 }
 
 .footer-legal-link {
-  color: #5C4D3C;
+  color: #D7CFC0;
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .footer-legal-link:hover {
-  color: var(--primary-color);
+  color: #FFFFFF;
 }
 
 .footer-legal-separator {
-  color: #EADDC8;
+  color: #D7CFC0;
   opacity: 0.6;
 }
 
 .footer-copyright-info-center {
   margin-top: 15px;
   font-size: 12.5px;
-  color: #7A6A53;
+  color: #D7CFC0;
   opacity: 0.85;
   line-height: 1.6;
 }

@@ -260,6 +260,24 @@ export default function StudentFormPage() {
     if (preferredDays.includes(day)) {
       setPreferredDays(preferredDays.filter((d) => d !== day));
     } else {
+      if (!hoursPerWeek) {
+        Swal.fire({
+          title: "Select Hours First",
+          text: "Please select how many hours per week you want first.",
+          icon: "warning",
+          confirmButtonColor: "#4A5D3B"
+        });
+        return;
+      }
+      if (preferredDays.length >= hoursPerWeek) {
+        Swal.fire({
+          title: "Limit Reached",
+          text: `You can only select up to ${hoursPerWeek} day(s) based on your ${hoursPerWeek} hour(s) per week plan.`,
+          icon: "info",
+          confirmButtonColor: "#4A5D3B"
+        });
+        return;
+      }
       setPreferredDays([...preferredDays, day]);
     }
   };
@@ -622,6 +640,9 @@ export default function StudentFormPage() {
                           onClick={() => {
                             setHoursPerWeek(num);
                             if (errors.hoursPerWeek) setErrors((prev) => ({ ...prev, hoursPerWeek: "" }));
+                            if (preferredDays.length > num) {
+                              setPreferredDays(preferredDays.slice(0, num));
+                            }
                           }}
                         >
                           {num}

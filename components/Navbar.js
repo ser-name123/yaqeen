@@ -47,9 +47,7 @@ export default function Navbar({ faviconUrl = "" }) {
         
         {/* Brand Logo */}
         <Link href="/" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <img src="/images/logo.png" alt="YAQEEN Logo" style={{ height: "46px", width: "auto", objectFit: "contain" }} />
-          </div>
+            <img src="/images/logo.png" alt="YAQEEN Logo" style={{ height: "38px", width: "auto", objectFit: "contain" }} />
         </Link>
 
         {/* Desktop Menu */}
