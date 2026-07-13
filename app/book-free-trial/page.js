@@ -271,7 +271,6 @@ export default function BookFreeTrialPage() {
       if (!response.ok || !data.success) {
         throw new Error(data.message || "Something went wrong. Please try again.");
       }
-      setSubmitted(true);
       router.push("/book-free-trial/thank-you");
     } catch (err) {
       setSubmitError(err.message || "Could not submit your booking. Please try again.");
