@@ -143,6 +143,14 @@ function CustomSelect({ value, onChange, options, placeholder, invalid, rootClas
   );
 }
 
+const getTodayString = () => {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+};
+
 export default function BookFreeTrialPage() {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState(INITIAL_FORM);
@@ -243,7 +251,17 @@ export default function BookFreeTrialPage() {
     if (!form.learn) e.learn = "Please select what you'd like to learn.";
     if (!form.sessionFor) e.sessionFor = "Please select who this is for.";
     if (!form.teacher) e.teacher = "Please select a preferred teacher.";
-    if (!form.date) e.date = "Please choose a preferred date.";
+    if (!form.date) {
+      e.date = "Please choose a preferred date.";
+    } else {
+      const selected = new Date(form.date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      selected.setHours(0, 0, 0, 0);
+      if (selected < today) {
+        e.date = "Preferred date cannot be in the past.";
+      }
+    }
     if (!form.hh || !form.mm || !form.ap) e.time = "Please choose a preferred time.";
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -479,6 +497,7 @@ export default function BookFreeTrialPage() {
                         type="date"
                         className={`bft-input ${errors.date ? "invalid" : ""}`}
                         value={form.date} onChange={(e) => set("date", e.target.value)}
+                        min={getTodayString()}
                       />
                       {errors.date && <p className="bft-error">{errors.date}</p>}
                     </div>
