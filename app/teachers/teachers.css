@@ -152,15 +152,16 @@
 .tp-choose-btn:hover { background-color: #B3853B; transform: translateY(-2px); }
 
 /* ==================== FAQ ==================== */
-.tp-faq { padding: 56px 24px 80px 24px; background-color: #F6EFE3; }
+.tp-faq { padding: 56px 24px 80px 24px; background-color: #fefefe; }
 .tp-faq-list { max-width: 880px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
 .tp-faq-item { background-color: #faf4eb; border: 1px solid #EFE7DA; border-radius: 16px; overflow: hidden; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
 .tp-faq-item.open { border-color: rgba(201, 155, 77, 0.5); box-shadow: 0 12px 26px rgba(44, 37, 30, 0.05); }
 .tp-faq-q { width: 100%; box-sizing: border-box; display: flex; align-items: center; gap: 16px; padding: 16px 20px; background: none; border: none; text-align: left; cursor: pointer; }
-.tp-faq-icon { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #fff; }
-.tp-faq-icon.green { background-color: var(--secondary-color); }
-.tp-faq-icon.gold { background-color: var(--primary-color); }
-.tp-faq-qtext { flex: 1; min-width: 0; font-family: var(--font-serif); font-size: clamp(15.5px, 1.9vw, 18px); font-weight: 500; color: var(--fg-color); }
+.tp-faq-icon { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background-color: rgba(201, 155, 77, 0.09); color: var(--primary-color); transition: background-color 0.2s ease, color 0.2s ease; }
+.tp-faq-icon.green, .tp-faq-icon.gold { background-color: rgba(201, 155, 77, 0.09); color: var(--primary-color); }
+.tp-faq-item:hover .tp-faq-icon { background-color: rgba(201, 155, 77, 0.16); }
+.tp-faq-item:hover .tp-faq-icon.green, .tp-faq-item:hover .tp-faq-icon.gold { background-color: rgba(201, 155, 77, 0.16); }
+.tp-faq-qtext { flex: 1; min-width: 0; font-family: var(--font-sans), sans-serif; font-size: clamp(15px, 1.8vw, 17px); font-weight: 600; color: var(--fg-color); }
 .tp-faq-a { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
 .tp-faq-a.open { max-height: 320px; }
 .tp-faq-a-inner { padding: 0 20px 20px 80px; font-size: 14.5px; line-height: 1.75; color: #5a4a37; }

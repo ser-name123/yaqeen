@@ -24,7 +24,7 @@
 .pp-layout { max-width: 1350px; margin: 0 auto; padding: 44px 40px 80px 40px; display: grid; grid-template-columns: 290px 1fr; gap: 48px; align-items: start; }
 
 /* Table of contents */
-.pp-toc { position: sticky; top: 90px; background-color: #FFFFFF; border: 1px solid #EFE7DA; border-radius: 16px; padding: 20px 18px; box-shadow: 0 8px 22px rgba(44, 37, 30, 0.03); }
+.pp-toc { position: sticky; top: 90px; background-color: #faf4eb; border: 1px solid #EFE7DA; border-radius: 16px; padding: 20px 18px; box-shadow: 0 8px 22px rgba(44, 37, 30, 0.03); }
 .pp-toc h4 { margin: 0 0 12px 0; font-size: 12px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase; color: var(--fg-muted); }
 .pp-toc ol { margin: 0; padding: 0; list-style: none; counter-reset: toc; display: flex; flex-direction: column; gap: 3px; max-height: 60vh; overflow-y: auto; }
 .pp-toc a { display: block; padding: 7px 10px; border-radius: 8px; font-size: 13px; line-height: 1.4; color: #5a4a37; text-decoration: none; transition: background-color 0.2s ease, color 0.2s ease; }
@@ -39,7 +39,7 @@
 .pp-toc ol::-webkit-scrollbar-thumb { background: rgba(201, 155, 77, 0.3); border-radius: 6px; }
 
 /* Content */
-.pp-content { background-color: #FFFFFF; border: 1px solid #EFE7DA; border-radius: 20px; padding: 40px clamp(22px, 4vw, 46px); box-shadow: 0 12px 32px rgba(44, 37, 30, 0.04); scroll-margin-top: 90px; }
+.pp-content { background-color: #faf4eb; border: 1px solid #EFE7DA; border-radius: 20px; padding: 40px clamp(22px, 4vw, 46px); box-shadow: 0 12px 32px rgba(44, 37, 30, 0.04); scroll-margin-top: 90px; }
 .pp-content p { margin: 0 0 16px 0; font-size: 15px; line-height: 1.85; color: #4f4234; }
 .pp-content p:last-child { margin-bottom: 0; }
 .pp-content strong { color: var(--fg-color); }
@@ -59,7 +59,7 @@
 .pp-list li::before { content: ""; position: absolute; left: 4px; top: 9px; width: 7px; height: 7px; border-radius: 50%; background-color: var(--primary-color); }
 
 /* Contact block */
-.pp-contact { margin: 6px 0 16px 0; background-color: #FBF6EE; border: 1px solid rgba(201, 155, 77, 0.25); border-radius: 14px; padding: 20px 22px; }
+.pp-contact { margin: 6px 0 16px 0; background-color: #faf4eb; border: 1px solid rgba(201, 155, 77, 0.25); border-radius: 14px; padding: 20px 22px; }
 .pp-contact .name { font-weight: 500; color: var(--fg-color); font-size: 15px; margin-bottom: 4px; }
 .pp-contact div { font-size: 14.5px; line-height: 1.7; color: #4f4234; }
 .pp-contact a { color: var(--primary-color); text-decoration: none; }

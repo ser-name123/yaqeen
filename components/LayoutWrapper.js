@@ -123,21 +123,11 @@ export default function LayoutWrapper({ children, logoText, logoUrl, faviconUrl 
           `}} />
           <div className="loader-ring-wrapper">
             <div className="loader-ring" />
-            {faviconUrl ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img 
-                src={faviconUrl} 
-                alt="YAQEEN Logo" 
-                className="loader-logo"
-              />
-            ) : (
-              <svg width="44" height="38" viewBox="0 0 24 20" fill="none" className="loader-logo">
-                <path d="M12 20C7.5 20 4.5 16 4.5 11C4.5 7 7.5 6 12 9V20Z" fill="#C99B4D" />
-                <path d="M12 20C16.5 20 19.5 16 19.5 11C19.5 7 16.5 6 12 9V20Z" fill="#B3853B" />
-                <circle cx="12" cy="3.5" r="1.5" fill="#C99B4D" />
-                <path d="M12 6V9" stroke="#C99B4D" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-            )}
+            <img 
+              src="/images/logo.png" 
+              alt="YAQEEN Logo" 
+              className="loader-logo"
+            />
           </div>
           <div className="loader-text">{logoText || "YAQEEN"}</div>
         </div>

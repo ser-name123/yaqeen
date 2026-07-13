@@ -7,10 +7,7 @@
 .cr-hero {
   padding: 60px 24px 44px 24px;
   display: flex; flex-direction: column; align-items: center; text-align: center;
-  background:
-    radial-gradient(circle at 15% 20%, rgba(201, 155, 77, 0.10), transparent 45%),
-    radial-gradient(circle at 85% 15%, rgba(169, 123, 46, 0.08), transparent 40%),
-    linear-gradient(180deg, #FDFAF4 0%, #F7F0E6 100%);
+  background-color: #fefefe;
 }
 .cr-badge {
   display: inline-flex; align-items: center; gap: 8px; padding: 7px 16px; border-radius: 9999px;
@@ -63,10 +60,7 @@
   padding: 60px 24px; color: var(--fg-color);
   border-top: 1px solid rgba(201, 155, 77, 0.15);
   border-bottom: 1px solid rgba(201, 155, 77, 0.15);
-  background:
-    radial-gradient(circle at 15% 20%, rgba(201, 155, 77, 0.10), transparent 45%),
-    radial-gradient(circle at 85% 15%, rgba(169, 123, 46, 0.08), transparent 40%),
-    linear-gradient(180deg, #FDFAF4 0%, #F7F0E6 100%);
+  background-color: #fefefe;
 }
 .cr-why .cr-head p { color: #6B5B47; }
 .cr-why-grid { max-width: 1350px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
@@ -87,7 +81,7 @@
 .cr-why-card p { margin: 0; font-size: 13px; line-height: 1.6; color: #6B5B47; }
 
 /* ---------- Jobs ---------- */
-.cr-jobs { padding: 60px 24px; background-color: #F5EFE6; }
+.cr-jobs { padding: 60px 24px; background-color: #fefefe; }
 .cr-jobs-grid { max-width: 1350px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
 .cr-job {
   background-color: #faf4eb; border: 1px solid #EFE7DA; border-radius: 18px; padding: 24px;
@@ -122,12 +116,15 @@
 .cr-acc { max-width: 860px; margin: 0 auto 34px auto; display: flex; flex-direction: column; gap: 14px; }
 .cr-item { background-color: #faf4eb; border: 1px solid #EFE7DA; border-radius: 16px; overflow: hidden; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
 .cr-item.open { border-color: rgba(201, 155, 77, 0.5); box-shadow: 0 12px 26px rgba(44, 37, 30, 0.05); }
-.cr-q { width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 24px; background: none; border: none; text-align: left; cursor: pointer; font-family: var(--font-sans); font-size: clamp(15px, 1.8vw, 17px); font-weight: 500; color: var(--fg-color); }
+.cr-q { width: 100%; box-sizing: border-box; display: flex; align-items: center; gap: 16px; padding: 16px 20px; background: none; border: none; text-align: left; cursor: pointer; }
+.cr-faq-icon { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background-color: rgba(201, 155, 77, 0.09); color: var(--primary-color); transition: background-color 0.2s ease, color 0.2s ease; }
+.cr-item:hover .cr-faq-icon { background-color: rgba(201, 155, 77, 0.16); }
+.cr-qtext { flex: 1; min-width: 0; font-family: var(--font-sans), sans-serif; font-size: clamp(15px, 1.8vw, 17px); font-weight: 600; color: var(--fg-color); }
 .cr-chevron { color: var(--primary-color); flex-shrink: 0; transition: transform 0.3s ease; }
 .cr-chevron.open { transform: rotate(180deg); }
 .cr-a { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
 .cr-a.open { max-height: 320px; }
-.cr-a-inner { padding: 0 24px 22px 24px; font-size: 15px; line-height: 1.75; color: #5a4a37; }
+.cr-a-inner { padding: 0 20px 20px 84px; font-size: 15px; line-height: 1.75; color: #5a4a37; }
 
 /* Responsive */
 @media (max-width: 900px) {

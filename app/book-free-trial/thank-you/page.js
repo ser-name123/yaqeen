@@ -18,13 +18,20 @@ const NEXT = [
   { icon: <IconCalendar />, color: "gold", title: "Get Your Class Schedule", desc: "We'll set up a schedule that fits you perfectly, so you can start learning." }
 ];
 
+const IconStar = ({ size = 20 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>);
+const IconChat = ({ size = 20 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>);
+const IconUsers = ({ size = 20 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>);
+const IconHeart = ({ size = 20 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>);
+const IconUser = ({ size = 20 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>);
+const IconBook = ({ size = 20 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg>);
+
 const FAQS = [
-  { q: "What happens after I book a trial?", a: "After you book, our academic advisor contacts you within 24 hours to confirm your preferred time and match you with a suitable teacher for your free trial class." },
-  { q: "Is the trial really free?", a: "Yes. The trial class is completely free — no card details or payment are required." },
-  { q: "Can I choose the trial timing?", a: "Yes. You pick the day and time that suits you and we arrange a teacher available then." },
-  { q: "Do I need to prepare anything?", a: "No special preparation is needed — just a device with a stable internet connection and Zoom installed." },
-  { q: "What if I want to continue after the trial?", a: "If you enjoyed your trial, our advisor will help you enrol and set up a regular schedule that works for you." },
-  { q: "Can I give feedback after my trial?", a: "Absolutely. We welcome your feedback after the trial so we can match you with the best teacher and learning plan." }
+  { icon: <IconStar />, q: "What happens after I book a trial?", a: "After you book, our academic advisor contacts you within 24 hours to confirm your preferred time and match you with a suitable teacher for your free trial class." },
+  { icon: <IconChat />, q: "Is the trial really free?", a: "Yes. The trial class is completely free — no card details or payment are required." },
+  { icon: <IconUsers />, q: "Can I choose the trial timing?", a: "Yes. You pick the day and time that suits you and we arrange a teacher available then." },
+  { icon: <IconHeart />, q: "Do I need to prepare anything?", a: "No special preparation is needed — just a device with a stable internet connection and Zoom installed." },
+  { icon: <IconUser />, q: "What if I want to continue after the trial?", a: "If you enjoyed your trial, our advisor will help you enrol and set up a regular schedule that works for you." },
+  { icon: <IconBook />, q: "Can I give feedback after my trial?", a: "Absolutely. We welcome your feedback after the trial so we can match you with the best teacher and learning plan." }
 ];
 
 export default function ThankYouPage() {
@@ -77,7 +84,8 @@ export default function ThankYouPage() {
             return (
               <div className={`ty-faq-item ${open ? "open" : ""}`} key={i}>
                 <button type="button" className="ty-faq-q" aria-expanded={open} onClick={() => setOpenFaq(open ? null : i)} suppressHydrationWarning>
-                  <span>{f.q}</span>
+                  <span className="ty-faq-icon">{f.icon}</span>
+                  <span className="ty-faq-qtext">{f.q}</span>
                   <IconChevron className={`ty-chevron ${open ? "open" : ""}`} />
                 </button>
                 <div className={`ty-faq-a ${open ? "open" : ""}`}><div className="ty-faq-a-inner">{f.a}</div></div>

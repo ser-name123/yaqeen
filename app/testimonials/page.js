@@ -11,13 +11,20 @@ const DEFAULT_TESTIMONIALS = [
   { id: "d3", name: "Maryam Zahra", role: "Parent", content: "We love how the whole family can learn together. Yaqeen has brought us closer to our faith and each other.", avatar_url: "/images/testi_maryam.png" }
 ];
 
+const IconUser = ({ size = 20 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>);
+const IconUsers = ({ size = 20 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>);
+const IconChat = ({ size = 20 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>);
+const IconStar = ({ size = 20 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>);
+const IconHeart = ({ size = 20 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>);
+const IconBook = ({ size = 20 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg>);
+
 const FAQS = [
-  { q: "Are your testimonials genuine?", a: "Yes. All testimonials are from real students and parents who have studied with us." },
-  { q: "Can I send in my review?", a: "Yes. We would love to hear about your experience — you can share your review through our contact page." },
-  { q: "Do you publish video testimonials?", a: "Yes. We share both written and video testimonials from our community where available." },
-  { q: "How do you collect feedback?", a: "We collect feedback through progress reviews, messages from students and parents, and follow-ups from our team." },
-  { q: "Do testimonials reflect current staff?", a: "Yes. Our testimonials reflect the ongoing quality of our current teachers and team." },
-  { q: "Are all reviews published?", a: "We aim to share genuine reviews; occasionally some are kept private at the reviewer's request." }
+  { icon: <IconStar />, color: "green", q: "Are your testimonials genuine?", a: "Yes. All testimonials are from real students and parents who have studied with us." },
+  { icon: <IconChat />, color: "gold", q: "Can I send in my review?", a: "Yes. We would love to hear about your experience — you can share your review through our contact page." },
+  { icon: <IconUsers />, color: "green", q: "Do you publish video testimonials?", a: "Yes. We share both written and video testimonials from our community where available." },
+  { icon: <IconHeart />, color: "gold", q: "How do you collect feedback?", a: "We collect feedback through progress reviews, messages from students and parents, and follow-ups from our team." },
+  { icon: <IconUser />, color: "green", q: "Do testimonials reflect current staff?", a: "Yes. Our testimonials reflect the ongoing quality of our current teachers and team." },
+  { icon: <IconBook />, color: "gold", q: "Are all reviews published?", a: "We aim to share genuine reviews; occasionally some are kept private at the reviewer's request." }
 ];
 
 const IconChevron = ({ size = 22, className }) => (
@@ -106,7 +113,8 @@ export default function TestimonialsPage() {
             return (
               <div key={i} className={`tpg-item ${open ? "open" : ""}`}>
                 <button type="button" className="tpg-q" aria-expanded={open} onClick={() => setOpenId(open ? null : i)} suppressHydrationWarning>
-                  <span>{f.q}</span>
+                  <span className={`tpg-faq-icon ${f.color}`}>{f.icon}</span>
+                  <span className="tpg-qtext">{f.q}</span>
                   <IconChevron className={`tpg-chevron ${open ? "open" : ""}`} />
                 </button>
                 <div className={`tpg-a ${open ? "open" : ""}`}>

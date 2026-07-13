@@ -5,23 +5,20 @@
 
 /* Hero banner (light cream — matches the Book a Free Trial hero) */
 .ty-hero {
-  padding: 60px 24px 48px 24px; text-align: center; color: var(--fg-color);
+  padding: 24px 24px 18px 24px; text-align: center; color: var(--fg-color);
   display: flex; flex-direction: column; align-items: center;
-  background:
-    radial-gradient(circle at 15% 20%, rgba(201, 155, 77, 0.10), transparent 45%),
-    radial-gradient(circle at 85% 15%, rgba(85, 107, 59, 0.08), transparent 40%),
-    linear-gradient(180deg, #FDFAF4 0%, #F7F0E6 100%);
+  background-color: #fefefe;
 }
 .ty-hero .check {
-  width: 78px; height: 78px; border-radius: 50%; margin: 0 auto 20px auto;
+  width: 78px; height: 78px; border-radius: 50%; margin: 0 auto 12px auto;
   display: flex; align-items: center; justify-content: center;
   background-color: rgba(85, 107, 59, 0.12); border: 2px solid var(--secondary-color); color: var(--secondary-color);
 }
-.ty-hero h1 { margin: 0 0 10px 0; font-family: var(--font-serif); font-size: clamp(28px, 4.6vw, 44px); font-weight: 800; letter-spacing: 0.5px; color: var(--secondary-color); }
+.ty-hero h1 { margin: 0 0 4px 0; font-family: var(--font-serif); font-size: clamp(28px, 4.6vw, 44px); font-weight: 800; letter-spacing: 0.5px; color: var(--secondary-color); }
 .ty-hero p { margin: 0; font-size: 15.5px; color: #6B5B47; }
 
 /* What Next */
-.ty-next { padding: 56px 24px; max-width: 1350px; margin: 0 auto; width: 100%; }
+.ty-next { padding: 24px 24px; max-width: 1350px; margin: 0 auto; width: 100%; }
 .ty-next h2 { text-align: center; margin: 0 0 34px 0; font-family: var(--font-serif); font-size: clamp(24px, 3.4vw, 34px); font-weight: 500; }
 .ty-next h2 span { color: var(--primary-color); }
 .ty-next-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
@@ -46,24 +43,27 @@
 .ty-testi > p { margin: 0 auto 30px auto; max-width: 560px; font-size: 15px; color: #6B5B47; }
 
 /* FAQ */
-.ty-faq { padding: 60px 24px 80px 24px; background-color: #F5EFE6; }
+.ty-faq { padding: 60px 24px 80px 24px; background-color: #fefefe; }
 .ty-faq-head { text-align: center; margin-bottom: 36px; }
 .ty-faq-head h2 { margin: 14px 0 0 0; font-family: var(--font-serif); font-size: clamp(24px, 3.4vw, 34px); font-weight: 500; }
 .ty-faq-head h2 span { color: var(--primary-color); }
 .ty-faq-list { max-width: 840px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
 .ty-faq-item { background-color: #faf4eb; border: 1px solid #EFE7DA; border-radius: 16px; overflow: hidden; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
 .ty-faq-item.open { border-color: rgba(201, 155, 77, 0.5); box-shadow: 0 12px 26px rgba(44, 37, 30, 0.05); }
-.ty-faq-q { width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 22px; background: none; border: none; text-align: left; cursor: pointer; font-family: var(--font-sans); font-size: clamp(15px, 1.9vw, 17px); font-weight: 500; color: var(--fg-color); }
+.ty-faq-q { width: 100%; box-sizing: border-box; display: flex; align-items: center; gap: 16px; padding: 16px 20px; background: none; border: none; text-align: left; cursor: pointer; }
+.ty-faq-icon { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background-color: rgba(201, 155, 77, 0.09); color: var(--primary-color); transition: background-color 0.2s ease, color 0.2s ease; }
+.ty-faq-item:hover .ty-faq-icon { background-color: rgba(201, 155, 77, 0.16); }
+.ty-faq-qtext { flex: 1; min-width: 0; font-family: var(--font-sans), sans-serif; font-size: clamp(15px, 1.8vw, 17px); font-weight: 600; color: var(--fg-color); }
 .ty-chevron { color: var(--primary-color); flex-shrink: 0; transition: transform 0.3s ease; }
 .ty-chevron.open { transform: rotate(180deg); }
 .ty-faq-a { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
 .ty-faq-a.open { max-height: 320px; }
-.ty-faq-a-inner { padding: 0 22px 20px 22px; font-size: 14.5px; line-height: 1.75; color: #5a4a37; }
+.ty-faq-a-inner { padding: 0 20px 20px 84px; font-size: 14.5px; line-height: 1.75; color: #5a4a37; }
 
 /* Buttons */
 .ty-btn { display: inline-flex; align-items: center; gap: 9px; padding: 13px 30px; border-radius: 9999px; background-color: var(--secondary-color); color: #fff; font-size: 14px; font-weight: 500; text-decoration: none; box-shadow: 0 8px 20px rgba(85, 107, 59, 0.2); transition: all 0.2s ease; }
 .ty-btn:hover { transform: translateY(-2px); background-color: #45592f; color: #fff; }
-.ty-hero-actions { display: flex; gap: 12px; justify-content: center; margin-top: 26px; flex-wrap: wrap; }
+.ty-hero-actions { display: flex; gap: 12px; justify-content: center; margin-top: 14px; flex-wrap: wrap; }
 .ty-btn.gold { background-color: var(--primary-color); color: #fff; box-shadow: 0 8px 20px rgba(201, 155, 77, 0.22); }
 .ty-btn.gold:hover { color: #fff; background-color: #B3853B; }
 

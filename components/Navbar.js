@@ -47,22 +47,8 @@ export default function Navbar({ faviconUrl = "" }) {
         
         {/* Brand Logo */}
         <Link href="/" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            {faviconUrl ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={faviconUrl} alt="YAQEEN Logo" style={{ height: "46px", width: "auto", objectFit: "contain" }} />
-            ) : (
-              <svg width="44" height="38" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 20C7.5 20 4.5 16 4.5 11C4.5 7 7.5 6 12 9V20Z" fill="#C99B4D" />
-                <path d="M12 20C16.5 20 19.5 16 19.5 11C19.5 7 16.5 6 12 9V20Z" fill="#B3853B" />
-                <circle cx="12" cy="3.5" r="1.5" fill="#C99B4D" />
-                <path d="M12 6V9" stroke="#C99B4D" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-            )}
-            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", lineHeight: "1.1" }}>
-              <span style={{ fontWeight: "800", color: "#2B1F14", fontSize: "18px", letterSpacing: "0.5px" }}>YAQEEN</span>
-              <span style={{ fontWeight: "600", color: "#5C4D3C", fontSize: "10px", letterSpacing: "2.5px" }}>INSTITUTE</span>
-            </div>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <img src="/images/logo.png" alt="YAQEEN Logo" style={{ height: "46px", width: "auto", objectFit: "contain" }} />
           </div>
         </Link>
 
