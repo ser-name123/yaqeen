@@ -6,12 +6,9 @@
 /* ---------- Hero ---------- */
 .cd-hero {
   padding: 54px 24px 30px 24px;
-  background:
-    radial-gradient(circle at 12% 25%, rgba(201, 155, 77, 0.12), transparent 45%),
-    radial-gradient(circle at 88% 10%, rgba(85, 107, 59, 0.08), transparent 42%),
-    linear-gradient(180deg, #FDFAF4 0%, #F5ECDC 100%);
+  background-color: #fefefe;
 }
-.cd-hero-inner { max-width: 1350px; margin: 0 auto; }
+.cd-hero-inner { max-width: 1200px; margin: 0 auto; }
 .cd-badge {
   display: inline-flex; align-items: center; gap: 8px; padding: 6px 15px; border-radius: 9999px;
   background-color: rgba(201, 155, 77, 0.14); border: 1px solid rgba(201, 155, 77, 0.3);
@@ -38,7 +35,7 @@
 .cd-meta-pill .val { font-size: 13.5px; color: var(--fg-color); font-weight: 500; }
 
 /* ---------- Body layout ---------- */
-.cd-body { max-width: 1350px; margin: 0 auto; padding: 40px 24px 70px 24px; display: grid; grid-template-columns: 1fr 340px; gap: 32px; align-items: start; }
+.cd-body { max-width: 1200px; margin: 0 auto; padding: 40px 24px 70px 24px; display: grid; grid-template-columns: 1fr 340px; gap: 32px; align-items: start; }
 .cd-main { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
 
 .cd-card { background-color: #FFFFFF; border: 1px solid #EFE7DA; border-radius: 18px; padding: 28px clamp(20px, 3vw, 32px); box-shadow: 0 8px 22px rgba(44, 37, 30, 0.03); }

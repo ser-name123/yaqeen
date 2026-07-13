@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 import "./book-free-trial.css";
 import { COUNTRIES, DIAL_CODES } from "./countries";
 
@@ -299,9 +300,23 @@ export default function BookFreeTrialPage() {
       if (!response.ok || !data.success) {
         throw new Error(data.message || "Something went wrong. Please try again.");
       }
-      router.push("/book-free-trial/thank-you");
+      setSubmitted(true);
+      scrollToForm();
+      Swal.fire({
+        title: "Free Trial Booked!",
+        html: `JazakAllah Khair, <strong>${form.firstName}</strong>.<br/><br/>We've received your request and our academic advisor will contact you within 24 hours to confirm your class.`,
+        icon: "success",
+        confirmButtonColor: "#4A5D3B",
+        confirmButtonText: "Ok"
+      });
     } catch (err) {
       setSubmitError(err.message || "Could not submit your booking. Please try again.");
+      Swal.fire({
+        icon: "error",
+        title: "Submission Error",
+        text: err.message || "Could not submit your booking. Please try again.",
+        confirmButtonColor: "#d33"
+      });
     } finally {
       setSubmitting(false);
     }

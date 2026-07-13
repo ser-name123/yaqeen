@@ -3,6 +3,7 @@
 import { useState, useRef, Fragment, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 import "./teacher-application.css";
 import { supabase } from "@/lib/supabase";
 import SearchSelect from "@/components/SearchSelect";
@@ -198,9 +199,26 @@ export default function TeacherApplicationPage() {
       });
       const data = await response.json();
       if (!response.ok || !data.success) throw new Error(data.message || "Something went wrong.");
-      router.push("/book-free-trial/thank-you");
+      setSubmitted(true);
+      if (formCardRef.current) {
+        const y = formCardRef.current.getBoundingClientRect().top + window.scrollY - 96;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }
+      Swal.fire({
+        title: "Application Submitted!",
+        html: `JazakAllah Khair, <strong>${form.first_name}</strong>.<br/><br/>We've received your teacher application and our team will review it carefully and contact you soon regarding the next steps.`,
+        icon: "success",
+        confirmButtonColor: "#4A5D3B",
+        confirmButtonText: "Ok"
+      });
     } catch (err) {
       setSubmitError(err.message || "Could not submit your application. Please try again.");
+      Swal.fire({
+        icon: "error",
+        title: "Submission Error",
+        text: err.message || "Could not submit your application. Please try again.",
+        confirmButtonColor: "#d33"
+      });
     } finally {
       setSubmitting(false);
     }
