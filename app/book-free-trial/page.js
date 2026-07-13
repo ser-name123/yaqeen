@@ -178,6 +178,16 @@ export default function BookFreeTrialPage() {
     detectCountry();
   }, []);
 
+  useEffect(() => {
+    if (mounted && formCardRef.current) {
+      const timer = setTimeout(() => {
+        const y = formCardRef.current.getBoundingClientRect().top + window.scrollY - 96;
+        window.scrollTo({ top: y, behavior: "auto" });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [mounted]);
+
   const handleCountryChange = (cName) => {
     setForm((f) => {
       const match = COUNTRIES.find((c) => c.name === cName);
