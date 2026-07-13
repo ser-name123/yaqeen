@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { supabase } from "@/lib/supabase";
 import "./student-form.css";
@@ -162,6 +163,7 @@ export default function StudentFormPage() {
 
   const [errors, setErrors] = useState({});
   const formCardRef = useRef(null);
+  const router = useRouter();
 
   // Smooth scroll
   const scrollToForm = () => {
@@ -219,6 +221,16 @@ export default function StudentFormPage() {
     fetchPlans();
     detectCountry();
   }, []);
+
+  useEffect(() => {
+    if (mounted && formCardRef.current) {
+      const timer = setTimeout(() => {
+        const y = formCardRef.current.getBoundingClientRect().top + window.scrollY - 96;
+        window.scrollTo({ top: y, behavior: "auto" });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [mounted]);
 
   // Synchronized Selection: Country -> Dial Code
   const handleCountryChange = (cName) => {
@@ -341,13 +353,7 @@ export default function StudentFormPage() {
       const result = await res.json();
       
       if (res.ok && result.success) {
-        setSubmitted(true);
-        Swal.fire({
-          icon: "success",
-          title: "Registration Success",
-          text: "Assalamu Alaikum! Your student registration has been received.",
-          confirmButtonColor: "#4A5D3B"
-        });
+        router.push("/book-free-trial/thank-you");
       } else {
         throw new Error(result.message || "Failed to submit application.");
       }
