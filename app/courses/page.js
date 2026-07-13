@@ -726,7 +726,7 @@ export default function CoursesPage() {
               className="reveal-stagger"
               onClick={() => router.push(`/courses/${slugify(course.title)}`)}
               style={{
-                backgroundColor: "#FFFFFF",
+                backgroundColor: "#faf4eb",
                 borderRadius: "24px",
                 border: "1px solid #EADDC8",
                 boxShadow: "0 6px 18px rgba(44, 37, 30, 0.01)",
