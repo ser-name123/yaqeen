@@ -34,7 +34,7 @@ const IconBookSolid = ({ size = 24, color = "#C99B4D" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
     <path d="M12 6.5C10.5 5.5 8.5 5 6.5 5H3V18H6.5C8.5 18 10.5 18.5 12 19.5Z" />
     <path d="M12 6.5C13.5 5.5 15.5 5 17.5 5H21V18H17.5C15.5 18 13.5 18.5 12 19.5Z" />
-    <path d="M12 6.5V19.5" stroke="#FAF5EE" strokeWidth="1.8" strokeLinecap="round" />
+    <path d="M12 6.5V19.5" stroke="#fefefe" strokeWidth="1.8" strokeLinecap="round" />
   </svg>
 );
 
@@ -402,7 +402,7 @@ const IconDividerStar = () => (
       d="M12 2L14.8 6.8L19.8 4L17 9L21.8 11.8L17 14.6L19.8 19.6L14.8 16.8L12 21.6L9.2 16.8L4.2 19.6L7 14.6L2.2 11.8L7 9L4.2 4L9.2 6.8L12 2Z" 
       fill="#C99B4D" 
     />
-    <circle cx="12" cy="12" r="3.5" fill="#FAF5EE" stroke="#C99B4D" strokeWidth="1.5" />
+    <circle cx="12" cy="12" r="3.5" fill="#fefefe" stroke="#C99B4D" strokeWidth="1.5" />
   </svg>
 );
 
@@ -566,7 +566,7 @@ export default function CoursesPage() {
   }, [teachers, coursesList]);
 
   return (
-    <main style={{ minHeight: "100vh", backgroundColor: "#FAF5EE", display: "flex", flexDirection: "column" }}>
+    <main style={{ minHeight: "100vh", backgroundColor: "#fefefe", display: "flex", flexDirection: "column" }}>
       
       {/* =========================================================================
          1. HERO SECTION
@@ -648,7 +648,7 @@ export default function CoursesPage() {
          ========================================================================= */}
       <section style={{
         padding: "35px 24px 50px 24px",
-        backgroundColor: "#FAF5EE",
+        backgroundColor: "#fefefe",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -938,7 +938,7 @@ export default function CoursesPage() {
                 key={idx}
                 className="reveal-stagger"
                 style={{
-                  backgroundColor: "#FAF5EE", // Elegant, soft cream-beige card background (not white, matching mockup)
+                  backgroundColor: "#fefefe", // Elegant, soft cream-beige card background (not white, matching mockup)
                   borderRadius: "20px",
                   border: "1px solid rgba(201, 155, 77, 0.25)", // Soft elegant gold/cream border, matching mockup
                   borderBottom: `5px solid ${accentColor}`,
@@ -1144,7 +1144,7 @@ export default function CoursesPage() {
                   key={idx}
                   className="reveal-stagger"
                   style={{
-                    backgroundColor: "#FAF5EE", // Soft cream-beige card background matching mockup
+                    backgroundColor: "#fefefe", // Soft cream-beige card background matching mockup
                     borderRadius: "20px",
                     border: "1px solid rgba(201, 155, 77, 0.25)", // Soft elegant gold/cream border
                     padding: "36px 28px 32px 28px", // Tall and narrow card padding with comfortable side spacing
@@ -1217,7 +1217,7 @@ export default function CoursesPage() {
 
           {/* Bottom Mission Banner */}
           <div style={{
-            backgroundColor: "#FAF5EE", // Cream-colored banner
+            backgroundColor: "#fefefe", // Cream-colored banner
             borderRadius: "24px",
             border: "1px solid rgba(201, 155, 77, 0.2)",
             padding: "24px 32px",
@@ -1407,7 +1407,7 @@ export default function CoursesPage() {
          ========================================================================= */}
       <section style={{
         padding: "30px 24px 30px 24px",
-        backgroundColor: "#FAF5EE", // Match page background
+        backgroundColor: "#fefefe", // Match page background
         display: "flex",
         justifyContent: "center",
         alignItems: "center",

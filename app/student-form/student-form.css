@@ -17,7 +17,7 @@
   height: 42px;
   border-radius: 50%;
   border: 1px solid #D5C2AD;
-  background-color: #FBF8F3;
+  background-color: #fefefe;
   font-size: 15px;
   font-weight: 600;
   color: #2B1F14;
@@ -65,7 +65,7 @@
 .pricing-calc-box {
   width: 100px;
   padding: 8px 12px;
-  background-color: #FAF5EE;
+  background-color: #fefefe;
   border: 1px solid #EADDC8;
   border-radius: 8px;
   text-align: center;
@@ -95,7 +95,7 @@
 }
 
 .day-btn:hover {
-  background-color: #FBF8F3;
+  background-color: #fefefe;
   border-color: #4A5D3B;
 }
 

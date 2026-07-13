@@ -887,7 +887,7 @@ export default function Home() {
          ========================================================================= */}
       <section className="teach-section" style={{
         padding: "50px 24px",
-        backgroundColor: "#FAF5EE",
+        backgroundColor: "#fefefe",
         /* backgroundImage: "url('/images/teach_bg.png?v=2')", */
 
         backgroundSize: "cover",

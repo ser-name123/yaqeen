@@ -1,8 +1,8 @@
 :root {
   /* Yaqeen Brand Guidelines Color Palette */
-  --bg-color: #FBF8F3;       /* Brand Cream */
-  --bg-gradient-start: #FBF8F3;
-  --bg-gradient-end: #F5EBDD;   /* Brand Warm Beige */
+  --bg-color: #fefefe;       /* Brand Cream */
+  --bg-gradient-start: #fefefe;
+  --bg-gradient-end: #fefefe;   /* Brand Warm Beige */
   
   --fg-color: #2B1F14;       /* Brand Deep Brown */
   --fg-muted: #A69A86;       /* Brand Taupe */
@@ -225,7 +225,7 @@ h4 {
   max-width: 1350px;
   width: 100%;
   margin: 0 auto;
-  background-color: #FAF5EE; /* Light warm cream */
+  background-color: #fefefe; /* Light warm cream */
   border: 1.5px solid #EFE7DA;
   border-radius: 9999px; /* Rounded pill shape */
   padding: 14px 24px; /* Increased vertical padding to increase height */
@@ -242,7 +242,7 @@ h4 {
   align-items: center;
   gap: 20px;
   list-style: none;
-  margin: 0;
+  margin: 0 30px 0 auto; /* Push to the right, separate from actions */
   padding: 0;
 }
 
@@ -281,7 +281,7 @@ h4 {
   padding: 4px 16px 4px 4px !important; /* Tight padding left for circle badge */
   border-radius: 9999px;
   border: 1.5px solid #556B3B; /* Green border */
-  background-color: #FAF8F5;
+  background-color: #fefefe;
   color: #556B3B !important; /* Green text */
   font-size: 13.5px;
   font-weight: 700;
@@ -422,7 +422,7 @@ h4 {
 
 .nav-dropdown-menu {
   position: absolute; top: calc(100% + 16px); left: 50%; transform: translateX(-50%) translateY(6px);
-  min-width: 200px; padding: 8px; background-color: #FAF5EE; border: 1.5px solid #EFE7DA;
+  min-width: 200px; padding: 8px; background-color: #fefefe; border: 1.5px solid #EFE7DA;
   border-radius: 14px; box-shadow: 0 18px 40px rgba(44, 37, 30, 0.12);
   display: flex; flex-direction: column; gap: 2px;
   opacity: 0; visibility: hidden; transition: opacity 0.2s ease, transform 0.2s ease; z-index: 1200;
@@ -862,7 +862,7 @@ h4 {
 
 /* Individual beige/cream cards with soft drop shadow and vertical gradient */
 .bottom-banner-card {
-  background: linear-gradient(to right, #FAF5EE 0%, #EAD8C3 100%) !important; /* Elegant horizontal gradient */
+  background: linear-gradient(to right, #fefefe 0%, #EAD8C3 100%) !important; /* Elegant horizontal gradient */
   border: 1.5px solid #E2D2C0 !important; /* Premium subtle border */
   border-radius: 12px !important; /* Rounded card corners */
   padding: 24px 20px !important;
@@ -901,24 +901,30 @@ h4 {
    ========================================================================== */
 .lang-section {
   width: 100%;
-  background-color: #FAF5EE;
+  background-color: #fefefe;
   border-top: 1.5px solid #F5EBDD;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  min-height: 660px;
 }
 
 .lang-image {
-  width: 100%;
-  height: auto;
+  position: absolute;
+  right: 4%; /* Shifted slightly left from the right edge */
+  top: 10px;
+  height: calc(100% - 20px);
+  width: auto;
   display: block;
   object-fit: contain;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .lang-overlay {
-  position: absolute;
+  position: relative;
   left: 7%;
-  top: 14%; /* Shifted further up from 20% to 14% as requested */
-  transform: translateY(-50%);
   width: 38%;
   display: flex;
   flex-direction: column;
@@ -995,7 +1001,7 @@ h4 {
   height: 30px;
   border-radius: 50%;
   border: 1.5px solid #EFE7DA;
-  background-color: #FBF8F3;
+  background-color: #fefefe;
   color: var(--primary-color);
   font-size: 22px;
   font-weight: 400;
@@ -1105,6 +1111,43 @@ h4 {
   background-color: #E3D8C6;
 }
 
+@media (max-width: 1024px) {
+  .lang-section {
+    flex-direction: column;
+    padding: 60px 24px 40px 24px;
+    min-height: auto;
+  }
+  .lang-image {
+    position: relative;
+    right: auto;
+    top: auto;
+    transform: none;
+    width: 100%;
+    max-width: 500px;
+    margin: 30px auto 0 auto;
+  }
+  .lang-overlay {
+    position: relative;
+    left: 0;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    align-items: center;
+    text-align: center;
+    pointer-events: auto; /* Allow interaction */
+  }
+  .lang-title {
+    text-align: center;
+  }
+  .lang-divider {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .lang-desc {
+    text-align: center;
+  }
+}
+
 @media (max-width: 900px) {
   .lang-features {
     margin-top: 8px;
@@ -1118,12 +1161,6 @@ h4 {
   .lang-benefits { justify-content: center; gap: 18px; }
 }
 
-@media (max-width: 480px) {
-  .lang-overlay {
-    left: 10%;
-    width: 42%;
-  }
-}
 
 /* ==========================================================================
    Section 3: Teach Section Grid styles
@@ -1157,7 +1194,7 @@ h4 {
 .choose-section {
   width: 100%;
   padding: 45px 24px;
-  background-color: #FAF5EE;
+  background-color: #fefefe;
   /* background-image: url('/images/choose_bg.png'); */
   background-size: 100% 100%; /* Stretch to fit container exactly so dot grids and corner pattern are fully visible */
   background-position: center;
@@ -1176,7 +1213,7 @@ h4 {
   border: 1px solid rgba(201, 155, 77, 0.25);
   border-radius: 9999px;
   padding: 8px 24px;
-  background-color: #FAF5EE;
+  background-color: #fefefe;
   margin-bottom: 16px;
   box-shadow: 0 4px 10px rgba(44, 37, 30, 0.02);
 }
@@ -1614,7 +1651,7 @@ h4 {
 .age-section {
   width: 100%;
   padding: 30px 24px 60px 24px;
-  background-color: #FAF5EE;
+  background-color: #fefefe;
   /* background-image: url('/images/age_bg.png'); */
   background-size: 100% 100%; /* Stretch to fit container exactly so corner pattern is fully visible */
   background-position: center;
@@ -1633,7 +1670,7 @@ h4 {
   border: 1px solid rgba(201, 155, 77, 0.25);
   border-radius: 9999px;
   padding: 8px 24px;
-  background-color: #FAF5EE;
+  background-color: #fefefe;
   margin-bottom: 20px;
   box-shadow: 0 4px 10px rgba(44, 37, 30, 0.02);
 }
@@ -1808,7 +1845,7 @@ h4 {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background-color: #FAF5EE;
+  background-color: #fefefe;
   border-radius: 999px;
   padding: 8px 16px;
   font-size: 11.5px;
@@ -1845,7 +1882,7 @@ h4 {
 .journey-section {
   width: 100%;
   padding: 50px 24px 70px 24px; /* Reduced top padding to make section more compact */
-  background-color: #FAF5EE;
+  background-color: #fefefe;
   /* background-image: url('/images/journey_bg.png'); */
   background-size: 100% 100%; /* Stretch to fit container exactly so corner pattern is fully visible */
   background-position: center;
@@ -1933,7 +1970,7 @@ h4 {
   width: 110px; /* Reduced to 70% scale (from 148px-160px range) */
   height: 110px; /* Reduced to 70% scale (from 148px-160px range) */
   border-radius: 50%;
-  background-color: #FAF5EE; /* Blends perfectly with the warm cream section background */
+  background-color: #fefefe; /* Blends perfectly with the warm cream section background */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2061,7 +2098,7 @@ h4 {
 .teachers-section {
   width: 100%;
   padding: 45px 24px 90px 24px; /* Reduced top padding from 80px to 45px */
-  background-color: #FAF5EE;
+  background-color: #fefefe;
   /* background-image: url('/images/teach_bg.png?v=2'); */
 
   background-size: 100% 100%; /* Stretch to fit container exactly so corner pattern is fully visible */
@@ -2081,7 +2118,7 @@ h4 {
   border: 1px solid rgba(201, 155, 77, 0.25);
   border-radius: 9999px;
   padding: 8px 24px;
-  background-color: #FAF5EE;
+  background-color: #fefefe;
   margin-bottom: 16px;
   box-shadow: 0 4px 10px rgba(44, 37, 30, 0.02);
 }
@@ -2129,7 +2166,7 @@ h4 {
 }
 
 .teacher-card {
-  background-color: #FAF5EE;
+  background-color: #fefefe;
   border: 1.5px solid #F5EBDD;
   border-top-left-radius: 50% 40px; /* Beautiful shallow elliptical arch top left matching the mockup */
   border-top-right-radius: 50% 40px; /* Beautiful shallow elliptical arch top right matching the mockup */
@@ -2254,7 +2291,7 @@ h4 {
 .blog-section {
   width: 100%;
   padding: 45px 24px 50px 24px; /* Reduced top padding from 80px to 45px, bottom padding from 90px to 50px */
-  background-color: #FAF5EE;
+  background-color: #fefefe;
   /* background-image: url('/images/journey_bg.png'); */
   background-size: 100% 100%; /* Stretch to fit container exactly so corner pattern is fully visible */
   background-position: center;
@@ -2273,7 +2310,7 @@ h4 {
   border: 1px solid rgba(201, 155, 77, 0.25);
   border-radius: 9999px;
   padding: 8px 24px;
-  background-color: #FAF5EE;
+  background-color: #fefefe;
   margin-bottom: 12px; /* Reduced from 16px */
   box-shadow: 0 4px 10px rgba(44, 37, 30, 0.02);
 }
@@ -2320,7 +2357,7 @@ h4 {
 
 .blog-featured-card {
   flex: 1.1;
-  background-color: #FAF5EE;
+  background-color: #fefefe;
   border: 1.5px solid #F5EBDD;
   border-radius: 16px;
   padding: 0; /* Removed padding to let the image flush to top, left, and right */
@@ -2495,7 +2532,7 @@ h4 {
   height: 18px;
   border-radius: 50%;
   border: 2px solid #C99B4D;
-  background-color: #FAF5EE;
+  background-color: #fefefe;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2550,7 +2587,7 @@ h4 {
 .faq-section {
   width: 100%;
   padding: 35px 24px 45px 24px; /* Reduced top padding from 55px to 35px, bottom padding from 70px to 45px */
-  background-color: #FAF5EE;
+  background-color: #fefefe;
   /* background-image: url('/images/faq_bg.png'); */
   background-size: 100% 100%; /* Stretch to fit container exactly so corner pattern is fully visible */
   background-position: center;
@@ -2603,7 +2640,7 @@ h4 {
 }
 
 .faq-item {
-  background-color: #FAF5EE;
+  background-color: #fefefe;
   border: 1.5px solid #F5EBDD;
   border-radius: 14px;
   padding: 12px 24px; /* Reduced vertical padding from 18px to 12px for a more compact card */
@@ -2736,7 +2773,7 @@ h4 {
 .testi-section {
   width: 100%;
   padding: 55px 24px 70px 24px; /* Tight, compact vertical spacing */
-  background-color: #FAF5EE;
+  background-color: #fefefe;
   /* background-image: url('/images/testi_bg.png'); */
   background-size: 100% 100%; /* Stretch to fit container exactly so corner pattern is fully visible */
   background-position: center;
@@ -2755,7 +2792,7 @@ h4 {
   border: 1px solid rgba(201, 155, 77, 0.25);
   border-radius: 9999px;
   padding: 8px 24px;
-  background-color: #FAF5EE;
+  background-color: #fefefe;
   margin-bottom: 16px;
   box-shadow: 0 4px 10px rgba(44, 37, 30, 0.02);
 }
@@ -2986,7 +3023,7 @@ h4 {
 .news-section {
   width: 100%;
   padding: 60px 24px 70px 24px; /* Tight, compact vertical spacing */
-  background-color: #FAF5EE;
+  background-color: #fefefe;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -3605,7 +3642,7 @@ h4 {
    ========================================================================== */
 .oqc-section {
   width: 100%;
-  background-color: #FBF8F3;
+  background-color: #fefefe;
   padding: 70px 24px 80px 24px;
   display: flex;
   flex-direction: column;

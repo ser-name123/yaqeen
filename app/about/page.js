@@ -208,24 +208,10 @@ const ArchedCardBackground = () => (
       pointerEvents: "none"
     }}
   >
-    {/* Outer border shape with cream background fill (shifted down 30px to prevent dome top clipping) */}
+    {/* Outer shape with cream background fill (shifted down 30px to prevent dome top clipping) */}
     <path 
       d="M 20 500 L 370 500 A 20 20 0 0 0 390 480 L 390 170 C 390 145 350 120 305 120 A 110 110 0 0 0 85 120 C 60 120 0 145 0 170 L 0 480 A 20 20 0 0 0 20 500 Z" 
       fill="#fcf3ed" /* Soft warm cream background */
-      stroke="#C99B4D" 
-      strokeWidth="1.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    {/* Inner delicate border path for a premium double-line outline effect */}
-    <path 
-      d="M 20 500 L 370 500 A 20 20 0 0 0 390 480 L 390 170 C 390 145 350 120 305 120 A 110 110 0 0 0 85 120 C 60 120 0 145 0 170 L 0 480 A 20 20 0 0 0 20 500 Z" 
-      fill="none"
-      stroke="rgba(201, 155, 77, 0.4)" 
-      strokeWidth="0.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      transform="translate(3.9, 5.0) scale(0.98)"
     />
   </svg>
 );

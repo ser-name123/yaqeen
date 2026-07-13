@@ -1,7 +1,7 @@
 /* ==========================================================================
    Book a Free Trial — Thank You page (brand: gold #C99B4D / olive #556B3B)
    ========================================================================== */
-.ty-page { width: 100%; background-color: #FBF8F3; color: var(--fg-color); font-family: var(--font-sans); }
+.ty-page { width: 100%; background-color: #fefefe; color: var(--fg-color); font-family: var(--font-sans); }
 
 /* Hero banner (light cream — matches the Book a Free Trial hero) */
 .ty-hero {

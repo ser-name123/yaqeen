@@ -3,7 +3,7 @@
    ========================================================================== */
 .tpg-page {
   width: 100%;
-  background-color: #FBF8F3;
+  background-color: #fefefe;
   color: var(--fg-color);
   font-family: var(--font-sans);
 }
