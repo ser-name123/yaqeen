@@ -6,13 +6,13 @@ import { usePathname } from "next/navigation";
 import { useSettings } from "@/lib/settings-context";
 
 const DISCOVER = [
-  { label: "About Us", href: "/about" },
-  { label: "Our Teachers", href: "/teachers" },
+  { label: "About", href: "/about" },
+  { label: "Teachers", href: "/teachers" },
   { label: "Testimonials", href: "/testimonials" },
-  { label: "FAQ", href: "/faqs" },
+  { label: "Faq", href: "/faqs" },
   { label: "Blog", href: "/blog" },
   { label: "Careers", href: "/careers" },
-  { label: "Contact Us", href: "/contact" }
+  { label: "Contact", href: "/contact" }
 ];
 
 const IconCaret = () => (
@@ -22,7 +22,7 @@ const IconPhone = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13 1 .37 1.98.72 2.91a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.93.35 1.9.59 2.91.72A2 2 0 0 1 22 16.92z" /></svg>
 );
 
-const linkStyle = { textDecoration: "none", fontSize: "14.5px", fontWeight: "600", color: "#5C4D3C", transition: "color 0.2s ease", letterSpacing: "0.2px" };
+const linkStyle = { textDecoration: "none", fontSize: "16.5px", fontWeight: "600", color: "#5C4D3C", transition: "color 0.2s ease", letterSpacing: "0.2px" };
 
 export default function Navbar({ faviconUrl = "" }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -68,9 +68,7 @@ export default function Navbar({ faviconUrl = "" }) {
 
         {/* Desktop Menu */}
         <nav className="header-nav-menu">
-          <li><Link href="/" className="header-nav-link" style={linkStyle}>Home</Link></li>
-          <li><span className="header-item-divider" /></li>
-          <li><Link href="/courses" className="header-nav-link" style={linkStyle}>Our Courses</Link></li>
+          <li><Link href="/courses" className="header-nav-link" style={linkStyle}>Courses</Link></li>
           <li><span className="header-item-divider" /></li>
           <li><Link href="/pricing" className="header-nav-link" style={linkStyle}>Pricing</Link></li>
           <li><span className="header-item-divider" /></li>
@@ -126,8 +124,7 @@ export default function Navbar({ faviconUrl = "" }) {
           backgroundColor: "var(--bg-color)", border: "1px solid var(--card-border)", borderRadius: "16px",
           boxShadow: "0 20px 40px rgba(44, 37, 30, 0.08)", maxHeight: "78vh", overflowY: "auto"
         }}>
-          <Link href="/" style={linkStyle} onClick={() => setIsOpen(false)}>Home</Link>
-          <Link href="/courses" style={linkStyle} onClick={() => setIsOpen(false)}>Our Courses</Link>
+          <Link href="/courses" style={linkStyle} onClick={() => setIsOpen(false)}>Courses</Link>
           <Link href="/pricing" style={linkStyle} onClick={() => setIsOpen(false)}>Pricing</Link>
           <span className="nav-mob-group-title">Discover</span>
           <div className="nav-mob-sub">
