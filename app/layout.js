@@ -3,6 +3,7 @@ import "./globals.css";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import { SettingsProvider } from "@/lib/settings-context";
 import { getSEOSettings, getSiteSettings } from "@/lib/db-cached";
+import { Analytics } from "@vercel/analytics/next";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -111,6 +112,7 @@ export default async function RootLayout({ children }) {
             {children}
           </LayoutWrapper>
         </SettingsProvider>
+        <Analytics />
       </body>
     </html>
   );
