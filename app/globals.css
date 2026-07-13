@@ -225,7 +225,7 @@ h4 {
   max-width: 1350px;
   width: 100%;
   margin: 0 auto;
-  background-color: #fefefe; /* Light warm cream */
+  background-color: #faf4eb; /* Match soft cream background */
   border: 1.5px solid #EFE7DA;
   border-radius: 9999px; /* Rounded pill shape */
   padding: 14px 24px; /* Increased vertical padding to increase height */
@@ -422,7 +422,7 @@ h4 {
 
 .nav-dropdown-menu {
   position: absolute; top: calc(100% + 16px); left: 50%; transform: translateX(-50%) translateY(6px);
-  min-width: 200px; padding: 8px; background-color: #fefefe; border: 1.5px solid #EFE7DA;
+  min-width: 200px; padding: 8px; background-color: #faf4eb; border: 1.5px solid #EFE7DA;
   border-radius: 14px; box-shadow: 0 18px 40px rgba(44, 37, 30, 0.12);
   display: flex; flex-direction: column; gap: 2px;
   opacity: 0; visibility: hidden; transition: opacity 0.2s ease, transform 0.2s ease; z-index: 1200;
@@ -2166,7 +2166,7 @@ h4 {
 }
 
 .teacher-card {
-  background-color: #fefefe;
+  background-color: #faf4eb;
   border: 1.5px solid #F5EBDD;
   border-top-left-radius: 50% 40px; /* Beautiful shallow elliptical arch top left matching the mockup */
   border-top-right-radius: 50% 40px; /* Beautiful shallow elliptical arch top right matching the mockup */
@@ -2357,7 +2357,7 @@ h4 {
 
 .blog-featured-card {
   flex: 1.1;
-  background-color: #fefefe;
+  background-color: #faf4eb;
   border: 1.5px solid #F5EBDD;
   border-radius: 16px;
   padding: 0; /* Removed padding to let the image flush to top, left, and right */

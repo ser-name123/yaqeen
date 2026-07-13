@@ -431,7 +431,7 @@ export default function PricingPage() {
             margin: "32px auto 0 auto"
           }}>
             <div style={{
-              background: "#ffffff",
+              background: "#faf4eb",
               borderLeft: "4px solid #C99B4D",
               borderRadius: "12px",
               padding: "24px 28px",

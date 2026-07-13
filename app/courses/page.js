@@ -938,11 +938,11 @@ export default function CoursesPage() {
                 key={idx}
                 className="reveal-stagger"
                 style={{
-                  backgroundColor: "#fefefe", // Elegant, soft cream-beige card background (not white, matching mockup)
+                  backgroundColor: "#faf4eb",
                   borderRadius: "20px",
-                  border: "1px solid rgba(201, 155, 77, 0.25)", // Soft elegant gold/cream border, matching mockup
+                  border: "1px solid rgba(201, 155, 77, 0.25)",
                   borderBottom: `5px solid ${accentColor}`,
-                  padding: "40px 24px 36px 24px", // Tall and narrow card padding
+                  padding: "40px 24px 36px 24px",
                   boxShadow: "0 6px 20px rgba(44, 37, 30, 0.02)",
                   display: "flex",
                   flexDirection: "column",
@@ -1035,7 +1035,7 @@ export default function CoursesPage() {
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        backgroundColor: "#FCFAF6", // Fallback color
+        backgroundColor: "#fefefe", // Fallback color
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -1144,10 +1144,10 @@ export default function CoursesPage() {
                   key={idx}
                   className="reveal-stagger"
                   style={{
-                    backgroundColor: "#fefefe", // Soft cream-beige card background matching mockup
+                    backgroundColor: "#faf4eb",
                     borderRadius: "20px",
-                    border: "1px solid rgba(201, 155, 77, 0.25)", // Soft elegant gold/cream border
-                    padding: "36px 28px 32px 28px", // Tall and narrow card padding with comfortable side spacing
+                    border: "1px solid rgba(201, 155, 77, 0.25)",
+                    padding: "36px 28px 32px 28px",
                     boxShadow: "0 6px 20px rgba(44, 37, 30, 0.015)",
                     display: "flex",
                     flexDirection: "column",

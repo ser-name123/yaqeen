@@ -30,7 +30,7 @@
 
 .about-card {
   width: 100%;
-  background-color: #fcf3ed; /* Soft warm cream background as requested */
+  background-color: #faf4eb; /* Soft warm cream background as requested */
   border: none; /* Removed border */
   border-radius: 20px; /* White card retains its elegant rounded corners as shown in the mockup */
   box-shadow: 0 10px 35px rgba(44, 37, 30, 0.02);
@@ -188,7 +188,7 @@
 }
 
 .about-feature-item {
-  background-color: #FFFFFF; /* White background to stand out elegantly against the cream card background */
+  background-color: #faf4eb; /* White background to stand out elegantly against the cream card background */
   border: none; /* Removed border */
   border-radius: 14px;
   padding: 14px 16px;
@@ -454,7 +454,7 @@
 
 .about-row-card {
   width: 100%;
-  background-color: #fcf3ed; /* Soft warm cream background matching the main cards */
+  background-color: #faf4eb; /* Soft warm cream background matching the main cards */
   border: none; /* Removed border */
   border-radius: 24px;
   padding: 28px 48px;
@@ -692,7 +692,7 @@
   border: 1.2px solid rgba(201, 155, 77, 0.35);
   border-bottom: none; /* Merges seamlessly with the white card body */
   border-radius: 90px 90px 0 0; /* Semi-circle curve */
-  background-color: #FFFFFF;
+  background-color: #faf4eb;
   z-index: 1; /* Sits behind the icon circle but above the card body border */
 }
 
@@ -1025,7 +1025,7 @@
 /* Call-to-Action (CTA) Course Finder Banner Styles */
 .about-cta-card {
   width: 100%;
-  background-color: #fcf3ed; /* Soft warm cream background matching the other cards */
+  background-color: #faf4eb; /* Soft warm cream background matching the other cards */
   border: none; /* Removed border */
   border-radius: 24px;
   display: grid;
