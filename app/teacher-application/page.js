@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, Fragment } from "react";
+import { useState, useRef, Fragment, useEffect } from "react";
 import Link from "next/link";
 import "./teacher-application.css";
 import { supabase } from "@/lib/supabase";
@@ -82,9 +82,54 @@ export default function TeacherApplicationPage() {
   const [submitError, setSubmitError] = useState("");
   const formCardRef = useRef(null);
 
+  useEffect(() => {
+    async function detectCountry() {
+      const res = await fetch("/api/detect-country").catch(() => null);
+      if (res && res.ok) {
+        try {
+          const data = await res.json();
+          if (data && data.success && data.country) {
+            const matchedCountry = data.country;
+            const match = COUNTRIES.find((c) => c.name.toLowerCase() === matchedCountry.toLowerCase());
+            if (match) {
+              setForm((f) => ({
+                ...f,
+                country: match.name,
+                dial_code: match.dial
+              }));
+            }
+          }
+        } catch (e) {
+          console.warn("Failed to parse detect-country API response on teacher-application page", e);
+        }
+      }
+    }
+    detectCountry();
+  }, []);
+
   const set = (key, val) => {
     setForm((f) => ({ ...f, [key]: val }));
     if (errors[key]) setErrors((e) => ({ ...e, [key]: "" }));
+  };
+
+  const handleCountryChange = (cName) => {
+    const match = COUNTRIES.find((c) => c.name === cName);
+    setForm((f) => ({
+      ...f,
+      country: cName,
+      dial_code: match ? match.dial : f.dial_code
+    }));
+    if (errors.country) setErrors((e) => ({ ...e, country: "" }));
+  };
+
+  const handleDialCodeChange = (code) => {
+    const match = COUNTRIES.find((c) => c.dial === code);
+    setForm((f) => ({
+      ...f,
+      dial_code: code,
+      country: match ? match.name : f.country
+    }));
+    if (errors.country) setErrors((e) => ({ ...e, country: "" }));
   };
 
   const scrollTop = () => {
@@ -268,7 +313,7 @@ export default function TeacherApplicationPage() {
                   <div className="ta-field">
                     <label className="ta-label">Mobile<span className="req">*</span></label>
                     <div className="ta-phone-group">
-                      <SearchSelect rootClassName="ss-phone" value={form.dial_code} onChange={(v) => set("dial_code", v)} options={DIAL_CODES.map((c) => ({ value: c, label: c }))} placeholder="Code" searchPlaceholder="Search code…" />
+                      <SearchSelect rootClassName="ss-phone" value={form.dial_code} onChange={handleDialCodeChange} options={DIAL_CODES.map((c) => ({ value: c, label: c }))} placeholder="Code" searchPlaceholder="Search code…" />
                       <input type="tel" className={`ta-input ${errors.mobile ? "invalid" : ""}`} placeholder="Mobile number" value={form.mobile} onChange={(e) => set("mobile", e.target.value.replace(/[^\d\s-]/g, ""))} />
                     </div>
                     {errors.mobile && <p className="ta-error">{errors.mobile}</p>}
@@ -276,7 +321,7 @@ export default function TeacherApplicationPage() {
 
                   <div className="ta-field">
                     <label className="ta-label">Country<span className="req">*</span></label>
-                    <SearchSelect value={form.country} onChange={(v) => set("country", v)} options={[...COUNTRIES.map((c) => ({ value: c.name, label: c.name })), { value: "Other", label: "Other" }]} placeholder="Choose your country" invalid={!!errors.country} searchPlaceholder="Search country…" />
+                    <SearchSelect value={form.country} onChange={handleCountryChange} options={[...COUNTRIES.map((c) => ({ value: c.name, label: c.name })), { value: "Other", label: "Other" }]} placeholder="Choose your country" invalid={!!errors.country} searchPlaceholder="Search country…" />
                     {errors.country && <p className="ta-error">{errors.country}</p>}
                   </div>
 
