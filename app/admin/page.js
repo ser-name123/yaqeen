@@ -2329,6 +2329,21 @@ export default function AdminDashboard() {
           border-color: var(--primary-color) !important;
         }
 
+        /* Custom scrollbar for admin nav */
+        .admin-nav::-webkit-scrollbar {
+          width: 5px;
+        }
+        .admin-nav::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .admin-nav::-webkit-scrollbar-thumb {
+          background: rgba(140, 93, 49, 0.2) !important;
+          border-radius: 9999px;
+        }
+        .admin-nav::-webkit-scrollbar-thumb:hover {
+          background: rgba(140, 93, 49, 0.35) !important;
+        }
+
         /* ---------- Responsive: tablet & mobile ---------- */
         @media (max-width: 1024px) {
           .admin-overview-grid { grid-template-columns: repeat(4, 1fr) !important; }
@@ -2449,7 +2464,7 @@ export default function AdminDashboard() {
           </button>
         </div>
 
-        <nav className={`admin-nav ${mobileNavOpen ? "open" : ""}`} style={{ display: "flex", flexDirection: "column", gap: "8px", listStyle: "none" }}>
+        <nav className={`admin-nav ${mobileNavOpen ? "open" : ""}`} style={{ display: "flex", flexDirection: "column", gap: "8px", listStyle: "none", flex: 1, overflowY: "auto", paddingRight: "4px" }}>
           <button
             onClick={() => handleTabChange("overview")}
             style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "overview" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "overview" ? "rgba(255,255,255,0.02)" : "transparent" }}
@@ -4895,20 +4910,21 @@ export default function AdminDashboard() {
 // Styling components
 const sidebarBtnStyle = {
   width: "100%",
-  padding: "12px 16px",
+  padding: "10px 12px",
   textAlign: "left",
   background: "none",
   border: "none",
   borderLeft: "3px solid transparent",
   color: "#4a3e30",
-  fontSize: "14px",
-  fontWeight: "600",
+  fontSize: "13px",
+  fontWeight: "500",
   cursor: "pointer",
   transition: "all 0.2s ease",
   display: "flex",
   alignItems: "center",
-  gap: "10px",
-  borderRadius: "0 6px 6px 0"
+  gap: "8px",
+  borderRadius: "0 6px 6px 0",
+  whiteSpace: "nowrap"
 };
 
 const formLabelStyle = {

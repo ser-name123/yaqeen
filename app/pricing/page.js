@@ -152,6 +152,8 @@ const IconChevron = ({ size = 20, className }) => (
 
 export default function PricingPage() {
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
+  const [familyImgError, setFamilyImgError] = useState(false);
+  const [badgeImgError, setBadgeImgError] = useState(false);
   const [plans, setPlans] = useState([
     {
       id: 1,
@@ -522,31 +524,28 @@ export default function PricingPage() {
 
       {/* Family Discount Banner */}
       <div className="family-discount-banner reveal-slide-up">
-        
-        {/* Left: Badge */}
-        <div className="fdb-badge-wrap">
-          <div className="fdb-badge-circle-outer">
-            <div className="fdb-badge-circle-inner">
-              <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 18H8a3 3 0 0 0-3 3v0" />
-                <circle cx="10" cy="8" r="3" />
-                <path d="M12 18h4a3 3 0 0 1 3 3v0" />
-                <circle cx="14" cy="8" r="3" />
-                <path d="M10 21v-1a2 2 0 0 1 4 0v1" />
-                <circle cx="12" cy="14" r="2" />
-              </svg>
-            </div>
-          </div>
-          <div className="fdb-badge-ribbon">
-            <span className="fdb-badge-ribbon-text">5% OFF</span>
-          </div>
+
+
+        {/* Left: Image Space */}
+        <div className="fdb-left-image-space">
+          {!familyImgError ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img 
+              src="/images/family_discount.png" 
+              alt="Family Learning" 
+              className="fdb-left-img" 
+              onError={() => setFamilyImgError(true)}
+            />
+          ) : (
+            <div className="fdb-placeholder-image" />
+          )}
         </div>
 
         {/* Middle-Left: Content */}
         <div className="fdb-content-wrap">
           <h2 className="fdb-title">
-            Family Learning,<br />
-            <span className="highlight-green">Greater Rewards!</span>
+            <span className="highlight-gold">Family Learning,</span><br />
+            <span className="highlight-white">Greater Rewards!</span>
           </h2>
           <div className="fdb-divider">
             <div className="fdb-divider-line" />
@@ -557,8 +556,6 @@ export default function PricingPage() {
             Enjoy a 5% discount when family members enroll together.
           </p>
         </div>
-
-        <div className="fdb-vertical-divider d-none-mobile" />
 
         {/* Middle-Right: Benefits List */}
         <div className="fdb-benefits-wrap">
@@ -604,18 +601,23 @@ export default function PricingPage() {
           </div>
         </div>
 
-        <div className="fdb-vertical-divider d-none-mobile" />
-
-        {/* Right: CTA Button */}
-        <div className="fdb-cta-wrap">
-          <Link href="/contact" className="fdb-cta-btn">
-            <span className="fdb-cta-text">Claim Your 5%<br />Family Discount</span>
-            <svg className="fdb-cta-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12" />
-              <polyline points="12 5 19 12 12 19" />
-            </svg>
+        {/* Right: Golden Badge Space */}
+        <div className="fdb-right-badge-space">
+          <Link href="/contact" className="fdb-right-badge-link">
+            {!badgeImgError ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img 
+                src="/images/gold_discount_badge.png" 
+                alt="5% Discount Badge" 
+                className="fdb-right-img" 
+                onError={() => setBadgeImgError(true)}
+              />
+            ) : (
+              <div className="fdb-placeholder-badge" />
+            )}
           </Link>
         </div>
+
 
       </div>
 
