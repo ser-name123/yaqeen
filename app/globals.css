@@ -981,7 +981,7 @@ h4 {
   display: flex;
   align-items: flex-start;
   gap: 16px;
-  background-color: #FFFFFF;
+  background-color: #faf4eb;
   border: 1px solid #EFE7DA;
   border-radius: 20px;
   padding: 20px 52px 20px 24px;
@@ -1970,7 +1970,7 @@ h4 {
   width: 110px; /* Reduced to 70% scale (from 148px-160px range) */
   height: 110px; /* Reduced to 70% scale (from 148px-160px range) */
   border-radius: 50%;
-  background-color: #fefefe; /* Blends perfectly with the warm cream section background */
+  background-color: #faf4eb; /* Changed to match the soft cream theme color */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2640,7 +2640,7 @@ h4 {
 }
 
 .faq-item {
-  background-color: #fefefe;
+  background-color: #faf4eb;
   border: 1.5px solid #F5EBDD;
   border-radius: 14px;
   padding: 12px 24px; /* Reduced vertical padding from 18px to 12px for a more compact card */
@@ -3698,7 +3698,7 @@ h4 {
   display: flex;
   align-items: flex-start;
   gap: 18px;
-  background-color: #FFFFFF;
+  background-color: #faf4eb;
   border: 1px solid #EFE7DA;
   border-radius: 18px;
   padding: 22px 56px 22px 22px;

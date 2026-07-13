@@ -51,7 +51,7 @@
 .ty-faq-head h2 { margin: 14px 0 0 0; font-family: var(--font-serif); font-size: clamp(24px, 3.4vw, 34px); font-weight: 500; }
 .ty-faq-head h2 span { color: var(--primary-color); }
 .ty-faq-list { max-width: 840px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
-.ty-faq-item { background-color: #FFFFFF; border: 1px solid #EFE7DA; border-radius: 16px; overflow: hidden; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+.ty-faq-item { background-color: #faf4eb; border: 1px solid #EFE7DA; border-radius: 16px; overflow: hidden; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
 .ty-faq-item.open { border-color: rgba(201, 155, 77, 0.5); box-shadow: 0 12px 26px rgba(44, 37, 30, 0.05); }
 .ty-faq-q { width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 22px; background: none; border: none; text-align: left; cursor: pointer; font-family: var(--font-sans); font-size: clamp(15px, 1.9vw, 17px); font-weight: 500; color: var(--fg-color); }
 .ty-chevron { color: var(--primary-color); flex-shrink: 0; transition: transform 0.3s ease; }
