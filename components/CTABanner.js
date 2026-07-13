@@ -85,7 +85,7 @@ export default function CTABanner() {
         maxWidth: "1200px",
         backgroundColor: "#FCFAF6",
         borderRadius: "24px",
-        border: "1px solid rgba(201, 155, 77, 0.25)",
+        border: "none", // Removed border as requested
         boxShadow: "0 10px 30px rgba(44, 37, 30, 0.02)",
         padding: "25px 40px 25px 270px", // Standard balanced padding-left
         display: "flex",
