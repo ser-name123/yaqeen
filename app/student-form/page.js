@@ -371,7 +371,15 @@ export default function StudentFormPage() {
       const result = await res.json();
       
       if (res.ok && result.success) {
-        router.push("/book-free-trial/thank-you");
+        setSubmitted(true);
+        scrollToForm();
+        Swal.fire({
+          title: "Registration Success!",
+          html: `JazakAllah Khair, <strong>${firstName}</strong>.<br/><br/>We've received your registration and our team will contact you within 24 hours to confirm your daily class schedule.`,
+          icon: "success",
+          confirmButtonColor: "#4A5D3B",
+          confirmButtonText: "Ok"
+        });
       } else {
         throw new Error(result.message || "Failed to submit application.");
       }
