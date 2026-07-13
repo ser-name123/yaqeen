@@ -49,6 +49,9 @@ export default function CTABanner() {
     }}>
       {/* Responsive styling for the CTA Banner */}
       <style dangerouslySetInnerHTML={{__html: `
+        .cta-banner-wrapper {
+          border: none !important;
+        }
         @media (max-width: 1024px) {
           .cta-banner-wrapper {
             flex-direction: column !important;
