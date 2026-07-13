@@ -2263,9 +2263,6 @@ export default function AdminDashboard() {
             </form>
           )}
 
-          <div style={{ textAlign: "center", fontSize: "11px", color: "var(--fg-muted)" }}>
-            Default credentials: <code style={{ color: "var(--secondary-color)" }}>objectsquarerajan@gmail.com</code> / <code style={{ color: "var(--secondary-color)" }}>admin123</code>
-          </div>
         </div>
       </div>
     );
