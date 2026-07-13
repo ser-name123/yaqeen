@@ -2,6 +2,7 @@
 
 import { useState, useRef, Fragment, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import "./teacher-application.css";
 import { supabase } from "@/lib/supabase";
 import SearchSelect from "@/components/SearchSelect";
@@ -81,6 +82,7 @@ export default function TeacherApplicationPage() {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const formCardRef = useRef(null);
+  const router = useRouter();
 
   useEffect(() => {
     async function detectCountry() {
@@ -196,8 +198,7 @@ export default function TeacherApplicationPage() {
       });
       const data = await response.json();
       if (!response.ok || !data.success) throw new Error(data.message || "Something went wrong.");
-      setSubmitted(true);
-      scrollTop();
+      router.push("/book-free-trial/thank-you");
     } catch (err) {
       setSubmitError(err.message || "Could not submit your application. Please try again.");
     } finally {
