@@ -595,8 +595,32 @@ export default function Home() {
   return (
     <div style={{ minHeight: "100vh" }}>
       
-      <section className="hero-wrapper" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+      <section className="hero-wrapper" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "space-between", position: "relative", overflow: "hidden" }}>
         
+        {/* Decorative background circles */}
+        <div style={{
+          position: "absolute",
+          top: "-150px",
+          left: "-150px",
+          width: "400px",
+          height: "400px",
+          borderRadius: "50%",
+          backgroundColor: "rgba(201, 155, 77, 0.09)",
+          zIndex: 1,
+          pointerEvents: "none"
+        }} />
+        <div style={{
+          position: "absolute",
+          bottom: "-50px",
+          left: "-120px",
+          width: "300px",
+          height: "300px",
+          borderRadius: "50%",
+          backgroundColor: "rgba(85, 107, 59, 0.08)",
+          zIndex: 1,
+          pointerEvents: "none"
+        }} />
+
         {/* Main Content Area */}
         <main style={{ maxWidth: "1350px", width: "100%", margin: "0 auto", padding: "120px 24px 10px 24px", flexGrow: 1, display: "flex", alignItems: "center" }}>
           <div className="hero-grid" style={{ width: "100%" }}>
