@@ -158,20 +158,38 @@ export default function CourseDetailPage() {
       {/* Hero */}
       <section className="cd-hero">
         <div className="cd-hero-inner">
-          <span className="cd-badge">Online Course</span>
-          <h1>{title}</h1>
-          <p>{heroSub}</p>
-          <Link href="/book-free-trial" className="cd-hero-btn">Get Started <IconArrow /></Link>
-          <div className="cd-meta">
-            {meta.map((m) => (
-              <div className="cd-meta-pill" key={m.lbl}>
-                {m.icon}
-                <div>
-                  <div className="lbl">{m.lbl}</div>
-                  <div className="val">{m.val}</div>
+          <div className="cd-hero-content">
+            <span className="cd-badge">Online Course</span>
+            <h1>{title}</h1>
+            <p>{heroSub}</p>
+            <Link href="/book-free-trial" className="cd-hero-btn">Get Started <IconArrow /></Link>
+            
+            <div className="cd-meta">
+              {meta.map((m) => (
+                <div className="cd-meta-pill" key={m.lbl}>
+                  {m.icon}
+                  <div>
+                    <div className="lbl">{m.lbl}</div>
+                    <div className="val">{m.val}</div>
+                  </div>
                 </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="cd-hero-image-wrap">
+            {c.image_url ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img 
+                src={c.image_url} 
+                alt={title} 
+                className="cd-hero-img"
+              />
+            ) : (
+              <div className="cd-hero-img-placeholder">
+                <IconBook />
               </div>
-            ))}
+            )}
           </div>
         </div>
       </section>

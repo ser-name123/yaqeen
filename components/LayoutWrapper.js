@@ -60,13 +60,15 @@ export default function LayoutWrapper({ children, logoText, logoUrl, faviconUrl 
       {showPreloader && (
         <div className={`preloader-container ${!initialLoading ? "fade-hide" : ""}`}>
           <style dangerouslySetInnerHTML={{__html: `
-            @keyframes spin-loader {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
-            }
-            @keyframes pulse-logo {
-              0%, 100% { transform: scale(0.95); opacity: 0.85; }
-              50% { transform: scale(1.05); opacity: 1; }
+            @keyframes breathe-logo {
+              0%, 100% {
+                transform: scale(0.9);
+                filter: drop-shadow(0 0 0 rgba(201, 155, 77, 0));
+              }
+              50% {
+                transform: scale(1.1);
+                filter: drop-shadow(0 4px 20px rgba(201, 155, 77, 0.45));
+              }
             }
             .preloader-container {
               position: fixed;
@@ -76,7 +78,6 @@ export default function LayoutWrapper({ children, logoText, logoUrl, faviconUrl 
               height: 100%;
               background-color: #FAF5EE;
               display: flex;
-              flex-direction: column;
               align-items: center;
               justify-content: center;
               z-index: 999999;
@@ -87,50 +88,18 @@ export default function LayoutWrapper({ children, logoText, logoUrl, faviconUrl 
               visibility: hidden;
               pointer-events: none;
             }
-            .loader-ring-wrapper {
-              position: relative;
-              width: 140px;
-              height: 140px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-            }
-            .loader-ring {
-              position: absolute;
-              width: 120px;
-              height: 120px;
-              border: 3.5px solid rgba(201, 155, 77, 0.1);
-              border-top: 3.5px solid #C99B4D;
-              border-right: 3.5px solid #556B3B;
-              border-radius: 50%;
-              animation: spin-loader 1.1s cubic-bezier(0.5, 0.1, 0.4, 0.9) infinite;
-            }
             .loader-logo {
-              width: 50px;
-              height: 50px;
+              width: 240px;
+              height: 240px;
               object-fit: contain;
-              animation: pulse-logo 1.8s ease-in-out infinite;
-            }
-            .loader-text {
-              margin-top: 24px;
-              font-family: var(--font-sans), sans-serif;
-              font-size: 15px;
-              font-weight: 700;
-              color: #2B1F14;
-              letter-spacing: 3px;
-              text-transform: uppercase;
-              animation: pulse-logo 1.8s ease-in-out infinite;
+              animation: breathe-logo 1.8s ease-in-out infinite;
             }
           `}} />
-          <div className="loader-ring-wrapper">
-            <div className="loader-ring" />
-            <img 
-              src="/images/logo.png" 
-              alt="YAQEEN Logo" 
-              className="loader-logo"
-            />
-          </div>
-          <div className="loader-text">{logoText || "YAQEEN"}</div>
+          <img 
+            src="/images/logo.png" 
+            alt="YAQEEN Logo" 
+            className="loader-logo"
+          />
         </div>
       )}
 

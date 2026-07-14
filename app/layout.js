@@ -27,9 +27,9 @@ export async function generateMetadata() {
     if (data) {
       const fav = data.favicon_url || "/favicon.ico";
       return {
-        title: data.title || "Aero - Next-Gen Web Experience",
-        description: data.description || "Create premium high-performance web applications.",
-        keywords: data.keywords || "",
+        title: data.title || "Yaqeen Institute - Learn Quran & Arabic Online",
+        description: data.description || "Learn Quran, Arabic, and Islamic Studies online with one-to-one live classes from qualified native tutors.",
+        keywords: data.keywords || "Quran, Arabic, learn Quran online, Yaqeen Institute, Islamic studies",
         icons: {
           icon: fav,
           shortcut: fav,
@@ -43,8 +43,9 @@ export async function generateMetadata() {
 
   // Final fallback metadata
   return {
-    title: "Aero - Next-Gen Web Experience",
-    description: "Create premium high-performance web applications with stunning visual aesthetics and sleek interactions.",
+    title: "Yaqeen Institute - Learn Quran & Arabic Online",
+    description: "Learn Quran, Arabic, and Islamic Studies online with one-to-one live classes from qualified native tutors.",
+    keywords: "Quran, Arabic, learn Quran online, Yaqeen Institute, Islamic studies",
     icons: {
       icon: "/favicon.ico"
     }
