@@ -366,7 +366,7 @@ export default function PricingPage() {
                     ))}
                   </div>
 
-                  <Link href="/contact" style={{ width: "100%", textDecoration: "none" }}>
+                  <Link href="/book-free-trial" style={{ width: "100%", textDecoration: "none" }}>
                     <button className={btnClass}>Choose {plan.name}</button>
                   </Link>
                 </div>
@@ -603,7 +603,7 @@ export default function PricingPage() {
 
         {/* Right: Golden Badge Space */}
         <div className="fdb-right-badge-space">
-          <Link href="/contact" className="fdb-right-badge-link">
+          <Link href="/book-free-trial" className="fdb-right-badge-link">
             {!badgeImgError ? (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img 
@@ -681,7 +681,7 @@ export default function PricingPage() {
             </div>
             <div className={`faq-answer-wrapper ${openFaqIndex === 1 ? "open" : ""}`}>
               <p className="faq-answer-text">
-                Getting started is very simple. Just click the 'Book Your Free Session Now' button below, fill out a short form with your contact details and preferences, and our academic advisor will contact you within 24 hours to schedule your free trial class.
+                Getting started is very simple. Just click the &apos;Book Your Free Session Now&apos; button below, fill out a short form with your contact details and preferences, and our academic advisor will contact you within 24 hours to schedule your free trial class.
               </p>
             </div>
           </div>
@@ -729,7 +729,7 @@ export default function PricingPage() {
         {/* CTA Button */}
         <div className="reveal-slide-up" style={{ display: "flex", justifyContent: "center", width: "100%", marginTop: "56px" }}>
           <Link
-            href="/contact"
+            href="/book-free-trial"
             className="faq-cta-btn"
             style={{ textDecoration: "none" }}
           >
