@@ -153,6 +153,7 @@ const getTodayString = () => {
 };
 
 export default function BookFreeTrialPage() {
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [form, setForm] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
@@ -221,7 +222,6 @@ export default function BookFreeTrialPage() {
     if (errors.country) setErrors((e) => ({ ...e, country: "" }));
   };
   const formCardRef = useRef(null);
-  const router = useRouter();
 
   // Gently bring the form (just below the navbar) into view on step change — no jump to page top
   const scrollToForm = () => {
@@ -300,15 +300,7 @@ export default function BookFreeTrialPage() {
       if (!response.ok || !data.success) {
         throw new Error(data.message || "Something went wrong. Please try again.");
       }
-      setSubmitted(true);
-      scrollToForm();
-      Swal.fire({
-        title: "Free Trial Booked!",
-        html: `JazakAllah Khair, <strong>${form.firstName}</strong>.<br/><br/>We've received your request and our academic advisor will contact you within 24 hours to confirm your class.`,
-        icon: "success",
-        confirmButtonColor: "#4A5D3B",
-        confirmButtonText: "Ok"
-      });
+      router.push("/book-free-trial/thank-you");
     } catch (err) {
       setSubmitError(err.message || "Could not submit your booking. Please try again.");
       Swal.fire({

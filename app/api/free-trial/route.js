@@ -25,23 +25,47 @@ export async function POST(request) {
     ip = ip ? ip.split(",")[0].trim() : "127.0.0.1";
     if (ip === "::1" || ip === "::ffff:127.0.0.1") ip = "127.0.0.1";
 
+    // Resolve localhost IP to outbound public IP for accurate geolocation testing
+    if (ip === "127.0.0.1") {
+      try {
+        const ipifyRes = await fetch("https://api.ipify.org?format=json").catch(() => null);
+        if (ipifyRes && ipifyRes.ok) {
+          const ipifyData = await ipifyRes.json();
+          if (ipifyData && ipifyData.ip) ip = ipifyData.ip;
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
+
     let city = "Unknown", state = "Unknown", country = form.country || "Unknown", provider = "Unknown";
     try {
-      const geoUrl = ip === "127.0.0.1" ? "http://ip-api.com/json/" : `http://ip-api.com/json/${ip}`;
-      const geoRes = await fetch(geoUrl);
-      if (geoRes.ok) {
+      const geoRes = await fetch(`https://ipwho.is/${ip}`).catch(() => null);
+      if (geoRes && geoRes.ok) {
         const g = await geoRes.json();
-        if (g.status === "success") {
+        if (g && g.success) {
           city = g.city || city;
-          state = g.regionName || state;
+          state = g.region || state;
           if (!form.country) country = g.country || country;
-          provider = g.isp || provider;
-          if (ip === "127.0.0.1" && g.query) ip = g.query;
+          provider = g.connection?.isp || provider;
+        }
+      } else {
+        // Fallback to ipapi.co if ipwho.is fails
+        const geoRes2 = await fetch(`https://ipapi.co/${ip}/json/`).catch(() => null);
+        if (geoRes2 && geoRes2.ok) {
+          const g2 = await geoRes2.json();
+          if (g2 && g2.city) {
+            city = g2.city || city;
+            state = g2.region || state;
+            if (!form.country) country = g2.country_name || country;
+            provider = g2.org || provider;
+          }
         }
       }
     } catch (geoErr) {
       console.error("Free-trial geo lookup error:", geoErr);
     }
+    if (!city) city = "Unknown";
 
     // ---- Message blob (kept identical to the admin detail view format) ----
     const message =

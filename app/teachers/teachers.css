@@ -180,3 +180,13 @@
   .tp-choose-grid { grid-template-columns: 1fr; }
   .tp-a-inner, .tp-faq-a-inner { padding-left: 22px; }
 }
+
+@media (max-width: 480px) {
+  .tp-grid > * {
+    flex-basis: 100% !important;
+    max-width: 100% !important;
+  }
+  .tp-hero-features {
+    grid-template-columns: 1fr;
+  }
+}

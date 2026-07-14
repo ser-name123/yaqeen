@@ -27,7 +27,8 @@ export async function GET(request) {
         return NextResponse.json({
           success: true,
           country: geoData.country,
-          dial_code: geoData.country_phone || ""
+          dial_code: geoData.country_phone || "",
+          city: geoData.city || ""
         });
       }
     }
@@ -40,7 +41,8 @@ export async function GET(request) {
         return NextResponse.json({
           success: true,
           country: geoData2.country_name,
-          dial_code: geoData2.country_calling_code || ""
+          dial_code: geoData2.country_calling_code || "",
+          city: geoData2.city || ""
         });
       }
     }

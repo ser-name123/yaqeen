@@ -159,3 +159,42 @@
   border-radius: 50%;
   background-color: #FFFFFF;
 }
+
+/* Responsive Overrides */
+@media (max-width: 600px) {
+  .pricing-header-row {
+    display: none !important;
+  }
+  
+  .pricing-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 12px 0;
+    border-bottom: 1px dashed #EADDC8;
+  }
+  
+  .pricing-row:last-child {
+    border-bottom: none;
+  }
+  
+  .pricing-option-label {
+    width: 100% !important;
+  }
+  
+  .pricing-calc-box {
+    width: 100% !important;
+    text-align: left;
+    background-color: #FAF6EE;
+  }
+  
+  .time-picker-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  .time-select {
+    width: 100% !important;
+  }
+}

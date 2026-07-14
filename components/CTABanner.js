@@ -57,10 +57,20 @@ export default function CTABanner() {
           .cta-banner-wrapper {
             flex-direction: column !important;
             padding: 30px 20px !important;
-            gap: 32px !important;
+            gap: 24px !important;
+            align-items: center !important;
+            text-align: center !important;
           }
           .cta-boy-container {
-            display: none !important;
+            display: flex !important;
+            position: relative !important;
+            left: auto !important;
+            bottom: auto !important;
+            width: 200px !important;
+            height: 200px !important;
+            margin: 0 auto 10px auto !important;
+            align-items: center !important;
+            justify-content: center !important;
           }
           .cta-middle-sep {
             display: none !important;
@@ -70,6 +80,8 @@ export default function CTABanner() {
             align-items: center !important;
             text-align: center !important;
             padding-left: 0 !important;
+            flex: 1 1 auto !important;
+            width: 100% !important;
           }
           .cta-text-content {
             align-items: center !important;
@@ -78,6 +90,18 @@ export default function CTABanner() {
           .cta-badges-row {
             justify-content: center !important;
             flex-wrap: wrap !important;
+            width: 100% !important;
+            gap: 16px 24px !important;
+          }
+          .cta-right-portion {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            width: 100% !important;
+            margin-top: 10px !important;
+          }
+          .cta-right-portion a {
+            max-width: 320px !important;
             width: 100% !important;
           }
         }
@@ -301,7 +325,7 @@ export default function CTABanner() {
         </div>
 
         {/* Right Portion (Gold Button + Calendar Link) */}
-        <div style={{
+        <div className="cta-right-portion" style={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",

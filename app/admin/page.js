@@ -240,6 +240,213 @@ export default function AdminDashboard() {
     }
   }, [blogForm.body]);
 
+  const exportToExcel = (data, fileName) => {
+    const headers = [
+      "Name",
+      "Email",
+      "Phone",
+      "Country",
+      "Subject",
+      "Session For",
+      "Preferred Teacher",
+      "Preferred Date",
+      "Preferred Time",
+      "Booked On",
+      "City",
+      "State",
+      "Provider",
+      "IP Address",
+      "Message Content"
+    ];
+
+    const rows = data.map(item => {
+      const msgLines = (item.message || "").split("\n");
+      const getVal = (prefix) => {
+        const line = msgLines.find(l => l.trim().startsWith(prefix));
+        return line ? line.split(prefix)[1].trim() : "";
+      };
+
+      const name = getVal("Name:");
+      const email = getVal("Email:");
+      const phone = getVal("Phone:");
+      const country = getVal("Country:");
+      const interestedIn = getVal("Interested In:");
+      const sessionFor = getVal("Session For:");
+      const preferredTeacher = getVal("Preferred Teacher:");
+      const preferredDate = getVal("Preferred Date:");
+      const preferredTime = getVal("Preferred Time:");
+
+      return [
+        name || item.name || "",
+        email || item.email || "",
+        phone || "",
+        country || item.country || "",
+        interestedIn || item.subject || "",
+        sessionFor || "",
+        preferredTeacher || "",
+        preferredDate || "",
+        preferredTime || "",
+        item.created_at ? new Date(item.created_at).toLocaleString() : "",
+        item.city || "",
+        item.state || "",
+        item.provider || "",
+        item.ip_address || "",
+        item.message || ""
+      ];
+    });
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => 
+        row.map(val => {
+          const stringVal = String(val).replace(/"/g, '""');
+          return `"${stringVal}"`;
+        }).join(",")
+      )
+    ].join("\r\n");
+
+    const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `${fileName}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportTeachersToExcel = (data, fileName) => {
+    const headers = [
+      "First Name",
+      "Last Name",
+      "Gender",
+      "Email",
+      "Phone",
+      "Country",
+      "Date of Birth",
+      "Nationality",
+      "Occupation",
+      "Marital Status",
+      "Applying For",
+      "Has Ijazah?",
+      "Teaches Tajweed in English?",
+      "Has Children?",
+      "Preferred Interview Time",
+      "Expected Salary",
+      "Hours per Week",
+      "Employment Type",
+      "CV URL",
+      "Reading Audio URL",
+      "Recitation Audio URL",
+      "Applied On",
+      "About Me",
+      "Ideal Candidate Essay"
+    ];
+
+    const rows = data.map(item => [
+      item.first_name || "",
+      item.last_name || "",
+      item.gender || "",
+      item.email || "",
+      `${item.dial_code || ""} ${item.mobile || ""}`.trim(),
+      item.country || "",
+      item.date_of_birth || "",
+      item.nationality || "",
+      item.occupation || "",
+      item.marital_status || "",
+      item.applying_for || "",
+      item.has_ijazah ? "Yes" : "No",
+      item.teach_tajweed_english ? "Yes" : "No",
+      item.has_children || "",
+      item.preferred_interview_time || "",
+      item.expected_salary || "",
+      item.hours_per_week || "",
+      item.employment_type || "",
+      item.cv_url || "",
+      item.reading_audio_url || "",
+      item.recitation_audio_url || "",
+      item.created_at ? new Date(item.created_at).toLocaleString() : "",
+      item.about_me || "",
+      item.ideal_candidate || ""
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => 
+        row.map(val => {
+          const stringVal = String(val).replace(/"/g, '""');
+          return `"${stringVal}"`;
+        }).join(",")
+      )
+    ].join("\r\n");
+
+    const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `${fileName}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportStudentsToExcel = (data, fileName) => {
+    const headers = [
+      "First Name",
+      "Last Name",
+      "Email",
+      "Age Group",
+      "Gender",
+      "Phone",
+      "Country",
+      "Course",
+      "Hours per Week",
+      "Pricing Plan",
+      "Monthly Price",
+      "Preferred Days",
+      "Preferred Date",
+      "Preferred Time",
+      "Registered On"
+    ];
+
+    const rows = data.map(item => [
+      item.first_name || "",
+      item.last_name || "",
+      item.email || "",
+      item.age_group || "",
+      item.gender || "",
+      `${item.dial_code || ""} ${item.mobile || ""}`.trim(),
+      item.country || "",
+      item.course || "",
+      item.hours_per_week || "",
+      item.pricing_plan || "",
+      item.monthly_price || "",
+      item.preferred_days || "",
+      item.preferred_date || "",
+      item.preferred_time || "",
+      item.created_at ? new Date(item.created_at).toLocaleString() : ""
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => 
+        row.map(val => {
+          const stringVal = String(val).replace(/"/g, '""');
+          return `"${stringVal}"`;
+        }).join(",")
+      )
+    ].join("\r\n");
+
+    const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `${fileName}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
 
   const fetchDashboardData = async () => {
     setLoading(true);
@@ -782,6 +989,70 @@ export default function AdminDashboard() {
       adminSwal.fire({ icon: "error", title: "Failed", text: err.message, confirmButtonColor: "var(--primary-color)", background: "#111827", color: "#fff" });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGenerateSitemap = async () => {
+    const { value: siteUrl } = await adminSwal.fire({
+      title: "Generate XML Sitemap",
+      text: "Please enter your live website domain URL:",
+      input: "text",
+      inputValue: window.location.origin || "https://yaqeeninstitute.online",
+      showCancelButton: true,
+      inputPlaceholder: "https://yaqeeninstitute.online",
+      confirmButtonText: "Generate Now",
+      cancelButtonText: "Cancel",
+      inputValidator: (value) => {
+        if (!value) {
+          return "Website URL is required!";
+        }
+        if (!/^https?:\/\//i.test(value)) {
+          return "URL must start with http:// or https://";
+        }
+      }
+    });
+
+    if (!siteUrl) return;
+
+    adminSwal.fire({
+      title: "Generating Sitemap...",
+      text: "Please wait while we index the pages and build the XML sitemap file.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    try {
+      const token = localStorage.getItem("aero_admin_token");
+      const res = await fetch("/api/admin/generate-sitemap", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ siteUrl })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        adminSwal.fire({
+          icon: "success",
+          title: "Sitemap Generated!",
+          text: `Successfully generated and saved sitemap.xml to the public folder! It contains ${data.urlCount} pages.`,
+          confirmButtonColor: "var(--primary-color)"
+        });
+      } else {
+        throw new Error(data.message || "Failed to generate sitemap.");
+      }
+    } catch (err) {
+      console.error("Sitemap generation failed:", err);
+      adminSwal.fire({
+        icon: "error",
+        title: "Generation Failed",
+        text: err.message || "Something went wrong while generating the sitemap.",
+        confirmButtonColor: "#ef4444"
+      });
     }
   };
 
@@ -3073,7 +3344,29 @@ export default function AdminDashboard() {
         {/* TAB 3: CONTACT INBOX */}
         {activeTab === "contacts" && (
           <div className="glass-panel" style={{ padding: "24px" }}>
-            <h3 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "20px" }}>Received Inquiries</h3>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", gap: "16px", flexWrap: "wrap" }}>
+              <h3 style={{ fontSize: "18px", fontWeight: "600", margin: 0 }}>Received Inquiries</h3>
+              {inquiries.length > 0 && (
+                <button 
+                  onClick={() => exportToExcel(inquiries, `Contact_Inquiries_${new Date().toISOString().slice(0,10)}`)}
+                  className="btn-primary" 
+                  style={{ 
+                    padding: "8px 16px", 
+                    fontSize: "13px", 
+                    display: "inline-flex", 
+                    alignItems: "center", 
+                    gap: "6px" 
+                  }}
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  Export to Excel
+                </button>
+              )}
+            </div>
             
             {inquiries.length === 0 ? (
               <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>Inbox empty. All clean!</p>
@@ -3117,7 +3410,29 @@ export default function AdminDashboard() {
 
         {activeTab === "freeTrials" && (
           <div className="glass-panel" style={{ padding: "24px" }}>
-            <h3 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "20px" }}>Free Trial Class Bookings</h3>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", gap: "16px", flexWrap: "wrap" }}>
+              <h3 style={{ fontSize: "18px", fontWeight: "600", margin: 0 }}>Free Trial Class Bookings</h3>
+              {freeTrials.length > 0 && (
+                <button 
+                  onClick={() => exportToExcel(freeTrials, `Free_Trial_Bookings_${new Date().toISOString().slice(0,10)}`)}
+                  className="btn-primary" 
+                  style={{ 
+                    padding: "8px 16px", 
+                    fontSize: "13px", 
+                    display: "inline-flex", 
+                    alignItems: "center", 
+                    gap: "6px" 
+                  }}
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  Export to Excel
+                </button>
+              )}
+            </div>
 
             {freeTrials.length === 0 ? (
               <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>No free trial bookings yet.</p>
@@ -3165,7 +3480,29 @@ export default function AdminDashboard() {
 
         {activeTab === "teacherApps" && (
           <div className="glass-panel" style={{ padding: "24px" }}>
-            <h3 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "20px" }}>Teacher Job Applications</h3>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", gap: "16px", flexWrap: "wrap" }}>
+              <h3 style={{ fontSize: "18px", fontWeight: "600", margin: 0 }}>Teacher Job Applications</h3>
+              {teacherApps.length > 0 && (
+                <button 
+                  onClick={() => exportTeachersToExcel(teacherApps, `Teacher_Applications_${new Date().toISOString().slice(0,10)}`)}
+                  className="btn-primary" 
+                  style={{ 
+                    padding: "8px 16px", 
+                    fontSize: "13px", 
+                    display: "inline-flex", 
+                    alignItems: "center", 
+                    gap: "6px" 
+                  }}
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  Export to Excel
+                </button>
+              )}
+            </div>
 
             {teacherApps.length === 0 ? (
               <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>No teacher applications yet.</p>
@@ -3209,7 +3546,29 @@ export default function AdminDashboard() {
 
         {activeTab === "studentApps" && (
           <div className="glass-panel" style={{ padding: "24px" }}>
-            <h3 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "20px" }}>Student Registrations</h3>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", gap: "16px", flexWrap: "wrap" }}>
+              <h3 style={{ fontSize: "18px", fontWeight: "600", margin: 0 }}>Student Registrations</h3>
+              {studentApps.length > 0 && (
+                <button 
+                  onClick={() => exportStudentsToExcel(studentApps, `Student_Registrations_${new Date().toISOString().slice(0,10)}`)}
+                  className="btn-primary" 
+                  style={{ 
+                    padding: "8px 16px", 
+                    fontSize: "13px", 
+                    display: "inline-flex", 
+                    alignItems: "center", 
+                    gap: "6px" 
+                  }}
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  Export to Excel
+                </button>
+              )}
+            </div>
 
             {studentApps.length === 0 ? (
               <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>No student registrations yet.</p>
@@ -3965,6 +4324,25 @@ export default function AdminDashboard() {
                 </div>
                 <button type="submit" className="btn-primary" style={{ width: "fit-content" }}>+ Create Admin Account</button>
               </form>
+             </div>
+
+            {/* Sitemap Generator Panel */}
+            <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
+              <div>
+                <h3 style={{ fontSize: "18px", fontWeight: "600", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px" }}>XML Sitemap Generator</h3>
+                <p style={{ color: "var(--fg-muted)", fontSize: "13px", marginTop: "10px" }}>
+                  Generate a static <code>sitemap.xml</code> file in the public assets folder of your server to improve search engine crawling and index all static and dynamic pages instantly.
+                </p>
+              </div>
+
+              <button 
+                type="button" 
+                onClick={handleGenerateSitemap}
+                className="btn-primary" 
+                style={{ width: "fit-content", display: "inline-flex", alignItems: "center", gap: "8px" }}
+              >
+                🌐 Generate Sitemap
+              </button>
             </div>
           </div>
         )}

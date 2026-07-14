@@ -661,7 +661,7 @@ export default function StudentFormPage() {
                   </div>
 
                   <div className="bft-field">
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div className="pricing-header-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <label className="bft-label">Choose Your Pricing Plan<span className="req">*</span></label>
                       <label className="bft-label" style={{ width: "100px", textAlign: "center" }}>Pricing / Month</label>
                     </div>

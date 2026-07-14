@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
+import Swal from "sweetalert2";
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -23,14 +24,26 @@ export default function ContactForm() {
     const { name, email, subject, message } = formData;
 
     if (!name || !email || !subject || !message) {
-      setStatus("error");
-      setErrorMessage("All fields are required.");
+      Swal.fire({
+        icon: "warning",
+        title: "Validation Error",
+        text: "All fields are required.",
+        confirmButtonColor: "#c99b4d",
+        background: "#fdfcf9",
+        color: "#2c251e"
+      });
       return;
     }
 
     if (!email.includes("@")) {
-      setStatus("error");
-      setErrorMessage("Please enter a valid email address.");
+      Swal.fire({
+        icon: "warning",
+        title: "Validation Error",
+        text: "Please enter a valid email address.",
+        confirmButtonColor: "#c99b4d",
+        background: "#fdfcf9",
+        color: "#2c251e"
+      });
       return;
     }
 
@@ -148,12 +161,29 @@ export default function ContactForm() {
         throw new Error(data.message || "Failed to submit message.");
       }
 
-      setStatus("success");
+      setStatus("idle");
       setFormData({ name: "", email: "", subject: "", message: "" });
+      
+      Swal.fire({
+        icon: "success",
+        title: "Thank You!",
+        text: "Your message has been sent successfully. We will contact you soon.",
+        confirmButtonColor: "#c99b4d",
+        background: "#fdfcf9",
+        color: "#2c251e"
+      });
     } catch (err) {
       console.error("Contact form error:", err);
-      setStatus("error");
-      setErrorMessage(err.message || "Something went wrong. Please try again.");
+      setStatus("idle");
+      
+      Swal.fire({
+        icon: "error",
+        title: "Submission Error",
+        text: err.message || "Something went wrong. Please try again.",
+        confirmButtonColor: "#c99b4d",
+        background: "#fdfcf9",
+        color: "#2c251e"
+      });
     }
   };
 
@@ -242,18 +272,6 @@ export default function ContactForm() {
           </svg>
           <span>{status === "loading" ? "Sending..." : "Send Message"}</span>
         </button>
-
-        {status === "success" && (
-          <p style={{ color: "#10b981", fontSize: "14.5px", fontWeight: "500", textAlign: "center", marginTop: "20px" }}>
-            ✓ Thank you! Your message has been sent successfully. We will contact you soon.
-          </p>
-        )}
-
-        {status === "error" && (
-          <p style={{ color: "#ef4444", fontSize: "13.5px", fontWeight: "500", textAlign: "center", marginTop: "20px", lineHeight: "1.4" }}>
-            ⚠ {errorMessage}
-          </p>
-        )}
       </form>
     </div>
   );

@@ -626,7 +626,7 @@ export default function Home() {
           <div className="hero-grid" style={{ width: "100%" }}>
             
             {/* Left Column (Content) */}
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", zIndex: 5 }}>
+            <div className="hero-content" style={{ zIndex: 5 }}>
               
               {/* Pill Badge */}
               <div style={{ 
@@ -646,7 +646,7 @@ export default function Home() {
 
               {/* Main Headline */}
               <h1 style={{ 
-                fontSize: "60px", 
+                fontSize: "clamp(34px, 5.5vw, 60px)", 
                 fontWeight: "700", 
                 color: "#111111", 
                 lineHeight: "1.15", 
@@ -660,8 +660,8 @@ export default function Home() {
               </h1>
 
               {/* Subheading */}
-              <h3 style={{ 
-                fontSize: "24px", 
+              <h3 className="hero-subheading" style={{ 
+                fontSize: "clamp(18px, 2.5vw, 24px)", 
                 fontWeight: "500", 
                 color: "#2B1F14", 
                 marginBottom: "16px", 
@@ -693,7 +693,7 @@ export default function Home() {
 
               {/* Description */}
               <p style={{ 
-                fontSize: "16px", 
+                fontSize: "clamp(14px, 1.5vw, 16px)", 
                 color: "#5C4D3C", 
                 lineHeight: "1.6", 
                 maxWidth: "480px", 
@@ -705,7 +705,7 @@ export default function Home() {
 
               {/* Button */}
               <div style={{ marginBottom: "40px" }}>
-                <Link href="/pricing" style={{
+                <Link href="/book-free-trial" style={{
                   textDecoration: "none",
                   display: "inline-flex",
                   alignItems: "center",
@@ -735,7 +735,7 @@ export default function Home() {
               </div>
 
               {/* Secondary Features Row */}
-              <div style={{ display: "flex", gap: "24px", flexWrap: "wrap" }}>
+              <div className="hero-features-row" style={{ gap: "24px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                   <div style={{ width: "36px", height: "36px", borderRadius: "50%", backgroundColor: "#C99B4D", display: "flex", alignItems: "center", color: "#FFF", flexShrink: 0, justifyContent: "center" }}>
                     <IconPeople />
@@ -803,82 +803,84 @@ export default function Home() {
          SECTION 2: LANGUAGES BANNER (FULL WIDTH WITH OVERLAY)
          ========================================================================= */}
       <section className="lang-section">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img 
-          src="/images/lang_bg.png" 
-          alt="Learn in Your Own Language" 
-          className="lang-image"
-        />
+        <div className="lang-container">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img 
+            src="/images/lang_bg.png" 
+            alt="Learn in Your Own Language" 
+            className="lang-image"
+          />
 
-        {/* Text Content Overlay over the image */}
-        <div className="lang-overlay reveal-slide-up">
-          
-          {/* Heading */}
-          <h2 className="lang-title">
-            Learn in<br />
-            <span style={{ color: "#C99B4D" }}>Your Language</span>
-          </h2>
+          {/* Text Content Overlay over the image */}
+          <div className="lang-overlay reveal-slide-up">
+            
+            {/* Heading */}
+            <h2 className="lang-title">
+              Learn in<br />
+              <span style={{ color: "#C99B4D" }}>Your Language</span>
+            </h2>
 
-          {/* Decorative Divider Line with Star and Dots */}
-          <div className="lang-divider">
-            <div style={{ flexGrow: 1, height: "1px", backgroundColor: "#C99B4D", opacity: 0.8 }} />
-            <div style={{ width: "clamp(3px, 0.4vw, 6px)", height: "clamp(3px, 0.4vw, 6px)", borderRadius: "50%", backgroundColor: "#C99B4D", opacity: 0.8 }} />
-            <div style={{ display: "flex", alignItems: "center", color: "#C99B4D", transform: "scale(clamp(0.5, 0.8vw + 0.3, 1))" }}>
-              <IconDividerStar />
+            {/* Decorative Divider Line with Star and Dots */}
+            <div className="lang-divider">
+              <div style={{ flexGrow: 1, height: "1px", backgroundColor: "#C99B4D", opacity: 0.8 }} />
+              <div style={{ width: "clamp(3px, 0.4vw, 6px)", height: "clamp(3px, 0.4vw, 6px)", borderRadius: "50%", backgroundColor: "#C99B4D", opacity: 0.8 }} />
+              <div style={{ display: "flex", alignItems: "center", color: "#C99B4D", transform: "scale(clamp(0.5, 0.8vw + 0.3, 1))" }}>
+                <IconDividerStar />
+              </div>
+              <div style={{ width: "clamp(3px, 0.4vw, 6px)", height: "clamp(3px, 0.4vw, 6px)", borderRadius: "50%", backgroundColor: "#C99B4D", opacity: 0.8 }} />
+              <div style={{ flexGrow: 1, height: "1px", backgroundColor: "#C99B4D", opacity: 0.8 }} />
             </div>
-            <div style={{ width: "clamp(3px, 0.4vw, 6px)", height: "clamp(3px, 0.4vw, 6px)", borderRadius: "50%", backgroundColor: "#C99B4D", opacity: 0.8 }} />
-            <div style={{ flexGrow: 1, height: "1px", backgroundColor: "#C99B4D", opacity: 0.8 }} />
-          </div>
 
-          {/* Description Paragraph */}
-          <p className="lang-desc">
-            You can learn and understand<br />
-            {"Qur'an, Islamic Studies & Arabic"}<br />
-            in <span style={{ color: "#556B3B", fontWeight: "500" }}>the language you understand best.</span>
-          </p>
+            {/* Description Paragraph */}
+            <p className="lang-desc">
+              You can learn and understand<br />
+              {"Qur'an, Islamic Studies & Arabic"}<br />
+              in <span style={{ color: "#556B3B", fontWeight: "500" }}>the language you understand best.</span>
+            </p>
 
-          {/* Card */}
-          <div className={`lang-feature-card ${langCardOpen ? "open" : ""}`} style={{ marginTop: "clamp(24px, 3.5vw, 48px)" }}>
-            <div className="lang-feature-icon">
-              <IconBookOpen size={26} />
+            {/* Card */}
+            <div className={`lang-feature-card ${langCardOpen ? "open" : ""}`} style={{ marginTop: "clamp(24px, 3.5vw, 48px)" }}>
+              <div className="lang-feature-icon">
+                <IconBookOpen size={26} />
+              </div>
+              <div className="lang-feature-body">
+                <h4>Learn Quran Online</h4>
+                <p>Choose the words you understand best and learn with ease, clarity, and confidence.</p>
+                <div className="lang-feature-more">
+                  <p>Master the Qur&apos;an in the language you understand through our online Quran academy. Join online Quran classes, Quran lessons online, and learn Quran with Tajweed from qualified teachers, anytime, anywhere.</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="lang-feature-toggle"
+                onClick={() => setLangCardOpen((o) => !o)}
+                aria-expanded={langCardOpen}
+                aria-label={langCardOpen ? "Show less" : "Show more"}
+                suppressHydrationWarning
+              >
+                {langCardOpen ? "−" : "+"}
+              </button>
             </div>
-            <div className="lang-feature-body">
-              <h4>Learn Quran Online</h4>
-              <p>Choose the words you understand best and learn with ease, clarity, and confidence.</p>
-              <div className="lang-feature-more">
-                <p>Master the Qur&apos;an in the language you understand through our online Quran academy. Join online Quran classes, Quran lessons online, and learn Quran with Tajweed from qualified teachers, anytime, anywhere.</p>
+
+            {/* Benefits */}
+            <div className="lang-benefits" style={{ marginTop: "clamp(35px, 5vw, 65px)" }}>
+              <div className="lang-benefit">
+                <span className="lang-benefit-icon"><IconBookOpen size={20} /></span>
+                <span>Clearer<br />Understanding</span>
+              </div>
+              <span className="lang-benefit-div" />
+              <div className="lang-benefit">
+                <span className="lang-benefit-icon gold"><IconHeartOutline size={20} /></span>
+                <span>Stronger<br />Connection</span>
+              </div>
+              <span className="lang-benefit-div" />
+              <div className="lang-benefit">
+                <span className="lang-benefit-icon"><IconBulb size={20} /></span>
+                <span>Lasting<br />Impact</span>
               </div>
             </div>
-            <button
-              type="button"
-              className="lang-feature-toggle"
-              onClick={() => setLangCardOpen((o) => !o)}
-              aria-expanded={langCardOpen}
-              aria-label={langCardOpen ? "Show less" : "Show more"}
-              suppressHydrationWarning
-            >
-              {langCardOpen ? "−" : "+"}
-            </button>
-          </div>
 
-          {/* Benefits */}
-          <div className="lang-benefits" style={{ marginTop: "clamp(35px, 5vw, 65px)" }}>
-            <div className="lang-benefit">
-              <span className="lang-benefit-icon"><IconBookOpen size={20} /></span>
-              <span>Clearer<br />Understanding</span>
-            </div>
-            <span className="lang-benefit-div" />
-            <div className="lang-benefit">
-              <span className="lang-benefit-icon gold"><IconHeartOutline size={20} /></span>
-              <span>Stronger<br />Connection</span>
-            </div>
-            <span className="lang-benefit-div" />
-            <div className="lang-benefit">
-              <span className="lang-benefit-icon"><IconBulb size={20} /></span>
-              <span>Lasting<br />Impact</span>
-            </div>
           </div>
-
         </div>
       </section>
 
