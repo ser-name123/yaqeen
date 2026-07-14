@@ -1,5 +1,6 @@
 import { Poppins, Lora } from "next/font/google";
 import "./globals.css";
+import Script from "next/script";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import { SettingsProvider } from "@/lib/settings-context";
 import { getSEOSettings, getSiteSettings } from "@/lib/db-cached";
@@ -94,6 +95,34 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en" className={`${poppins.variable} ${lora.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
       <body suppressHydrationWarning>
+        {/* Google tag (gtag.js) - Google Ads */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-18317816315"
+          strategy="afterInteractive"
+        />
+        <Script id="google-ads-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-18317816315');
+          `}
+        </Script>
+
+        {/* Google tag (gtag.js) - Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-6RGZGGEWN1"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-6RGZGGEWN1');
+          `}
+        </Script>
+
         <SettingsProvider 
           logoText={logoText} 
           logoUrl={logoUrl} 
