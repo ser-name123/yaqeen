@@ -32,7 +32,9 @@ export async function POST(request) {
 
     // If client-side failed to resolve IP or geo, extract IP server-side
     if (!ip || ip === "Unknown / Client-side only") {
-      ip = request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip");
+      ip = request.headers.get("cf-connecting-ip") ||
+           request.headers.get("x-real-ip") ||
+           request.headers.get("x-forwarded-for");
       if (ip) {
         ip = ip.split(",")[0].trim();
       } else {

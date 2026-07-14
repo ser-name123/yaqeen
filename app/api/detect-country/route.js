@@ -2,7 +2,9 @@ import { NextResponse } from "next/server";
 
 export async function GET(request) {
   try {
-    let ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "";
+    let ip = request.headers.get("cf-connecting-ip")?.trim() ||
+             request.headers.get("x-real-ip")?.trim() ||
+             request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "";
     
     // Check if localhost or private IP, then resolve server's public outbound IP
     if (!ip || ip === "127.0.0.1" || ip === "::1" || ip.startsWith("192.168.") || ip.startsWith("10.")) {

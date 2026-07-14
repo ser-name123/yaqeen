@@ -49,7 +49,9 @@ export async function POST(request) {
     }
 
     // ---- Server-side IP + Geolocation Lookup ----
-    let ip = request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip");
+    let ip = request.headers.get("cf-connecting-ip") ||
+             request.headers.get("x-real-ip") ||
+             request.headers.get("x-forwarded-for");
     ip = ip ? ip.split(",")[0].trim() : "127.0.0.1";
     if (ip === "::1" || ip === "::ffff:127.0.0.1") ip = "127.0.0.1";
 
