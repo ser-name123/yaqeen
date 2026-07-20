@@ -2,6 +2,13 @@
 
 const SUPABASE = "https://utjadhbdvcrbdlzjcqio.supabase.co";
 
+// Cloudflare Web Analytics injects beacon.min.js at the edge, so this script is
+// not in our own markup — it only appears on deployed environments. Its RUM data
+// is posted back to cloudflareinsights.com. Turning Web Analytics off in the
+// Cloudflare dashboard makes both entries below unnecessary.
+const CLOUDFLARE_SCRIPT = ["https://static.cloudflareinsights.com"];
+const CLOUDFLARE_CONNECT = ["https://cloudflareinsights.com"];
+
 // Google tag (gtag.js) is loaded in app/layout.js for GA4 and Google Ads.
 // The script itself comes from googletagmanager.com, but once running it also
 // sends measurement beacons and conversion pixels to the analytics, Ads and
@@ -59,7 +66,7 @@ const GTAG_FRAME = [
 
 const csp = [
   ["default-src", "'self'"],
-  ["script-src", "'self'", "'unsafe-eval'", "'unsafe-inline'", ...GTAG_SCRIPT],
+  ["script-src", "'self'", "'unsafe-eval'", "'unsafe-inline'", ...GTAG_SCRIPT, ...CLOUDFLARE_SCRIPT],
   ["style-src", "'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
   ["font-src", "'self'", "https://fonts.gstatic.com", "data:"],
   ["img-src", "'self'", "data:", "blob:", "https://images.unsplash.com", SUPABASE, ...GTAG_IMG],
@@ -73,7 +80,8 @@ const csp = [
     "wss://localhost:*",
     "http://localhost:*",
     "http://127.0.0.1:*",
-    ...GTAG_CONNECT
+    ...GTAG_CONNECT,
+    ...CLOUDFLARE_CONNECT
   ]
 ]
   .map((directive) => directive.join(" "))
