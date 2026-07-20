@@ -168,15 +168,38 @@ export default function TeacherApplicationPage() {
     if (s === 1) {
       if (!form.first_name.trim()) e.first_name = "First name is required.";
       if (!form.last_name.trim()) e.last_name = "Last name is required.";
+      if (!form.gender) e.gender = "Please select your gender.";
       if (!form.email.trim()) e.email = "Email is required.";
       else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = "Enter a valid email address.";
       if (!form.mobile.trim()) e.mobile = "Mobile number is required.";
       if (!form.country) e.country = "Please choose your country.";
+      if (!form.date_of_birth) e.date_of_birth = "Date of birth is required.";
+      if (!form.marital_status) e.marital_status = "Please select your marital status.";
+      if (!form.nationality.trim()) e.nationality = "Nationality is required.";
+      if (!form.occupation.trim()) e.occupation = "Occupation is required.";
+      if (!form.about_me.trim()) e.about_me = "Please tell us about yourself.";
+      if (!form.facebook.trim()) e.facebook = "Facebook ID / profile link is required.";
+      if (!form.profile_image_url) e.profile_image_url = "Please upload your profile image.";
     } else if (s === 2) {
       if (!form.education.trim()) e.education = "Education is required.";
+      if (!form.years_experience.trim()) e.years_experience = "Years of experience is required.";
       if (!form.mother_language) e.mother_language = "Please select your mother language.";
+      if (!form.other_language) e.other_language = "Please select another language.";
+      if (!form.cv_url) e.cv_url = "Please upload your CV.";
+    } else if (s === 3) {
+      if (!form.reading_audio_url) e.reading_audio_url = "Please upload your reading audio.";
+      if (!form.recitation_audio_url) e.recitation_audio_url = "Please upload your recitation audio.";
     } else if (s === 4) {
       if (!form.applying_for) e.applying_for = "Please select what you are applying for.";
+      if (!form.has_ijazah) e.has_ijazah = "Please select an option.";
+      if (!form.teach_tajweed_english) e.teach_tajweed_english = "Please select an option.";
+      if (!form.has_children) e.has_children = "Please select an option.";
+      if (!form.preferred_interview_time) e.preferred_interview_time = "Please select your preferred interview time.";
+      if (!form.expected_salary.trim()) e.expected_salary = "Expected salary is required.";
+      if (!form.hours_per_week.trim()) e.hours_per_week = "Hours per week is required.";
+      if (!form.employment_type) e.employment_type = "Please select an employment type.";
+      if (!form.ideal_candidate.trim()) e.ideal_candidate = "Please tell us what makes you an ideal candidate.";
+      if (!form.how_found) e.how_found = "Please tell us how you found out about us.";
       if (!form.declaration) e.declaration = "Please confirm the declaration to submit.";
     }
     setErrors(e);
@@ -316,11 +339,12 @@ export default function TeacherApplicationPage() {
                   </div>
 
                   <div className="ta-field" style={{ marginTop: 20 }}>
-                    <label className="ta-label">Gender</label>
-                    <select className="ta-select" value={form.gender} onChange={(e) => set("gender", e.target.value)}>
+                    <label className="ta-label">Gender<span className="req">*</span></label>
+                    <select className={`ta-select ${errors.gender ? "invalid" : ""}`} value={form.gender} onChange={(e) => set("gender", e.target.value)}>
                       <option value="">Select</option>
                       {GENDERS.map((g) => <option key={g} value={g}>{g}</option>)}
                     </select>
+                    {errors.gender && <p className="ta-error">{errors.gender}</p>}
                   </div>
 
                   <div className="ta-field">
@@ -346,43 +370,50 @@ export default function TeacherApplicationPage() {
 
                   <div className="ta-row">
                     <div className="ta-field" style={{ marginBottom: 0 }}>
-                      <label className="ta-label">Date of Birth</label>
-                      <input type="date" className="ta-input" value={form.date_of_birth} onChange={(e) => set("date_of_birth", e.target.value)} />
+                      <label className="ta-label">Date of Birth<span className="req">*</span></label>
+                      <input type="date" className={`ta-input ${errors.date_of_birth ? "invalid" : ""}`} value={form.date_of_birth} onChange={(e) => set("date_of_birth", e.target.value)} />
+                      {errors.date_of_birth && <p className="ta-error">{errors.date_of_birth}</p>}
                     </div>
                     <div className="ta-field" style={{ marginBottom: 0 }}>
-                      <label className="ta-label">Marital Status</label>
-                      <select className="ta-select" value={form.marital_status} onChange={(e) => set("marital_status", e.target.value)}>
+                      <label className="ta-label">Marital Status<span className="req">*</span></label>
+                      <select className={`ta-select ${errors.marital_status ? "invalid" : ""}`} value={form.marital_status} onChange={(e) => set("marital_status", e.target.value)}>
                         <option value="">Select</option>
                         {MARITAL.map((m) => <option key={m} value={m}>{m}</option>)}
                       </select>
+                      {errors.marital_status && <p className="ta-error">{errors.marital_status}</p>}
                     </div>
                   </div>
 
                   <div className="ta-row" style={{ marginTop: 20 }}>
                     <div className="ta-field" style={{ marginBottom: 0 }}>
-                      <label className="ta-label">Nationality</label>
-                      <input className="ta-input" placeholder="Nationality" value={form.nationality} onChange={(e) => set("nationality", e.target.value)} />
+                      <label className="ta-label">Nationality<span className="req">*</span></label>
+                      <input className={`ta-input ${errors.nationality ? "invalid" : ""}`} placeholder="Nationality" value={form.nationality} onChange={(e) => set("nationality", e.target.value)} />
+                      {errors.nationality && <p className="ta-error">{errors.nationality}</p>}
                     </div>
                     <div className="ta-field" style={{ marginBottom: 0 }}>
-                      <label className="ta-label">Occupation</label>
-                      <input className="ta-input" placeholder="Occupation" value={form.occupation} onChange={(e) => set("occupation", e.target.value)} />
+                      <label className="ta-label">Occupation<span className="req">*</span></label>
+                      <input className={`ta-input ${errors.occupation ? "invalid" : ""}`} placeholder="Occupation" value={form.occupation} onChange={(e) => set("occupation", e.target.value)} />
+                      {errors.occupation && <p className="ta-error">{errors.occupation}</p>}
                     </div>
                   </div>
 
                   <div className="ta-field" style={{ marginTop: 20 }}>
-                    <label className="ta-label">About Me</label>
-                    <textarea className="ta-textarea" placeholder="Write yourself…" value={form.about_me} onChange={(e) => set("about_me", e.target.value)} />
+                    <label className="ta-label">About Me<span className="req">*</span></label>
+                    <textarea className={`ta-textarea ${errors.about_me ? "invalid" : ""}`} placeholder="Write yourself…" value={form.about_me} onChange={(e) => set("about_me", e.target.value)} />
+                    {errors.about_me && <p className="ta-error">{errors.about_me}</p>}
                   </div>
 
                   <div className="ta-field">
-                    <label className="ta-label">Facebook</label>
-                    <input className="ta-input" placeholder="Facebook ID / profile link" value={form.facebook} onChange={(e) => set("facebook", e.target.value)} />
+                    <label className="ta-label">Facebook<span className="req">*</span></label>
+                    <input className={`ta-input ${errors.facebook ? "invalid" : ""}`} placeholder="Facebook ID / profile link" value={form.facebook} onChange={(e) => set("facebook", e.target.value)} />
+                    {errors.facebook && <p className="ta-error">{errors.facebook}</p>}
                   </div>
 
                   <div className="ta-field">
-                    <label className="ta-label">Profile Image</label>
+                    <label className="ta-label">Profile Image<span className="req">*</span></label>
                     <UploadBtn field="profile_image_url" accept="image/png,image/jpeg" maxMB={2} label="Upload Image" />
                     <p className="ta-file-hint">Accepted formats: JPG, PNG. Max size: 2MB.</p>
+                    {errors.profile_image_url && <p className="ta-error">{errors.profile_image_url}</p>}
                   </div>
 
                   <div className="ta-actions end">
@@ -401,8 +432,9 @@ export default function TeacherApplicationPage() {
                   </div>
 
                   <div className="ta-field">
-                    <label className="ta-label">Years of Experience</label>
-                    <input className="ta-input" placeholder="e.g. 5 Years" value={form.years_experience} onChange={(e) => set("years_experience", e.target.value)} />
+                    <label className="ta-label">Years of Experience<span className="req">*</span></label>
+                    <input className={`ta-input ${errors.years_experience ? "invalid" : ""}`} placeholder="e.g. 5 Years" value={form.years_experience} onChange={(e) => set("years_experience", e.target.value)} />
+                    {errors.years_experience && <p className="ta-error">{errors.years_experience}</p>}
                   </div>
 
                   <div className="ta-row">
@@ -415,18 +447,20 @@ export default function TeacherApplicationPage() {
                       {errors.mother_language && <p className="ta-error">{errors.mother_language}</p>}
                     </div>
                     <div className="ta-field" style={{ marginBottom: 0 }}>
-                      <label className="ta-label">Other Language</label>
-                      <select className="ta-select" value={form.other_language} onChange={(e) => set("other_language", e.target.value)}>
+                      <label className="ta-label">Other Language<span className="req">*</span></label>
+                      <select className={`ta-select ${errors.other_language ? "invalid" : ""}`} value={form.other_language} onChange={(e) => set("other_language", e.target.value)}>
                         <option value="">Select</option>
                         {LANGUAGES.map((l) => <option key={l} value={l}>{l}</option>)}
                       </select>
+                      {errors.other_language && <p className="ta-error">{errors.other_language}</p>}
                     </div>
                   </div>
 
                   <div className="ta-field" style={{ marginTop: 20 }}>
-                    <label className="ta-label">Upload CV</label>
+                    <label className="ta-label">Upload CV<span className="req">*</span></label>
                     <UploadBtn field="cv_url" accept=".pdf,.doc,.docx" maxMB={5} label="Upload your CV" />
                     <p className="ta-file-hint">Accepted formats: PDF, DOC, DOCX. Max size: 5MB.</p>
+                    {errors.cv_url && <p className="ta-error">{errors.cv_url}</p>}
                   </div>
 
                   <div className="ta-actions">
@@ -442,15 +476,17 @@ export default function TeacherApplicationPage() {
                   <div className="ta-passage">{PASSAGE}</div>
 
                   <div className="ta-field">
-                    <label className="ta-label">Read the above paragraph and upload audio file.</label>
+                    <label className="ta-label">Read the above paragraph and upload audio file.<span className="req">*</span></label>
                     <UploadBtn field="reading_audio_url" accept="audio/mpeg,audio/wav,.mp3,.wav" maxMB={10} label="Upload your Audio" />
                     <p className="ta-file-hint">Accepted formats: MP3, WAV. Max size: 10MB.</p>
+                    {errors.reading_audio_url && <p className="ta-error">{errors.reading_audio_url}</p>}
                   </div>
 
                   <div className="ta-field">
-                    <label className="ta-label">Please recite the first 10 Ayah of Surah An-Naba and upload audio file.</label>
+                    <label className="ta-label">Please recite the first 10 Ayah of Surah An-Naba and upload audio file.<span className="req">*</span></label>
                     <UploadBtn field="recitation_audio_url" accept="audio/mpeg,audio/wav,.mp3,.wav" maxMB={10} label="Upload your Audio" />
                     <p className="ta-file-hint">Accepted formats: MP3, WAV. Max size: 10MB.</p>
+                    {errors.recitation_audio_url && <p className="ta-error">{errors.recitation_audio_url}</p>}
                   </div>
 
                   <div className="ta-actions">
@@ -473,67 +509,76 @@ export default function TeacherApplicationPage() {
                       {errors.applying_for && <p className="ta-error">{errors.applying_for}</p>}
                     </div>
                     <div className="ta-field" style={{ marginBottom: 0 }}>
-                      <label className="ta-label">Do you have Ijazah</label>
-                      <select className="ta-select" value={form.has_ijazah} onChange={(e) => set("has_ijazah", e.target.value)}>
+                      <label className="ta-label">Do you have Ijazah<span className="req">*</span></label>
+                      <select className={`ta-select ${errors.has_ijazah ? "invalid" : ""}`} value={form.has_ijazah} onChange={(e) => set("has_ijazah", e.target.value)}>
                         <option value="">Select</option>
                         {YESNO.map((y) => <option key={y} value={y}>{y}</option>)}
                       </select>
+                      {errors.has_ijazah && <p className="ta-error">{errors.has_ijazah}</p>}
                     </div>
                   </div>
 
                   <div className="ta-row" style={{ marginTop: 20 }}>
                     <div className="ta-field" style={{ marginBottom: 0 }}>
-                      <label className="ta-label">Can you teach Tajweed in English</label>
-                      <select className="ta-select" value={form.teach_tajweed_english} onChange={(e) => set("teach_tajweed_english", e.target.value)}>
+                      <label className="ta-label">Can you teach Tajweed in English<span className="req">*</span></label>
+                      <select className={`ta-select ${errors.teach_tajweed_english ? "invalid" : ""}`} value={form.teach_tajweed_english} onChange={(e) => set("teach_tajweed_english", e.target.value)}>
                         <option value="">Select</option>
                         {YESNO.map((y) => <option key={y} value={y}>{y}</option>)}
                       </select>
+                      {errors.teach_tajweed_english && <p className="ta-error">{errors.teach_tajweed_english}</p>}
                     </div>
                     <div className="ta-field" style={{ marginBottom: 0 }}>
-                      <label className="ta-label">Do you have Children</label>
-                      <select className="ta-select" value={form.has_children} onChange={(e) => set("has_children", e.target.value)}>
+                      <label className="ta-label">Do you have Children<span className="req">*</span></label>
+                      <select className={`ta-select ${errors.has_children ? "invalid" : ""}`} value={form.has_children} onChange={(e) => set("has_children", e.target.value)}>
                         <option value="">Select</option>
                         {CHILDREN_OPTIONS.map((c) => <option key={c} value={c}>{c}</option>)}
                       </select>
+                      {errors.has_children && <p className="ta-error">{errors.has_children}</p>}
                     </div>
                   </div>
 
                   <div className="ta-row" style={{ marginTop: 20 }}>
                     <div className="ta-field" style={{ marginBottom: 0 }}>
-                      <label className="ta-label">Preferred Interview Time</label>
-                      <select className="ta-select" value={form.preferred_interview_time} onChange={(e) => set("preferred_interview_time", e.target.value)}>
+                      <label className="ta-label">Preferred Interview Time<span className="req">*</span></label>
+                      <select className={`ta-select ${errors.preferred_interview_time ? "invalid" : ""}`} value={form.preferred_interview_time} onChange={(e) => set("preferred_interview_time", e.target.value)}>
                         <option value="">Select</option>
                         {INTERVIEW_TIMES.map((t) => <option key={t} value={t}>{t}</option>)}
                       </select>
+                      {errors.preferred_interview_time && <p className="ta-error">{errors.preferred_interview_time}</p>}
                     </div>
                     <div className="ta-field" style={{ marginBottom: 0 }}>
-                      <label className="ta-label">Expected Salary (USD Per Hour)</label>
-                      <input className="ta-input" placeholder="$ per hour" value={form.expected_salary} onChange={(e) => set("expected_salary", e.target.value)} />
+                      <label className="ta-label">Expected Salary (USD Per Hour)<span className="req">*</span></label>
+                      <input className={`ta-input ${errors.expected_salary ? "invalid" : ""}`} placeholder="$ per hour" value={form.expected_salary} onChange={(e) => set("expected_salary", e.target.value)} />
+                      {errors.expected_salary && <p className="ta-error">{errors.expected_salary}</p>}
                     </div>
                   </div>
 
                   <div className="ta-row" style={{ marginTop: 20 }}>
                     <div className="ta-field" style={{ marginBottom: 0 }}>
-                      <label className="ta-label">How many hours per week can you work</label>
-                      <input className="ta-input" placeholder="e.g. 10" value={form.hours_per_week} onChange={(e) => set("hours_per_week", e.target.value)} />
+                      <label className="ta-label">How many hours per week can you work<span className="req">*</span></label>
+                      <input className={`ta-input ${errors.hours_per_week ? "invalid" : ""}`} placeholder="e.g. 10" value={form.hours_per_week} onChange={(e) => set("hours_per_week", e.target.value)} />
+                      {errors.hours_per_week && <p className="ta-error">{errors.hours_per_week}</p>}
                     </div>
                     <div className="ta-field" style={{ marginBottom: 0 }}>
-                      <label className="ta-label">Employment Type</label>
-                      <select className="ta-select" value={form.employment_type} onChange={(e) => set("employment_type", e.target.value)}>
+                      <label className="ta-label">Employment Type<span className="req">*</span></label>
+                      <select className={`ta-select ${errors.employment_type ? "invalid" : ""}`} value={form.employment_type} onChange={(e) => set("employment_type", e.target.value)}>
                         <option value="">Select</option>
                         {EMPLOYMENT.map((t) => <option key={t} value={t}>{t}</option>)}
                       </select>
+                      {errors.employment_type && <p className="ta-error">{errors.employment_type}</p>}
                     </div>
                   </div>
 
                   <div className="ta-field" style={{ marginTop: 20 }}>
-                    <label className="ta-label">What makes you an Ideal Candidate</label>
-                    <textarea className="ta-textarea" placeholder="Write what makes you an ideal candidate…" value={form.ideal_candidate} onChange={(e) => set("ideal_candidate", e.target.value)} />
+                    <label className="ta-label">What makes you an Ideal Candidate<span className="req">*</span></label>
+                    <textarea className={`ta-textarea ${errors.ideal_candidate ? "invalid" : ""}`} placeholder="Write what makes you an ideal candidate…" value={form.ideal_candidate} onChange={(e) => set("ideal_candidate", e.target.value)} />
+                    {errors.ideal_candidate && <p className="ta-error">{errors.ideal_candidate}</p>}
                   </div>
 
                   <div className="ta-field">
-                    <label className="ta-label">How did you find out about us</label>
+                    <label className="ta-label">How did you find out about us<span className="req">*</span></label>
                     <RadioGroup options={HOW_FOUND} value={form.how_found} onChange={(v) => set("how_found", v)} />
+                    {errors.how_found && <p className="ta-error">{errors.how_found}</p>}
                   </div>
 
                   <label className="ta-declare">
