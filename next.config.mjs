@@ -64,6 +64,13 @@ const GTAG_FRAME = [
   "https://www.googletagmanager.com"
 ];
 
+// The dev server talks to localhost over ws for hot reload. Those origins are
+// meaningless in a deployed build, so keep them out of the production policy.
+const DEV_CONNECT =
+  process.env.NODE_ENV === "production"
+    ? []
+    : ["ws://localhost:*", "wss://localhost:*", "http://localhost:*", "http://127.0.0.1:*"];
+
 const csp = [
   ["default-src", "'self'"],
   ["script-src", "'self'", "'unsafe-eval'", "'unsafe-inline'", ...GTAG_SCRIPT, ...CLOUDFLARE_SCRIPT],
@@ -76,10 +83,7 @@ const csp = [
     "'self'",
     SUPABASE,
     `wss://${SUPABASE.replace("https://", "")}`,
-    "ws://localhost:*",
-    "wss://localhost:*",
-    "http://localhost:*",
-    "http://127.0.0.1:*",
+    ...DEV_CONNECT,
     ...GTAG_CONNECT,
     ...CLOUDFLARE_CONNECT
   ]
