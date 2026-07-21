@@ -40,7 +40,7 @@ const INTERVIEW_TIMES = ["Morning", "Afternoon", "Evening"];
 const EMPLOYMENT = ["Full-time", "Part-time"];
 const APPLYING_FOR = ["Quran", "Arabic Study", "Islamic", "Admin"];
 const CHILDREN_OPTIONS = ["No", "Younger than 3 year old", "Younger than 5 year old", "Other"];
-const HOW_FOUND = ["Facebook", "Linkedin", "Google", "Bayyinah Website", "Advertisement", "Others"];
+const HOW_FOUND = ["Facebook", "Linkedin", "Google", "Yaqeen Website", "Advertisement", "Others"];
 const LANGUAGES = ["English", "Arabic", "Urdu", "French", "Germany", "Russian"];
 
 const PASSAGE =
