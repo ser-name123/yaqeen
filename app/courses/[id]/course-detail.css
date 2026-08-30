@@ -109,8 +109,10 @@
 }
 
 /* Rich content */
+.cd-rich h1 { margin: 26px 0 10px 0; font-size: 20px; font-weight: 600; color: var(--fg-color); font-family: var(--font-serif); }
+.cd-rich h2 { margin: 24px 0 8px 0; font-size: 18px; font-weight: 600; color: var(--fg-color); font-family: var(--font-serif); }
 .cd-rich h3 { margin: 22px 0 8px 0; font-size: 16.5px; font-weight: 500; color: var(--fg-color); font-family: var(--font-serif); }
-.cd-rich h3:first-child { margin-top: 0; }
+.cd-rich h1:first-child, .cd-rich h2:first-child, .cd-rich h3:first-child { margin-top: 0; }
 
 /* Course content accordion */
 .cd-acc { display: flex; flex-direction: column; gap: 10px; }

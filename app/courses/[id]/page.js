@@ -141,14 +141,9 @@ export default function CourseDetailPage() {
     { icon: <IconGlobe />, lbl: "Mode", val: c.mode || DEFAULT_META.mode },
     { icon: <IconUsers />, lbl: "Age Group", val: c.age_group || DEFAULT_META.age_group }
   ];
-  const descParas = c.description ? paras(c.description) : [
-    `The ${title} course at Yaqeen Institute is tailored for learners who want to advance their skills to the next level. Through engaging, interactive lessons and expert guidance, students build a strong, lasting understanding while enjoying a supportive learning environment.`,
-    "Our experienced instructors help children and adults learn online with confidence — combining structured teaching, practical activities and personalised feedback. Suitable for all ages and levels."
-  ];
   const learnItems = c.learn_points ? lines(c.learn_points) : DEFAULT_LEARN;
   const reqItems = c.requirements ? lines(c.requirements) : DEFAULT_REQ;
   const whoItems = c.who_for ? lines(c.who_for) : DEFAULT_WHO;
-  const contentParas = c.content_details ? paras(c.content_details) : null;
   const modules = c.course_modules ? pairs(c.course_modules).map((p) => ({ t: p.left, a: p.right })) : DEFAULT_CONTENT;
   const faqs = c.faqs ? pairs(c.faqs).map((p) => ({ q: p.left, a: p.right })) : DEFAULT_FAQS;
   const others = allCourses.filter((x) => String(x.id) !== String(id)).slice(0, 3);
@@ -200,7 +195,14 @@ export default function CourseDetailPage() {
         <div className="cd-main">
           <div className="cd-card">
             <h2>Description</h2>
-            {descParas.map((p, i) => <p key={i}>{p}</p>)}
+            {c.description ? (
+              renderRichText(c.description)
+            ) : (
+              <>
+                <p>The {title} course at Yaqeen Institute is tailored for learners who want to advance their skills to the next level. Through engaging, interactive lessons and expert guidance, students build a strong, lasting understanding while enjoying a supportive learning environment.</p>
+                <p>Our experienced instructors help children and adults learn online with confidence — combining structured teaching, practical activities and personalised feedback. Suitable for all ages and levels.</p>
+              </>
+            )}
           </div>
 
           <div className="cd-card">
@@ -226,8 +228,8 @@ export default function CourseDetailPage() {
 
           <div className="cd-card cd-rich">
             <h2>{title} — Learn With Yaqeen Institute</h2>
-            {contentParas ? (
-              contentParas.map((p, i) => <p key={i}>{p}</p>)
+            {c.content_details ? (
+              renderRichText(c.content_details)
             ) : (
               <>
                 <p>If you want structured {title} lessons online, Yaqeen Institute offers a full program for learners of all ages. Our online classes help you learn with confidence, whether you are just starting out or deepening your existing knowledge.</p>
@@ -318,4 +320,30 @@ export default function CourseDetailPage() {
       </section>
     </main>
   );
+}
+
+function renderRichText(text) {
+  if (!text) return null;
+  const paragraphs = text.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  return paragraphs.map((p, i) => {
+    const match = p.match(/^(#{1,3})\s+(.*)$/s);
+    if (match) {
+      const level = match[1].length;
+      const content = match[2];
+      const Tag = `h${level}`;
+      return <Tag key={i}>{renderInlineBold(content)}</Tag>;
+    }
+    return <p key={i}>{renderInlineBold(p)}</p>;
+  });
+}
+
+function renderInlineBold(text) {
+  if (!text) return "";
+  const parts = text.split(/\*\*([^*]+)\*\*/g);
+  return parts.map((part, idx) => {
+    if (idx % 2 === 1) {
+      return <strong key={idx}>{part}</strong>;
+    }
+    return part;
+  });
 }

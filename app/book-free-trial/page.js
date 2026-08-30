@@ -292,6 +292,7 @@ export default function BookFreeTrialPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
+          timezone: typeof Intl !== "undefined" ? Intl.DateTimeFormat().resolvedOptions().timeZone : "",
           browser_info: typeof navigator !== "undefined" ? navigator.userAgent : "Unknown",
           system_info: typeof navigator !== "undefined" ? navigator.platform : "Unknown"
         })

@@ -76,7 +76,7 @@ const csp = [
   ["script-src", "'self'", "'unsafe-eval'", "'unsafe-inline'", ...GTAG_SCRIPT, ...CLOUDFLARE_SCRIPT],
   ["style-src", "'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
   ["font-src", "'self'", "https://fonts.gstatic.com", "data:"],
-  ["img-src", "'self'", "data:", "blob:", "https://images.unsplash.com", SUPABASE, ...GTAG_IMG],
+  ["img-src", "'self'", "data:", "blob:", "https://images.unsplash.com", "https://res.cloudinary.com", SUPABASE, ...GTAG_IMG],
   ["frame-src", "'self'", ...GTAG_FRAME],
   [
     "connect-src",

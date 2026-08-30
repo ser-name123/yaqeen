@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase";
 import { sendMail, getAdminRecipients } from "@/lib/mailer";
 import { freeTrialUserEmail, freeTrialAdminEmail } from "@/lib/email-templates";
+import { formatTimeInTimezones } from "@/lib/timezone-helper";
 
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://yaqeeninstitute.online").replace(/\/$/, "");
 
@@ -69,6 +70,17 @@ export async function POST(request) {
     }
     if (!city) city = "Unknown";
 
+    // ---- Convert times for database message and emails ----
+    const tzRes = formatTimeInTimezones(form.date, form.hh, form.mm, form.ap, form.timezone, form.country);
+    let preferredTimeStr = time;
+    if (tzRes.success) {
+      preferredTimeStr = 
+        `\n  - ${tzRes.local}` +
+        `\n  - ${tzRes.india}` +
+        `\n  - ${tzRes.egypt}`;
+      form.convertedTimes = tzRes;
+    }
+
     // ---- Message blob (kept identical to the admin detail view format) ----
     const message =
       `New Free Trial Booking\n` +
@@ -82,7 +94,7 @@ export async function POST(request) {
       `Preferred Teacher: ${form.teacher || ""}\n` +
       `How they found us: ${form.source || "Not specified"}\n` +
       `Preferred Date: ${form.date || ""}\n` +
-      `Preferred Time: ${time}`;
+      `Preferred Time: ${preferredTimeStr}`;
 
     const subject = `Free Trial Booking — ${form.learn || "General"}`;
 

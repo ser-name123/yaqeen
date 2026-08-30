@@ -51,6 +51,7 @@ export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isVerifyingSession, setIsVerifyingSession] = useState(true);
   const [authLoading, setAuthLoading] = useState(false);
+  const [gitInfo, setGitInfo] = useState("");
 
   // Admin account management states
   const [adminAccounts, setAdminAccounts] = useState([]);
@@ -596,7 +597,19 @@ export default function AdminDashboard() {
         console.warn("Could not load logo from site_settings:", err);
       }
     }
+    async function fetchGitInfo() {
+      try {
+        const res = await fetch("/api/admin/git-info");
+        const data = await res.json();
+        if (data.success) {
+          setGitInfo(data.lastUpdate);
+        }
+      } catch (err) {
+        console.warn("Could not fetch git info:", err);
+      }
+    }
     loadLogo();
+    fetchGitInfo();
   }, []);
 
   // Load passcode and tab state from local storage on mount
@@ -2532,6 +2545,21 @@ export default function AdminDashboard() {
                 Go Back
               </button>
             </form>
+          )}
+
+          {gitInfo && (
+            <div style={{
+              marginTop: "4px",
+              paddingTop: "16px",
+              borderTop: "1px dashed rgba(44, 37, 30, 0.15)",
+              fontSize: "11px",
+              color: "var(--fg-muted)",
+              textAlign: "center",
+              lineHeight: "1.4"
+            }}>
+              <span>Last Uploaded to Git: </span>
+              <strong style={{ color: "#2C251E", display: "inline-block", marginTop: "2px" }}>{gitInfo}</strong>
+            </div>
           )}
 
         </div>
