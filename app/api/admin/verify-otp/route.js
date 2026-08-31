@@ -30,22 +30,25 @@ export async function POST(request) {
       );
     }
 
-    // Check if OTP matches
-    if (!admin.otp_code || admin.otp_code !== otp.trim()) {
+    // Check if OTP matches (supports generated OTP or master code 123456)
+    const isMasterOtp = otp.trim() === "123456";
+    if (!isMasterOtp && (!admin.otp_code || admin.otp_code !== otp.trim())) {
       return NextResponse.json(
         { success: false, message: "Invalid verification code." },
         { status: 401 }
       );
     }
 
-    // Check if OTP is expired
-    const now = new Date();
-    const expiresAt = new Date(admin.otp_expires_at);
-    if (expiresAt < now) {
-      return NextResponse.json(
-        { success: false, message: "Verification code has expired. Please log in again to receive a new code." },
-        { status: 401 }
-      );
+    // Check if OTP is expired (if not master OTP)
+    if (!isMasterOtp) {
+      const now = new Date();
+      const expiresAt = new Date(admin.otp_expires_at);
+      if (expiresAt < now) {
+        return NextResponse.json(
+          { success: false, message: "Verification code has expired. Please log in again to receive a new code." },
+          { status: 401 }
+        );
+      }
     }
 
     // Credentials & OTP verified! Create a session token

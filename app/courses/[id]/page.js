@@ -324,6 +324,10 @@ export default function CourseDetailPage() {
 
 function renderRichText(text) {
   if (!text) return null;
+  // If content contains rich HTML tags from rich text editor
+  if (/<[a-z][\s\S]*>/i.test(text)) {
+    return <div className="cd-rich-rendered" dangerouslySetInnerHTML={{ __html: text }} />;
+  }
   const paragraphs = text.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
   return paragraphs.map((p, i) => {
     const match = p.match(/^(#{1,3})\s+(.*)$/s);

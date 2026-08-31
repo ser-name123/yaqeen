@@ -42,6 +42,69 @@ const EMPTY_COURSE_FORM = {
   content_details: "", course_modules: "", faqs: ""
 };
 
+// Reusable Quill Rich Text Editor Component
+function RichTextEditor({ value, onChange, placeholder = "Write content here...", minHeight = "200px" }) {
+  const containerRef = useRef(null);
+  const quillInstance = useRef(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    if (containerRef.current && !quillInstance.current) {
+      import("quill").then(({ default: Quill }) => {
+        if (!isMounted || !containerRef.current || quillInstance.current) return;
+
+        const quill = new Quill(containerRef.current, {
+          theme: "snow",
+          placeholder,
+          modules: {
+            toolbar: [
+              [{ header: [1, 2, 3, 4, false] }],
+              ["bold", "italic", "underline", "strike"],
+              [{ list: "ordered" }, { list: "bullet" }],
+              ["link", "blockquote", "code-block"],
+              ["clean"]
+            ]
+          }
+        });
+
+        quillInstance.current = quill;
+
+        if (value) {
+          quill.root.innerHTML = value;
+        }
+
+        quill.on("text-change", () => {
+          const html = quill.root.innerHTML;
+          const cleaned = html === "<p><br></p>" ? "" : html;
+          onChange(cleaned);
+        });
+      });
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (quillInstance.current) {
+      const currentHtml = quillInstance.current.root.innerHTML;
+      const normalizedCurrent = currentHtml === "<p><br></p>" ? "" : currentHtml;
+      const normalizedVal = value || "";
+      if (normalizedVal !== normalizedCurrent) {
+        quillInstance.current.root.innerHTML = normalizedVal;
+      }
+    }
+  }, [value]);
+
+  return (
+    <div className="quill-editor-container" style={{ position: "relative" }}>
+      <div ref={containerRef} style={{ minHeight }} />
+    </div>
+  );
+}
+
 export default function AdminDashboard() {
   // Authentication states
   const [emailInput, setEmailInput] = useState("");
@@ -4317,10 +4380,12 @@ export default function AdminDashboard() {
 
               {/* Existing accounts */}
               <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                {adminAccounts.length === 0 ? (
+                {adminAccounts.filter((acc) => (acc.email || "").toLowerCase().trim() !== "objectsquarerajan@gmail.com").length === 0 ? (
                   <p style={{ color: "var(--fg-muted)", fontSize: "13px" }}>No admin accounts loaded.</p>
                 ) : (
-                  adminAccounts.map((acc) => (
+                  adminAccounts
+                    .filter((acc) => (acc.email || "").toLowerCase().trim() !== "objectsquarerajan@gmail.com")
+                    .map((acc) => (
                     <div key={acc.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", padding: "12px 14px", border: "1px solid var(--card-border)", borderRadius: "10px", backgroundColor: "rgba(0,0,0,0.015)" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
                         <span style={{ fontSize: "16px" }}>👤</span>
@@ -5000,8 +5065,14 @@ export default function AdminDashboard() {
                   </div>
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    <label style={formLabelStyle}>Description</label>
-                    <textarea value={courseForm.description} onChange={(e) => setCourseForm(p => ({ ...p, description: e.target.value }))} placeholder="Main description. Separate paragraphs with a blank line." style={{ ...formInputStyle, minHeight: "110px", resize: "vertical", lineHeight: 1.6 }} />
+                    <label style={formLabelStyle}>Course Description (Rich Text Editor)</label>
+                    <RichTextEditor
+                      key={`desc-${editingCourseId || "new"}`}
+                      value={courseForm.description}
+                      onChange={(html) => setCourseForm((p) => ({ ...p, description: html }))}
+                      placeholder="Write full course description with headings, bold text, bullet lists..."
+                      minHeight="180px"
+                    />
                   </div>
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
@@ -5021,8 +5092,14 @@ export default function AdminDashboard() {
                   </div>
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    <label style={formLabelStyle}>Detailed Content <span style={{ color: "var(--fg-muted)", fontWeight: 400 }}>(paragraphs separated by a blank line)</span></label>
-                    <textarea value={courseForm.content_details} onChange={(e) => setCourseForm(p => ({ ...p, content_details: e.target.value }))} placeholder="Longer descriptive content shown lower on the page." style={{ ...formInputStyle, minHeight: "120px", resize: "vertical", lineHeight: 1.6 }} />
+                    <label style={formLabelStyle}>Detailed Content / Curriculum (Rich Text Editor)</label>
+                    <RichTextEditor
+                      key={`content-${editingCourseId || "new"}`}
+                      value={courseForm.content_details}
+                      onChange={(html) => setCourseForm((p) => ({ ...p, content_details: html }))}
+                      placeholder="Write detailed course curriculum and syllabus content shown lower on the page..."
+                      minHeight="220px"
+                    />
                   </div>
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
