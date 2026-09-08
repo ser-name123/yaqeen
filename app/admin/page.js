@@ -3138,6 +3138,7 @@ export default function AdminDashboard() {
                           <th style={{ padding: "12px" }}>Category</th>
                           <th style={{ padding: "12px" }}>Author</th>
                           <th style={{ padding: "12px" }}>Slug</th>
+                          <th style={{ padding: "12px" }}>Published</th>
                           <th style={{ padding: "12px", textAlign: "right" }}>Actions</th>
                         </tr>
                       </thead>
@@ -3148,6 +3149,7 @@ export default function AdminDashboard() {
                             <td style={{ padding: "12px" }}><span style={{ padding: "3px 8px", background: "rgba(255,255,255,0.05)", borderRadius: "4px", fontSize: "12px" }}>{b.category}</span></td>
                             <td style={{ padding: "12px" }}>{b.author}</td>
                             <td style={{ padding: "12px", fontFamily: "monospace", color: "var(--fg-muted)" }}>{b.slug}</td>
+                            <td style={{ padding: "12px", color: "var(--fg-muted)", whiteSpace: "nowrap" }}>{b.created_at ? new Date(b.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "—"}</td>
                             <td style={{ padding: "12px", textAlign: "right", display: "flex", gap: "8px", justifyContent: "flex-end" }}>
                               <button onClick={() => triggerEditBlog(b)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>Edit</button>
                               <button onClick={() => handleDeleteBlog(b.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>Delete</button>
