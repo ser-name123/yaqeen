@@ -4202,6 +4202,7 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
+              {(!currentAdmin || canManageStaff(currentAdmin)) && (<>
               <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
                 <h3 style={{ fontSize: "18px", fontWeight: "600", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px" }}>Website Logo Settings</h3>
                 
@@ -4364,6 +4365,7 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               </div>
+              </>)}
 
               <button type="submit" className="btn-primary" style={{ width: "fit-content", alignSelf: "flex-end" }}>
                 Save Settings & Credentials
@@ -4384,6 +4386,7 @@ export default function AdminDashboard() {
             )}
 
             {/* Sitemap Generator Panel */}
+            {(!currentAdmin || canManageStaff(currentAdmin)) && (
             <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
               <div>
                 <h3 style={{ fontSize: "18px", fontWeight: "600", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px" }}>XML Sitemap Generator</h3>
@@ -4392,15 +4395,16 @@ export default function AdminDashboard() {
                 </p>
               </div>
 
-              <button 
-                type="button" 
+              <button
+                type="button"
                 onClick={handleGenerateSitemap}
-                className="btn-primary" 
+                className="btn-primary"
                 style={{ width: "fit-content", display: "inline-flex", alignItems: "center", gap: "8px" }}
               >
                 🌐 Generate Sitemap
               </button>
             </div>
+            )}
           </div>
         )}
 

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase";
 import { getAllPageContent, mergePageContent, PAGE_DEFAULTS, PAGE_LIST } from "@/lib/pages";
+import { hasTab } from "@/lib/roles";
 
 async function validateSession(request, supabase) {
   const authHeader = request.headers.get("authorization");
@@ -18,8 +19,12 @@ async function validateSession(request, supabase) {
 export async function GET(request) {
   try {
     const supabase = getSupabaseAdmin();
-    if (!(await validateSession(request, supabase))) {
+    const admin = await validateSession(request, supabase);
+    if (!admin) {
       return NextResponse.json({ success: false, message: "Unauthorized." }, { status: 401 });
+    }
+    if (!hasTab(admin, "pages")) {
+      return NextResponse.json({ success: false, message: "You do not have permission for Page Management." }, { status: 403 });
     }
     const pages = await getAllPageContent(supabase);
     return NextResponse.json({ success: true, pages, list: PAGE_LIST });
@@ -32,8 +37,12 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const supabase = getSupabaseAdmin();
-    if (!(await validateSession(request, supabase))) {
+    const admin = await validateSession(request, supabase);
+    if (!admin) {
       return NextResponse.json({ success: false, message: "Unauthorized." }, { status: 401 });
+    }
+    if (!hasTab(admin, "pages")) {
+      return NextResponse.json({ success: false, message: "You do not have permission for Page Management." }, { status: 403 });
     }
     const { slug, content } = await request.json();
     if (!slug || !PAGE_DEFAULTS[slug]) {

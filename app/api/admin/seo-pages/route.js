@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase";
 import { getAllPageSeo, getSiteUrl, mergePageSeo, PAGE_SEO_DEFAULTS, SEO_PAGE_LIST } from "@/lib/seo";
+import { hasTab } from "@/lib/roles";
 
 async function validateSession(request, supabase) {
   const authHeader = request.headers.get("authorization");
@@ -18,8 +19,12 @@ async function validateSession(request, supabase) {
 export async function GET(request) {
   try {
     const supabase = getSupabaseAdmin();
-    if (!(await validateSession(request, supabase))) {
+    const admin = await validateSession(request, supabase);
+    if (!admin) {
       return NextResponse.json({ success: false, message: "Unauthorized." }, { status: 401 });
+    }
+    if (!hasTab(admin, "seo")) {
+      return NextResponse.json({ success: false, message: "You do not have permission for the SEO Manager." }, { status: 403 });
     }
     const [pages, siteUrl] = await Promise.all([getAllPageSeo(supabase), getSiteUrl(supabase)]);
     return NextResponse.json({ success: true, pages, list: SEO_PAGE_LIST, siteUrl });
@@ -32,8 +37,12 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const supabase = getSupabaseAdmin();
-    if (!(await validateSession(request, supabase))) {
+    const admin = await validateSession(request, supabase);
+    if (!admin) {
       return NextResponse.json({ success: false, message: "Unauthorized." }, { status: 401 });
+    }
+    if (!hasTab(admin, "seo")) {
+      return NextResponse.json({ success: false, message: "You do not have permission for the SEO Manager." }, { status: 403 });
     }
     const body = await request.json();
 

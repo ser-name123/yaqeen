@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase";
+import { hasTab } from "@/lib/roles";
 import fs from "fs";
 import path from "path";
 
@@ -27,6 +28,9 @@ export async function POST(request) {
     const caller = await validateSession(request, supabaseAdmin);
     if (!caller) {
       return NextResponse.json({ success: false, message: "Unauthorized." }, { status: 401 });
+    }
+    if (!hasTab(caller, "seo")) {
+      return NextResponse.json({ success: false, message: "You do not have permission for the SEO Manager." }, { status: 403 });
     }
 
     const { siteUrl } = await request.json();

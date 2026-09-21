@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase";
+import { canManageStaff } from "@/lib/roles";
 
 // Helper to validate session token
 async function validateSession(request, supabaseAdmin) {
@@ -129,30 +130,34 @@ export async function PUT(request) {
       );
     }
 
-    // Update site settings
-    const { error: settingsError } = await supabaseAdmin
-      .from("site_settings")
-      .upsert({
-        id: "global",
-        logo_text: logo_text || "yaqeen",
-        logo_url: logo_url || null,
-        contact_email: contact_email || "info@yaqeeninstitute.com",
-        contact_phone: contact_phone || "+44 7700 183483",
-        contact_hours: contact_hours || "24x7 - We're always here for you.",
-        contact_support: contact_support || "We serve students from around the world.",
-        social_facebook: social_facebook || "",
-        social_instagram: social_instagram || "",
-        social_youtube: social_youtube || "",
-        social_whatsapp: social_whatsapp || "",
-        updated_at: new Date().toISOString()
-      });
+    // Site-wide settings (logo/contact/social) may only be changed by admins
+    // who can manage staff (super admins). Other staff just update their own
+    // login above; the site settings are left untouched.
+    if (canManageStaff(admin)) {
+      const { error: settingsError } = await supabaseAdmin
+        .from("site_settings")
+        .upsert({
+          id: "global",
+          logo_text: logo_text || "yaqeen",
+          logo_url: logo_url || null,
+          contact_email: contact_email || "info@yaqeeninstitute.com",
+          contact_phone: contact_phone || "+44 7700 183483",
+          contact_hours: contact_hours || "24x7 - We're always here for you.",
+          contact_support: contact_support || "We serve students from around the world.",
+          social_facebook: social_facebook || "",
+          social_instagram: social_instagram || "",
+          social_youtube: social_youtube || "",
+          social_whatsapp: social_whatsapp || "",
+          updated_at: new Date().toISOString()
+        });
 
-    if (settingsError) {
-      console.error("Site settings update error:", settingsError);
-      return NextResponse.json(
-        { success: false, message: "Credentials updated, but failed to update site logo configurations." },
-        { status: 500 }
-      );
+      if (settingsError) {
+        console.error("Site settings update error:", settingsError);
+        return NextResponse.json(
+          { success: false, message: "Credentials updated, but failed to update site logo configurations." },
+          { status: 500 }
+        );
+      }
     }
 
     return NextResponse.json({

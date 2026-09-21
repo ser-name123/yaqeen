@@ -56,8 +56,9 @@ export default function Footer({ faviconUrl: propFaviconUrl }) {
         if (data && data.length > 0) {
           // If fetched courses are fewer than 5, supplement with defaults
           if (data.length < 5) {
-            const existingIds = new Set(data.map((c) => c.id));
-            const merged = [...data, ...DEFAULT_COURSES.filter((c) => !existingIds.has(c.id))].slice(0, 7);
+            // De-dupe by title (DB ids and default slug ids never match).
+            const existingTitles = new Set(data.map((c) => (c.title || "").trim().toLowerCase()));
+            const merged = [...data, ...DEFAULT_COURSES.filter((c) => !existingTitles.has((c.title || "").trim().toLowerCase()))].slice(0, 7);
             setFooterCourses(merged);
           } else {
             setFooterCourses(data);

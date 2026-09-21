@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase";
 import { getLayoutConfig } from "@/lib/layout";
+import { hasTab } from "@/lib/roles";
 
 async function validateSession(request, supabase) {
   const authHeader = request.headers.get("authorization");
@@ -18,8 +19,12 @@ async function validateSession(request, supabase) {
 export async function GET(request) {
   try {
     const supabase = getSupabaseAdmin();
-    if (!(await validateSession(request, supabase))) {
+    const admin = await validateSession(request, supabase);
+    if (!admin) {
       return NextResponse.json({ success: false, message: "Unauthorized." }, { status: 401 });
+    }
+    if (!hasTab(admin, "footer")) {
+      return NextResponse.json({ success: false, message: "You do not have permission for Header & Footer." }, { status: 403 });
     }
     const config = await getLayoutConfig(supabase);
     return NextResponse.json({ success: true, config });
@@ -40,8 +45,12 @@ const TEXT_FIELDS = [
 export async function POST(request) {
   try {
     const supabase = getSupabaseAdmin();
-    if (!(await validateSession(request, supabase))) {
+    const admin = await validateSession(request, supabase);
+    if (!admin) {
       return NextResponse.json({ success: false, message: "Unauthorized." }, { status: 401 });
+    }
+    if (!hasTab(admin, "footer")) {
+      return NextResponse.json({ success: false, message: "You do not have permission for Header & Footer." }, { status: 403 });
     }
     const c = (await request.json()).config || {};
     const payload = { id: "global", updated_at: new Date().toISOString() };

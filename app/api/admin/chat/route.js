@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase";
+import { hasTab } from "@/lib/roles";
 
 // Same session-token check the other admin routes use.
 async function validateSession(request, supabaseAdmin) {
@@ -21,8 +22,12 @@ async function validateSession(request, supabaseAdmin) {
 export async function GET(request) {
   try {
     const supabase = getSupabaseAdmin();
-    if (!(await validateSession(request, supabase))) {
+    const admin = await validateSession(request, supabase);
+    if (!admin) {
       return NextResponse.json({ success: false, message: "Unauthorized." }, { status: 401 });
+    }
+    if (!hasTab(admin, "liveChat")) {
+      return NextResponse.json({ success: false, message: "You do not have permission for Live Chat." }, { status: 403 });
     }
 
     const sessionId = new URL(request.url).searchParams.get("sessionId");
@@ -59,8 +64,12 @@ export async function GET(request) {
 export async function DELETE(request) {
   try {
     const supabase = getSupabaseAdmin();
-    if (!(await validateSession(request, supabase))) {
+    const admin = await validateSession(request, supabase);
+    if (!admin) {
       return NextResponse.json({ success: false, message: "Unauthorized." }, { status: 401 });
+    }
+    if (!hasTab(admin, "liveChat")) {
+      return NextResponse.json({ success: false, message: "You do not have permission for Live Chat." }, { status: 403 });
     }
     const sessionId = new URL(request.url).searchParams.get("sessionId");
     if (!sessionId) return NextResponse.json({ success: false, message: "Missing sessionId." }, { status: 400 });
@@ -78,8 +87,12 @@ export async function DELETE(request) {
 export async function POST(request) {
   try {
     const supabase = getSupabaseAdmin();
-    if (!(await validateSession(request, supabase))) {
+    const admin = await validateSession(request, supabase);
+    if (!admin) {
       return NextResponse.json({ success: false, message: "Unauthorized." }, { status: 401 });
+    }
+    if (!hasTab(admin, "liveChat")) {
+      return NextResponse.json({ success: false, message: "You do not have permission for Live Chat." }, { status: 403 });
     }
 
     const { sessionId, text } = await request.json();

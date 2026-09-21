@@ -141,14 +141,18 @@ export async function PATCH(request) {
       if (role === "super_admin" && !isSuperAdmin(caller)) {
         return NextResponse.json({ success: false, message: "Only a Super Admin can grant the Super Admin role." }, { status: 403 });
       }
-      // Don't let an admin demote the protected owner or themselves out of super admin by accident.
-      if (target.id === caller.id && caller.role === "super_admin" && role !== "super_admin") {
+      // Don't let a super admin demote themselves out of super admin by accident
+      // (covers legacy owners whose role is still null via isSuperAdmin).
+      if (target.id === caller.id && isSuperAdmin(caller) && role !== "super_admin") {
         return NextResponse.json({ success: false, message: "You cannot remove your own Super Admin role." }, { status: 400 });
       }
       update.role = role;
       update.permissions = resolvePermissions(role, body.permissions);
     } else if (Array.isArray(body.permissions)) {
-      update.permissions = resolvePermissions(target.role === "custom" ? "custom" : "custom", body.permissions);
+      // Permissions changed without a role: make it a custom role so the exact
+      // choices are honoured (a preset would otherwise ignore them).
+      update.role = "custom";
+      update.permissions = resolvePermissions("custom", body.permissions);
     }
 
     if (typeof body.status === "string") {
