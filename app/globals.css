@@ -4236,3 +4236,8 @@ h4 {
   .oqc-wrap { grid-template-columns: 1fr; gap: 40px; }
   .oqc-image { max-width: 440px; margin: 0 auto; }
 }
+
+/* Admin content padding — smaller on phones */
+@media (max-width: 640px) {
+  .admin-body-pad { padding: 16px 16px 32px 16px !important; }
+}

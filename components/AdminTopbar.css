@@ -6,12 +6,12 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin: -40px -40px 28px -40px;   /* cancel the main panel's 40px padding to go full width */
-  padding: 12px 28px;
-  background: rgba(253, 250, 243, 0.85);
-  backdrop-filter: saturate(180%) blur(10px);
+  margin: 0;                 /* main panel now has no padding, so the bar is already full width */
+  padding: 14px 28px;
+  background: rgba(253, 250, 243, 0.92);
+  backdrop-filter: saturate(180%) blur(12px);
   border-bottom: 1px solid #e9e0cd;
-  box-shadow: 0 2px 12px rgba(44, 37, 30, 0.03);
+  box-shadow: 0 2px 12px rgba(44, 37, 30, 0.04);
 }
 
 .atb-left { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
@@ -82,5 +82,5 @@
   .atb-profile-email { display: none; }
 }
 @media (max-width: 640px) {
-  .atb { margin: -24px -20px 20px -20px; padding: 10px 16px; }
+  .atb { margin: 0; padding: 10px 16px; }
 }

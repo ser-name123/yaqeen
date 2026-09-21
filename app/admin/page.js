@@ -2903,7 +2903,7 @@ export default function AdminDashboard() {
       </aside>
 
       {/* Main panel content */}
-      <main className="admin-main" style={{ padding: "40px", overflowY: "auto", maxHeight: "100vh" }}>
+      <main className="admin-main" style={{ padding: 0, overflowY: "auto", maxHeight: "100vh" }}>
         {/* Sticky top bar */}
         <AdminTopbar
           adminEmail={profileForm.email}
@@ -2917,6 +2917,7 @@ export default function AdminDashboard() {
           onLogout={handleLogout}
         />
 
+        <div className="admin-body-pad" style={{ padding: "24px 40px 40px 40px" }}>
         {/* Header toolbar */}
         <div className="admin-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px", borderBottom: "1px solid var(--card-border)", paddingBottom: "20px" }}>
           <div>
@@ -5348,6 +5349,7 @@ export default function AdminDashboard() {
             )}
           </div>
         )}
+        </div>
       </main>
     </div>
   );
