@@ -105,7 +105,7 @@ export default function TestimonialsCarousel({ page }) {
             <div className="testi-slide" key={t.id} style={{ flex: `0 0 ${100 / perView}%` }}>
               <div className="testi-card">
                 <span className="testi-quote-mark">&ldquo;</span>
-                <p className="testi-text">{t.content}</p>
+                <div className="testi-text" dangerouslySetInnerHTML={{ __html: t.content || "" }} />
                 <div className="testi-card-divider" />
                 <div className="testi-author-row">
                   <div className="testi-avatar-wrap">

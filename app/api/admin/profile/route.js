@@ -52,6 +52,11 @@ export async function GET(request) {
       success: true,
       email: admin.email,
       password: admin.password,
+      // Staff identity/role so the admin UI can gate tabs by permission.
+      full_name: admin.full_name || "",
+      role: admin.role || "super_admin",
+      status: admin.status || "active",
+      permissions: Array.isArray(admin.permissions) ? admin.permissions : [],
       logo_text: settings?.logo_text || "yaqeen",
       logo_url: settings?.logo_url || "",
       contact_email: settings?.contact_email || "info@yaqeeninstitute.com",

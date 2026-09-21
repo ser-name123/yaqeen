@@ -45,6 +45,14 @@ export async function POST(request) {
       );
     }
 
+    // Suspended staff cannot log in.
+    if (admin.status === "suspended") {
+      return NextResponse.json(
+        { success: false, message: "This account has been suspended. Please contact your administrator." },
+        { status: 403 }
+      );
+    }
+
     // Generate 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes expiration

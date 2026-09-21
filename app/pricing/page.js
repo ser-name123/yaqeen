@@ -5,6 +5,7 @@ import Link from "next/link";
 import "./pricing.css";
 import { supabase } from "@/lib/supabase";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
+import { usePageContent } from "@/lib/use-page-content";
 
 // Seamless, intricate Islamic geometric lace star pattern URL (Girih tiling with overlapping circles)
 const LACE_BACKGROUND_PATTERN = 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'160\' height=\'160\' viewBox=\'0 0 160 160\'%3E%3Cg fill=\'none\' stroke=\'%23C99B4D\' stroke-width=\'0.5\' stroke-opacity=\'0.08\'%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'80\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'80\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'80\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'80\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'80\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'80\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'80\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'80\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'80\'/%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'40\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'40\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'40\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'40\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'40\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'40\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'40\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'40\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'40\'/%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'20\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'20\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'20\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'20\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'20\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'20\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'20\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'20\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'20\'/%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'10\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'10\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'10\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'10\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'10\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'10\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'10\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'10\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'10\'/%3E%3Crect x=\'68\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(0 80 80)\'/%3E%3Crect x=\'68\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(45 80 80)\'/%3E%3Crect x=\'-12\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(0 0 0)\'/%3E%3Crect x=\'-12\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(45 0 0)\'/%3E%3Crect x=\'148\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(0 160 0)\'/%3E%3Crect x=\'148\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(45 160 0)\'/%3E%3Crect x=\'-12\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(0 0 160)\'/%3E%3Crect x=\'-12\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(45 0 160)\'/%3E%3Crect x=\'148\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(0 160 160)\'/%3E%3Crect x=\'148\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(45 160 160)\'/%3E%3Crect x=\'68\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(0 80 0)\'/%3E%3Crect x=\'68\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(45 80 0)\'/%3E%3Crect x=\'-12\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(0 0 80)\'/%3E%3Crect x=\'-12\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(45 0 80)\'/%3E%3Crect x=\'148\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(0 160 80)\'/%3E%3Crect x=\'148\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(45 160 80)\'/%3E%3Crect x=\'68\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(0 80 160)\'/%3E%3Crect x=\'68\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(45 80 160)\'/%3E%3Crect x=\'74\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(0 80 80)\'/%3E%3Crect x=\'74\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(45 80 80)\'/%3E%3Crect x=\'-6\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(0 0 0)\'/%3E%3Crect x=\'-6\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(45 0 0)\'/%3E%3Crect x=\'154\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(0 160 0)\'/%3E%3Crect x=\'154\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(45 160 0)\'/%3E%3Crect x=\'-6\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(0 0 160)\'/%3E%3Crect x=\'-6\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(45 0 160)\'/%3E%3Crect x=\'154\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(0 160 160)\'/%3E%3Crect x=\'154\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(45 160 160)\'/%3E%3Crect x=\'74\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(0 80 0)\'/%3E%3Crect x=\'74\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(45 80 0)\'/%3E%3Crect x=\'-6\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(0 0 80)\'/%3E%3Crect x=\'-6\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(45 0 80)\'/%3E%3Crect x=\'154\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(0 160 80)\'/%3E%3Crect x=\'154\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(45 160 80)\'/%3E%3Crect x=\'74\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(0 80 160)\'/%3E%3Crect x=\'74\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(45 80 160)\'/%3E%3C/g%3E%3C/svg%3E")';
@@ -151,9 +152,14 @@ const IconChevron = ({ size = 20, className }) => (
 );
 
 export default function PricingPage() {
+  const c = usePageContent("pricing");
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
   const [familyImgError, setFamilyImgError] = useState(false);
   const [badgeImgError, setBadgeImgError] = useState(false);
+  const trustItems = c.trust || [];
+  const footnotes = c.footnotes || [];
+  const benefits = c.family?.benefits || [];
+  const faqItems = c.faq?.items || [];
   const [plans, setPlans] = useState([
     {
       id: 1,
@@ -290,12 +296,12 @@ export default function PricingPage() {
           {/* Pill Badge */}
           <div className="pricing-pill reveal-slide-up">
             <IconTag />
-            <span className="pricing-pill-text">Pricing</span>
+            <span className="pricing-pill-text">{c.header?.pill}</span>
           </div>
 
           {/* Headline */}
           <h1 className="pricing-title reveal-slide-up">
-            Plans That Fit Your Family
+            {c.header?.title}
           </h1>
 
           {/* Divider (moved right under title matching mockup) */}
@@ -309,18 +315,18 @@ export default function PricingPage() {
 
           {/* Subtitles */}
           <p className="pricing-subtitle reveal-slide-up">
-            Flexible, affordable plans with family discounts.
+            {c.header?.subtitle1}
           </p>
           <p className="pricing-subtitle reveal-slide-up" style={{ fontSize: "14px", marginTop: "-6px", opacity: 0.85 }}>
-            Quality Quranic education that fits your budget and supports your spiritual journey.
+            {c.header?.subtitle2}
           </p>
 
           {/* Discover Label (with dividers) */}
           <span className="pricing-discover-label reveal-slide-up">
-            Discover the Perfect Plan for You
+            {c.header?.discover_label}
           </span>
           <span className="pricing-transparency-label reveal-slide-up">
-            Transparency You Can Trust • <span className="highlight-gold">No Hidden Fees</span>
+            {c.header?.transparency_prefix}<span className="highlight-gold">{c.header?.transparency_highlight}</span>
           </span>
 
           {/* Pricing Grid */}
@@ -377,51 +383,21 @@ export default function PricingPage() {
           {/* Bottom Trust Banner */}
           <div className="pricing-banner-card reveal-slide-up">
             <div className="pricing-banner-grid">
-              
-              {/* Item 1 */}
-              <div className="banner-item">
-                <div className="banner-icon-circle gold-circle">
-                  <IconShieldCheck />
-                </div>
-                <div>
-                  <h4 className="banner-item-title">No Hidden Fees</h4>
-                  <p className="banner-item-desc">What you see is what you pay.</p>
-                </div>
-              </div>
-
-              {/* Item 2 */}
-              <div className="banner-item">
-                <div className="banner-icon-circle green-circle">
-                  <IconPeople />
-                </div>
-                <div>
-                  <h4 className="banner-item-title">Family Discounts</h4>
-                  <p className="banner-item-desc">Save more when you learn together.</p>
-                </div>
-              </div>
-
-              {/* Item 3 */}
-              <div className="banner-item">
-                <div className="banner-icon-circle gold-circle">
-                  <IconCalendar />
-                </div>
-                <div>
-                  <h4 className="banner-item-title">Flexible Plans</h4>
-                  <p className="banner-item-desc">Choose what works for you.</p>
-                </div>
-              </div>
-
-              {/* Item 4 */}
-              <div className="banner-item">
-                <div className="banner-icon-circle green-circle">
-                  <IconAward />
-                </div>
-                <div>
-                  <h4 className="banner-item-title">Quality Education</h4>
-                  <p className="banner-item-desc">Learn from qualified & certified teachers.</p>
-                </div>
-              </div>
-
+              {trustItems.map((item, i) => {
+                const icons = [<IconShieldCheck />, <IconPeople />, <IconCalendar />, <IconAward />];
+                const circleClass = i % 2 === 0 ? "gold-circle" : "green-circle";
+                return (
+                  <div className="banner-item" key={i}>
+                    <div className={`banner-icon-circle ${circleClass}`}>
+                      {icons[i % icons.length]}
+                    </div>
+                    <div>
+                      <h4 className="banner-item-title">{item.title}</h4>
+                      <p className="banner-item-desc">{item.desc}</p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
@@ -449,39 +425,19 @@ export default function PricingPage() {
                 flexDirection: "column",
                 gap: "14px"
               }}>
-                <li style={{
-                  display: "flex",
-                  gap: "12px",
-                  fontSize: "14.5px",
-                  color: "#6C5D4E",
-                  lineHeight: "1.6",
-                  fontWeight: "500"
-                }}>
-                  <span style={{ color: "#C99B4D", fontSize: "16px", marginTop: "-2px" }}>•</span>
-                  <span>Rescheduled classes must be completed within 30 days of current month.</span>
-                </li>
-                <li style={{
-                  display: "flex",
-                  gap: "12px",
-                  fontSize: "14.5px",
-                  color: "#6C5D4E",
-                  lineHeight: "1.6",
-                  fontWeight: "500"
-                }}>
-                  <span style={{ color: "#C99B4D", fontSize: "16px", marginTop: "-2px" }}>•</span>
-                  <span>Any reschedules or cancellations must be informed to the teacher or admin at least 3-4 hours before the class start time; otherwise, the session is marked attended with no refund or reschedule.</span>
-                </li>
-                <li style={{
-                  display: "flex",
-                  gap: "12px",
-                  fontSize: "14.5px",
-                  color: "#6C5D4E",
-                  lineHeight: "1.6",
-                  fontWeight: "500"
-                }}>
-                  <span style={{ color: "#C99B4D", fontSize: "16px", marginTop: "-2px" }}>•</span>
-                  <span>Discounts are offered to families with two or more members as per the applicable plan and are not valid for group classes. The family discount applies only to the second or subsequent student from the same family, not to all students.</span>
-                </li>
+                {footnotes.map((note, i) => (
+                  <li key={i} style={{
+                    display: "flex",
+                    gap: "12px",
+                    fontSize: "14.5px",
+                    color: "#6C5D4E",
+                    lineHeight: "1.6",
+                    fontWeight: "500"
+                  }}>
+                    <span style={{ color: "#C99B4D", fontSize: "16px", marginTop: "-2px" }}>•</span>
+                    <span>{note}</span>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -495,7 +451,7 @@ export default function PricingPage() {
         
         {/* Pill Badge */}
         <div className="testi-pill reveal-slide-up">
-          <span className="testi-pill-text">Testimonials</span>
+          <span className="testi-pill-text">{c.testimonials?.badge}</span>
         </div>
 
         {/* Decorative Divider Line */}
@@ -509,12 +465,12 @@ export default function PricingPage() {
 
         {/* Section Headline */}
         <h2 className="testi-title reveal-slide-up">
-          Stronger Faith.<br />Stronger <span style={{ color: "#C99B4D" }}>Together.</span>
+          {c.testimonials?.title_line1}<br />{c.testimonials?.title_line2_prefix}<span style={{ color: "#C99B4D" }}>{c.testimonials?.title_highlight}</span>
         </h2>
 
         {/* Section Subtitle / Description */}
         <p className="testi-desc reveal-slide-up">
-          Hear from our learners and parents<br />building a stronger connection with Allah, together.
+          {c.testimonials?.description_line1}<br />{c.testimonials?.description_line2}
         </p>
 
         {/* Testimonials Carousel */}
@@ -544,8 +500,8 @@ export default function PricingPage() {
         {/* Middle-Left: Content */}
         <div className="fdb-content-wrap">
           <h2 className="fdb-title">
-            <span className="highlight-gold">Family Learning,</span><br />
-            <span className="highlight-white">Greater Rewards!</span>
+            <span className="highlight-gold">{c.family?.title_gold}</span><br />
+            <span className="highlight-white">{c.family?.title_white}</span>
           </h2>
           <div className="fdb-divider">
             <div className="fdb-divider-line" />
@@ -553,14 +509,14 @@ export default function PricingPage() {
             <div className="fdb-divider-line" />
           </div>
           <p className="fdb-desc">
-            Enjoy a 5% discount when family members enroll together.
+            {c.family?.desc}
           </p>
         </div>
 
         {/* Middle-Right: Benefits List */}
         <div className="fdb-benefits-wrap">
-          <div className="fdb-benefit-item">
-            <div className="fdb-benefit-circle">
+          {benefits.map((b, i) => {
+            const icons = [
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 18H8a3 3 0 0 0-3 3v0" />
                 <circle cx="10" cy="8" r="3" />
@@ -568,37 +524,29 @@ export default function PricingPage() {
                 <circle cx="14" cy="8" r="3" />
                 <path d="M10 21v-1a2 2 0 0 1 4 0v1" />
                 <circle cx="12" cy="14" r="2" />
-              </svg>
-            </div>
-            <span className="fdb-benefit-label">Learn<br />Together</span>
-          </div>
-          <div className="fdb-benefit-item">
-            <div className="fdb-benefit-circle">
+              </svg>,
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
                 <circle cx="7" cy="7" r="1" fill="currentColor" />
                 <path d="M19 3.5l.8 1.7 1.7.8-1.7.8-.8 1.7-.8-1.7-1.7-.8 1.7-.8z" fill="#C99B4D" stroke="none" />
-              </svg>
-            </div>
-            <span className="fdb-benefit-label">Save<br />More</span>
-          </div>
-          <div className="fdb-benefit-item">
-            <div className="fdb-benefit-circle">
+              </svg>,
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
                 <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-              </svg>
-            </div>
-            <span className="fdb-benefit-label">Grow<br />Together</span>
-          </div>
-          <div className="fdb-benefit-item">
-            <div className="fdb-benefit-circle">
+              </svg>,
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-              </svg>
-            </div>
-            <span className="fdb-benefit-label">Stronger<br />Connection</span>
-          </div>
+              </svg>,
+            ];
+            return (
+              <div className="fdb-benefit-item" key={i}>
+                <div className="fdb-benefit-circle">
+                  {icons[i % icons.length]}
+                </div>
+                <span className="fdb-benefit-label">{b.line1}<br />{b.line2}</span>
+              </div>
+            );
+          })}
         </div>
 
         {/* Right: Golden Badge Space */}
@@ -628,7 +576,7 @@ export default function PricingPage() {
         
         {/* Section Headline */}
         <h2 className="faq-title reveal-slide-up">
-          Many People <span style={{ color: "#C99B4D" }}>Ask About this</span>
+          {c.faq?.title} <span style={{ color: "#C99B4D" }}>{c.faq?.title_highlight}</span>
         </h2>
 
         {/* Decorative Divider Line */}
@@ -642,98 +590,44 @@ export default function PricingPage() {
 
         {/* Section Subtitle / Description */}
         <p className="faq-desc reveal-slide-up">
-          Following are answers to some queries that are posed regularly
+          {c.faq?.description}
         </p>
 
         {/* Accordions Container */}
         <div className="faq-container stagger-group">
-          
-          {/* FAQ 1 */}
-          <div 
-            className="faq-item reveal-stagger" 
-            onClick={() => setOpenFaqIndex(openFaqIndex === 0 ? null : 0)}
-          >
-            <div className="faq-question-row">
-              <div className="faq-icon-badge">
-                <IconCalendar size={20} />
+          {faqItems.map((f, i) => {
+            const icons = [<IconCalendar size={20} />, <IconUser size={20} />, <IconVideoPlay size={20} />, <IconMapPin size={20} />];
+            return (
+              <div
+                className="faq-item reveal-stagger"
+                key={i}
+                onClick={() => setOpenFaqIndex(openFaqIndex === i ? null : i)}
+              >
+                <div className="faq-question-row">
+                  <div className="faq-icon-badge">
+                    {icons[i % icons.length]}
+                  </div>
+                  <span className="faq-question-text">{f.q}</span>
+                  <IconChevron size={18} className={`faq-chevron ${openFaqIndex === i ? "open" : ""}`} />
+                </div>
+                <div className={`faq-answer-wrapper ${openFaqIndex === i ? "open" : ""}`}>
+                  <p className="faq-answer-text">
+                    {f.a}
+                  </p>
+                </div>
               </div>
-              <span className="faq-question-text">Is the class schedule suitable for me?</span>
-              <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 0 ? "open" : ""}`} />
-            </div>
-            <div className={`faq-answer-wrapper ${openFaqIndex === 0 ? "open" : ""}`}>
-              <p className="faq-answer-text">
-                Yes. We offer highly flexible class schedules. You can choose your preferred days and times, and we have teachers available 24/7 across different time zones to fit your busy routine.
-              </p>
-            </div>
-          </div>
-
-          {/* FAQ 2 */}
-          <div 
-            className="faq-item reveal-stagger" 
-            onClick={() => setOpenFaqIndex(openFaqIndex === 1 ? null : 1)}
-          >
-            <div className="faq-question-row">
-              <div className="faq-icon-badge">
-                <IconUser size={20} />
-              </div>
-              <span className="faq-question-text">How do I begin?</span>
-              <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 1 ? "open" : ""}`} />
-            </div>
-            <div className={`faq-answer-wrapper ${openFaqIndex === 1 ? "open" : ""}`}>
-              <p className="faq-answer-text">
-                Getting started is very simple. Just click the &apos;Book Your Free Session Now&apos; button below, fill out a short form with your contact details and preferences, and our academic advisor will contact you within 24 hours to schedule your free trial class.
-              </p>
-            </div>
-          </div>
-
-          {/* FAQ 3 */}
-          <div 
-            className="faq-item reveal-stagger" 
-            onClick={() => setOpenFaqIndex(openFaqIndex === 2 ? null : 2)}
-          >
-            <div className="faq-question-row">
-              <div className="faq-icon-badge">
-                <IconVideoPlay size={20} />
-              </div>
-              <span className="faq-question-text">Are these classes pre-recorded?</span>
-              <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 2 ? "open" : ""}`} />
-            </div>
-            <div className={`faq-answer-wrapper ${openFaqIndex === 2 ? "open" : ""}`}>
-              <p className="faq-answer-text">
-                No, all our classes are 100% live and interactive, conducted one-on-one via Zoom or our portal. This ensures personalized attention and allows you to ask questions and receive instant feedback from your teacher.
-              </p>
-            </div>
-          </div>
-
-          {/* FAQ 4 */}
-          <div 
-            className="faq-item reveal-stagger" 
-            onClick={() => setOpenFaqIndex(openFaqIndex === 3 ? null : 3)}
-          >
-            <div className="faq-question-row">
-              <div className="faq-icon-badge">
-                <IconMapPin size={20} />
-              </div>
-              <span className="faq-question-text">Where is the headquarter of your business?</span>
-              <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 3 ? "open" : ""}`} />
-            </div>
-            <div className={`faq-answer-wrapper ${openFaqIndex === 3 ? "open" : ""}`}>
-              <p className="faq-answer-text">
-                Our digital headquarters and academic operations are based in London, UK, but our teachers and students are spread globally across the UK, USA, Canada, Middle East, and South Asia, providing a truly international learning experience.
-              </p>
-            </div>
-          </div>
-
+            );
+          })}
         </div>
 
         {/* CTA Button */}
         <div className="reveal-slide-up" style={{ display: "flex", justifyContent: "center", width: "100%", marginTop: "56px" }}>
           <Link
-            href="/book-free-trial"
+            href={c.faq?.cta_url || "/book-free-trial"}
             className="faq-cta-btn"
             style={{ textDecoration: "none" }}
           >
-            <span>BOOK YOUR FREE SESSION NOW!</span>
+            <span>{c.faq?.cta_label}</span>
             <span style={{ fontSize: "16px", fontWeight: "bold" }}>→</span>
           </Link>
         </div>

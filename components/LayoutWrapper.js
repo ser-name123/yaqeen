@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CTABanner from "@/components/CTABanner";
+import ChatWidget from "@/components/ChatWidget";
 
 export default function LayoutWrapper({ children, logoText, logoUrl, faviconUrl }) {
   const pathname = usePathname();
@@ -127,6 +128,7 @@ export default function LayoutWrapper({ children, logoText, logoUrl, faviconUrl 
       <div>{children}</div>
       <CTABanner />
       <Footer faviconUrl={faviconUrl} />
+      <ChatWidget />
     </>
   );
 }

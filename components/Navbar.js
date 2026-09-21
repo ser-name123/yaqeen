@@ -1,19 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSettings } from "@/lib/settings-context";
-
-const DISCOVER = [
-  { label: "About", href: "/about" },
-  { label: "Teachers", href: "/teachers" },
-  { label: "Testimonials", href: "/testimonials" },
-  { label: "Faq", href: "/faqs" },
-  { label: "Blog", href: "/blog" },
-  { label: "Careers", href: "/careers" },
-  { label: "Contact", href: "/contact" }
-];
+import { FOOTER_DEFAULTS } from "@/lib/layout";
 
 const IconCaret = () => (
   <svg className="caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
@@ -26,7 +17,8 @@ const linkStyle = { textDecoration: "none", fontSize: "16.5px", fontWeight: "600
 
 export default function Navbar({ faviconUrl = "" }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [discoverOpen, setDiscoverOpen] = useState(false);
+  const [openDrop, setOpenDrop] = useState(null);
+  const [layout, setLayout] = useState(FOOTER_DEFAULTS);
   const { contactPhone } = useSettings();
   const phone = contactPhone || "+44 7700 183483";
   const telHref = `tel:${phone.replace(/[^\d+]/g, "")}`;
@@ -36,6 +28,12 @@ export default function Navbar({ faviconUrl = "" }) {
   useEffect(() => {
     setIsHomePage(pathname === "/");
   }, [pathname]);
+
+  useEffect(() => {
+    fetch("/api/layout").then((r) => r.json()).then((d) => { if (d?.config) setLayout(d.config); }).catch(() => {});
+  }, []);
+
+  const navLinks = layout.header_links || [];
 
   return (
     <header 
@@ -56,31 +54,36 @@ export default function Navbar({ faviconUrl = "" }) {
 
         {/* Desktop Menu */}
         <nav className="header-nav-menu">
-          <li><Link href="/courses" className="header-nav-link" style={linkStyle}>Courses</Link></li>
-          <li><span className="header-item-divider" /></li>
-          <li><Link href="/pricing" className="header-nav-link" style={linkStyle}>Pricing</Link></li>
-          <li><span className="header-item-divider" /></li>
-          <li
-            className={`nav-dropdown ${discoverOpen ? "open" : ""}`}
-            onMouseEnter={() => setDiscoverOpen(true)}
-            onMouseLeave={() => setDiscoverOpen(false)}
-          >
-            <button 
-              type="button" 
-              className={`nav-dropdown-trigger ${discoverOpen ? "active" : ""}`} 
-              onClick={() => setDiscoverOpen((o) => !o)} 
-              aria-expanded={discoverOpen} 
-              suppressHydrationWarning 
-              style={{ ...linkStyle, background: "none", border: "none", cursor: "pointer", padding: 0, display: "inline-flex", alignItems: "center", gap: "6px" }}
-            >
-              Discover <IconCaret />
-            </button>
-            <div className="nav-dropdown-menu">
-              {DISCOVER.map((d) => (
-                <Link key={d.href} href={d.href} onClick={() => setDiscoverOpen(false)}>{d.label}</Link>
-              ))}
-            </div>
-          </li>
+          {navLinks.map((item, i) => (
+            <Fragment key={i}>
+              {i > 0 && <li><span className="header-item-divider" /></li>}
+              {item.dropdown && item.dropdown.length ? (
+                <li
+                  className={`nav-dropdown ${openDrop === i ? "open" : ""}`}
+                  onMouseEnter={() => setOpenDrop(i)}
+                  onMouseLeave={() => setOpenDrop(null)}
+                >
+                  <button
+                    type="button"
+                    className={`nav-dropdown-trigger ${openDrop === i ? "active" : ""}`}
+                    onClick={() => setOpenDrop((o) => (o === i ? null : i))}
+                    aria-expanded={openDrop === i}
+                    suppressHydrationWarning
+                    style={{ ...linkStyle, background: "none", border: "none", cursor: "pointer", padding: 0, display: "inline-flex", alignItems: "center", gap: "6px" }}
+                  >
+                    {item.label} <IconCaret />
+                  </button>
+                  <div className="nav-dropdown-menu">
+                    {item.dropdown.map((d, j) => (
+                      <Link key={j} href={d.url || "#"} onClick={() => setOpenDrop(null)}>{d.label}</Link>
+                    ))}
+                  </div>
+                </li>
+              ) : (
+                <li><Link href={item.url || "#"} className="header-nav-link" style={linkStyle}>{item.label}</Link></li>
+              )}
+            </Fragment>
+          ))}
         </nav>
 
         {/* Header CTA Actions */}
@@ -94,7 +97,7 @@ export default function Navbar({ faviconUrl = "" }) {
           </a>
 
           {/* Book Trial Badge */}
-          <Link href="/book-free-trial" className="header-cta-pill">Book a Free Trial</Link>
+          <Link href={layout.header_cta_url || "/book-free-trial"} className="header-cta-pill">{layout.header_cta_label}</Link>
 
           <button className="mobile-toggle" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle menu" suppressHydrationWarning style={{ border: "none", background: "none", cursor: "pointer" }}>
             <span style={{ transform: isOpen ? "rotate(45deg) translate(5px, 5px)" : "none", backgroundColor: "var(--fg-color)" }}></span>
@@ -112,16 +115,22 @@ export default function Navbar({ faviconUrl = "" }) {
           backgroundColor: "var(--bg-color)", border: "1px solid var(--card-border)", borderRadius: "16px",
           boxShadow: "0 20px 40px rgba(44, 37, 30, 0.08)", maxHeight: "78vh", overflowY: "auto"
         }}>
-          <Link href="/courses" style={linkStyle} onClick={() => setIsOpen(false)}>Courses</Link>
-          <Link href="/pricing" style={linkStyle} onClick={() => setIsOpen(false)}>Pricing</Link>
-          <span className="nav-mob-group-title">Discover</span>
-          <div className="nav-mob-sub">
-            {DISCOVER.map((d) => (
-              <Link key={d.href} href={d.href} style={linkStyle} onClick={() => setIsOpen(false)}>{d.label}</Link>
-            ))}
-          </div>
+          {navLinks.map((item, i) => (
+            item.dropdown && item.dropdown.length ? (
+              <div key={i}>
+                <span className="nav-mob-group-title">{item.label}</span>
+                <div className="nav-mob-sub">
+                  {item.dropdown.map((d, j) => (
+                    <Link key={j} href={d.url || "#"} style={linkStyle} onClick={() => setIsOpen(false)}>{d.label}</Link>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <Link key={i} href={item.url || "#"} style={linkStyle} onClick={() => setIsOpen(false)}>{item.label}</Link>
+            )
+          ))}
           <a href={telHref} className="nav-phone" style={{ display: "inline-flex", justifyContent: "center", marginTop: "6px" }}><IconPhone /> {phone}</a>
-          <Link href="/book-free-trial" className="nav-cta" style={{ display: "inline-flex", justifyContent: "center" }} onClick={() => setIsOpen(false)}>Book a Free Trial</Link>
+          <Link href={layout.header_cta_url || "/book-free-trial"} className="nav-cta" style={{ display: "inline-flex", justifyContent: "center" }} onClick={() => setIsOpen(false)}>{layout.header_cta_label}</Link>
         </div>
       )}
     </header>

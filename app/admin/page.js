@@ -4,6 +4,14 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabase";
 import Swal from "sweetalert2";
 import "quill/dist/quill.snow.css";
+import AdminChat from "@/components/AdminChat";
+import AdminFooter from "@/components/AdminFooter";
+import AdminPages from "@/components/AdminPages";
+import AdminSeo from "@/components/AdminSeo";
+import AdminTopbar from "@/components/AdminTopbar";
+import AdminStaff from "@/components/AdminStaff";
+import { htmlToText } from "@/lib/richtext";
+import { hasTab, canManageStaff, allowedTabs, ADMIN_TABS } from "@/lib/roles";
 
 // Admin SweetAlert theme wrapper to override defaults to match cream theme
 const originalSwalFire = Swal["fire"];
@@ -138,6 +146,9 @@ export default function AdminDashboard() {
   });
   const [logoText, setLogoText] = useState("yaqeen");
   const [logoUrl, setLogoUrl] = useState("");
+
+  // Logged-in staff identity + permissions (gates which sidebar tabs are shown)
+  const [currentAdmin, setCurrentAdmin] = useState(null);
 
   // Data states
   const [blogs, setBlogs] = useState([]);
@@ -637,6 +648,7 @@ export default function AdminDashboard() {
         });
         setLogoText(data.logo_text || "yaqeen");
         setLogoUrl(data.logo_url || "");
+        setCurrentAdmin({ full_name: data.full_name || "", role: data.role || "super_admin", status: data.status || "active", permissions: Array.isArray(data.permissions) ? data.permissions : [] });
       }
     } catch (err) {
       console.error("Error loading profile settings:", err);
@@ -708,6 +720,7 @@ export default function AdminDashboard() {
             });
             setLogoText(data.logo_text || "yaqeen");
             setLogoUrl(data.logo_url || "");
+            setCurrentAdmin({ full_name: data.full_name || "", role: data.role || "super_admin", status: data.status || "active", permissions: Array.isArray(data.permissions) ? data.permissions : [] });
           } else {
             // Server explicitly rejects token (e.g. expired session)
             localStorage.removeItem("aero_admin_token");
@@ -748,6 +761,16 @@ export default function AdminDashboard() {
       }, 0);
     }
   }, [isAuthenticated]);
+
+  // If a staff member lands on a tab they aren't allowed to see, send them to
+  // the first section they do have access to.
+  useEffect(() => {
+    if (!currentAdmin) return;
+    if (!hasTab(currentAdmin, activeTab)) {
+      const first = allowedTabs(currentAdmin)[0] || "profile";
+      setActiveTab(first);
+    }
+  }, [currentAdmin, activeTab]);
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -1234,7 +1257,7 @@ export default function AdminDashboard() {
       second_quote: blogForm.second_quote || null,
       second_quote_source: blogForm.second_quote_source || null,
       seo_title: blogForm.seo_title || blogForm.title,
-      seo_description: blogForm.seo_description || blogForm.body.slice(0, 150),
+      seo_description: htmlToText(blogForm.seo_description) || htmlToText(blogForm.body).slice(0, 150),
       seo_keywords: blogForm.seo_keywords || ""
     };
 
@@ -2036,21 +2059,25 @@ export default function AdminDashboard() {
       icon: courseForm.icon || "book",
       order_index: parseInt(courseForm.order_index) || 0
     };
+    // Short description + the "one per line / Title | Description" list fields
+    // are rendered/parsed as plain text on the site, so store them plain even
+    // though they are edited in the rich editor. The two true rich-text fields
+    // (description, content_details) keep their HTML.
     const payload = {
       ...base,
-      short_description: courseForm.short_description || null,
+      short_description: htmlToText(courseForm.short_description) || null,
       description: courseForm.description || null,
       level: courseForm.level || null,
       class_duration: courseForm.class_duration || null,
       course_duration: courseForm.course_duration || null,
       mode: courseForm.mode || null,
       age_group: courseForm.age_group || null,
-      learn_points: courseForm.learn_points || null,
-      requirements: courseForm.requirements || null,
-      who_for: courseForm.who_for || null,
+      learn_points: htmlToText(courseForm.learn_points) || null,
+      requirements: htmlToText(courseForm.requirements) || null,
+      who_for: htmlToText(courseForm.who_for) || null,
       content_details: courseForm.content_details || null,
-      course_modules: courseForm.course_modules || null,
-      faqs: courseForm.faqs || null
+      course_modules: htmlToText(courseForm.course_modules) || null,
+      faqs: htmlToText(courseForm.faqs) || null
     };
 
     // Save helper — retries with only the base columns if the detail columns
@@ -2824,78 +2851,23 @@ export default function AdminDashboard() {
         </div>
 
         <nav className={`admin-nav ${mobileNavOpen ? "open" : ""}`} style={{ display: "flex", flexDirection: "column", gap: "8px", listStyle: "none", flex: 1, overflowY: "auto", paddingRight: "4px" }}>
-          <button
-            onClick={() => handleTabChange("overview")}
-            style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "overview" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "overview" ? "rgba(255,255,255,0.02)" : "transparent" }}
-          >
-            📊 Overview
-          </button>
-          <button
-            onClick={() => handleTabChange("blogs")}
-            style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "blogs" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "blogs" ? "rgba(255,255,255,0.02)" : "transparent" }}
-          >
-            📝 Manage Blogs
-          </button>
-          <button
-            onClick={() => handleTabChange("contacts")}
-            style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "contacts" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "contacts" ? "rgba(255,255,255,0.02)" : "transparent" }}
-          >
-            📬 Contact Inbox
-          </button>
-          <button
-            onClick={() => handleTabChange("freeTrials")}
-            style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "freeTrials" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "freeTrials" ? "rgba(255,255,255,0.02)" : "transparent" }}
-          >
-            🎯 Free Trial Bookings
-          </button>
-          <button
-            onClick={() => handleTabChange("teacherApps")}
-            style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "teacherApps" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "teacherApps" ? "rgba(255,255,255,0.02)" : "transparent" }}
-          >
-            🧑‍🏫 Teacher Applications
-          </button>
-          <button
-            onClick={() => handleTabChange("studentApps")}
-            style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "studentApps" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "studentApps" ? "rgba(255,255,255,0.02)" : "transparent" }}
-          >
-            🧒 Student Registrations
-          </button>
-          <button
-            onClick={() => handleTabChange("jobs")}
-            style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "jobs" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "jobs" ? "rgba(255,255,255,0.02)" : "transparent" }}
-          >
-            💼 Career Jobs
-          </button>
-          <button
-            onClick={() => handleTabChange("seo")}
-            style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "seo" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "seo" ? "rgba(255,255,255,0.02)" : "transparent" }}
-          >
-            🌐 SEO Manager
-          </button>
-          <button
-            onClick={() => handleTabChange("teachers")}
-            style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "teachers" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "teachers" ? "rgba(255,255,255,0.02)" : "transparent" }}
-          >
-            🎓 Manage Teachers
-          </button>
-          <button
-            onClick={() => handleTabChange("courses")}
-            style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "courses" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "courses" ? "rgba(255,255,255,0.02)" : "transparent" }}
-          >
-            📚 Manage Courses
-          </button>
-          <button
-            onClick={() => handleTabChange("testimonials")}
-            style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "testimonials" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "testimonials" ? "rgba(255,255,255,0.02)" : "transparent" }}
-          >
-            💬 Manage Testimonials
-          </button>
-          <button
-            onClick={() => handleTabChange("plans")}
-            style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "plans" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "plans" ? "rgba(255,255,255,0.02)" : "transparent" }}
-          >
-            💵 Manage Plans
-          </button>
+          {ADMIN_TABS.filter((t) => !currentAdmin || hasTab(currentAdmin, t.key)).map((t) => (
+            <button
+              key={t.key}
+              onClick={() => handleTabChange(t.key)}
+              style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === t.key ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === t.key ? "rgba(255,255,255,0.02)" : "transparent" }}
+            >
+              {t.icon} {t.label}
+            </button>
+          ))}
+          {(!currentAdmin || canManageStaff(currentAdmin)) && (
+            <button
+              onClick={() => handleTabChange("staff")}
+              style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "staff" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "staff" ? "rgba(255,255,255,0.02)" : "transparent" }}
+            >
+              👥 Staff Accounts
+            </button>
+          )}
           <button
             onClick={() => handleTabChange("profile")}
             style={{ ...sidebarBtnStyle, borderLeftColor: activeTab === "profile" ? "var(--secondary-color)" : "transparent", backgroundColor: activeTab === "profile" ? "rgba(255,255,255,0.02)" : "transparent" }}
@@ -2932,6 +2904,19 @@ export default function AdminDashboard() {
 
       {/* Main panel content */}
       <main className="admin-main" style={{ padding: "40px", overflowY: "auto", maxHeight: "100vh" }}>
+        {/* Sticky top bar */}
+        <AdminTopbar
+          adminEmail={profileForm.email}
+          counts={{
+            freeTrials: freeTrials.length,
+            inquiries: inquiries.length,
+            teacherApps: teacherApps.length,
+            studentApps: studentApps.length,
+          }}
+          onNavigate={handleTabChange}
+          onLogout={handleLogout}
+        />
+
         {/* Header toolbar */}
         <div className="admin-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px", borderBottom: "1px solid var(--card-border)", paddingBottom: "20px" }}>
           <div>
@@ -2939,31 +2924,39 @@ export default function AdminDashboard() {
               {activeTab === "overview" && "System Overview"}
               {activeTab === "blogs" && (isEditingBlog ? (editingBlogId ? "Edit Blog Post" : "Write New Publication") : "Blog Publications")}
               {activeTab === "contacts" && "Contact Query Logs"}
+              {activeTab === "liveChat" && "Live Chat"}
+              {activeTab === "footer" && "Header & Footer"}
+              {activeTab === "pages" && "Page Management"}
               {activeTab === "freeTrials" && "Free Trial Bookings"}
               {activeTab === "teacherApps" && "Teacher Applications"}
               {activeTab === "studentApps" && "Student Registrations"}
               {activeTab === "jobs" && (isEditingJob ? (editingJobId ? "Edit Job Opening" : "Add Job Opening") : "Career Job Openings")}
-              {activeTab === "seo" && "Site SEO Meta Settings"}
+              {activeTab === "seo" && "SEO Manager"}
               {activeTab === "teachers" && (isEditingTeacher ? (editingTeacherId ? "Edit Teacher Profile" : "Register New Teacher") : "Teacher Profiles")}
               {activeTab === "courses" && (isEditingCourse ? (editingCourseId ? "Edit Course Details" : "Add New Course") : "Islamic Courses")}
               {activeTab === "testimonials" && (isEditingTestimonial ? (editingTestimonialId ? "Edit Testimonial" : "Add New Testimonial") : "Client Testimonials")}
               {activeTab === "plans" && (isEditingPlan ? (editingPlanId ? "Edit Pricing Plan" : "Create Pricing Plan") : "Pricing Plans")}
               {activeTab === "profile" && "Profile Credentials Settings"}
+              {activeTab === "staff" && "Staff Accounts"}
             </h2>
             <p style={{ color: "var(--fg-muted)", fontSize: "14px", marginTop: "4px" }}>
               {activeTab === "overview" && "Real-time summary metrics across database logs."}
               {activeTab === "blogs" && "Author articles, categories, list points, and search engine fields."}
               {activeTab === "contacts" && "Review customer forms, inquiries, and details."}
+              {activeTab === "liveChat" && "Chat live with website visitors. AI answers until you reply, then it pauses for that chat."}
+              {activeTab === "footer" && "Manage the website header menu and footer. Contact, social & logo are in Site Settings."}
+              {activeTab === "pages" && "Edit the text content of each website page. Pick a page on the left, edit, and save."}
               {activeTab === "freeTrials" && "Review free trial class booking requests submitted by visitors."}
               {activeTab === "teacherApps" && "Review teacher job applications with full details, CV and audio files."}
               {activeTab === "studentApps" && "Review student registration form submissions with course, plan, and scheduling details."}
               {activeTab === "jobs" && "Add, edit and remove the job openings shown on the Careers page."}
-              {activeTab === "seo" && "Configure key page head parameters for Google crawlers."}
+              {activeTab === "seo" && "Per-page meta title, description, keywords & canonical slug, plus global defaults and sitemap."}
               {activeTab === "teachers" && "Manage profiles, avatars, languages, experience, and topics of Islamic teachers."}
               {activeTab === "courses" && "Manage online courses, thumbnails, icons, and display order."}
               {activeTab === "testimonials" && "Manage customer testimonials and select target pages for display."}
               {activeTab === "plans" && "Configure pricing plans, rates, ribbons, and itemized feature checklists."}
               {activeTab === "profile" && "Manage your login email and password."}
+              {activeTab === "staff" && "Add team members, assign roles & section permissions, suspend or remove access."}
             </p>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
@@ -2996,6 +2989,14 @@ export default function AdminDashboard() {
             {loading && <span style={{ color: "var(--secondary-color)", fontSize: "13px" }}>Syncing Database...</span>}
           </div>
         </div>
+
+        {/* TAB: LIVE CHAT */}
+        {activeTab === "liveChat" && <AdminChat />}
+
+        {/* TAB: FOOTER */}
+        {activeTab === "footer" && <AdminFooter />}
+        {activeTab === "pages" && <AdminPages />}
+        {activeTab === "staff" && <AdminStaff />}
 
         {/* TAB 1: OVERVIEW */}
         {activeTab === "overview" && (
@@ -3303,12 +3304,11 @@ export default function AdminDashboard() {
                         />
                       </div>
                       <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                        <textarea
-                          placeholder={`Explanatory text for list item ${idx + 1}`}
-                          rows="2"
+                        <RichTextEditor
                           value={sec.content}
-                          onChange={(e) => handleSectionChange(idx, "content", e.target.value)}
-                          style={{ ...formTextareaStyle, padding: "8px 12px", borderRadius: "8px" }}
+                          onChange={(html) => handleSectionChange(idx, "content", html)}
+                          placeholder={`Explanatory text for list item ${idx + 1}`}
+                          minHeight="90px"
                         />
                       </div>
                       <button
@@ -3397,13 +3397,11 @@ export default function AdminDashboard() {
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                     <label style={formLabelStyle}>SEO Description</label>
-                    <textarea
-                      name="seo_description"
-                      rows="2"
+                    <RichTextEditor
                       value={blogForm.seo_description}
-                      onChange={handleBlogFormChange}
+                      onChange={(html) => setBlogForm((prev) => ({ ...prev, seo_description: html }))}
                       placeholder="Write brief crawler summary..."
-                      style={formTextareaStyle}
+                      minHeight="90px"
                     />
                   </div>
 
@@ -3892,7 +3890,7 @@ export default function AdminDashboard() {
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                   <label style={formLabelStyle}>Description</label>
-                  <textarea value={jobForm.description} onChange={(e) => setJobForm((p) => ({ ...p, description: e.target.value }))} placeholder="Short description of the role and requirements…" style={{ ...formInputStyle, minHeight: "110px", resize: "vertical", lineHeight: 1.6 }} />
+                  <RichTextEditor value={jobForm.description} onChange={(html) => setJobForm((p) => ({ ...p, description: html }))} placeholder="Short description of the role and requirements…" minHeight="120px" />
                 </div>
                 <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
                   <button type="button" onClick={() => setIsEditingJob(false)} className="btn-secondary" style={{ padding: "10px 20px", fontSize: "13px" }}>Cancel</button>
@@ -4075,10 +4073,11 @@ export default function AdminDashboard() {
         )}
 
         {/* TAB 4: SEO MANAGER */}
-        {activeTab === "seo" && (
+        {activeTab === "seo" && <AdminSeo />}
+        {false && activeTab === "seo" && (
           <form onSubmit={handleSaveSEO} className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
             <h3 style={{ fontSize: "18px", fontWeight: "600", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px" }}>Global Site Metadata</h3>
-            
+
             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
               <label style={formLabelStyle}>Site Meta Title Template</label>
               <input
@@ -4371,55 +4370,18 @@ export default function AdminDashboard() {
               </button>
             </form>
 
-            {/* Manage Admin Accounts */}
-            <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
-              <div>
-                <h3 style={{ fontSize: "18px", fontWeight: "600", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px" }}>Manage Admin Accounts</h3>
-                <p style={{ color: "var(--fg-muted)", fontSize: "13px", marginTop: "10px" }}>
-                  Add another admin who can log in to this console. They will sign in with their own email &amp; password and receive an OTP on their email — exactly like you do.
-                </p>
-              </div>
-
-              {/* Existing accounts */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                {adminAccounts.filter((acc) => (acc.email || "").toLowerCase().trim() !== "objectsquarerajan@gmail.com").length === 0 ? (
-                  <p style={{ color: "var(--fg-muted)", fontSize: "13px" }}>No admin accounts loaded.</p>
-                ) : (
-                  adminAccounts
-                    .filter((acc) => (acc.email || "").toLowerCase().trim() !== "objectsquarerajan@gmail.com")
-                    .map((acc) => (
-                    <div key={acc.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", padding: "12px 14px", border: "1px solid var(--card-border)", borderRadius: "10px", backgroundColor: "rgba(0,0,0,0.015)" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
-                        <span style={{ fontSize: "16px" }}>👤</span>
-                        <span style={{ fontSize: "14px", fontWeight: "600", color: "#2B1F14", wordBreak: "break-all" }}>{acc.email}</span>
-                        {acc.is_self && <span style={{ fontSize: "11px", fontWeight: "500", color: "var(--secondary-color)", backgroundColor: "rgba(85,107,59,0.12)", padding: "2px 8px", borderRadius: "9999px" }}>You</span>}
-                      </div>
-                      {!acc.is_self && (
-                        <button type="button" onClick={() => handleDeleteAdmin(acc.id)} className="btn-secondary" style={{ padding: "6px 12px", fontSize: "12px", color: "#ef4444", flexShrink: 0 }}>
-                          Remove
-                        </button>
-                      )}
-                    </div>
-                  ))
-                )}
-              </div>
-
-              {/* Add new admin */}
-              <form onSubmit={handleCreateAdmin} style={{ borderTop: "1px solid var(--card-border)", paddingTop: "20px", display: "flex", flexDirection: "column", gap: "16px" }}>
-                <h4 style={{ fontSize: "14px", fontWeight: "500", color: "#2B1F14", margin: 0 }}>Add Admin Account</h4>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    <label style={formLabelStyle}>New Admin Email</label>
-                    <input type="email" value={newAdminEmail} onChange={(e) => setNewAdminEmail(e.target.value)} placeholder="newadmin@email.com" style={formInputStyle} />
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    <label style={formLabelStyle}>Password (min 6 characters)</label>
-                    <input type="text" value={newAdminPassword} onChange={(e) => setNewAdminPassword(e.target.value)} placeholder="Set a password" style={formInputStyle} />
-                  </div>
+            {/* Staff management moved to its own advanced tab */}
+            {canManageStaff(currentAdmin) && (
+              <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "14px" }}>
+                <div>
+                  <h3 style={{ fontSize: "18px", fontWeight: "600", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px" }}>Staff Accounts</h3>
+                  <p style={{ color: "var(--fg-muted)", fontSize: "13px", marginTop: "10px" }}>
+                    Team members, roles and per-section permissions are now managed in the dedicated <strong>Staff Accounts</strong> section — with roles, suspend/activate and access control.
+                  </p>
                 </div>
-                <button type="submit" className="btn-primary" style={{ width: "fit-content" }}>+ Create Admin Account</button>
-              </form>
-             </div>
+                <button type="button" onClick={() => handleTabChange("staff")} className="btn-primary" style={{ width: "fit-content" }}>👥 Open Staff Accounts →</button>
+              </div>
+            )}
 
             {/* Sitemap Generator Panel */}
             <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
@@ -4567,11 +4529,11 @@ export default function AdminDashboard() {
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                     <label style={formLabelStyle}>Bio / Description (shown on the Featured Teacher card)</label>
-                    <textarea
+                    <RichTextEditor
                       value={teacherForm.bio}
-                      onChange={(e) => setTeacherForm(prev => ({ ...prev, bio: e.target.value }))}
+                      onChange={(html) => setTeacherForm(prev => ({ ...prev, bio: html }))}
                       placeholder="Passionate and dedicated educator with a love for helping students grow and succeed…"
-                      style={{ ...formInputStyle, minHeight: "100px", resize: "vertical", lineHeight: 1.6 }}
+                      minHeight="110px"
                     />
                   </div>
 
@@ -4736,13 +4698,11 @@ export default function AdminDashboard() {
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                     <label style={formLabelStyle}>Testimonial Content *</label>
-                    <textarea
-                      rows="4"
+                    <RichTextEditor
                       value={testimonialForm.content}
-                      onChange={(e) => setTestimonialForm(prev => ({ ...prev, content: e.target.value }))}
+                      onChange={(html) => setTestimonialForm(prev => ({ ...prev, content: html }))}
                       placeholder="Write customer review..."
-                      required
-                      style={formTextareaStyle}
+                      minHeight="120px"
                     />
                   </div>
 
@@ -5038,7 +4998,7 @@ export default function AdminDashboard() {
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                     <label style={formLabelStyle}>Short Description (hero subtitle)</label>
-                    <textarea value={courseForm.short_description} onChange={(e) => setCourseForm(p => ({ ...p, short_description: e.target.value }))} placeholder="One or two lines shown under the course title in the hero." style={{ ...formInputStyle, minHeight: "70px", resize: "vertical", lineHeight: 1.6 }} />
+                    <RichTextEditor key={`short-${editingCourseId || "new"}`} value={courseForm.short_description} onChange={(html) => setCourseForm(p => ({ ...p, short_description: html }))} placeholder="One or two lines shown under the course title in the hero." minHeight="80px" />
                   </div>
 
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px" }}>
@@ -5079,17 +5039,17 @@ export default function AdminDashboard() {
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                     <label style={formLabelStyle}>What You&apos;ll Learn <span style={{ color: "var(--fg-muted)", fontWeight: 400 }}>(one point per line)</span></label>
-                    <textarea value={courseForm.learn_points} onChange={(e) => setCourseForm(p => ({ ...p, learn_points: e.target.value }))} placeholder={"Improve reading fluency\nDevelop conversational skills\n..."} style={{ ...formInputStyle, minHeight: "110px", resize: "vertical", lineHeight: 1.6 }} />
+                    <RichTextEditor key={`learn-${editingCourseId || "new"}`} value={courseForm.learn_points} onChange={(html) => setCourseForm(p => ({ ...p, learn_points: html }))} placeholder={"Improve reading fluency (one point per line)"} minHeight="120px" />
                   </div>
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                     <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                       <label style={formLabelStyle}>Requirements <span style={{ color: "var(--fg-muted)", fontWeight: 400 }}>(one per line)</span></label>
-                      <textarea value={courseForm.requirements} onChange={(e) => setCourseForm(p => ({ ...p, requirements: e.target.value }))} placeholder={"A laptop or smartphone\nStable internet\n..."} style={{ ...formInputStyle, minHeight: "110px", resize: "vertical", lineHeight: 1.6 }} />
+                      <RichTextEditor key={`req-${editingCourseId || "new"}`} value={courseForm.requirements} onChange={(html) => setCourseForm(p => ({ ...p, requirements: html }))} placeholder={"A laptop or smartphone (one per line)"} minHeight="120px" />
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                       <label style={formLabelStyle}>Who This Course Is For <span style={{ color: "var(--fg-muted)", fontWeight: 400 }}>(one per line)</span></label>
-                      <textarea value={courseForm.who_for} onChange={(e) => setCourseForm(p => ({ ...p, who_for: e.target.value }))} placeholder={"Beginners\nIntermediate learners\n..."} style={{ ...formInputStyle, minHeight: "110px", resize: "vertical", lineHeight: 1.6 }} />
+                      <RichTextEditor key={`whofor-${editingCourseId || "new"}`} value={courseForm.who_for} onChange={(html) => setCourseForm(p => ({ ...p, who_for: html }))} placeholder={"Beginners (one per line)"} minHeight="120px" />
                     </div>
                   </div>
 
@@ -5106,12 +5066,12 @@ export default function AdminDashboard() {
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                     <label style={formLabelStyle}>Course Content / Modules <span style={{ color: "var(--fg-muted)", fontWeight: 400 }}>(one per line — format: Title | Description)</span></label>
-                    <textarea value={courseForm.course_modules} onChange={(e) => setCourseForm(p => ({ ...p, course_modules: e.target.value }))} placeholder={"Reading Skills | Learn to read fluently\nWriting Skills | Build strong writing\n..."} style={{ ...formInputStyle, minHeight: "120px", resize: "vertical", lineHeight: 1.6 }} />
+                    <RichTextEditor key={`mods-${editingCourseId || "new"}`} value={courseForm.course_modules} onChange={(html) => setCourseForm(p => ({ ...p, course_modules: html }))} placeholder={"Reading Skills | Learn to read fluently (one per line)"} minHeight="130px" />
                   </div>
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                     <label style={formLabelStyle}>Course FAQs <span style={{ color: "var(--fg-muted)", fontWeight: 400 }}>(one per line — format: Question | Answer)</span></label>
-                    <textarea value={courseForm.faqs} onChange={(e) => setCourseForm(p => ({ ...p, faqs: e.target.value }))} placeholder={"What does this course cover? | It covers...\nIs it suitable for beginners? | Yes...\n..."} style={{ ...formInputStyle, minHeight: "130px", resize: "vertical", lineHeight: 1.6 }} />
+                    <RichTextEditor key={`cfaqs-${editingCourseId || "new"}`} value={courseForm.faqs} onChange={(html) => setCourseForm(p => ({ ...p, faqs: html }))} placeholder={"What does this course cover? | It covers... (one per line)"} minHeight="140px" />
                   </div>
                 </div>
 

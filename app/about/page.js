@@ -5,6 +5,7 @@ import Link from "next/link";
 import "./about.css";
 import { useSettings } from "@/lib/settings-context";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
+import { usePageContent } from "@/lib/use-page-content";
 
 // Seamless, intricate Islamic geometric lace star pattern URL (Girih tiling with overlapping circles)
 const LACE_BACKGROUND_PATTERN = 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'160\' height=\'160\' viewBox=\'0 0 160 160\'%3E%3Cg fill=\'none\' stroke=\'%23C99B4D\' stroke-width=\'0.5\' stroke-opacity=\'0.08\'%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'80\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'80\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'80\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'80\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'80\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'80\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'80\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'80\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'80\'/%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'40\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'40\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'40\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'40\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'40\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'40\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'40\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'40\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'40\'/%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'20\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'20\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'20\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'20\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'20\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'20\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'20\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'20\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'20\'/%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'10\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'10\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'10\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'10\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'10\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'10\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'10\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'10\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'10\'/%3E%3Crect x=\'68\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(0 80 80)\'/%3E%3Crect x=\'68\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(45 80 80)\'/%3E%3Crect x=\'-12\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(0 0 0)\'/%3E%3Crect x=\'-12\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(45 0 0)\'/%3E%3Crect x=\'148\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(0 160 0)\'/%3E%3Crect x=\'148\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(45 160 0)\'/%3E%3Crect x=\'-12\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(0 0 160)\'/%3E%3Crect x=\'-12\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(45 0 160)\'/%3E%3Crect x=\'148\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(0 160 160)\'/%3E%3Crect x=\'148\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(45 160 160)\'/%3E%3Crect x=\'68\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(0 80 0)\'/%3E%3Crect x=\'68\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(45 80 0)\'/%3E%3Crect x=\'-12\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(0 0 80)\'/%3E%3Crect x=\'-12\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(45 0 80)\'/%3E%3Crect x=\'148\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(0 160 80)\'/%3E%3Crect x=\'148\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(45 160 80)\'/%3E%3Crect x=\'68\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(0 80 160)\'/%3E%3Crect x=\'68\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(45 80 160)\'/%3E%3Crect x=\'74\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(0 80 80)\'/%3E%3Crect x=\'74\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(45 80 80)\'/%3E%3Crect x=\'-6\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(0 0 0)\'/%3E%3Crect x=\'-6\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(45 0 0)\'/%3E%3Crect x=\'154\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(0 160 0)\'/%3E%3Crect x=\'154\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(45 160 0)\'/%3E%3Crect x=\'-6\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(0 0 160)\'/%3E%3Crect x=\'-6\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(45 0 160)\'/%3E%3Crect x=\'154\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(0 160 160)\'/%3E%3Crect x=\'154\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(45 160 160)\'/%3E%3Crect x=\'74\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(0 80 0)\'/%3E%3Crect x=\'74\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(45 80 0)\'/%3E%3Crect x=\'-6\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(0 0 80)\'/%3E%3Crect x=\'-6\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(45 0 80)\'/%3E%3Crect x=\'154\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(0 160 80)\'/%3E%3Crect x=\'154\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(45 160 80)\'/%3E%3Crect x=\'74\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(0 80 160)\'/%3E%3Crect x=\'74\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(45 80 160)\'/%3E%3C/g%3E%3C/svg%3E")';
@@ -216,13 +217,26 @@ const ArchedCardBackground = () => (
   </svg>
 );
 
+const FEATURE_STYLES = [
+  { color: "green", icon: <IconPeopleWhite /> },
+  { color: "gold", icon: <IconBookWhite /> },
+  { color: "gold", icon: <IconStarWhite /> },
+  { color: "green", icon: <IconGlobeWhite /> },
+];
+const GUIDE_ICONS = [<IconBookGreen />, <IconShieldGreen />, <IconHeartGreen />, <IconExcellenceGreen />];
+const CTA_FEATURE_ICONS = [<IconShieldCheckGold />, <IconTeacherGold />, <IconAwardGold />];
+const FAQ_ICONS = [<IconCalendar size={20} />, <IconUser size={20} />, <IconVideoPlay size={20} />, <IconMapPin size={20} />];
+
 export default function AboutPage() {
+  const c = usePageContent("about");
   const { faviconUrl } = useSettings();
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
-  const [instructorExpanded, setInstructorExpanded] = useState(false);
-  const [personalizedExpanded, setPersonalizedExpanded] = useState(false);
-  const [engagingExpanded, setEngagingExpanded] = useState(false);
-  const [globalExpanded, setGlobalExpanded] = useState(false);
+  const [openFeatures, setOpenFeatures] = useState({});
+  const toggleFeature = (i) => setOpenFeatures((prev) => ({ ...prev, [i]: !prev[i] }));
+  const heroFeatures = c.hero?.features || [];
+  const guides = c.mv?.guides || [];
+  const ctaFeatures = c.cta?.features || [];
+  const faqItems = c.faq?.items || [];
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -266,11 +280,11 @@ export default function AboutPage() {
   
               {/* Right Column: Narrative content and key highlights */}
               <div className="about-content-column">
-                <div className="about-badge">About Us</div>
-                
+                <div className="about-badge">{c.hero?.badge}</div>
+
                 <h1 className="about-heading">
-                  Empowering Minds.<br />
-                  <span>Inspiring Futures.</span>
+                  {c.hero?.title}<br />
+                  <span>{c.hero?.title_highlight}</span>
                 </h1>
   
                 {/* Custom line and diamond divider: — ⬥ — */}
@@ -281,87 +295,36 @@ export default function AboutPage() {
                 </div>
   
                 <p className="about-description">
-                  At Yaqeen Institute, we make learning the Quran, Arabic, and Islamic studies simple, engaging, and accessible for everyone. Our supportive environment nurtures confidence, strengthens faith, and helps learners grow both in knowledge and character.
+                  {c.hero?.description}
                 </p>
   
                 {/* Feature Highlights Grid */}
                 <div className="about-features-grid">
                   
-                  <div className="about-feature-item">
-                    <div className="feature-icon-circle green">
-                      <IconPeopleWhite />
-                    </div>
-                    <div className="feature-info">
-                      <span className="feature-title">Expert &amp; Caring Instructors — Passionate educators dedicated to every learner&apos;s success.</span>
-                      <span className={`feature-subtext feature-subtext-collapsible ${instructorExpanded ? "expanded" : ""}`} style={{ marginTop: "4px", display: "block", lineHeight: "1.5" }}>Learn from certified Quran, Arabic, and Islamic Studies teachers delivering Online Quran Classes, Quran Lessons Online, and personalized guidance. Our experienced instructors help children and adults Learn Quran Online with confidence, Tajweed, and lasting Islamic knowledge.</span>
-                      <button
-                        type="button"
-                        className="feature-readmore-btn"
-                        aria-expanded={instructorExpanded}
-                        onClick={() => setInstructorExpanded((prev) => !prev)}
-                      >
-                        <span>{instructorExpanded ? "Read Less" : "Read More"}</span>
-                        <IconChevron size={14} className={`feature-readmore-chevron ${instructorExpanded ? "open" : ""}`} />
-                      </button>
-                    </div>
-                  </div>
-  
-                  <div className="about-feature-item">
-                    <div className="feature-icon-circle gold">
-                      <IconBookWhite />
-                    </div>
-                    <div className="feature-info">
-                      <span className="feature-title">Personalized Learning — Lessons tailored to each student&apos;s goals and pace.</span>
-                      <span className={`feature-subtext feature-subtext-collapsible ${personalizedExpanded ? "expanded" : ""}`} style={{ marginTop: "4px", display: "block", lineHeight: "1.5" }}>Every student receives customized Online Quran Classes, Quran Courses Online, and Arabic lessons based on their learning style, age, and goals. Personalized teaching helps beginners and advanced learners Learn Quran Online effectively with measurable progress.</span>
-                      <button
-                        type="button"
-                        className="feature-readmore-btn"
-                        aria-expanded={personalizedExpanded}
-                        onClick={() => setPersonalizedExpanded((prev) => !prev)}
-                      >
-                        <span>{personalizedExpanded ? "Read Less" : "Read More"}</span>
-                        <IconChevron size={14} className={`feature-readmore-chevron ${personalizedExpanded ? "open" : ""}`} />
-                      </button>
-                    </div>
-                  </div>
-  
-                  <div className="about-feature-item">
-                    <div className="feature-icon-circle gold">
-                      <IconStarWhite />
-                    </div>
-                    <div className="feature-info">
-                      <span className="feature-title">Engaging &amp; Effective — Interactive classes that make learning enjoyable and impactful.</span>
-                      <span className={`feature-subtext feature-subtext-collapsible ${engagingExpanded ? "expanded" : ""}`} style={{ marginTop: "4px", display: "block", lineHeight: "1.5" }}>Our interactive Online Quran Teaching combines live classes, practical activities, and personalized feedback to make Quran Lessons Online, Arabic, and Islamic Studies engaging. Students Learn Quran with Tajweed while building confidence, understanding, and strong Islamic values.</span>
-                      <button
-                        type="button"
-                        className="feature-readmore-btn"
-                        aria-expanded={engagingExpanded}
-                        onClick={() => setEngagingExpanded((prev) => !prev)}
-                      >
-                        <span>{engagingExpanded ? "Read Less" : "Read More"}</span>
-                        <IconChevron size={14} className={`feature-readmore-chevron ${engagingExpanded ? "open" : ""}`} />
-                      </button>
-                    </div>
-                  </div>
-  
-                  <div className="about-feature-item">
-                    <div className="feature-icon-circle green">
-                      <IconGlobeWhite />
-                    </div>
-                    <div className="feature-info">
-                      <span className="feature-title">Global Community of Learners — Connecting students worldwide through faith and knowledge.</span>
-                      <span className={`feature-subtext feature-subtext-collapsible ${globalExpanded ? "expanded" : ""}`} style={{ marginTop: "4px", display: "block", lineHeight: "1.5" }}>Join our trusted Online Quran Academy, where students from around the world attend Online Quran Classes, Quran Courses Online, and Arabic lessons. Build faith, connect with expert teachers, and Learn Quran Online in a supportive global community.</span>
-                      <button
-                        type="button"
-                        className="feature-readmore-btn"
-                        aria-expanded={globalExpanded}
-                        onClick={() => setGlobalExpanded((prev) => !prev)}
-                      >
-                        <span>{globalExpanded ? "Read Less" : "Read More"}</span>
-                        <IconChevron size={14} className={`feature-readmore-chevron ${globalExpanded ? "open" : ""}`} />
-                      </button>
-                    </div>
-                  </div>
+                  {heroFeatures.map((feat, i) => {
+                    const style = FEATURE_STYLES[i % FEATURE_STYLES.length];
+                    const expanded = !!openFeatures[i];
+                    return (
+                      <div className="about-feature-item" key={i}>
+                        <div className={`feature-icon-circle ${style.color}`}>
+                          {style.icon}
+                        </div>
+                        <div className="feature-info">
+                          <span className="feature-title">{feat.title}</span>
+                          <span className={`feature-subtext feature-subtext-collapsible ${expanded ? "expanded" : ""}`} style={{ marginTop: "4px", display: "block", lineHeight: "1.5" }}>{feat.subtext}</span>
+                          <button
+                            type="button"
+                            className="feature-readmore-btn"
+                            aria-expanded={expanded}
+                            onClick={() => toggleFeature(i)}
+                          >
+                            <span>{expanded ? "Read Less" : "Read More"}</span>
+                            <IconChevron size={14} className={`feature-readmore-chevron ${expanded ? "open" : ""}`} />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
   
                 </div>
               </div>
@@ -400,8 +363,8 @@ export default function AboutPage() {
             <div className="banner-divider"></div>
   
             <p className="banner-quote-text">
-              We believe in building strong foundations, nurturing character,<br />
-              and empowering every learner to lead with faith and purpose.
+              {c.banner?.quote_line1}<br />
+              {c.banner?.quote_line2}
             </p>
   
             <div className="banner-deco">
@@ -429,7 +392,7 @@ export default function AboutPage() {
                   </div>
                 </div>
                 <h2 className="about-row-heading">
-                  Who <span>We Are</span>
+                  {c.who?.heading} <span>{c.who?.heading_highlight}</span>
                 </h2>
               </div>
               
@@ -440,7 +403,7 @@ export default function AboutPage() {
               </div>
               
               <p className="about-row-description">
-                We are a global online academy founded by passionate educators and Islamic scholars, dedicated to making Quranic education accessible and impactful for students worldwide.
+                {c.who?.description}
               </p>
             </div>
             
@@ -476,7 +439,7 @@ export default function AboutPage() {
                   </div>
                 </div>
                 <h2 className="about-row-heading">
-                  What <span>We Do</span>
+                  {c.what?.heading} <span>{c.what?.heading_highlight}</span>
                 </h2>
               </div>
               
@@ -487,7 +450,7 @@ export default function AboutPage() {
               </div>
               
               <p className="about-row-description">
-                We offer expertly structured online courses in Quran Recitation, Tajweed, Hifz, Arabic Language, and Islamic Studies, helping learners of all ages and levels achieve their goals through flexible and personalized learning.
+                {c.what?.description}
               </p>
             </div>
           </div>
@@ -521,11 +484,11 @@ export default function AboutPage() {
                 </div>
                 
                 <h3 className="arched-card-heading green">
-                  OUR <span>MISSION</span>
+                  {c.mission?.heading} <span>{c.mission?.heading_highlight}</span>
                 </h3>
-                
+
                 <p className="arched-card-description" style={{ marginBottom: "8px" }}>
-                  To provide authentic Islamic education that nurtures faith, knowledge, and character, empowering learners to lead purposeful lives and contribute positively to society.
+                  {c.mission?.description}
                 </p>
                 
                 <div className="arched-card-footer-divider" style={{ marginTop: "8px" }}>
@@ -540,11 +503,11 @@ export default function AboutPage() {
                 
                 {/* Header & Intro */}
                 <div className="mv-header">
-                  <span className="mv-badge">Our Mission & Vision</span>
-                  
+                  <span className="mv-badge">{c.mv?.badge}</span>
+
                   <h2 className="mv-heading">
-                    Guided by <span>Faith.</span><br />
-                    Driven by <span>Purpose.</span>
+                    {c.mv?.heading_line1_prefix}<span>{c.mv?.heading_line1_highlight}</span><br />
+                    {c.mv?.heading_line2_prefix}<span>{c.mv?.heading_line2_highlight}</span>
                   </h2>
                   
                   <div className="about-heading-divider">
@@ -554,7 +517,7 @@ export default function AboutPage() {
                   </div>
                   
                   <p className="mv-intro-text">
-                    Our mission and vision reflect our commitment to nurturing minds, strengthening hearts, and building a brighter, faith-centered future for all.
+                    {c.mv?.intro}
                   </p>
                 </div>
                 
@@ -563,53 +526,23 @@ export default function AboutPage() {
                   <div className="guides-header-row">
                     <div className="divider-line"></div>
                     <div className="divider-diamond"></div>
-                    <span className="guides-header-title">What Guides Us</span>
+                    <span className="guides-header-title">{c.mv?.guides_title}</span>
                     <div className="divider-diamond"></div>
                     <div className="divider-line"></div>
                   </div>
                   
                   <div className="guides-grid">
-                    
-                    <div className="guides-item">
-                      <div className="guides-icon-circle">
-                        <IconBookGreen />
+                    {guides.map((g, i) => (
+                      <div className="guides-item" key={i}>
+                        <div className="guides-icon-circle">
+                          {GUIDE_ICONS[i % GUIDE_ICONS.length]}
+                        </div>
+                        <span className="guides-title">{g.title}</span>
+                        <p className="guides-desc">
+                          {g.desc}
+                        </p>
                       </div>
-                      <span className="guides-title">Knowledge</span>
-                      <p className="guides-desc">
-                        We believe in seeking and spreading beneficial knowledge.
-                      </p>
-                    </div>
-                    
-                    <div className="guides-item">
-                      <div className="guides-icon-circle">
-                        <IconShieldGreen />
-                      </div>
-                      <span className="guides-title">Integrity</span>
-                      <p className="guides-desc">
-                        We uphold honesty, trust, and strong Islamic values in everything we do.
-                      </p>
-                    </div>
-                    
-                    <div className="guides-item">
-                      <div className="guides-icon-circle">
-                        <IconHeartGreen />
-                      </div>
-                      <span className="guides-title">Compassion</span>
-                      <p className="guides-desc">
-                        We nurture kindness, empathy, and respect in every learner.
-                      </p>
-                    </div>
-                    
-                    <div className="guides-item">
-                      <div className="guides-icon-circle">
-                        <IconExcellenceGreen />
-                      </div>
-                      <span className="guides-title">Excellence</span>
-                      <p className="guides-desc">
-                        We strive for the highest standards in teaching, learning, and service.
-                      </p>
-                    </div>
-                    
+                    ))}
                   </div>
                 </div>
                 
@@ -631,11 +564,11 @@ export default function AboutPage() {
                 </div>
                 
                 <h3 className="arched-card-heading gold">
-                  OUR <span>VISION</span>
+                  {c.vision?.heading} <span>{c.vision?.heading_highlight}</span>
                 </h3>
-                
+
                 <p className="arched-card-description" style={{ marginBottom: "8px" }}>
-                  To be a trusted global institution recognized for excellence in Islamic education, inspiring generations to embody knowledge, faith, and compassion.
+                  {c.vision?.description}
                 </p>
                 
                 <div className="arched-card-footer-divider" style={{ marginTop: "8px" }}>
@@ -661,7 +594,7 @@ export default function AboutPage() {
             
             {/* Pill Badge */}
             <div className="testi-pill reveal-slide-up" style={{ margin: "0 auto" }}>
-              <span className="testi-pill-text">Testimonials</span>
+              <span className="testi-pill-text">{c.testimonials?.badge}</span>
             </div>
 
             {/* Decorative Divider Line */}
@@ -675,12 +608,12 @@ export default function AboutPage() {
 
             {/* Section Headline */}
             <h2 className="testi-title reveal-slide-up" style={{ textAlign: "center", color: "#2B1F14" }}>
-              Stronger Faith.<br />Stronger <span style={{ color: "#C99B4D" }}>Together.</span>
+              {c.testimonials?.title_line1}<br />{c.testimonials?.title_line2_prefix}<span style={{ color: "#C99B4D" }}>{c.testimonials?.title_highlight}</span>
             </h2>
 
             {/* Section Subtitle / Description */}
             <p className="testi-desc reveal-slide-up" style={{ textAlign: "center", margin: "0 auto 40px auto" }}>
-              Hear from our learners and parents<br />building a stronger connection with Allah, together.
+              {c.testimonials?.description_line1}<br />{c.testimonials?.description_line2}
             </p>
 
             {/* Testimonials Carousel */}
@@ -715,7 +648,7 @@ export default function AboutPage() {
 
             {/* Middle Column: Text content & Button */}
             <div className="cta-content-column">
-              <h2 className="cta-heading">Not sure where to start?</h2>
+              <h2 className="cta-heading">{c.cta?.heading}</h2>
               
               {/* Divider */}
               <div className="about-heading-divider" style={{ margin: "10px 0 0 0", alignSelf: "center" }}>
@@ -725,11 +658,11 @@ export default function AboutPage() {
               </div>
 
               <p className="cta-description">
-                Let us guide you to the right path with the right course.
+                {c.cta?.description}
               </p>
 
-              <Link 
-                href="/courses" 
+              <Link
+                href={c.cta?.button_url || "/courses"}
                 className="cta-button"
                 style={{
                   textDecoration: "none",
@@ -756,34 +689,20 @@ export default function AboutPage() {
                   e.currentTarget.style.boxShadow = "0 6px 16px rgba(201, 155, 77, 0.2)";
                 }}
               >
-                Find My Course <span style={{ fontSize: "16px" }}>→</span>
+                {c.cta?.button_label} <span style={{ fontSize: "16px" }}>→</span>
               </Link>
             </div>
 
             {/* Right Column: Three Features */}
             <div className="cta-features-column">
-              
-              <div className="cta-feature-item">
-                <div className="cta-feature-icon-circle">
-                  <IconShieldCheckGold />
+              {ctaFeatures.map((label, i) => (
+                <div className="cta-feature-item" key={i}>
+                  <div className="cta-feature-icon-circle">
+                    {CTA_FEATURE_ICONS[i % CTA_FEATURE_ICONS.length]}
+                  </div>
+                  <span className="cta-feature-text">{label}</span>
                 </div>
-                <span className="cta-feature-text">Personalized Recommendation</span>
-              </div>
-
-              <div className="cta-feature-item">
-                <div className="cta-feature-icon-circle">
-                  <IconTeacherGold />
-                </div>
-                <span className="cta-feature-text">Learn from Qualified Teachers</span>
-              </div>
-
-              <div className="cta-feature-item">
-                <div className="cta-feature-icon-circle">
-                  <IconAwardGold />
-                </div>
-                <span className="cta-feature-text">Quality Islamic Education</span>
-              </div>
-
+              ))}
             </div>
 
           </div>
@@ -800,7 +719,7 @@ export default function AboutPage() {
             
             {/* Section Headline */}
             <h2 className="faq-title reveal-slide-up" style={{ textAlign: "center", color: "#2B1F14" }}>
-              Many People <span style={{ color: "#C99B4D" }}>Ask About this</span>
+              {c.faq?.title} <span style={{ color: "#C99B4D" }}>{c.faq?.title_highlight}</span>
             </h2>
 
             {/* Decorative Divider Line */}
@@ -814,98 +733,41 @@ export default function AboutPage() {
 
             {/* Section Subtitle / Description */}
             <p className="faq-desc reveal-slide-up" style={{ textAlign: "center", margin: "0 auto 40px auto" }}>
-              Following are answers to some queries that are posed regularly
+              {c.faq?.description}
             </p>
 
             {/* Accordions Container */}
             <div className="faq-container stagger-group" style={{ width: "100%", maxWidth: "850px", margin: "0 auto" }}>
-              
-              {/* FAQ 1 */}
-              <div 
-                className="faq-item reveal-stagger" 
-                onClick={() => setOpenFaqIndex(openFaqIndex === 0 ? null : 0)}
-              >
-                <div className="faq-question-row">
-                  <div className="faq-icon-badge">
-                    <IconCalendar size={20} />
+              {faqItems.map((f, i) => (
+                <div
+                  className="faq-item reveal-stagger"
+                  key={i}
+                  onClick={() => setOpenFaqIndex(openFaqIndex === i ? null : i)}
+                >
+                  <div className="faq-question-row">
+                    <div className="faq-icon-badge">
+                      {FAQ_ICONS[i % FAQ_ICONS.length]}
+                    </div>
+                    <span className="faq-question-text">{f.q}</span>
+                    <IconChevron size={18} className={`faq-chevron ${openFaqIndex === i ? "open" : ""}`} />
                   </div>
-                  <span className="faq-question-text">Is the class schedule suitable for me?</span>
-                  <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 0 ? "open" : ""}`} />
-                </div>
-                <div className={`faq-answer-wrapper ${openFaqIndex === 0 ? "open" : ""}`}>
-                  <p className="faq-answer-text">
-                    Yes. We offer highly flexible class schedules. You can choose your preferred days and times, and we have teachers available 24/7 across different time zones to fit your busy routine.
-                  </p>
-                </div>
-              </div>
-
-              {/* FAQ 2 */}
-              <div 
-                className="faq-item reveal-stagger" 
-                onClick={() => setOpenFaqIndex(openFaqIndex === 1 ? null : 1)}
-              >
-                <div className="faq-question-row">
-                  <div className="faq-icon-badge">
-                    <IconUser size={20} />
+                  <div className={`faq-answer-wrapper ${openFaqIndex === i ? "open" : ""}`}>
+                    <p className="faq-answer-text">
+                      {f.a}
+                    </p>
                   </div>
-                  <span className="faq-question-text">How do I begin?</span>
-                  <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 1 ? "open" : ""}`} />
                 </div>
-                <div className={`faq-answer-wrapper ${openFaqIndex === 1 ? "open" : ""}`}>
-                  <p className="faq-answer-text">
-                    Getting started is very simple. Just click the 'Book Your Free Session Now' button below, fill out a short form with your contact details and preferences, and our academic advisor will contact you within 24 hours to schedule your free trial class.
-                  </p>
-                </div>
-              </div>
-
-              {/* FAQ 3 */}
-              <div 
-                className="faq-item reveal-stagger" 
-                onClick={() => setOpenFaqIndex(openFaqIndex === 2 ? null : 2)}
-              >
-                <div className="faq-question-row">
-                  <div className="faq-icon-badge">
-                    <IconVideoPlay size={20} />
-                  </div>
-                  <span className="faq-question-text">Are these classes pre-recorded?</span>
-                  <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 2 ? "open" : ""}`} />
-                </div>
-                <div className={`faq-answer-wrapper ${openFaqIndex === 2 ? "open" : ""}`}>
-                  <p className="faq-answer-text">
-                    No, all our classes are 100% live and interactive, conducted one-on-one via Zoom or our portal. This ensures personalized attention and allows you to ask questions and receive instant feedback from your teacher.
-                  </p>
-                </div>
-              </div>
-
-              {/* FAQ 4 */}
-              <div 
-                className="faq-item reveal-stagger" 
-                onClick={() => setOpenFaqIndex(openFaqIndex === 3 ? null : 3)}
-              >
-                <div className="faq-question-row">
-                  <div className="faq-icon-badge">
-                    <IconMapPin size={20} />
-                  </div>
-                  <span className="faq-question-text">Where is the headquarter of your business?</span>
-                  <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 3 ? "open" : ""}`} />
-                </div>
-                <div className={`faq-answer-wrapper ${openFaqIndex === 3 ? "open" : ""}`}>
-                  <p className="faq-answer-text">
-                    Our digital headquarters and academic operations are based in London, UK, but our teachers and students are spread globally across the UK, USA, Canada, Middle East, and South Asia, providing a truly international learning experience.
-                  </p>
-                </div>
-              </div>
-
+              ))}
             </div>
 
             {/* CTA Button */}
             <div className="reveal-slide-up" style={{ display: "flex", justifyContent: "center", width: "100%", marginTop: "56px" }}>
-              <Link 
-                href="/contact" 
+              <Link
+                href={c.faq?.cta_url || "/contact"}
                 className="faq-cta-btn"
                 style={{ textDecoration: "none" }}
               >
-                <span>BOOK YOUR FREE SESSION NOW!</span>
+                <span>{c.faq?.cta_label}</span>
                 <span style={{ fontSize: "16px", fontWeight: "bold" }}>→</span>
               </Link>
             </div>

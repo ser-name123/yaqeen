@@ -68,12 +68,34 @@ export async function POST(request) {
         .replace(/-+$/, "");
     };
 
-    const entries = [...staticPaths.map(r => ({
-      loc: `${cleanedUrl}${r.path}`,
-      lastmod: new Date().toISOString(),
-      changefreq: r.changeFrequency,
-      priority: r.priority
-    }))];
+    // Override static page paths with any admin-configured canonical slugs.
+    const keyByPath = {
+      "": "home", "/courses": "courses", "/pricing": "pricing", "/about": "about",
+      "/teachers": "teachers", "/testimonials": "testimonials", "/faqs": "faqs",
+      "/careers": "careers", "/contact": "contact", "/book-free-trial": "bookTrial",
+      "/privacy": "privacy", "/terms": "terms",
+    };
+    let seoSlugByKey = {};
+    try {
+      const { data: seoRows } = await supabaseAdmin.from("page_seo").select("id, slug");
+      for (const r of seoRows || []) {
+        if (r.slug) seoSlugByKey[r.id] = r.slug.startsWith("/") ? r.slug : `/${r.slug}`;
+      }
+    } catch (e) {
+      console.warn("Sitemap: page_seo read skipped:", e.message);
+    }
+
+    const entries = [...staticPaths.map(r => {
+      const key = keyByPath[r.path];
+      const slug = key && seoSlugByKey[key];
+      const finalPath = slug !== undefined && slug !== null ? (slug === "/" ? "" : slug) : r.path;
+      return {
+        loc: `${cleanedUrl}${finalPath}`,
+        lastmod: new Date().toISOString(),
+        changefreq: r.changeFrequency,
+        priority: r.priority
+      };
+    })];
 
     // Fetch dynamic routes
     try {

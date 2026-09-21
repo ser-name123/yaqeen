@@ -1,0 +1,75 @@
+.astaff-loading, .astaff-empty { padding: 34px; color: #8b7d63; text-align: center; border: 1px dashed #e3dbc9; border-radius: 14px; background: #fff; }
+.astaff-migrate { background: #fdf3e3; border: 1px solid #f0d9ac; color: #8a5a1c; border-radius: 12px; padding: 12px 16px; font-size: 13.5px; margin-bottom: 16px; line-height: 1.5; }
+.astaff-migrate code { background: #f4e6cc; padding: 1px 6px; border-radius: 5px; font-size: 12.5px; }
+
+.astaff-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+.astaff-head h3 { margin: 0 0 4px; font-size: 20px; color: #2B1F14; }
+.astaff-head p { margin: 0; font-size: 13.5px; color: #8b7d63; max-width: 640px; }
+.astaff-add { flex: 0 0 auto; border: none; background: #8c5d31; color: #fff; font-weight: 600; padding: 11px 18px; border-radius: 10px; cursor: pointer; font-size: 14px; }
+
+.astaff-list { display: flex; flex-direction: column; gap: 12px; }
+.astaff-card { display: flex; align-items: center; gap: 16px; background: #fff; border: 1px solid #EFE6D2; border-radius: 14px; padding: 16px 18px; }
+.astaff-card.suspended { opacity: 0.7; background: #faf6ef; }
+.astaff-avatar { width: 46px; height: 46px; border-radius: 50%; color: #fff; font-weight: 700; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.astaff-info { flex: 1; min-width: 0; }
+.astaff-name-row { display: flex; align-items: center; gap: 8px; }
+.astaff-name { font-size: 15.5px; font-weight: 700; color: #2B1F14; }
+.astaff-tag { font-size: 10.5px; font-weight: 700; padding: 2px 7px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.3px; }
+.astaff-tag.self { background: #eaf3e5; color: #3C6B2E; }
+.astaff-tag.owner { background: #f4ead6; color: #8c5d31; }
+.astaff-email { font-size: 13px; color: #8b7d63; margin: 2px 0 8px; word-break: break-all; }
+.astaff-meta { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.astaff-role { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 9999px; border: 1px solid; background: #fff; }
+.astaff-status { font-size: 11.5px; font-weight: 700; padding: 3px 9px; border-radius: 9999px; }
+.astaff-status.active { background: #eaf3e5; color: #3C6B2E; }
+.astaff-status.suspended { background: #fbecea; color: #c0392b; }
+.astaff-perms, .astaff-login { font-size: 12px; color: #a2937a; }
+
+.astaff-actions { display: flex; gap: 6px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+.astaff-actions button { border: 1px solid #E2D4B2; background: #F3ECDD; color: #6b5c45; border-radius: 8px; padding: 7px 12px; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.astaff-actions button.warn { color: #A9631E; border-color: #ecd3b0; background: #fbf3e6; }
+.astaff-actions button.ok { color: #3C6B2E; border-color: #cfe3c2; background: #eef6e8; }
+.astaff-actions button.del { color: #c0392b; border-color: #E6C3BC; background: #FBF0EE; }
+
+/* modal */
+.astaff-overlay { position: fixed; inset: 0; background: rgba(44,37,30,0.45); display: flex; align-items: flex-start; justify-content: center; padding: 40px 16px; z-index: 200; overflow-y: auto; }
+.astaff-modal { background: #fdfcf9; border: 1px solid #e3dbc9; border-radius: 16px; width: 100%; max-width: 560px; box-shadow: 0 24px 60px rgba(44,37,30,0.25); }
+.astaff-modal-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid #EFE6D2; font-weight: 700; color: #2B1F14; font-size: 16px; }
+.astaff-modal-head button { border: none; background: none; font-size: 18px; color: #8b7d63; cursor: pointer; }
+.astaff-modal-body { padding: 18px 20px 22px; display: flex; flex-direction: column; }
+
+.astaff-lbl { font-size: 12.5px; font-weight: 600; color: #6b5c45; margin: 14px 0 5px; }
+.astaff-lbl:first-child { margin-top: 0; }
+.astaff-hint { font-weight: 400; color: #a2937a; }
+.astaff-input { border: 1px solid #E2D4B2; background: #FCFAF4; border-radius: 9px; padding: 10px 12px; font-size: 14px; color: #2B1F14; font-family: inherit; width: 100%; }
+.astaff-input:focus { outline: none; border-color: #C99B4D; background: #fff; }
+.astaff-input:disabled { background: #f1ece0; color: #9c8f78; }
+.astaff-role-desc { font-size: 12.5px; color: #8b7d63; margin: 6px 0 0; }
+
+.astaff-lbl-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.astaff-lbl-row .astaff-lbl { margin-bottom: 0; }
+.astaff-perm-tools { display: inline-flex; gap: 6px; }
+.astaff-perm-tools button { border: 1px solid #E2D4B2; background: #F3ECDD; color: #7a6a4f; border-radius: 7px; padding: 4px 10px; font-size: 11.5px; font-weight: 600; cursor: pointer; }
+.astaff-perm-tools button:hover { background: #efe6d0; }
+
+.astaff-allnote { background: #f4ead6; color: #8c5d31; border-radius: 9px; padding: 10px 12px; font-size: 13px; font-weight: 600; }
+.astaff-perm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.astaff-perm { display: flex; align-items: center; gap: 8px; border: 1px solid #E2D4B2; background: #FCFAF4; border-radius: 9px; padding: 9px 11px; font-size: 13px; color: #4A3E30; cursor: pointer; }
+.astaff-perm.on { border-color: #C99B4D; background: #fbf3e3; font-weight: 600; }
+.astaff-perm input { accent-color: #8c5d31; }
+.astaff-preset-perms { display: flex; flex-wrap: wrap; gap: 6px; }
+.astaff-chip { font-size: 12px; background: #f4eede; border: 1px solid #ecdfc4; color: #6b5c45; border-radius: 9999px; padding: 4px 10px; }
+
+.astaff-status-toggle { display: flex; gap: 8px; }
+.astaff-status-toggle button { flex: 1; border: 1px solid #E2D4B2; background: #FCFAF4; color: #6b5c45; border-radius: 9px; padding: 9px; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+.astaff-status-toggle button.on { border-color: #3C6B2E; background: #eef6e8; color: #3C6B2E; }
+.astaff-status-toggle button.on.danger { border-color: #c0392b; background: #fbecea; color: #c0392b; }
+
+.astaff-save { margin-top: 20px; border: none; background: #8c5d31; color: #fff; font-weight: 700; padding: 12px; border-radius: 10px; cursor: pointer; font-size: 14.5px; }
+.astaff-save:disabled { opacity: 0.6; cursor: default; }
+
+@media (max-width: 640px) {
+  .astaff-card { flex-wrap: wrap; }
+  .astaff-actions { width: 100%; justify-content: flex-start; }
+  .astaff-perm-grid { grid-template-columns: 1fr; }
+}

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import "./careers.css";
 import { supabase } from "@/lib/supabase";
+import { usePageContent } from "@/lib/use-page-content";
 
 /* ---------------- Icons ---------------- */
 const IconArrow = ({ size = 15 }) => (
@@ -38,36 +39,13 @@ const IconEmpowerment = () => (<svg width="26" height="26" viewBox="0 0 24 24" f
 const IconExcellence = () => (<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>);
 const IconBalance = () => (<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3v18M3 7h18M6 7l-3 6a3 3 0 0 0 6 0zM18 7l-3 6a3 3 0 0 0 6 0z" /></svg>);
 
-const VALUES = [
-  { ar: "Amanah", en: "Trustworthiness", desc: "We approach teaching with responsibility, ensuring we provide accurate knowledge and guide students with integrity." },
-  { ar: "Adab", en: "Proper Conduct", desc: "We respect and value each student, fostering an environment where they can develop both academically and ethically." },
-  { ar: "Ihsan", en: "Excellence", desc: "We are dedicated to delivering the highest quality of education, striving to inspire students to achieve their full potential." },
-  { ar: "Ikhlas", en: "Sincerity", desc: "Our efforts in teaching are driven by a sincere desire to seek the pleasure of Allah and make a positive impact on the lives of our students." }
-];
-
-const WHY = [
-  { icon: <IconCommunity />, title: "Community", desc: "Build lasting bonds with a team of like-minded individuals, united in their commitment to a shared, greater purpose." },
-  { icon: <IconTeamwork />, title: "Teamwork", desc: "Collaborate with diverse teams, global colleagues and academics to foster creativity, innovation and mutual learning." },
-  { icon: <IconDevelopment />, title: "Development", desc: "Thrive in an environment that encourages continuous learning, both spiritually and professionally, supporting your growth." },
-  { icon: <IconEmpowerment />, title: "Empowerment", desc: "Contribute to the positive transformation of lives by nurturing faith and leaving an enduring impact on communities." },
-  { icon: <IconExcellence />, title: "Excellence", desc: "Experience a well-structured workplace with high standards of integrity, ensuring a professional atmosphere for all." },
-  { icon: <IconBalance />, title: "Balance", desc: "Work in harmony where both your spiritual values and worldly aspirations align toward a common, purposeful goal." }
-];
+const WHY_ICONS = [<IconCommunity />, <IconTeamwork />, <IconDevelopment />, <IconEmpowerment />, <IconExcellence />, <IconBalance />];
 
 const DEFAULT_JOBS = [
   { id: "d1", title: "Quran Teacher — Female", job_title: "Quran Study with Tajweed & Makharij", meta: "Permanent | 2 Years Exp. | Bilingual (English/Arabic)", badge: "Online", description: "Quran Teacher with Ijazah and 2–3 years of online teaching experience for all ages." },
   { id: "d2", title: "Arabic Teacher — Female", job_title: "Arabic Language Study", meta: "Permanent | 2 Years Exp. | Bilingual (English/Arabic)", badge: "Online", description: "Arabic teacher with command of the Arabic language, able to design the course per age group and teach the school Arabic curriculum, with a minimum of 2–3 years of experience." },
   { id: "d3", title: "Admin Staff — Female", job_title: "Administrative Co-ordinator", meta: "Permanent | 2 Years Exp. | Bilingual (English/Arabic)", badge: "Online", description: "Manage letters, communicate with clients and the public with excellent written communication. Must be well organised to keep the schedule of teachers and kids; minimum 2 years of experience." },
   { id: "d4", title: "Digital Marketing Staff — Female", job_title: "Digital Marketing Executive", meta: "Permanent | 2 Years Exp. | Bilingual (English/Arabic)", badge: "Online", description: "Plans and implements display, email, social media and web advertising campaigns; evaluates and reports on digital marketing performance against objectives (ROI and KPIs)." }
-];
-
-const FAQS = [
-  { q: "How do I apply to teach with Yaqeen Institute?", a: "You can apply through our Teacher Application page — complete the form and upload your details, and our team will review your application." },
-  { q: "What are the teaching expectations?", a: "Teachers are expected to be punctual, well-prepared, patient and committed to each student's progress, following our curriculum and values." },
-  { q: "What equipment do I need to teach?", a: "A laptop or computer with a stable internet connection, a headset, a webcam and a quiet space are recommended." },
-  { q: "What conduct is expected during class?", a: "We expect professional, respectful and Islamic conduct at all times, creating a safe and positive learning environment." },
-  { q: "Can I reschedule or cancel a class?", a: "Yes. Classes can be rescheduled or cancelled with reasonable notice through our team." },
-  { q: "How is teaching quality monitored?", a: "We monitor quality through student feedback, progress reports and periodic reviews to maintain high teaching standards." }
 ];
 
 const GALLERY = [
@@ -78,8 +56,12 @@ const GALLERY = [
 ];
 
 export default function CareersPage() {
+  const c = usePageContent("careers");
   const [openId, setOpenId] = useState(null);
   const [jobs, setJobs] = useState(DEFAULT_JOBS);
+  const values = c.foundation?.values || [];
+  const whyCards = c.why?.cards || [];
+  const faqItems = c.faq?.items || [];
 
   useEffect(() => {
     let active = true;
@@ -104,15 +86,15 @@ export default function CareersPage() {
     <main className="cr-page">
       {/* Hero */}
       <section className="cr-hero">
-        <span className="cr-badge">Careers</span>
-        <h1>Build Your <span>Career</span> With Us</h1>
+        <span className="cr-badge">{c.hero?.badge}</span>
+        <h1>{c.hero?.title} <span>{c.hero?.title_highlight}</span>{c.hero?.title_suffix}</h1>
         <div className="cr-divider"><span className="line" /><span className="diamond" /><span className="line" /></div>
-        <p>More than a job — serve Allah and earn blessings in every step.</p>
+        <p>{c.hero?.description}</p>
       </section>
 
       {/* Intro */}
       <div className="cr-intro">
-        <p>This is not just a job; it&apos;s an opportunity to serve Allah through your work, earning <b>His blessings and rewards</b> with every task you complete.</p>
+        <p>{c.intro}</p>
       </div>
 
       {/* Gallery */}
@@ -128,12 +110,12 @@ export default function CareersPage() {
       {/* Foundation Commitment */}
       <section className="cr-foundation">
         <div className="cr-head">
-          <h2>Our Foundation <span>Commitment</span></h2>
-          <p>We approach teaching with responsibility, ensuring we provide accurate knowledge and guide students with integrity.</p>
+          <h2>{c.foundation?.heading} <span>{c.foundation?.heading_highlight}</span></h2>
+          <p>{c.foundation?.subtitle}</p>
         </div>
         <div className="cr-values">
-          {VALUES.map((v) => (
-            <div className="cr-value" key={v.ar}>
+          {values.map((v, i) => (
+            <div className="cr-value" key={i}>
               <div className="cr-value-label">
                 <span className="ar">{v.ar}</span>
                 <span className="en">{v.en}</span>
@@ -147,13 +129,13 @@ export default function CareersPage() {
       {/* Why Join Us */}
       <section className="cr-why">
         <div className="cr-head">
-          <h2>Why Join Us?</h2>
-          <p>What we offer is not just employment, but a chance to earn rewards from Allah by fulfilling your duties with sincerity and purpose.</p>
+          <h2>{c.why?.heading}</h2>
+          <p>{c.why?.subtitle}</p>
         </div>
         <div className="cr-why-grid">
-          {WHY.map((w) => (
-            <div className="cr-why-card" key={w.title}>
-              <div className="cr-why-icon">{w.icon}</div>
+          {whyCards.map((w, i) => (
+            <div className="cr-why-card" key={i}>
+              <div className="cr-why-icon">{WHY_ICONS[i % WHY_ICONS.length]}</div>
               <h3>{w.title}</h3>
               <p>{w.desc}</p>
             </div>
@@ -164,8 +146,8 @@ export default function CareersPage() {
       {/* Join Our Team */}
       <section className="cr-jobs">
         <div className="cr-head">
-          <h2>Join Our <span>Team</span></h2>
-          <p>We are seeking the perfect candidates for the positions listed below.</p>
+          <h2>{c.jobs?.heading} <span>{c.jobs?.heading_highlight}</span></h2>
+          <p>{c.jobs?.subtitle}</p>
         </div>
         <div className="cr-jobs-grid">
           {jobs.map((j) => (
@@ -174,24 +156,24 @@ export default function CareersPage() {
               {j.job_title && <p className="cr-job-title"><b>Job Title:</b> {j.job_title}</p>}
               {j.meta && <p className="cr-job-meta">{j.meta}</p>}
               {j.badge && <span className="cr-job-badge">{j.badge}</span>}
-              {j.description && <p className="cr-job-desc">{j.description}</p>}
-              <Link href="/teacher-application" className="cr-apply">Apply Now <IconArrow /></Link>
+              {j.description && <div className="cr-job-desc" dangerouslySetInnerHTML={{ __html: j.description }} />}
+              <Link href="/teacher-application" className="cr-apply">{c.jobs?.apply_label} <IconArrow /></Link>
             </div>
           ))}
         </div>
         <div className="cr-center-btn">
-          <Link href="/teacher-application" className="cr-btn-outline">Become a Tutor <IconArrow /></Link>
+          <Link href="/teacher-application" className="cr-btn-outline">{c.jobs?.become_tutor_label} <IconArrow /></Link>
         </div>
       </section>
 
       {/* Teachers FAQ */}
       <section className="cr-faq">
         <div className="cr-head">
-          <span className="cr-faq-badge">Teachers FAQ</span>
-          <h2 style={{ marginTop: "16px" }}>Questions About Our <span>Teachers</span></h2>
+          <span className="cr-faq-badge">{c.faq?.badge}</span>
+          <h2 style={{ marginTop: "16px" }}>{c.faq?.title} <span>{c.faq?.title_highlight}</span></h2>
         </div>
         <div className="cr-acc">
-          {FAQS.map((f, i) => {
+          {faqItems.map((f, i) => {
             const open = openId === i;
             return (
               <div key={i} className={`cr-item ${open ? "open" : ""}`}>
@@ -208,7 +190,7 @@ export default function CareersPage() {
           })}
         </div>
         <div className="cr-center-btn" style={{ marginTop: 0 }}>
-          <Link href="/teacher-application" className="cr-btn-outline">Apply to Teach <IconArrow /></Link>
+          <Link href="/teacher-application" className="cr-btn-outline">{c.faq?.apply_label} <IconArrow /></Link>
         </div>
       </section>
     </main>

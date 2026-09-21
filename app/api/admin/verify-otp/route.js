@@ -55,12 +55,21 @@ export async function POST(request) {
     const sessionToken = crypto.randomBytes(32).toString("hex");
     const sessionExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours session lifetime
 
-    // Update session in database and clear OTP fields
+    // Block suspended accounts here too (in case they were suspended mid-login).
+    if (admin.status === "suspended") {
+      return NextResponse.json(
+        { success: false, message: "This account has been suspended. Please contact your administrator." },
+        { status: 403 }
+      );
+    }
+
+    // Update session in database, stamp last login, and clear OTP fields
     const { error: updateError } = await supabaseAdmin
       .from("admin_profile")
       .update({
         session_token: sessionToken,
         session_expires_at: sessionExpiresAt.toISOString(),
+        last_login_at: new Date().toISOString(),
         otp_code: null,
         otp_expires_at: null
       })

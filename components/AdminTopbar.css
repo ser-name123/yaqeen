@@ -1,0 +1,86 @@
+.atb {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: -40px -40px 28px -40px;   /* cancel the main panel's 40px padding to go full width */
+  padding: 12px 28px;
+  background: rgba(253, 250, 243, 0.85);
+  backdrop-filter: saturate(180%) blur(10px);
+  border-bottom: 1px solid #e9e0cd;
+  box-shadow: 0 2px 12px rgba(44, 37, 30, 0.03);
+}
+
+.atb-left { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+.atb-brand { font-size: 15px; font-weight: 700; color: #2B1F14; }
+.atb-sub { font-size: 11.5px; color: #a2937a; }
+
+.atb-right { display: flex; align-items: center; gap: 10px; }
+
+.atb-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  border: 1px solid #e3dbc9; background: #f4eede; color: #4a3e30;
+  border-radius: 9999px; padding: 8px 14px; font-size: 13px; font-weight: 600;
+  cursor: pointer; text-decoration: none; transition: all 0.15s;
+}
+.atb-btn:hover { background: #efe6d0; border-color: #d9caa5; }
+.atb-btn:disabled { opacity: 0.55; cursor: default; }
+
+.atb-icon-btn {
+  position: relative; width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid #e3dbc9; background: #f4eede; color: #4a3e30;
+  display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s;
+}
+.atb-icon-btn:hover { background: #efe6d0; }
+.atb-badge {
+  position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; padding: 0 4px;
+  background: #c0392b; color: #fff; font-size: 10.5px; font-weight: 700; border-radius: 9999px;
+  display: flex; align-items: center; justify-content: center; border: 2px solid #fdfcf9;
+}
+
+.atb-profile {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid #e3dbc9; background: #f4eede; border-radius: 9999px;
+  padding: 5px 12px 5px 6px; cursor: pointer; color: #4a3e30; transition: all 0.15s; max-width: 220px;
+}
+.atb-profile:hover { background: #efe6d0; }
+.atb-avatar {
+  width: 30px; height: 30px; border-radius: 50%; background: #8c5d31; color: #fff;
+  display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0;
+}
+.atb-profile-email { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.atb-pop-wrap { position: relative; }
+.atb-pop {
+  position: absolute; top: calc(100% + 10px); right: 0; width: 260px;
+  background: #fff; border: 1px solid #e9e0cd; border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(44, 37, 30, 0.12); padding: 8px; z-index: 50;
+}
+.atb-pop-head { padding: 8px 10px; font-size: 12px; font-weight: 700; color: #8b7d63; text-transform: uppercase; letter-spacing: 0.4px; }
+.atb-pop-name { font-size: 11px; color: #a2937a; text-transform: none; letter-spacing: 0; font-weight: 500; }
+.atb-pop-email { font-size: 13.5px; color: #2B1F14; font-weight: 600; text-transform: none; letter-spacing: 0; margin-top: 2px; word-break: break-all; }
+.atb-pop-item {
+  width: 100%; display: flex; align-items: center; gap: 10px; justify-content: flex-start;
+  border: none; background: none; text-align: left; padding: 10px 12px; border-radius: 8px;
+  font-size: 13.5px; color: #3c3225; cursor: pointer; font-weight: 500;
+}
+.atb-pop-item:hover { background: #f6f0e2; }
+.atb-pop-item.danger { color: #c0392b; }
+.atb-pop-item.danger:hover { background: #fbf0ee; }
+.atb-pop-item .atb-pop-count { margin-left: auto; font-size: 12px; font-weight: 700; color: #b3a488; }
+.atb-pop-item .atb-pop-count.hot { color: #fff; background: #c0392b; border-radius: 9999px; min-width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; padding: 0 5px; }
+.atb-pop-foot { padding: 9px 12px 5px; font-size: 12.5px; color: #8c5d31; font-weight: 600; cursor: pointer; border-top: 1px solid #f0e8d6; margin-top: 4px; }
+.atb-pop-foot:hover { text-decoration: underline; }
+
+/* Hide button text labels on narrow screens to save room */
+@media (max-width: 1024px) {
+  .atb-btn-label { display: none; }
+  .atb-btn { padding: 9px 11px; }
+  .atb-profile-email { display: none; }
+}
+@media (max-width: 640px) {
+  .atb { margin: -24px -20px 20px -20px; padding: 10px 16px; }
+}

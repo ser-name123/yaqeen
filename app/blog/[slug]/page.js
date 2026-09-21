@@ -346,7 +346,7 @@ export default function BlogDetail() {
                     </div>
                     <div className="blog-details-section-content">
                       <h3 className="blog-details-section-title">{section.title}</h3>
-                      <p className="blog-details-section-body">{section.content}</p>
+                      <div className="blog-details-section-body" dangerouslySetInnerHTML={{ __html: section.content || "" }} />
                     </div>
                   </div>
                   {idx < blog.sections.length - 1 && (

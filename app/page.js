@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { useSettings } from "@/lib/settings-context";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
+import { usePageContent } from "@/lib/use-page-content";
 
 // Custom Icons for the Hero Section
 const IconGlobe = ({ size = 16 }) => (
@@ -521,6 +522,8 @@ const CHOOSE_FEATURES = [
 ];
 
 export default function Home() {
+  const c = usePageContent("home");
+  const heroLanguages = c.hero?.languages?.length ? c.hero.languages : HERO_LANGUAGES;
   const { faviconUrl } = useSettings();
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
   const [newsEmail, setNewsEmail] = useState("");
@@ -544,7 +547,7 @@ export default function Home() {
   // Seamless infinite roll: when we land on the duplicated first item,
   // snap back to 0 without animation once the transition finishes.
   useEffect(() => {
-    if (langIndex === HERO_LANGUAGES.length) {
+    if (langIndex === heroLanguages.length) {
       const t = setTimeout(() => {
         setLangNoAnim(true);
         setLangIndex(0);
@@ -640,7 +643,7 @@ export default function Home() {
                 boxShadow: "0 4px 12px rgba(43, 31, 20, 0.05)",
                 marginBottom: "12px" 
               }}>
-                <span style={{ fontSize: "14px", fontWeight: "500", color: "#C99B4D", letterSpacing: "0.5px" }}>Learn in Any Language</span>
+                <span style={{ fontSize: "14px", fontWeight: "500", color: "#C99B4D", letterSpacing: "0.5px" }}>{c.hero?.badge}</span>
                 <span style={{ color: "#C99B4D", display: "flex", alignItems: "center" }}><IconGlobe /></span>
               </div>
 
@@ -654,9 +657,9 @@ export default function Home() {
                 fontFamily: "var(--font-poppins)", 
                 letterSpacing: "-1.5px" 
               }}>
-                Online Qur’an,<br />
-                <span style={{ color: "#C99B4D" }}>Islamic Studies &</span><br />
-                <span style={{ color: "#556B3B" }}>Arabic Classes</span>
+                {c.hero?.headline_line1}<br />
+                <span style={{ color: "#C99B4D" }}>{c.hero?.headline_line2}</span><br />
+                <span style={{ color: "#556B3B" }}>{c.hero?.headline_line3}</span>
               </h1>
 
               {/* Subheading */}
@@ -670,9 +673,9 @@ export default function Home() {
                 gap: "8px", 
                 flexWrap: "wrap" 
               }}>
-                Learn in Your Own{" "}
+                {c.hero?.subheading_prefix}{" "}
                 <span style={{ position: "relative", color: "#C99B4D", display: "inline-block" }}>
-                  Language
+                  {c.hero?.subheading_highlight}
                   <svg style={{ position: "absolute", bottom: "-9px", left: 0, width: "100%", height: "11px" }} viewBox="0 0 120 12" preserveAspectRatio="none">
                     <path d="M0,7 C10,1 20,1 30,7 C40,13 50,13 60,7 C70,1 80,1 90,7 C100,13 110,13 120,7" stroke="#C99B4D" strokeWidth="2.2" fill="none" strokeLinecap="round" />
                   </svg>
@@ -684,7 +687,7 @@ export default function Home() {
                     transform: `translateY(-${langIndex * 66}px)`,
                     transition: langNoAnim ? "none" : "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)"
                   }}>
-                    {[...HERO_LANGUAGES, HERO_LANGUAGES[0]].map((l, i) => (
+                    {[...heroLanguages, heroLanguages[0]].map((l, i) => (
                       <span key={i} className="hero-lang-roll-btn">{l}</span>
                     ))}
                   </span>
@@ -700,12 +703,12 @@ export default function Home() {
                 marginBottom: "36px", 
                 fontWeight: "500" 
               }}>
-                Quality Islamic education for all ages, from the comfort of your home.
+                {c.hero?.description}
               </p>
 
               {/* Button */}
               <div style={{ marginBottom: "40px" }}>
-                <Link href="/book-free-trial" style={{
+                <Link href={c.hero?.cta_url || "/book-free-trial"} style={{
                   textDecoration: "none",
                   display: "inline-flex",
                   alignItems: "center",
@@ -730,30 +733,24 @@ export default function Home() {
                   e.currentTarget.style.backgroundColor = "#C99B4D";
                 }}
                 >
-                  Get Started <span style={{ fontSize: "18px" }}>→</span>
+                  {c.hero?.cta_label} <span style={{ fontSize: "18px" }}>→</span>
                 </Link>
               </div>
 
               {/* Secondary Features Row */}
               <div className="hero-features-row" style={{ gap: "24px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  <div style={{ width: "36px", height: "36px", borderRadius: "50%", backgroundColor: "#C99B4D", display: "flex", alignItems: "center", color: "#FFF", flexShrink: 0, justifyContent: "center" }}>
-                    <IconPeople />
-                  </div>
-                  <span style={{ fontSize: "14px", fontWeight: "500", color: "#2B1F14" }}>For All Ages</span>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  <div style={{ width: "36px", height: "36px", borderRadius: "50%", backgroundColor: "#556B3B", display: "flex", alignItems: "center", color: "#FFF", flexShrink: 0, justifyContent: "center" }}>
-                    <IconMonitor />
-                  </div>
-                  <span style={{ fontSize: "14px", fontWeight: "500", color: "#2B1F14" }}>Live Online Classes</span>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  <div style={{ width: "36px", height: "36px", borderRadius: "50%", backgroundColor: "#2B1F14", display: "flex", alignItems: "center", color: "#FFF", flexShrink: 0, justifyContent: "center" }}>
-                    <IconChat />
-                  </div>
-                  <span style={{ fontSize: "14px", fontWeight: "500", color: "#2B1F14" }}>Learn in Any Language</span>
-                </div>
+                {(c.hero?.features || []).map((label, i) => {
+                  const chipColors = ["#C99B4D", "#556B3B", "#2B1F14"];
+                  const chipIcons = [<IconPeople />, <IconMonitor />, <IconChat />];
+                  return (
+                    <div key={i} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <div style={{ width: "36px", height: "36px", borderRadius: "50%", backgroundColor: chipColors[i % chipColors.length], display: "flex", alignItems: "center", color: "#FFF", flexShrink: 0, justifyContent: "center" }}>
+                        {chipIcons[i % chipIcons.length]}
+                      </div>
+                      <span style={{ fontSize: "14px", fontWeight: "500", color: "#2B1F14" }}>{label}</span>
+                    </div>
+                  );
+                })}
               </div>
 
             </div>
@@ -768,31 +765,12 @@ export default function Home() {
         <div style={{ width: "100%", padding: "0 24px 40px 24px" }}>
           <div className="bottom-banner-wrapper">
             <div className="bottom-banner-grid">
-              
-              {/* Card 1 */}
-              <div className="bottom-banner-card">
-                <h4>No Hidden Fees</h4>
-                <p>What you see is what you pay.</p>
-              </div>
-
-              {/* Card 2 */}
-              <div className="bottom-banner-card">
-                <h4>Family Discounts</h4>
-                <p>Save more when you learn together.</p>
-              </div>
-
-              {/* Card 3 */}
-              <div className="bottom-banner-card">
-                <h4>Flexible Plans</h4>
-                <p>Choose what works for you.</p>
-              </div>
-
-              {/* Card 4 */}
-              <div className="bottom-banner-card">
-                <h4>Quality Education</h4>
-                <p>Learn from qualified teachers.</p>
-              </div>
-
+              {(c.banner || []).map((card, i) => (
+                <div className="bottom-banner-card" key={i}>
+                  <h4>{card.title}</h4>
+                  <p>{card.desc}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -816,8 +794,8 @@ export default function Home() {
             
             {/* Heading */}
             <h2 className="lang-title">
-              Learn in<br />
-              <span style={{ color: "#C99B4D" }}>Your Language</span>
+              {c.lang?.title_line1}<br />
+              <span style={{ color: "#C99B4D" }}>{c.lang?.title_highlight}</span>
             </h2>
 
             {/* Decorative Divider Line with Star and Dots */}
@@ -833,9 +811,9 @@ export default function Home() {
 
             {/* Description Paragraph */}
             <p className="lang-desc">
-              You can learn and understand<br />
-              {"Qur'an, Islamic Studies & Arabic"}<br />
-              in <span style={{ color: "#556B3B", fontWeight: "500" }}>the language you understand best.</span>
+              {c.lang?.desc_line1}<br />
+              {c.lang?.desc_line2}<br />
+              {c.lang?.desc_line3_prefix}<span style={{ color: "#556B3B", fontWeight: "500" }}>{c.lang?.desc_line3_highlight}</span>
             </p>
 
             {/* Card */}
@@ -844,10 +822,10 @@ export default function Home() {
                 <IconBookOpen size={26} />
               </div>
               <div className="lang-feature-body">
-                <h4>Learn Quran Online</h4>
-                <p>Choose the words you understand best and learn with ease, clarity, and confidence.</p>
+                <h4>{c.lang?.card_title}</h4>
+                <p>{c.lang?.card_desc}</p>
                 <div className="lang-feature-more">
-                  <p>Master the Qur&apos;an in the language you understand through our online Quran academy. Join online Quran classes, Quran lessons online, and learn Quran with Tajweed from qualified teachers, anytime, anywhere.</p>
+                  <p>{c.lang?.card_more}</p>
                 </div>
               </div>
               <button
@@ -864,20 +842,19 @@ export default function Home() {
 
             {/* Benefits */}
             <div className="lang-benefits" style={{ marginTop: "clamp(35px, 5vw, 65px)" }}>
-              <div className="lang-benefit">
-                <span className="lang-benefit-icon"><IconBookOpen size={20} /></span>
-                <span>Clearer<br />Understanding</span>
-              </div>
-              <span className="lang-benefit-div" />
-              <div className="lang-benefit">
-                <span className="lang-benefit-icon gold"><IconHeartOutline size={20} /></span>
-                <span>Stronger<br />Connection</span>
-              </div>
-              <span className="lang-benefit-div" />
-              <div className="lang-benefit">
-                <span className="lang-benefit-icon"><IconBulb size={20} /></span>
-                <span>Lasting<br />Impact</span>
-              </div>
+              {(c.lang?.benefits || []).map((b, i) => {
+                const icons = [<IconBookOpen size={20} />, <IconHeartOutline size={20} />, <IconBulb size={20} />];
+                const iconClass = i === 1 ? "lang-benefit-icon gold" : "lang-benefit-icon";
+                return (
+                  <Fragment key={i}>
+                    {i > 0 && <span className="lang-benefit-div" />}
+                    <div className="lang-benefit">
+                      <span className={iconClass}>{icons[i % icons.length]}</span>
+                      <span>{b.line1}<br />{b.line2}</span>
+                    </div>
+                  </Fragment>
+                );
+              })}
             </div>
 
           </div>
@@ -925,7 +902,7 @@ export default function Home() {
             fontSize: "15px", 
             letterSpacing: "2px",
             fontFamily: "var(--font-sans), sans-serif"
-          }}>YAQEEN INSTITUTE</span>
+          }}>{c.teach?.org_label}</span>
         </div>
 
         {/* Section Headline */}
@@ -937,7 +914,7 @@ export default function Home() {
           margin: "0 0 24px 0",
           fontFamily: "var(--font-serif), Georgia, serif",
           letterSpacing: "-1px"
-        }}>What We Teach</h2>
+        }}>{c.teach?.heading}</h2>
 
         {/* Decorative Divider Line */}
         <div style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", maxWidth: "240px", marginBottom: "28px" }}>
@@ -959,348 +936,113 @@ export default function Home() {
           fontWeight: "500",
           fontFamily: "var(--font-sans), sans-serif"
         }}>
-          Explore expert-led Online Quran Classes, Quran Memorization, Tajweed, Arabic Language, and Islamic Studies with interactive live sessions, certified tutors, flexible timings, and multilingual learning support.
+          {c.teach?.subtitle}
         </p>
 
         {/* Cards Grid */}
         <div className="teach-grid stagger-group">
-
-          {/* Card 1: Qur'an */}
-          <div className="teach-card reveal-stagger" style={{
-            backgroundColor: "#FFF8F4",
-            borderRadius: "28px",
-            border: "2.5px solid #EADFCB",
-            boxShadow: "0 10px 30px rgba(44, 37, 30, 0.03)",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            overflow: "hidden",
-            transition: "transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease",
-            cursor: "pointer"
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.transform = "translateY(-6px)";
-            e.currentTarget.style.boxShadow = "0 20px 40px rgba(44, 37, 30, 0.08)";
-            e.currentTarget.style.borderColor = "#C99B4D";
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow = "0 10px 30px rgba(44, 37, 30, 0.03)";
-            e.currentTarget.style.borderColor = "#F5EBDD";
-          }}
-          >
-            <div style={{ padding: "20px 20px 0 20px", position: "relative" }}>
-              {/* Image Container */}
-              <div style={{ position: "relative", width: "100%", height: "140px", borderRadius: "20px", overflow: "hidden" }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img 
-                  src="/images/course_quran.png" 
-                  alt="Qur'an" 
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }} 
-                />
-              </div>
-
-              {/* Circle Icon */}
-              <div style={{
-                position: "absolute",
-                top: "116px",
-                left: "32px",
-                width: "64px",
-                height: "64px",
-                borderRadius: "50%",
-                backgroundColor: "#C99B4D",
-                border: "3px solid #FFFFFF",
-                boxShadow: "0 4px 12px rgba(201, 155, 77, 0.18)",
+          {(c.teach?.cards || []).map((card, idx) => {
+            const cardIcons = [<IconBookOpen size={28} />, <IconMosque size={26} />, <IconArabicChat size={26} />];
+            const cardImages = ["/images/course_quran.png", "/images/course_studies.png", "/images/course_arabic.png"];
+            return (
+              <div className="teach-card reveal-stagger" key={idx} style={{
+                backgroundColor: "#FFF8F4",
+                borderRadius: "28px",
+                border: "2.5px solid #EADFCB",
+                boxShadow: "0 10px 30px rgba(44, 37, 30, 0.03)",
                 display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#FFFFFF",
-                zIndex: 10
-              }}>
-                <IconBookOpen size={28} />
+                flexDirection: "column",
+                justifyContent: "space-between",
+                overflow: "hidden",
+                transition: "transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease",
+                cursor: "pointer"
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.transform = "translateY(-6px)";
+                e.currentTarget.style.boxShadow = "0 20px 40px rgba(44, 37, 30, 0.08)";
+                e.currentTarget.style.borderColor = "#C99B4D";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 10px 30px rgba(44, 37, 30, 0.03)";
+                e.currentTarget.style.borderColor = "#F5EBDD";
+              }}
+              >
+                <div style={{ padding: "20px 20px 0 20px", position: "relative" }}>
+                  <div style={{ position: "relative", width: "100%", height: "140px", borderRadius: "20px", overflow: "hidden" }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={cardImages[idx % cardImages.length]}
+                      alt={card.title}
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  </div>
+
+                  <div style={{
+                    position: "absolute",
+                    top: "116px",
+                    left: "32px",
+                    width: "64px",
+                    height: "64px",
+                    borderRadius: "50%",
+                    backgroundColor: "#C99B4D",
+                    border: "3px solid #FFFFFF",
+                    boxShadow: "0 4px 12px rgba(201, 155, 77, 0.18)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#FFFFFF",
+                    zIndex: 10
+                  }}>
+                    {cardIcons[idx % cardIcons.length]}
+                  </div>
+
+                  <div style={{ padding: "34px 12px 28px 12px" }}>
+                    <h3 style={{
+                      fontSize: "22px",
+                      fontWeight: "800",
+                      color: "#2B1F14",
+                      margin: "0 0 10px 0",
+                      fontFamily: "var(--font-serif), Georgia, serif"
+                    }}>{card.title}</h3>
+
+                    <div style={{ width: "40px", height: "3px", backgroundColor: "#C99B4D", marginBottom: "20px", borderRadius: "999px" }} />
+
+                    <p style={{
+                      fontSize: "14px",
+                      color: "#5C4D3C",
+                      lineHeight: "1.6",
+                      fontWeight: "500",
+                      margin: "0 0 24px 0",
+                      minHeight: "44px"
+                    }}>{card.desc}</p>
+
+                    <div style={{ height: "1px", backgroundColor: "#F5EBDD", margin: "0 0 20px 0" }} />
+
+                    <ul style={{ display: "flex", flexDirection: "column", gap: "12px", listStyle: "none", padding: 0, margin: 0 }}>
+                      {(card.bullets || []).map((bullet, bi) => (
+                        <li key={bi} style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "14px", color: "#2B1F14", fontWeight: "600" }}>
+                          <IconCheckGold />
+                          <span>{bullet}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <div style={{
+                  backgroundColor: "rgba(250, 245, 238, 0.8)",
+                  borderTop: "1px solid #F5EBDD",
+                  padding: "16px 28px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center"
+                }}>
+                  <span style={{ fontSize: "13px", fontWeight: "500", color: "#C99B4D", letterSpacing: "0.5px" }}>{c.teach?.footer_note}</span>
+                </div>
               </div>
-
-              {/* Text Content */}
-              <div style={{ padding: "34px 12px 28px 12px" }}>
-                <h3 style={{
-                  fontSize: "22px",
-                  fontWeight: "800",
-                  color: "#2B1F14",
-                  margin: "0 0 10px 0",
-                  fontFamily: "var(--font-serif), Georgia, serif"
-                }}>Learn Quran</h3>
-                
-                <div style={{ width: "40px", height: "3px", backgroundColor: "#C99B4D", marginBottom: "20px", borderRadius: "999px" }} />
-
-                <p style={{
-                  fontSize: "14px",
-                  color: "#5C4D3C",
-                  lineHeight: "1.6",
-                  fontWeight: "500",
-                  margin: "0 0 24px 0",
-                  minHeight: "44px"
-                }}>Quran online classes for recitation, memorization, Tajweed, and reading fundamentals with certified Quran teachers for kids and adults.</p>
-
-                <div style={{ height: "1px", backgroundColor: "#F5EBDD", margin: "0 0 20px 0" }} />
-
-                <ul style={{ display: "flex", flexDirection: "column", gap: "12px", listStyle: "none", padding: 0, margin: 0 }}>
-                  <li style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "14px", color: "#2B1F14", fontWeight: "600" }}>
-                    <IconCheckGold />
-                    <span>Tajweed with Makharij</span>
-                  </li>
-                  <li style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "14px", color: "#2B1F14", fontWeight: "600" }}>
-                    <IconCheckGold />
-                    <span>{"Qur'an Memorization"}</span>
-                  </li>
-                  <li style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "14px", color: "#2B1F14", fontWeight: "600" }}>
-                    <IconCheckGold />
-                    <span>{"Qur'an Reading"}</span>
-                  </li>
-                  <li style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "14px", color: "#2B1F14", fontWeight: "600" }}>
-                    <IconCheckGold />
-                    <span>Noorani Qaidah</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Footer banner */}
-            <div style={{
-              backgroundColor: "rgba(250, 245, 238, 0.8)",
-              borderTop: "1px solid #F5EBDD",
-              padding: "16px 28px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center"
-            }}>
-              <span style={{ fontSize: "13px", fontWeight: "500", color: "#C99B4D", letterSpacing: "0.5px" }}>✦ and many more courses</span>
-            </div>
-          </div>
-
-          {/* Card 2: Islamic Studies */}
-          <div className="teach-card reveal-stagger" style={{
-            backgroundColor: "#FFF8F4",
-            borderRadius: "28px",
-            border: "2.5px solid #EADFCB",
-            boxShadow: "0 10px 30px rgba(44, 37, 30, 0.03)",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            overflow: "hidden",
-            transition: "transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease",
-            cursor: "pointer"
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.transform = "translateY(-6px)";
-            e.currentTarget.style.boxShadow = "0 20px 40px rgba(44, 37, 30, 0.08)";
-            e.currentTarget.style.borderColor = "#C99B4D";
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow = "0 10px 30px rgba(44, 37, 30, 0.03)";
-            e.currentTarget.style.borderColor = "#F5EBDD";
-          }}
-          >
-            <div style={{ padding: "20px 20px 0 20px", position: "relative" }}>
-              {/* Image Container */}
-              <div style={{ position: "relative", width: "100%", height: "140px", borderRadius: "20px", overflow: "hidden" }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img 
-                  src="/images/course_studies.png" 
-                  alt="Islamic Studies" 
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }} 
-                />
-              </div>
-
-              {/* Circle Icon */}
-              <div style={{
-                position: "absolute",
-                top: "116px",
-                left: "32px",
-                width: "64px",
-                height: "64px",
-                borderRadius: "50%",
-                backgroundColor: "#C99B4D",
-                border: "3px solid #FFFFFF",
-                boxShadow: "0 4px 12px rgba(201, 155, 77, 0.18)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#FFFFFF",
-                zIndex: 10
-              }}>
-                <IconMosque size={26} />
-              </div>
-
-              {/* Text Content */}
-              <div style={{ padding: "34px 12px 28px 12px" }}>
-                <h3 style={{
-                  fontSize: "22px",
-                  fontWeight: "800",
-                  color: "#2B1F14",
-                  margin: "0 0 10px 0",
-                  fontFamily: "var(--font-serif), Georgia, serif"
-                }}>Islamic Studies</h3>
-                
-                <div style={{ width: "40px", height: "3px", backgroundColor: "#C99B4D", marginBottom: "20px", borderRadius: "999px" }} />
-
-                <p style={{
-                  fontSize: "14px",
-                  color: "#5C4D3C",
-                  lineHeight: "1.6",
-                  fontWeight: "500",
-                  margin: "0 0 24px 0",
-                  minHeight: "44px"
-                }}>Islamic Studies online classes covering Aqeedah, Fiqh, Seerah, Hadith, Islamic manners, and character development for kids and adults.</p>
-
-                <div style={{ height: "1px", backgroundColor: "#F5EBDD", margin: "0 0 20px 0" }} />
-
-                <ul style={{ display: "flex", flexDirection: "column", gap: "12px", listStyle: "none", padding: 0, margin: 0 }}>
-                  <li style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "14px", color: "#2B1F14", fontWeight: "600" }}>
-                    <IconCheckGold />
-                    <span>Basics of Islam</span>
-                  </li>
-                  <li style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "14px", color: "#2B1F14", fontWeight: "600" }}>
-                    <IconCheckGold />
-                    <span>Akhlaaq</span>
-                  </li>
-                  <li style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "14px", color: "#2B1F14", fontWeight: "600" }}>
-                    <IconCheckGold />
-                    <span>Fiqh</span>
-                  </li>
-                  <li style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "14px", color: "#2B1F14", fontWeight: "600" }}>
-                    <IconCheckGold />
-                    <span>Seerah &amp; more</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Footer banner */}
-            <div style={{
-              backgroundColor: "rgba(250, 245, 238, 0.8)",
-              borderTop: "1px solid #F5EBDD",
-              padding: "16px 28px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center"
-            }}>
-              <span style={{ fontSize: "13px", fontWeight: "500", color: "#C99B4D", letterSpacing: "0.5px" }}>✦ and many more courses</span>
-            </div>
-          </div>
-
-          {/* Card 3: Arabic Language */}
-          <div className="teach-card reveal-stagger" style={{
-            backgroundColor: "#FFF8F4",
-            borderRadius: "28px",
-            border: "2.5px solid #EADFCB",
-            boxShadow: "0 10px 30px rgba(44, 37, 30, 0.03)",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            overflow: "hidden",
-            transition: "transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease",
-            cursor: "pointer"
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.transform = "translateY(-6px)";
-            e.currentTarget.style.boxShadow = "0 20px 40px rgba(44, 37, 30, 0.08)";
-            e.currentTarget.style.borderColor = "#C99B4D";
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow = "0 10px 30px rgba(44, 37, 30, 0.03)";
-            e.currentTarget.style.borderColor = "#F5EBDD";
-          }}
-          >
-            <div style={{ padding: "20px 20px 0 20px", position: "relative" }}>
-              {/* Image Container */}
-              <div style={{ position: "relative", width: "100%", height: "140px", borderRadius: "20px", overflow: "hidden" }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img 
-                  src="/images/course_arabic.png" 
-                  alt="Arabic Language" 
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }} 
-                />
-              </div>
-
-              {/* Circle Icon */}
-              <div style={{
-                position: "absolute",
-                top: "116px",
-                left: "32px",
-                width: "64px",
-                height: "64px",
-                borderRadius: "50%",
-                backgroundColor: "#C99B4D",
-                border: "3px solid #FFFFFF",
-                boxShadow: "0 4px 12px rgba(201, 155, 77, 0.18)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#FFFFFF",
-                zIndex: 10
-              }}>
-                <IconArabicChat size={26} />
-              </div>
-
-              {/* Text Content */}
-              <div style={{ padding: "34px 12px 28px 12px" }}>
-                <h3 style={{
-                  fontSize: "22px",
-                  fontWeight: "800",
-                  color: "#2B1F14",
-                  margin: "0 0 10px 0",
-                  fontFamily: "var(--font-serif), Georgia, serif"
-                }}>Arabic Language</h3>
-                
-                <div style={{ width: "40px", height: "3px", backgroundColor: "#C99B4D", marginBottom: "20px", borderRadius: "999px" }} />
-
-                <p style={{
-                  fontSize: "14px",
-                  color: "#5C4D3C",
-                  lineHeight: "1.6",
-                  fontWeight: "500",
-                  margin: "0 0 24px 0",
-                  minHeight: "44px"
-                }}>Arabic Language online classes for speaking, reading, writing, grammar, vocabulary, and conversation with qualified Arabic teachers.</p>
-
-                <div style={{ height: "1px", backgroundColor: "#F5EBDD", margin: "0 0 20px 0" }} />
-
-                <ul style={{ display: "flex", flexDirection: "column", gap: "12px", listStyle: "none", padding: 0, margin: 0 }}>
-                  <li style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "14px", color: "#2B1F14", fontWeight: "600" }}>
-                    <IconCheckGold />
-                    <span>Spoken Arabic</span>
-                  </li>
-                  <li style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "14px", color: "#2B1F14", fontWeight: "600" }}>
-                    <IconCheckGold />
-                    <span>School Arabic</span>
-                  </li>
-                  <li style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "14px", color: "#2B1F14", fontWeight: "600" }}>
-                    <IconCheckGold />
-                    <span>Professional Arabic</span>
-                  </li>
-                  <li style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "14px", color: "#2B1F14", fontWeight: "600" }}>
-                    <IconCheckGold />
-                    <span>Conversational Arabic</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Footer banner */}
-            <div style={{
-              backgroundColor: "rgba(250, 245, 238, 0.8)",
-              borderTop: "1px solid #F5EBDD",
-              padding: "16px 28px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center"
-            }}>
-              <span style={{ fontSize: "13px", fontWeight: "500", color: "#C99B4D", letterSpacing: "0.5px" }}>✦ and many more courses</span>
-            </div>
-          </div>
-
+            );
+          })}
         </div>
       </section>
 
@@ -1311,7 +1053,7 @@ export default function Home() {
         
         {/* Pill Badge */}
         <div className="choose-pill reveal-slide-up">
-          <span className="choose-pill-text">Why Families Choose Yaqeen</span>
+          <span className="choose-pill-text">{c.choose?.pill}</span>
         </div>
 
         {/* Decorative Divider Line */}
@@ -1325,68 +1067,42 @@ export default function Home() {
 
         {/* Section Headline */}
         <h2 className="choose-title reveal-slide-up">
-          More Than Education.<br />
-          A Journey of <span style={{ color: "#C99B4D" }}>Faith &amp; Success.</span>
+          {c.choose?.title_line1}<br />
+          {c.choose?.title_line2_prefix}<span style={{ color: "#C99B4D" }}>{c.choose?.title_highlight}</span>
         </h2>
 
         {/* Section Subtitle / Description */}
         <p className="choose-desc reveal-slide-up">
-          We make Islamic education <span style={{ color: "#C99B4D" }}>accessible, engaging</span> and <span style={{ color: "#C99B4D" }}>effective</span><br />
-          for every learner, in every language.
+          {c.choose?.desc_line1}<br />
+          {c.choose?.desc_line2}
         </p>
 
         {/* Stats Grid */}
         <div className="choose-grid stagger-group">
-          
-          {/* Stat 1: Student Satisfaction */}
-          <div className="choose-col reveal-stagger">
-            <div className="choose-icon-wrap gold-border" style={{ color: "#C99B4D" }}>
-              <IconSmiley size={36} />
-            </div>
-            <h3 className="choose-num" style={{ color: "#C99B4D" }}>95%</h3>
-            <p className="choose-label">Student Satisfaction</p>
-            <div className="choose-accent-line" />
-          </div>
-
-          {/* Stat 2: Countries */}
-          <div className="choose-col reveal-stagger">
-            <div className="choose-icon-wrap green-border" style={{ color: "#4A5D3B" }}>
-              <IconGlobeChoose size={34} />
-            </div>
-            <h3 className="choose-num" style={{ color: "#4A5D3B" }}>50+</h3>
-            <p className="choose-label">Countries</p>
-            <div className="choose-accent-line" />
-          </div>
-
-          {/* Stat 3: Languages */}
-          <div className="choose-col reveal-stagger">
-            <div className="choose-icon-wrap gold-border" style={{ color: "#C99B4D" }}>
-              <IconSpeechChoose size={34} />
-            </div>
-            <h3 className="choose-num" style={{ color: "#C99B4D" }}>15+</h3>
-            <p className="choose-label">Languages</p>
-            <div className="choose-accent-line" />
-          </div>
-
-          {/* Stat 4: Live Classes */}
-          <div className="choose-col reveal-stagger">
-            <div className="choose-icon-wrap green-border" style={{ color: "#4A5D3B" }}>
-              <IconUserChoose size={34} />
-            </div>
-            <h3 className="choose-num" style={{ color: "#4A5D3B" }}>1-on-1</h3>
-            <p className="choose-label">Live Classes</p>
-            <div className="choose-accent-line" />
-          </div>
-
+          {(c.choose?.stats || []).map((stat, i) => {
+            const statIcons = [<IconSmiley size={36} />, <IconGlobeChoose size={34} />, <IconSpeechChoose size={34} />, <IconUserChoose size={34} />];
+            const isGold = i % 2 === 0;
+            const color = isGold ? "#C99B4D" : "#4A5D3B";
+            return (
+              <div className="choose-col reveal-stagger" key={i}>
+                <div className={`choose-icon-wrap ${isGold ? "gold-border" : "green-border"}`} style={{ color }}>
+                  {statIcons[i % statIcons.length]}
+                </div>
+                <h3 className="choose-num" style={{ color }}>{stat.num}</h3>
+                <p className="choose-label">{stat.label}</p>
+                <div className="choose-accent-line" />
+              </div>
+            );
+          })}
         </div>
 
         {/* Features Card Container */}
         <div className="choose-features-container reveal-slide-up">
           <div className="features-grid stagger-group">
 
-            {CHOOSE_FEATURES.map((f, i) => {
+            {(c.choose?.features || []).map((f, i) => {
               const isOpen = openFeature === i;
-              const FeatureIcon = f.Icon;
+              const FeatureIcon = (CHOOSE_FEATURES[i % CHOOSE_FEATURES.length] || {}).Icon;
               return (
                 <div className={`feature-item ${isOpen ? "expanded" : ""}`} key={i}>
                   <div className="feature-icon-box">
@@ -1444,7 +1160,7 @@ export default function Home() {
             fontSize: "15px", 
             letterSpacing: "2px",
             fontFamily: "var(--font-sans), sans-serif"
-          }}>YAQEEN INSTITUTE</span>
+          }}>{c.age?.org_label}</span>
         </div>
 
         {/* Subtitle Text */}
@@ -1458,7 +1174,7 @@ export default function Home() {
           textAlign: "center",
           marginBottom: "8px"
         }}>
-          Choose Your Learning Path
+          {c.age?.subtitle}
         </div>
 
 
@@ -1473,118 +1189,51 @@ export default function Home() {
 
         {/* Section Headline */}
         <h2 className="age-title reveal-slide-up">
-          Learning for <span style={{ color: "#C99B4D" }}>Every Age.</span>
+          {c.age?.title_prefix}<span style={{ color: "#C99B4D" }}>{c.age?.title_highlight}</span>
         </h2>
 
         {/* Section Subtitle / Description */}
         <p className="age-desc reveal-slide-up">
-          Whether you’re a parent looking for the best start for your child<br />
-          or an adult seeking to grow in faith, we have the right program for you.
+          {c.age?.desc_line1}<br />
+          {c.age?.desc_line2}
         </p>
 
         {/* Cards Grid */}
         <div className="age-grid stagger-group">
-          
-          {/* Card 1: Kids Program */}
-          <div className="age-card reveal-stagger">
-            <div className="age-card-header age-header-kids">
-              <HeaderPattern color="#FAF5EE" opacity={0.07} />
-            </div>
-            <div className="age-card-icon-wrap">
-              <IconSmiley size={36} />
-            </div>
-            <div className="age-card-body">
-              <div className="age-card-info">
-                <h3 className="age-card-title">Kids Program</h3>
-                <span className="age-card-range">Ages 4–12</span>
-                <div className="age-card-dash" />
-                <p className="age-card-text">Fun, engaging and interactive classes designed to build a strong foundation in Islam.</p>
-              </div>
-              <div className="age-card-footer">
-                <div className="age-footer-pill">
-                  <IconPeople size={18} />
-                  <span>Build | Learn | Grow</span>
+          {(c.age?.cards || []).map((card, i) => {
+            const styles = [
+              { header: "age-header-kids", bar: "age-bar-kids", pattern: "#FAF5EE", opacity: 0.07, icon: <IconSmiley size={36} />, pillIcon: <IconPeople size={18} /> },
+              { header: "age-header-teen", bar: "age-bar-teen", pattern: "#C99B4D", opacity: 0.12, icon: <IconBackpack size={36} />, pillIcon: <IconStarOutline size={18} /> },
+              { header: "age-header-adult", bar: "age-bar-adult", pattern: "#FAF5EE", opacity: 0.12, icon: <IconUserChoose size={36} />, pillIcon: <IconBookOpen size={18} /> },
+              { header: "age-header-family", bar: "age-bar-family", pattern: "#FAF5EE", opacity: 0.1, icon: <IconGroupUsers size={36} />, pillIcon: <IconHeartOutline size={18} /> },
+            ];
+            const s = styles[i % styles.length];
+            return (
+              <div className="age-card reveal-stagger" key={i}>
+                <div className={`age-card-header ${s.header}`}>
+                  <HeaderPattern color={s.pattern} opacity={s.opacity} />
                 </div>
-              </div>
-            </div>
-            <div className="age-card-bottom-bar age-bar-kids" />
-          </div>
-
-          {/* Card 2: Teen Program */}
-          <div className="age-card reveal-stagger">
-            <div className="age-card-header age-header-teen">
-              <HeaderPattern color="#C99B4D" opacity={0.12} />
-            </div>
-            <div className="age-card-icon-wrap">
-              <IconBackpack size={36} />
-            </div>
-            <div className="age-card-body">
-              <div className="age-card-info">
-                <h3 className="age-card-title">Teen Program</h3>
-                <span className="age-card-range">Ages 13–18</span>
-                <div className="age-card-dash" />
-                <p className="age-card-text">Inspire, educate and empower teens to strengthen their faith and character in today's world.</p>
-              </div>
-              <div className="age-card-footer">
-                <div className="age-footer-pill">
-                  <IconStarOutline size={18} />
-                  <span>Inspire | Understand | Lead</span>
+                <div className="age-card-icon-wrap">
+                  {s.icon}
                 </div>
-              </div>
-            </div>
-            <div className="age-card-bottom-bar age-bar-teen" />
-          </div>
-
-          {/* Card 3: Adult Program */}
-          <div className="age-card reveal-stagger">
-            <div className="age-card-header age-header-adult">
-              <HeaderPattern color="#FAF5EE" opacity={0.12} />
-            </div>
-            <div className="age-card-icon-wrap">
-              <IconUserChoose size={36} />
-            </div>
-            <div className="age-card-body">
-              <div className="age-card-info">
-                <h3 className="age-card-title">Adult Program</h3>
-                <span className="age-card-range">18+</span>
-                <div className="age-card-dash" />
-                <p className="age-card-text">Deepen your knowledge, reconnect with your faith and grow spiritually at your own pace.</p>
-              </div>
-              <div className="age-card-footer">
-                <div className="age-footer-pill">
-                  <IconBookOpen size={18} />
-                  <span>Learn | Reflect | Grow</span>
+                <div className="age-card-body">
+                  <div className="age-card-info">
+                    <h3 className="age-card-title">{card.title}</h3>
+                    <span className="age-card-range">{card.range}</span>
+                    <div className="age-card-dash" />
+                    <p className="age-card-text">{card.text}</p>
+                  </div>
+                  <div className="age-card-footer">
+                    <div className="age-footer-pill">
+                      {s.pillIcon}
+                      <span>{card.pill}</span>
+                    </div>
+                  </div>
                 </div>
+                <div className={`age-card-bottom-bar ${s.bar}`} />
               </div>
-            </div>
-            <div className="age-card-bottom-bar age-bar-adult" />
-          </div>
-
-          {/* Card 4: Family Program */}
-          <div className="age-card reveal-stagger">
-            <div className="age-card-header age-header-family">
-              <HeaderPattern color="#FAF5EE" opacity={0.1} />
-            </div>
-            <div className="age-card-icon-wrap">
-              <IconGroupUsers size={36} />
-            </div>
-            <div className="age-card-body">
-              <div className="age-card-info">
-                <h3 className="age-card-title">Family Program</h3>
-                <span className="age-card-range">All Ages</span>
-                <div className="age-card-dash" />
-                <p className="age-card-text">Learn together as a family and strengthen your bond through Islamic knowledge.</p>
-              </div>
-              <div className="age-card-footer">
-                <div className="age-footer-pill">
-                  <IconHeartOutline size={18} />
-                  <span>Learn Together | Grow Together</span>
-                </div>
-              </div>
-            </div>
-            <div className="age-card-bottom-bar age-bar-family" />
-          </div>
-
+            );
+          })}
         </div>
 
       </section>
@@ -1619,14 +1268,14 @@ export default function Home() {
             textTransform: "uppercase",
             fontFamily: "var(--font-sans), sans-serif"
           }}>
-            How It Works
+            {c.journey?.pill}
           </span>
         </div>
 
 
         {/* Section Headline */}
         <h2 className="journey-title reveal-slide-up" style={{ marginBottom: "0px" }}>
-          Begin Your Learning Journey<br />in <span style={{ color: "#C99B4D" }}>4 Simple Steps</span>
+          {c.journey?.title_line1}<br />{c.journey?.title_line2_prefix}<span style={{ color: "#C99B4D" }}>{c.journey?.title_highlight}</span>
         </h2>
 
         {/* Decorative Divider Line */}
@@ -1640,7 +1289,7 @@ export default function Home() {
 
         {/* Section Subtitle / Description */}
         <p className="journey-desc reveal-slide-up" style={{ marginBottom: "36px" }}>
-          A simple process to begin a meaningful journey with knowledge and faith.
+          {c.journey?.desc}
         </p>
 
 
@@ -1651,57 +1300,29 @@ export default function Home() {
           {/* Connecting Line */}
           <div className="journey-connector-line" />
 
-          {/* Step 1 */}
-          <div className="journey-step-item">
-            <div className="journey-circle journey-circle-gold">
-              <div className="journey-step-number journey-number-gold">01</div>
-              <IconStepTrial color="#C99B4D" size={38} />
-            </div>
-            <div className="journey-dashed-line journey-dashed-gold" />
-            <div className="journey-step-content">
-              <h3 className="journey-step-title journey-title-gold">Trial</h3>
-              <p className="journey-step-text">Book a free trial class and experience our teaching approach.</p>
-            </div>
-          </div>
-
-          {/* Step 2 */}
-          <div className="journey-step-item">
-            <div className="journey-circle journey-circle-olive">
-              <div className="journey-step-number journey-number-olive">02</div>
-              <IconStepPlan color="#5C644F" size={38} />
-            </div>
-            <div className="journey-dashed-line journey-dashed-olive" />
-            <div className="journey-step-content">
-              <h3 className="journey-step-title journey-title-olive">Plan</h3>
-              <p className="journey-step-text">Choose your course and learning path that best fits your goals.</p>
-            </div>
-          </div>
-
-          {/* Step 3 */}
-          <div className="journey-step-item">
-            <div className="journey-circle journey-circle-gold">
-              <div className="journey-step-number journey-number-gold">03</div>
-              <IconStepSchedule color="#C99B4D" size={38} />
-            </div>
-            <div className="journey-dashed-line journey-dashed-gold" />
-            <div className="journey-step-content">
-              <h3 className="journey-step-title journey-title-gold">Schedule</h3>
-              <p className="journey-step-text">Pick a time that works for you and book a class with our teacher.</p>
-            </div>
-          </div>
-
-          {/* Step 4 */}
-          <div className="journey-step-item">
-            <div className="journey-circle journey-circle-olive">
-              <div className="journey-step-number journey-number-olive">04</div>
-              <IconStepJourney color="#5C644F" size={38} />
-            </div>
-            <div className="journey-dashed-line journey-dashed-olive" />
-            <div className="journey-step-content">
-              <h3 className="journey-step-title journey-title-olive">Start Journey</h3>
-              <p className="journey-step-text">Complete registration and begin your learning journey with confidence.</p>
-            </div>
-          </div>
+          {(c.journey?.steps || []).map((stepItem, i) => {
+            const stepIcons = [
+              <IconStepTrial color="#C99B4D" size={38} />,
+              <IconStepPlan color="#5C644F" size={38} />,
+              <IconStepSchedule color="#C99B4D" size={38} />,
+              <IconStepJourney color="#5C644F" size={38} />,
+            ];
+            const isGold = i % 2 === 0;
+            const num = String(i + 1).padStart(2, "0");
+            return (
+              <div className="journey-step-item" key={i}>
+                <div className={`journey-circle ${isGold ? "journey-circle-gold" : "journey-circle-olive"}`}>
+                  <div className={`journey-step-number ${isGold ? "journey-number-gold" : "journey-number-olive"}`}>{num}</div>
+                  {stepIcons[i % stepIcons.length]}
+                </div>
+                <div className={`journey-dashed-line ${isGold ? "journey-dashed-gold" : "journey-dashed-olive"}`} />
+                <div className="journey-step-content">
+                  <h3 className={`journey-step-title ${isGold ? "journey-title-gold" : "journey-title-olive"}`}>{stepItem.title}</h3>
+                  <p className="journey-step-text">{stepItem.text}</p>
+                </div>
+              </div>
+            );
+          })}
 
         </div>
 
@@ -1714,7 +1335,7 @@ export default function Home() {
         
         {/* Pill Badge */}
         <div className="teachers-pill reveal-slide-up">
-          <span className="teachers-pill-text">Meet Our Teachers</span>
+          <span className="teachers-pill-text">{c.teachers?.pill}</span>
         </div>
 
         {/* Decorative Divider Line */}
@@ -1728,12 +1349,12 @@ export default function Home() {
 
         {/* Section Headline */}
         <h2 className="teachers-title reveal-slide-up">
-          Learn from Experienced<br />and <span style={{ color: "#C99B4D" }}>Caring Teachers.</span>
+          {c.teachers?.title_line1}<br />{c.teachers?.title_line2_prefix}<span style={{ color: "#C99B4D" }}>{c.teachers?.title_highlight}</span>
         </h2>
 
         {/* Section Subtitle / Description */}
         <p className="teachers-desc reveal-slide-up">
-          Our qualified Quran, Arabic, and Islamic Studies teachers provide personalized online Quran classes, Quran lessons online, Tajweed, memorization, and Islamic guidance, helping kids and adults build knowledge, confidence, and strong Islamic character.
+          {c.teachers?.subtitle}
         </p>
 
         {/* Teachers Cards Grid */}
@@ -1776,8 +1397,8 @@ export default function Home() {
          ========================================================================= */}
       <section className="oqc-section">
         <h2 className="oqc-title reveal-slide-up">
-          Online Quran Classes &ndash;<br />
-          <span>Learn, Grow &amp; Excel</span>
+          {c.oqc?.title_line1}<br />
+          <span>{c.oqc?.title_highlight}</span>
         </h2>
 
         <div className="oqc-wrap">
@@ -1789,18 +1410,18 @@ export default function Home() {
 
           {/* Right: expandable cards */}
           <div className="oqc-cards">
-            {OQC_CARDS.map((c, i) => {
+            {(c.oqc?.cards || []).map((card, i) => {
               const isOpen = openOqc === i;
-              const CardIcon = c.Icon;
+              const CardIcon = (OQC_CARDS[i % OQC_CARDS.length] || {}).Icon;
               return (
                 <div className={`oqc-card ${isOpen ? "open" : ""}`} key={i}>
                   <div className="oqc-card-icon">
-                    <CardIcon size={26} />
+                    {CardIcon && <CardIcon size={26} />}
                   </div>
                   <div className="oqc-card-body">
-                    <h3>{c.title}</h3>
+                    <h3>{card.title}</h3>
                     <div className={`oqc-card-text ${isOpen ? "open" : ""}`}>
-                      <p>{c.text}</p>
+                      <p>{card.text}</p>
                     </div>
                   </div>
                   <button
@@ -1820,8 +1441,8 @@ export default function Home() {
         </div>
 
         <div className="oqc-cta reveal-slide-up">
-          <Link href="/book-free-trial" className="oqc-cta-btn">
-            Join Now &amp; Start Your Quran Journey
+          <Link href={c.oqc?.cta_url || "/book-free-trial"} className="oqc-cta-btn">
+            {c.oqc?.cta_label}
           </Link>
         </div>
       </section>
@@ -1834,18 +1455,18 @@ export default function Home() {
         {/* Pill Badge */}
         <div className="blog-pill reveal-slide-up">
           <IconSparkle size={14} />
-          <span className="blog-pill-text" style={{ margin: "0 4px" }}>Blogs</span>
+          <span className="blog-pill-text" style={{ margin: "0 4px" }}>{c.blog?.pill}</span>
           <IconSparkle size={14} />
         </div>
 
         {/* Section Headline */}
         <h2 className="blog-title reveal-slide-up">
-          Insights that inspire faith,<br />learning & growth
+          {c.blog?.title_line1}<br />{c.blog?.title_line2}
         </h2>
 
         {/* Section Subtitle / Description */}
         <p className="blog-desc reveal-slide-up">
-          Stay updated with our latest articles on Islamic education, personal growth,<br />and student development.
+          {c.blog?.desc_line1}<br />{c.blog?.desc_line2}
         </p>
 
         {/* Blog Grid */}
@@ -2007,7 +1628,7 @@ export default function Home() {
         
         {/* Section Headline */}
         <h2 className="faq-title reveal-slide-up">
-          Many People <span style={{ color: "#C99B4D" }}>Ask About this</span>
+          {c.faq?.title} <span style={{ color: "#C99B4D" }}>{c.faq?.title_highlight}</span>
         </h2>
 
         {/* Decorative Divider Line */}
@@ -2021,135 +1642,43 @@ export default function Home() {
 
         {/* Section Subtitle / Description */}
         <p className="faq-desc reveal-slide-up">
-          Following are answers to some queries that are posed regularly
+          {c.faq?.description}
         </p>
 
         {/* Accordions Container */}
         <div className="faq-container stagger-group">
-          
-          {/* FAQ 1 */}
-          <div
-            className="faq-item reveal-stagger"
-            onClick={() => setOpenFaqIndex(openFaqIndex === 0 ? null : 0)}
-          >
-            <div className="faq-question-row">
-              <div className="faq-icon-badge">
-                <IconBookOpen size={20} />
+          {(c.faq?.items || []).map((f, i) => {
+            const icons = [<IconBookOpen size={20} />, <IconVideoPlay size={20} />, <IconTwoUsers size={20} />, <IconCalendar size={20} />, <IconTrendUp size={20} />, <IconMail size={20} />];
+            return (
+              <div
+                className="faq-item reveal-stagger"
+                key={i}
+                onClick={() => setOpenFaqIndex(openFaqIndex === i ? null : i)}
+              >
+                <div className="faq-question-row">
+                  <div className="faq-icon-badge">
+                    {icons[i % icons.length]}
+                  </div>
+                  <span className="faq-question-text">{f.q}</span>
+                  <IconChevron size={18} className={`faq-chevron ${openFaqIndex === i ? "open" : ""}`} />
+                </div>
+                <div className={`faq-answer-wrapper ${openFaqIndex === i ? "open" : ""}`}>
+                  <p className="faq-answer-text">
+                    {f.a}
+                  </p>
+                </div>
               </div>
-              <span className="faq-question-text">What courses does Yaqeen Institute offer?</span>
-              <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 0 ? "open" : ""}`} />
-            </div>
-            <div className={`faq-answer-wrapper ${openFaqIndex === 0 ? "open" : ""}`}>
-              <p className="faq-answer-text">
-                {"Yaqeen Institute offers online Quran classes, Quran courses online, Quran lessons online, Quran memorization course (Hifz), online Tajweed course, Islamic Studies, and Quranic Arabic for children, adults, and beginners worldwide."}
-              </p>
-            </div>
-          </div>
-
-          {/* FAQ 2 */}
-          <div
-            className="faq-item reveal-stagger"
-            onClick={() => setOpenFaqIndex(openFaqIndex === 1 ? null : 1)}
-          >
-            <div className="faq-question-row">
-              <div className="faq-icon-badge">
-                <IconVideoPlay size={20} />
-              </div>
-              <span className="faq-question-text">How are the classes conducted?</span>
-              <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 1 ? "open" : ""}`} />
-            </div>
-            <div className={`faq-answer-wrapper ${openFaqIndex === 1 ? "open" : ""}`}>
-              <p className="faq-answer-text">
-                {"Our online Quran academy provides one-to-one live sessions with experienced teachers through interactive virtual classrooms. Students enjoy flexible scheduling, personalized learning, and engaging Quran online lessons from anywhere."}
-              </p>
-            </div>
-          </div>
-
-          {/* FAQ 3 */}
-          <div
-            className="faq-item reveal-stagger"
-            onClick={() => setOpenFaqIndex(openFaqIndex === 2 ? null : 2)}
-          >
-            <div className="faq-question-row">
-              <div className="faq-icon-badge">
-                <IconTwoUsers size={20} />
-              </div>
-              <span className="faq-question-text">{"Who can join Yaqeen Institute's classes?"}</span>
-              <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 2 ? "open" : ""}`} />
-            </div>
-            <div className={`faq-answer-wrapper ${openFaqIndex === 2 ? "open" : ""}`}>
-              <p className="faq-answer-text">
-                {"Everyone is welcome! We offer online Quran classes for adults, children, teenagers, and beginners. Whether you're starting from Noorani Qaidah or looking to learn Quran online with confidence, we have the right course for you."}
-              </p>
-            </div>
-          </div>
-
-          {/* FAQ 4 */}
-          <div
-            className="faq-item reveal-stagger"
-            onClick={() => setOpenFaqIndex(openFaqIndex === 3 ? null : 3)}
-          >
-            <div className="faq-question-row">
-              <div className="faq-icon-badge">
-                <IconCalendar size={20} />
-              </div>
-              <span className="faq-question-text">Can I choose my own class time?</span>
-              <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 3 ? "open" : ""}`} />
-            </div>
-            <div className={`faq-answer-wrapper ${openFaqIndex === 3 ? "open" : ""}`}>
-              <p className="faq-answer-text">
-                {"Yes. Our online Quran teaching programs are designed around your schedule. You can choose class timings that suit your time zone, making it convenient for students and families across the world."}
-              </p>
-            </div>
-          </div>
-
-          {/* FAQ 5 */}
-          <div
-            className="faq-item reveal-stagger"
-            onClick={() => setOpenFaqIndex(openFaqIndex === 4 ? null : 4)}
-          >
-            <div className="faq-question-row">
-              <div className="faq-icon-badge">
-                <IconTrendUp size={20} />
-              </div>
-              <span className="faq-question-text">How do you track student progress?</span>
-              <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 4 ? "open" : ""}`} />
-            </div>
-            <div className={`faq-answer-wrapper ${openFaqIndex === 4 ? "open" : ""}`}>
-              <p className="faq-answer-text">
-                {"Each student receives personalized guidance with regular assessments, progress reports, and teacher feedback. Our structured Quran study online approach ensures continuous improvement in recitation, Tajweed, memorization, and understanding."}
-              </p>
-            </div>
-          </div>
-
-          {/* FAQ 6 */}
-          <div
-            className="faq-item reveal-stagger"
-            onClick={() => setOpenFaqIndex(openFaqIndex === 5 ? null : 5)}
-          >
-            <div className="faq-question-row">
-              <div className="faq-icon-badge">
-                <IconMail size={20} />
-              </div>
-              <span className="faq-question-text">How can I get support if I have a question?</span>
-              <IconChevron size={18} className={`faq-chevron ${openFaqIndex === 5 ? "open" : ""}`} />
-            </div>
-            <div className={`faq-answer-wrapper ${openFaqIndex === 5 ? "open" : ""}`}>
-              <p className="faq-answer-text">
-                {"Our support team is available to assist you before and after enrolment. Whether you're searching for a Quran teacher near me, a female Quran teacher near me, or need help selecting the right course, we're here to guide you every step of the way."}
-              </p>
-            </div>
-          </div>
-
+            );
+          })}
         </div>
 
         <div className="reveal-slide-up" style={{ display: "flex", justifyContent: "center", width: "100%", marginTop: "56px" }}>
           <Link
-            href="/contact"
+            href={c.faq?.cta_url || "/contact"}
             className="faq-cta-btn"
             style={{ textDecoration: "none" }}
           >
-            <span>BOOK YOUR FREE SESSION NOW!</span>
+            <span>{c.faq?.cta_label}</span>
             <span style={{ fontSize: "16px", fontWeight: "bold" }}>→</span>
           </Link>
         </div>
@@ -2163,7 +1692,7 @@ export default function Home() {
         
         {/* Pill Badge */}
         <div className="testi-pill reveal-slide-up">
-          <span className="testi-pill-text">Testimonials</span>
+          <span className="testi-pill-text">{c.testimonials?.badge}</span>
         </div>
 
         {/* Decorative Divider Line */}
@@ -2177,12 +1706,12 @@ export default function Home() {
 
         {/* Section Headline */}
         <h2 className="testi-title reveal-slide-up">
-          Stronger Faith.<br />Stronger <span style={{ color: "#C99B4D" }}>Together.</span>
+          {c.testimonials?.title_line1}<br />{c.testimonials?.title_line2_prefix}<span style={{ color: "#C99B4D" }}>{c.testimonials?.title_highlight}</span>
         </h2>
 
         {/* Section Subtitle / Description */}
         <p className="testi-desc reveal-slide-up">
-          Hear from our learners and parents<br />building a stronger connection with Allah, together.
+          {c.testimonials?.description_line1}<br />{c.testimonials?.description_line2}
         </p>
 
         {/* Testimonials Carousel */}
@@ -2206,7 +1735,7 @@ export default function Home() {
             <div style={{ flexGrow: 1, height: "1.5px", backgroundColor: "#C99B4D", opacity: 0.4, maxWidth: "60px" }} />
             <span style={{ color: "#C99B4D", display: "flex", alignItems: "center" }}><IconSparkle size={16} /></span>
             <h2 className="news-title" style={{ margin: 0 }}>
-              Get Inspiration Straight to Your Inbox!
+              {c.newsletter?.title}
             </h2>
             <span style={{ color: "#C99B4D", display: "flex", alignItems: "center" }}><IconSparkle size={16} /></span>
             <div style={{ flexGrow: 1, height: "1.5px", backgroundColor: "#C99B4D", opacity: 0.4, maxWidth: "60px" }} />
@@ -2214,9 +1743,9 @@ export default function Home() {
 
           {/* Description */}
           <p className="news-desc">
-            Every other week we send out our best advice from <strong className="news-green-link">our blog</strong>.<br />
-            Subscribe below or connect with us on <strong className="news-green-link">Facebook</strong>, <strong className="news-green-link">Instagram</strong>,<br />
-            <strong className="news-green-link">YouTube</strong> and <strong className="news-green-link">LinkedIn</strong>
+            {c.newsletter?.desc_line1}<br />
+            {c.newsletter?.desc_line2}<br />
+            {c.newsletter?.desc_line3}
           </p>
 
           {/* Form */}
@@ -2233,7 +1762,7 @@ export default function Home() {
               width: "100%",
               maxWidth: "580px"
             }}>
-              JazakAllah Khair! You have successfully subscribed to our newsletter.
+              {c.newsletter?.success_text}
             </div>
           ) : (
             <form 
@@ -2267,8 +1796,8 @@ export default function Home() {
                 </div>
                 <input 
                   type="email" 
-                  className="news-input" 
-                  placeholder="Your email address" 
+                  className="news-input"
+                  placeholder={c.newsletter?.placeholder || "Your email address"}
                   value={newsEmail}
                   onChange={(e) => setNewsEmail(e.target.value)}
                   suppressHydrationWarning
@@ -2276,7 +1805,7 @@ export default function Home() {
                 />
               </div>
               <button type="submit" className="news-submit-btn" suppressHydrationWarning>
-                Submit
+                {c.newsletter?.button_label}
               </button>
             </form>
           )}

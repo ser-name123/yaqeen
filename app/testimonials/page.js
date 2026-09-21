@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import "./testimonials.css";
 import { supabase } from "@/lib/supabase";
+import { usePageContent } from "@/lib/use-page-content";
 
 const DEFAULT_TESTIMONIALS = [
   { id: "d1", name: "Ayesha Khan", role: "Mother of 2", content: "Yaqeen has helped my child develop a strong understanding of Islam in a fun and meaningful way. Highly recommended!", avatar_url: "/images/testi_ayesha.png" },
@@ -18,13 +19,13 @@ const IconStar = ({ size = 20 }) => (<svg width={size} height={size} viewBox="0 
 const IconHeart = ({ size = 20 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>);
 const IconBook = ({ size = 20 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg>);
 
-const FAQS = [
-  { icon: <IconStar />, color: "green", q: "Are your testimonials genuine?", a: "Yes. All testimonials are from real students and parents who have studied with us." },
-  { icon: <IconChat />, color: "gold", q: "Can I send in my review?", a: "Yes. We would love to hear about your experience — you can share your review through our contact page." },
-  { icon: <IconUsers />, color: "green", q: "Do you publish video testimonials?", a: "Yes. We share both written and video testimonials from our community where available." },
-  { icon: <IconHeart />, color: "gold", q: "How do you collect feedback?", a: "We collect feedback through progress reviews, messages from students and parents, and follow-ups from our team." },
-  { icon: <IconUser />, color: "green", q: "Do testimonials reflect current staff?", a: "Yes. Our testimonials reflect the ongoing quality of our current teachers and team." },
-  { icon: <IconBook />, color: "gold", q: "Are all reviews published?", a: "We aim to share genuine reviews; occasionally some are kept private at the reviewer's request." }
+const FAQ_STYLES = [
+  { icon: <IconStar />, color: "green" },
+  { icon: <IconChat />, color: "gold" },
+  { icon: <IconUsers />, color: "green" },
+  { icon: <IconHeart />, color: "gold" },
+  { icon: <IconUser />, color: "green" },
+  { icon: <IconBook />, color: "gold" },
 ];
 
 const IconChevron = ({ size = 22, className }) => (
@@ -39,8 +40,10 @@ const IconArrow = ({ size = 16 }) => (
 );
 
 export default function TestimonialsPage() {
+  const content = usePageContent("testimonials");
   const [testimonials, setTestimonials] = useState(DEFAULT_TESTIMONIALS);
   const [openId, setOpenId] = useState(null);
+  const faqItems = content.faq?.items || [];
 
   useEffect(() => {
     let active = true;
@@ -65,10 +68,10 @@ export default function TestimonialsPage() {
     <main className="tpg-page">
       {/* Hero */}
       <section className="tpg-hero">
-        <span className="tpg-badge">Testimonials</span>
-        <h1>Feedback From Our <span>Students</span></h1>
+        <span className="tpg-badge">{content.hero?.badge}</span>
+        <h1>{content.hero?.title} <span>{content.hero?.title_highlight}</span></h1>
         <div className="tpg-divider"><span className="line" /><span className="diamond" /><span className="line" /></div>
-        <p>Hear from our learners and parents building a stronger connection with the Quran, Arabic and Islamic knowledge — together.</p>
+        <p>{content.hero?.description}</p>
       </section>
 
       {/* Testimonials grid */}
@@ -77,7 +80,7 @@ export default function TestimonialsPage() {
           {testimonials.map((t) => (
             <div key={t.id} className="testi-card">
               <span className="testi-quote-mark">&ldquo;</span>
-              <p className="testi-text">{t.content}</p>
+              <div className="testi-text" dangerouslySetInnerHTML={{ __html: t.content || "" }} />
               <div className="testi-card-divider" />
               <div className="testi-author-row">
                 <div className="testi-avatar-wrap">
@@ -96,24 +99,25 @@ export default function TestimonialsPage() {
 
       {/* CTA banner */}
       <section className="tpg-cta">
-        <h2>Ready to start your journey?</h2>
-        <p>Book a free trial class and experience the difference.</p>
-        <Link href="/book-free-trial" className="tpg-cta-btn">Book a Free Trial <IconArrow /></Link>
+        <h2>{content.cta?.title}</h2>
+        <p>{content.cta?.subtitle}</p>
+        <Link href={content.cta?.button_url || "/book-free-trial"} className="tpg-cta-btn">{content.cta?.button_label} <IconArrow /></Link>
       </section>
 
       {/* Testimonials FAQ */}
       <section className="tpg-faq">
         <div className="tpg-faq-head">
-          <span className="tpg-faq-badge">Testimonials FAQ</span>
-          <h2>Everything About Reviews &amp; <span>Feedback</span></h2>
+          <span className="tpg-faq-badge">{content.faq?.badge}</span>
+          <h2>{content.faq?.title} <span>{content.faq?.title_highlight}</span></h2>
         </div>
         <div className="tpg-acc">
-          {FAQS.map((f, i) => {
+          {faqItems.map((f, i) => {
+            const style = FAQ_STYLES[i % FAQ_STYLES.length];
             const open = openId === i;
             return (
               <div key={i} className={`tpg-item ${open ? "open" : ""}`}>
                 <button type="button" className="tpg-q" aria-expanded={open} onClick={() => setOpenId(open ? null : i)} suppressHydrationWarning>
-                  <span className={`tpg-faq-icon ${f.color}`}>{f.icon}</span>
+                  <span className={`tpg-faq-icon ${style.color}`}>{style.icon}</span>
                   <span className="tpg-qtext">{f.q}</span>
                   <IconChevron className={`tpg-chevron ${open ? "open" : ""}`} />
                 </button>

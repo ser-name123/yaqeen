@@ -4,6 +4,8 @@ import Script from "next/script";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import { SettingsProvider } from "@/lib/settings-context";
 import { getSEOSettings, getSiteSettings } from "@/lib/db-cached";
+import { supabase } from "@/lib/supabase";
+import { getPageSeo, getSiteUrl, buildMetadata } from "@/lib/seo";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -21,22 +23,17 @@ const lora = Lora({
 export const revalidate = 60;
 
 export async function generateMetadata() {
+  // The root layout wraps every route, so its metadata is the site-wide base.
+  // Home ("/") has no child layout, so it uses this directly; every other page
+  // overrides title/description/keywords/canonical via its own layout.
   try {
-    const data = await getSEOSettings();
-
-    if (data) {
-      const fav = data.favicon_url || "/favicon.ico";
-      return {
-        title: data.title || "Yaqeen Institute - Learn Quran & Arabic Online",
-        description: data.description || "Learn Quran, Arabic, and Islamic Studies online with one-to-one live classes from qualified native tutors.",
-        keywords: data.keywords || "Quran, Arabic, learn Quran online, Yaqeen Institute, Islamic studies",
-        icons: {
-          icon: fav,
-          shortcut: fav,
-          apple: fav
-        }
-      };
-    }
+    const [seoGlobal, homeSeo, siteUrl] = await Promise.all([
+      getSEOSettings(),
+      getPageSeo(supabase, "home"),
+      getSiteUrl(supabase),
+    ]);
+    const fav = (seoGlobal && seoGlobal.favicon_url) || "/favicon.ico";
+    return buildMetadata(homeSeo, { siteUrl, favicon: fav });
   } catch (err) {
     console.warn("Dynamic metadata fetch failed, using fallback:", err);
   }

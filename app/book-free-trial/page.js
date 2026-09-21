@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import "./book-free-trial.css";
 import { COUNTRIES, DIAL_CODES } from "./countries";
+import { usePageContent } from "@/lib/use-page-content";
 
 /* ---------------- Small inline icons ---------------- */
 const IconSpark = ({ size = 14 }) => (
@@ -153,6 +154,7 @@ const getTodayString = () => {
 };
 
 export default function BookFreeTrialPage() {
+  const c = usePageContent("bookTrial");
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [form, setForm] = useState(INITIAL_FORM);
@@ -328,15 +330,15 @@ export default function BookFreeTrialPage() {
       <main className="bft-page">
         {/* ============ SECTION 1: HERO ============ */}
         <section className="bft-hero">
-          <span className="bft-badge"><IconSpark /> Free Trial Class</span>
+          <span className="bft-badge"><IconSpark /> {c.hero?.badge}</span>
           <h1 className="bft-hero-title">
-            Book Your <span>Free Trial</span> Class Today
+            {c.hero?.title_prefix}<span>{c.hero?.title_highlight}</span>{c.hero?.title_suffix}
           </h1>
           <div className="bft-hero-divider">
             <span className="line" /><span className="diamond" /><span className="line" />
           </div>
           <p className="bft-hero-sub" style={{ textAlign: "center", marginTop: "10px" }}>
-            Loading booking form details, please wait...
+            {c.hero?.loading_text}
           </p>
         </section>
       </main>
@@ -347,17 +349,18 @@ export default function BookFreeTrialPage() {
     <main className="bft-page">
       {/* ============ SECTION 1: HERO ============ */}
       <section className="bft-hero">
-        <span className="bft-badge"><IconSpark /> Free Trial Class</span>
+        <span className="bft-badge"><IconSpark /> {c.hero?.badge}</span>
         <h1 className="bft-hero-title">
-          Book Your <span>Free Trial</span> Class Today
+          {c.hero?.title_prefix}<span>{c.hero?.title_highlight}</span>{c.hero?.title_suffix}
         </h1>
         <div className="bft-hero-divider">
           <span className="line" /><span className="diamond" /><span className="line" />
         </div>
         <div className="bft-hero-stats">
-          <span className="bft-stat"><IconCheck /> 100% Free, No Card Needed</span>
-          <span className="bft-stat"><IconClock /> Flexible 24/7 Scheduling</span>
-          <span className="bft-stat"><IconTeacher size={16} /> Certified Teachers</span>
+          {(c.hero?.stats || []).map((stat, i) => {
+            const icons = [<IconCheck />, <IconClock />, <IconTeacher size={16} />];
+            return <span className="bft-stat" key={i}>{icons[i % icons.length]} {stat}</span>;
+          })}
         </div>
       </section>
 
@@ -367,14 +370,13 @@ export default function BookFreeTrialPage() {
           {submitted ? (
             <div className="bft-success">
               <div className="bft-success-icon"><IconCheck size={40} /></div>
-              <h3>Your Free Trial is Booked!</h3>
+              <h3>{c.success?.title}</h3>
               <p>
-                Thank you, {form.firstName}. We&apos;ve received your request and our academic advisor
-                will contact you within 24 hours to confirm your class.
+                Thank you, {form.firstName}{c.success?.message_suffix}
               </p>
               <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
-                <Link href="/" className="bft-btn bft-btn-secondary" style={{ textDecoration: "none" }}>Back to Home</Link>
-                <button type="button" className="bft-btn bft-btn-primary" onClick={resetForm}>Book Another</button>
+                <Link href="/" className="bft-btn bft-btn-secondary" style={{ textDecoration: "none" }}>{c.success?.home_label}</Link>
+                <button type="button" className="bft-btn bft-btn-primary" onClick={resetForm}>{c.success?.another_label}</button>
               </div>
             </div>
           ) : (
@@ -382,8 +384,8 @@ export default function BookFreeTrialPage() {
               {/* Progress */}
               <div className="bft-progress">
                 <div className="bft-progress-labels">
-                  <span className={`bft-progress-label ${step >= 1 ? "active" : ""}`}>Step 1 — Your Details</span>
-                  <span className={`bft-progress-label ${step >= 2 ? "active" : ""}`}>Step 2 — Preferences</span>
+                  <span className={`bft-progress-label ${step >= 1 ? "active" : ""}`}>{c.progress?.step1_label}</span>
+                  <span className={`bft-progress-label ${step >= 2 ? "active" : ""}`}>{c.progress?.step2_label}</span>
                 </div>
                 <div className="bft-progress-track">
                   <span className={`bft-progress-node ${step >= 1 ? "active" : ""}`} />
@@ -395,11 +397,11 @@ export default function BookFreeTrialPage() {
 
               {step === 1 && (
                 <div>
-                  <h2 className="bft-form-title">Tell us about yourself</h2>
+                  <h2 className="bft-form-title">{c.step1?.title}</h2>
 
                   <div className="bft-row">
                     <div className="bft-field" style={{ marginBottom: 0 }}>
-                      <label className="bft-label">First Name<span className="req">*</span></label>
+                      <label className="bft-label">{c.step1?.first_name_label}<span className="req">*</span></label>
                       <input
                         className={`bft-input ${errors.firstName ? "invalid" : ""}`}
                         placeholder="First Name" value={form.firstName}
@@ -408,7 +410,7 @@ export default function BookFreeTrialPage() {
                       {errors.firstName && <p className="bft-error">{errors.firstName}</p>}
                     </div>
                     <div className="bft-field" style={{ marginBottom: 0 }}>
-                      <label className="bft-label">Last Name<span className="req">*</span></label>
+                      <label className="bft-label">{c.step1?.last_name_label}<span className="req">*</span></label>
                       <input
                         className={`bft-input ${errors.lastName ? "invalid" : ""}`}
                         placeholder="Last Name" value={form.lastName}
@@ -419,7 +421,7 @@ export default function BookFreeTrialPage() {
                   </div>
 
                   <div className="bft-field" style={{ marginTop: 20 }}>
-                    <label className="bft-label">Email<span className="req">*</span></label>
+                    <label className="bft-label">{c.step1?.email_label}<span className="req">*</span></label>
                     <input
                       type="email"
                       className={`bft-input ${errors.email ? "invalid" : ""}`}
@@ -430,7 +432,7 @@ export default function BookFreeTrialPage() {
                   </div>
 
                   <div className="bft-field">
-                    <label className="bft-label">Phone<span className="req">*</span></label>
+                    <label className="bft-label">{c.step1?.phone_label}<span className="req">*</span></label>
                     <div className="bft-phone-group">
                       <CustomSelect
                         rootClassName="bft-cs-phone"
@@ -451,12 +453,12 @@ export default function BookFreeTrialPage() {
                   </div>
 
                   <div className="bft-field">
-                    <label className="bft-label">Country<span className="req">*</span></label>
+                    <label className="bft-label">{c.step1?.country_label}<span className="req">*</span></label>
                     <CustomSelect
                       value={form.country}
                       onChange={handleCountryChange}
-                      options={[...COUNTRIES.map((c) => ({ value: c.name, label: c.name })), { value: "Other", label: "Other" }]}
-                      placeholder="Choose your country"
+                      options={[...COUNTRIES.map((co) => ({ value: co.name, label: co.name })), { value: "Other", label: "Other" }]}
+                      placeholder={c.step1?.country_placeholder || "Choose your country"}
                       invalid={!!errors.country}
                       searchPlaceholder="Search country…"
                     />
@@ -465,7 +467,7 @@ export default function BookFreeTrialPage() {
 
                   <div className="bft-actions end">
                     <button type="button" className="bft-btn bft-btn-primary" onClick={goNext}>
-                      Next Step <IconArrow />
+                      {c.step1?.next_label} <IconArrow />
                     </button>
                   </div>
                 </div>
@@ -473,34 +475,34 @@ export default function BookFreeTrialPage() {
 
               {step === 2 && (
                 <div>
-                  <h2 className="bft-form-title">Your learning preferences</h2>
+                  <h2 className="bft-form-title">{c.step2?.title}</h2>
 
                   <div className="bft-field">
-                    <label className="bft-label">What would you like to learn?<span className="req">*</span></label>
-                    <RadioGroup name="learn" options={LEARN_OPTIONS} value={form.learn} onChange={(v) => set("learn", v)} />
+                    <label className="bft-label">{c.step2?.learn_label}<span className="req">*</span></label>
+                    <RadioGroup name="learn" options={c.options?.learn || LEARN_OPTIONS} value={form.learn} onChange={(v) => set("learn", v)} />
                     {errors.learn && <p className="bft-error">{errors.learn}</p>}
                   </div>
 
                   <div className="bft-field">
-                    <label className="bft-label">This trial session is for<span className="req">*</span></label>
-                    <RadioGroup name="sessionFor" options={SESSION_FOR_OPTIONS} value={form.sessionFor} onChange={(v) => set("sessionFor", v)} />
+                    <label className="bft-label">{c.step2?.session_label}<span className="req">*</span></label>
+                    <RadioGroup name="sessionFor" options={c.options?.session_for || SESSION_FOR_OPTIONS} value={form.sessionFor} onChange={(v) => set("sessionFor", v)} />
                     {errors.sessionFor && <p className="bft-error">{errors.sessionFor}</p>}
                   </div>
 
                   <div className="bft-field">
-                    <label className="bft-label">Your preferred teacher<span className="req">*</span></label>
-                    <RadioGroup name="teacher" options={TEACHER_OPTIONS} value={form.teacher} onChange={(v) => set("teacher", v)} />
+                    <label className="bft-label">{c.step2?.teacher_label}<span className="req">*</span></label>
+                    <RadioGroup name="teacher" options={c.options?.teacher || TEACHER_OPTIONS} value={form.teacher} onChange={(v) => set("teacher", v)} />
                     {errors.teacher && <p className="bft-error">{errors.teacher}</p>}
                   </div>
 
                   <div className="bft-field">
-                    <label className="bft-label">How did you find us?</label>
-                    <RadioGroup name="source" options={SOURCE_OPTIONS} value={form.source} onChange={(v) => set("source", v)} />
+                    <label className="bft-label">{c.step2?.source_label}</label>
+                    <RadioGroup name="source" options={c.options?.source || SOURCE_OPTIONS} value={form.source} onChange={(v) => set("source", v)} />
                   </div>
 
                   <div className="bft-row" style={{ alignItems: "flex-start" }}>
                     <div className="bft-field" style={{ marginBottom: 0 }}>
-                      <label className="bft-label">Preferred Date<span className="req">*</span></label>
+                      <label className="bft-label">{c.step2?.date_label}<span className="req">*</span></label>
                       <input
                         type="date"
                         className={`bft-input ${errors.date ? "invalid" : ""}`}
@@ -510,7 +512,7 @@ export default function BookFreeTrialPage() {
                       {errors.date && <p className="bft-error">{errors.date}</p>}
                     </div>
                     <div className="bft-field" style={{ marginBottom: 0 }}>
-                      <label className="bft-label">Preferred Time<span className="req">*</span></label>
+                      <label className="bft-label">{c.step2?.time_label}<span className="req">*</span></label>
                       <div className="bft-time-group">
                         <select className={`bft-select ${errors.time ? "invalid" : ""}`} value={form.hh} onChange={(e) => set("hh", e.target.value)}>
                           <option value="">HH</option>
@@ -533,9 +535,9 @@ export default function BookFreeTrialPage() {
                   {submitError && <p className="bft-error" style={{ marginTop: 18, fontSize: 13.5 }}>{submitError}</p>}
 
                   <div className="bft-actions">
-                    <button type="button" className="bft-btn bft-btn-secondary" onClick={goPrev}>Previous</button>
+                    <button type="button" className="bft-btn bft-btn-secondary" onClick={goPrev}>{c.step2?.prev_label}</button>
                     <button type="submit" className="bft-btn bft-btn-primary" disabled={submitting}>
-                      {submitting ? "Submitting…" : "Submit Booking"} {!submitting && <IconArrow />}
+                      {submitting ? "Submitting…" : c.step2?.submit_label} {!submitting && <IconArrow />}
                     </button>
                   </div>
                 </div>

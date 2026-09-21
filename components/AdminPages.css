@@ -1,0 +1,72 @@
+.apg-loading { padding: 40px; color: #7a6a4f; }
+
+.apg-wrap { display: grid; grid-template-columns: 210px 1fr; gap: 20px; align-items: start; }
+
+/* sub-menu */
+.apg-side {
+  position: sticky; top: 12px; display: flex; flex-direction: column; gap: 4px;
+  background: #fff; border: 1px solid #EFE6D2; border-radius: 14px; padding: 12px;
+}
+.apg-side-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #A9986F; font-weight: 700; padding: 4px 8px 8px; }
+.apg-side-item {
+  text-align: left; border: none; background: none; cursor: pointer; padding: 10px 12px;
+  border-radius: 9px; font-size: 14px; color: #4A3E30; font-weight: 500;
+  display: flex; align-items: center; justify-content: space-between; transition: background 0.15s;
+}
+.apg-side-item:hover { background: #F6F0E2; }
+.apg-side-item.active { background: #8c5d31; color: #fff; }
+.apg-dot { width: 8px; height: 8px; border-radius: 50%; background: #E0A23A; box-shadow: 0 0 0 2px rgba(224,162,58,0.25); }
+.apg-side-item.active .apg-dot { background: #fff; }
+
+/* editor */
+.apg-editor { background: #fff; border: 1px solid #EFE6D2; border-radius: 14px; padding: 22px 24px; min-width: 0; }
+.apg-editor-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 18px; border-bottom: 1px solid #EFE6D2; padding-bottom: 16px; }
+.apg-editor-head h3 { margin: 0 0 4px; font-size: 19px; color: #2B1F14; }
+.apg-editor-head p { margin: 0; font-size: 13px; color: #8b7d63; }
+
+.apg-save {
+  flex: 0 0 auto; border: none; background: #8c5d31; color: #fff; font-weight: 600;
+  padding: 11px 20px; border-radius: 10px; cursor: pointer; font-size: 14px; white-space: nowrap;
+}
+.apg-save:disabled { opacity: 0.5; cursor: default; }
+
+.apg-body { display: flex; flex-direction: column; gap: 4px; }
+
+/* fields */
+.apg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+.apg-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 4px; }
+.apg-field.full { grid-column: 1 / -1; }
+.apg-lbl { font-size: 12.5px; font-weight: 600; color: #6b5c45; }
+.apg-input {
+  border: 1px solid #E2D4B2; background: #FCFAF4; border-radius: 9px; padding: 9px 11px;
+  font-size: 13.5px; color: #2B1F14; font-family: inherit; width: 100%; resize: vertical;
+}
+.apg-input:focus { outline: none; border-color: #C99B4D; background: #fff; }
+
+/* nested object group */
+.apg-group { border: 1px solid #EFE6D2; border-radius: 12px; padding: 14px 16px; margin: 12px 0; background: #FCFAF4; }
+.apg-group-title { margin: 0 0 12px; font-size: 14px; color: #8c5d31; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
+
+/* arrays */
+.apg-array { border: 1px solid #EFE6D2; border-radius: 12px; padding: 14px 16px; margin: 12px 0; background: #FBF7EE; }
+.apg-array-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.apg-array-title { font-size: 14px; color: #8c5d31; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
+.apg-add { border: 1px dashed #C99B4D; background: #FBF5E9; color: #A97C32; border-radius: 8px; padding: 6px 13px; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.apg-empty { color: #a2937a; font-size: 13px; font-style: italic; margin: 6px 0; }
+
+.apg-strrow { display: flex; gap: 8px; align-items: center; margin-bottom: 7px; }
+.apg-card { border: 1px solid #ECE1C9; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; background: #fff; }
+.apg-card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.apg-card-idx { font-size: 12px; font-weight: 700; color: #b3a488; }
+
+.apg-row-actions { display: flex; gap: 4px; }
+.apg-row-actions button { min-width: 30px; height: 32px; padding: 0 8px; border: 1px solid #E2D4B2; background: #F3ECDD; color: #7a6a4f; border-radius: 8px; cursor: pointer; font-size: 13px; }
+.apg-row-actions button.del { color: #c0392b; border-color: #E6C3BC; background: #FBF0EE; }
+
+.apg-foot { display: flex; justify-content: flex-end; margin-top: 20px; border-top: 1px solid #EFE6D2; padding-top: 16px; }
+
+@media (max-width: 720px) {
+  .apg-wrap { grid-template-columns: 1fr; }
+  .apg-side { position: static; flex-direction: row; flex-wrap: wrap; }
+  .apg-grid { grid-template-columns: 1fr; }
+}

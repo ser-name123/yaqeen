@@ -4,12 +4,14 @@ import { useEffect } from "react";
 import "./contact.css";
 import ContactForm from "@/components/ContactForm";
 import { useSettings } from "@/lib/settings-context";
+import { usePageContent } from "@/lib/use-page-content";
 
 export default function ContactPage() {
-  const { 
-    contactEmail, 
-    contactPhone, 
-    contactHours, 
+  const c = usePageContent("contact");
+  const {
+    contactEmail,
+    contactPhone,
+    contactHours,
     contactSupport,
     socialFacebook,
     socialInstagram,
@@ -89,11 +91,11 @@ export default function ContactPage() {
             <path d="M175 60 A12 12 0 1 0 175 84 A9 9 0 1 1 175 60 Z" fill="#C99B4D" />
           </svg>
 
-          <span className="contact-hero-label reveal-slide-up">Contact Us</span>
-          <h1 className="contact-hero-title reveal-slide-up">We're Here to Help You</h1>
+          <span className="contact-hero-label reveal-slide-up">{c.hero.label}</span>
+          <h1 className="contact-hero-title reveal-slide-up">{c.hero.title}</h1>
           <div className="contact-hero-divider reveal-slide-up"></div>
           <p className="contact-hero-description reveal-slide-up">
-            Have a question or need assistance? Our team is happy to support you on your learning journey.
+            {c.hero.description}
           </p>
         </div>
 
@@ -140,9 +142,9 @@ export default function ContactPage() {
       <section className="contact-grid-section">
         {/* Left Side: Get in Touch Card */}
         <div className="contact-info-card reveal-slide-up">
-          <h2 className="contact-section-title">Get in Touch</h2>
+          <h2 className="contact-section-title">{c.info.title}</h2>
           <div className="contact-section-divider"></div>
-          <p className="contact-section-subtitle">We'd love to hear from you.</p>
+          <p className="contact-section-subtitle">{c.info.subtitle}</p>
 
           <div className="contact-info-list stagger-group">
              {/* Email Us */}
@@ -154,7 +156,7 @@ export default function ContactPage() {
                 </svg>
               </div>
               <div className="contact-info-text-group">
-                <span className="contact-info-item-label">Email Us</span>
+                <span className="contact-info-item-label">{c.info.email_label}</span>
                 <span className="contact-info-item-value">
                   <a href={`mailto:${contactEmail}`} style={{ color: "inherit", textDecoration: "none" }}>{contactEmail}</a>
                 </span>
@@ -169,7 +171,7 @@ export default function ContactPage() {
                 </svg>
               </div>
               <div className="contact-info-text-group">
-                <span className="contact-info-item-label">Call / WhatsApp</span>
+                <span className="contact-info-item-label">{c.info.phone_label}</span>
                 <span className="contact-info-item-value">{contactPhone}</span>
               </div>
             </div>
@@ -183,7 +185,7 @@ export default function ContactPage() {
                 </svg>
               </div>
               <div className="contact-info-text-group">
-                <span className="contact-info-item-label">Working Hours</span>
+                <span className="contact-info-item-label">{c.info.hours_label}</span>
                 <span className="contact-info-item-value">{contactHours}</span>
               </div>
             </div>
@@ -198,7 +200,7 @@ export default function ContactPage() {
                 </svg>
               </div>
               <div className="contact-info-text-group">
-                <span className="contact-info-item-label">Worldwide Support</span>
+                <span className="contact-info-item-label">{c.info.support_label}</span>
                 <span className="contact-info-item-value">{contactSupport}</span>
               </div>
             </div>
@@ -251,75 +253,25 @@ export default function ContactPage() {
          ========================================================================= */}
       <section className="contact-faq-section">
         <div className="contact-faq-card reveal-slide-up">
-          <h2 className="contact-section-title">Frequently Asked Questions</h2>
+          <h2 className="contact-section-title">{c.faq.title}</h2>
           <div className="contact-section-divider"></div>
 
           <div className="contact-faq-grid stagger-group">
-            {/* FAQ 1: Enrollment */}
-            <div className="contact-faq-col reveal-stagger">
-              <div className="contact-info-icon-wrapper">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
+            {(c.faq.items || []).map((item, i) => (
+              <div className="contact-faq-col reveal-stagger" key={i}>
+                <div className="contact-info-icon-wrapper">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                    <circle cx="12" cy="12" r="10" />
+                  </svg>
+                </div>
+                <div className="contact-faq-content">
+                  <h3 className="contact-faq-question">{item.question}</h3>
+                  <p className="contact-faq-answer">{item.answer}</p>
+                </div>
               </div>
-              <div className="contact-faq-content">
-                <h3 className="contact-faq-question">How can I enroll in a course?</h3>
-                <p className="contact-faq-answer">
-                  You can enroll by creating an account and selecting your desired course.
-                </p>
-              </div>
-            </div>
-
-            {/* FAQ 2: Scheduling */}
-            <div className="contact-faq-col reveal-stagger">
-              <div className="contact-info-icon-wrapper">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                  <line x1="16" y1="2" x2="16" y2="6" />
-                  <line x1="8" y1="2" x2="8" y2="6" />
-                  <line x1="3" y1="10" x2="21" y2="10" />
-                </svg>
-              </div>
-              <div className="contact-faq-content">
-                <h3 className="contact-faq-question">Can I schedule classes at my convenience?</h3>
-                <p className="contact-faq-answer">
-                  Yes, we offer flexible scheduling to fit your time and learning pace.
-                </p>
-              </div>
-            </div>
-
-            {/* FAQ 3: Trials */}
-            <div className="contact-faq-col reveal-stagger">
-              <div className="contact-info-icon-wrapper">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
-                  <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
-                </svg>
-              </div>
-              <div className="contact-faq-content">
-                <h3 className="contact-faq-question">Do you offer trial classes?</h3>
-                <p className="contact-faq-answer">
-                  Yes, we offer free trial classes for new students. Contact us to book yours.
-                </p>
-              </div>
-            </div>
-
-            {/* FAQ 4: Payments */}
-            <div className="contact-faq-col reveal-stagger">
-              <div className="contact-info-icon-wrapper">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
-                  <line x1="1" y1="10" x2="23" y2="10" />
-                </svg>
-              </div>
-              <div className="contact-faq-content">
-                <h3 className="contact-faq-question">What payment methods do you accept?</h3>
-                <p className="contact-faq-answer">
-                  We accept major credit/debit cards, PayPal, and other secure payment methods.
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -368,8 +320,8 @@ export default function ContactPage() {
               </svg>
             </div>
             <div className="contact-cta-text">
-              <h3 className="contact-cta-title">Still have questions?</h3>
-              <p className="contact-cta-subtitle">Our support team is ready to assist you!</p>
+              <h3 className="contact-cta-title">{c.cta.title}</h3>
+              <p className="contact-cta-subtitle">{c.cta.subtitle}</p>
             </div>
           </div>
 
@@ -380,7 +332,7 @@ export default function ContactPage() {
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
               <path d="M8 10h.01M12 10h.01M16 10h.01" strokeWidth="3" />
             </svg>
-            <span>Chat with Support</span>
+            <span>{c.cta.button_label}</span>
           </a>
         </div>
       </section>

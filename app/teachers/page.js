@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import "./teachers.css";
 import { supabase } from "@/lib/supabase";
+import { usePageContent } from "@/lib/use-page-content";
 
 /* Fallback teachers if the Manage Teachers list is empty */
 const DEFAULT_TEACHERS = [
@@ -39,42 +40,24 @@ const IconHeadset = ({ size = 20 }) => (<svg width={size} height={size} viewBox=
 const IconGrowth = ({ size = 22 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18" /><rect x="7" y="12" width="3" height="6" /><rect x="12" y="8" width="3" height="10" /><rect x="17" y="4" width="3" height="14" /></svg>);
 const IconUserStar = ({ size = 22 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="10" cy="8" r="4" /><path d="M2 21v-1a6 6 0 0 1 10-4.47" /><path d="m18 12 1.2 2.4 2.8.4-2 2 .5 2.8L18 20l-2.5 1.6.5-2.8-2-2 2.8-.4z" /></svg>);
 
-/* ---------------- Static data ---------------- */
-const HERO_BADGES = [
-  { icon: <IconBook size={15} />, label: "Online Quran Classes" },
-  { icon: <IconBadge size={15} />, label: "Tajweed Classes" },
-  { icon: <IconStar size={15} />, label: "Hifz Quran" },
-  { icon: <IconMosque size={15} />, label: "Islamic Studies" },
-  { icon: <IconChat size={15} />, label: "Arabic Language" }
+/* ---------------- Presentational icon/style pools (text comes from CMS) ---------------- */
+const HERO_BADGE_ICONS = [<IconBook size={15} />, <IconBadge size={15} />, <IconStar size={15} />, <IconMosque size={15} />, <IconChat size={15} />];
+const HERO_FEATURE_ICONS = [<IconBadge />, <IconBook />, <IconMonitor />, <IconUser />];
+const VALUE_STYLES = [
+  { icon: <IconShield />, color: "green" },
+  { icon: <IconHandshake />, color: "gold" },
+  { icon: <IconStar size={20} />, color: "gold" },
+  { icon: <IconHeart />, color: "green" },
 ];
-const HERO_FEATURES = [
-  { icon: <IconBadge />, label: "Qualified & Certified" },
-  { icon: <IconBook />, label: "Expert in Qur'an & Tajweed" },
-  { icon: <IconMonitor />, label: "1-to-1 Online Classes" },
-  { icon: <IconUser />, label: "Student Focused" }
-];
-const VALUES = [
-  { icon: <IconShield />, ar: "Amanah", en: "Trustworthiness", color: "green" },
-  { icon: <IconHandshake />, ar: "Adab", en: "Proper Conduct", color: "gold" },
-  { icon: <IconStar size={20} />, ar: "Ihsan", en: "Excellence", color: "gold" },
-  { icon: <IconHeart />, ar: "Ikhlas", en: "Sincerity", color: "green" }
-];
-const LEARN = [
-  { icon: <IconUserStar />, q: "Flexibility, Comfort & Personalized Attention", d: "Learn from the comfort of your home with one-to-one classes designed around your schedule and goals.", a: "Your teacher adapts every lesson to your availability, comfort and personal learning goals — so you always progress at your own pace." },
-  { icon: <IconBook size={22} />, q: "Step-by-step Structured Learning Approach", d: "Our well-organized lessons help you build a strong foundation and progress with clarity and confidence.", a: "We follow a clear, structured curriculum that takes you step by step from the fundamentals to advanced levels." },
-  { icon: <IconGrowth />, q: "Guidance Tailored to Your Learning Pace", d: "Receive patient guidance and constant support from expert teachers who understand your unique learning needs.", a: "Whether you are a beginner or advanced learner, your teacher tailors the guidance and pace to suit you." }
-];
-const CHOOSE = [
-  { icon: <IconBook size={24} />, title: "I want to learn the Quran", desc: "Join interactive Quran classes online with expert teachers and a proven curriculum designed for all age groups and levels.", btn: "Register as Student", href: "/book-free-trial" },
-  { icon: <IconUsers size={24} />, title: "I want to teach the Quran", desc: "Inspire students worldwide by teaching the Quran online and earn rewards while working from the comfort of your home.", btn: "Register as Teacher", href: "/teacher-application" }
-];
-const FAQS = [
-  { icon: <IconUser />, color: "green", q: "What makes your Quran teachers qualified?", a: "Our teachers are certified and experienced, many holding Ijazah and degrees in Islamic Studies, and are carefully selected for both knowledge and teaching skill." },
-  { icon: <IconUsers />, color: "gold", q: "How are your teachers selected?", a: "Teachers go through a careful selection process including verification of qualifications, a subject and Tajweed assessment, a teaching demo and a character review." },
-  { icon: <IconChat />, color: "green", q: "Do your teachers speak different languages?", a: "Yes. Many teachers speak English along with Arabic, Urdu and other languages to support diverse students." },
-  { icon: <IconRefresh />, color: "gold", q: "Can I change my teacher if needed?", a: "Yes. Wherever possible we accommodate teacher change requests — just contact our support team." },
-  { icon: <IconBadge />, color: "green", q: "Do your teachers have teaching experience?", a: "Yes. Our teachers are experienced in teaching students of all ages using patient, engaging and effective methods." },
-  { icon: <IconHeadset />, color: "gold", q: "How can I connect with my teacher?", a: "Classes are held live via Zoom or our portal, and you can reach your teacher and our support team anytime." }
+const LEARN_ICONS = [<IconUserStar />, <IconBook size={22} />, <IconGrowth />];
+const CHOOSE_ICONS = [<IconBook size={24} />, <IconUsers size={24} />];
+const FAQ_STYLES = [
+  { icon: <IconUser />, color: "green" },
+  { icon: <IconUsers />, color: "gold" },
+  { icon: <IconChat />, color: "green" },
+  { icon: <IconRefresh />, color: "gold" },
+  { icon: <IconBadge />, color: "green" },
+  { icon: <IconHeadset />, color: "gold" },
 ];
 
 function Avatar({ url, name, className }) {
@@ -90,10 +73,17 @@ function Avatar({ url, name, className }) {
 }
 
 export default function TeachersPage() {
+  const c = usePageContent("teachers");
   const [teachers, setTeachers] = useState(DEFAULT_TEACHERS);
   const [openLearn, setOpenLearn] = useState(null);
 
   const [openFaq, setOpenFaq] = useState(null);
+  const heroBadges = c.hero?.badges || [];
+  const heroFeatures = c.hero?.features || [];
+  const values = c.commit?.values || [];
+  const learnItems = c.learn?.items || [];
+  const chooseCards = c.choose?.cards || [];
+  const faqItems = c.faq?.items || [];
 
   useEffect(() => {
     let active = true;
@@ -125,21 +115,20 @@ export default function TeachersPage() {
         <div className="tp-hero-inner">
           <div className="tp-hero-dots">{Array.from({ length: 9 }).map((_, i) => <span key={i} />)}</div>
           <div>
-            <span className="tp-hero-label">Meet Our</span>
-            <h1 className="tp-hero-title">Teachers</h1>
+            <span className="tp-hero-label">{c.hero?.label}</span>
+            <h1 className="tp-hero-title">{c.hero?.title}</h1>
             <div className="tp-hero-rule"><span className="line" /><span className="dia" /></div>
             <p className="tp-hero-sub">
-              Learn Qur&apos;an online with qualified and experienced teachers. Expert in Tajweed, Hifz,
-              Arabic &amp; Islamic Studies. 1-to-1 classes for kids &amp; adults — flexible, trusted &amp; effective.
+              {c.hero?.subtitle}
             </p>
             <div className="tp-hero-badges">
-              {HERO_BADGES.map((b) => <span className="b" key={b.label}>{b.icon}<span className="lbl">{b.label}</span></span>)}
+              {heroBadges.map((label, i) => <span className="b" key={i}>{HERO_BADGE_ICONS[i % HERO_BADGE_ICONS.length]}<span className="lbl">{label}</span></span>)}
             </div>
             <div className="tp-hero-features">
-              {HERO_FEATURES.map((f) => (
-                <div className="tp-hf-card" key={f.label}>
-                  <div className="tp-hf-icon">{f.icon}</div>
-                  <span>{f.label}</span>
+              {heroFeatures.map((label, i) => (
+                <div className="tp-hf-card" key={i}>
+                  <div className="tp-hf-icon">{HERO_FEATURE_ICONS[i % HERO_FEATURE_ICONS.length]}</div>
+                  <span>{label}</span>
                 </div>
               ))}
             </div>
@@ -169,10 +158,10 @@ export default function TeachersPage() {
       {/* ===== TEACHERS GRID ===== */}
       <section className="tp-teachers">
         <div className="tp-head">
-          <span className="tp-badge">Meet Our Teachers</span>
+          <span className="tp-badge">{c.grid?.badge}</span>
           <div className="tp-diamond-div"><span className="line" /><span className="dia" /><span className="line" /></div>
-          <h2>Learn from Experienced<br />and <span>Caring Teachers.</span></h2>
-          <p>Our teachers are qualified, experienced, and passionate about helping you grow in your Islamic knowledge.</p>
+          <h2>{c.grid?.title_line1}<br />{c.grid?.title_line2_prefix}<span>{c.grid?.title_highlight}</span></h2>
+          <p>{c.grid?.subtitle}</p>
         </div>
         <div className="tp-grid">
           {teachers.map((t) => (
@@ -194,10 +183,10 @@ export default function TeachersPage() {
       <section className="tp-commit">
         <div className="tp-commit-inner">
           <div>
-            <p className="lead">Here, your skills become a means of compassion, your dedication becomes a source of reward, and your efforts create <b>lasting impact</b>.</p>
+            <p className="lead">{c.commit?.lead}</p>
             <div className="tp-commit-rule"><span className="line" /><IconGear /><span className="line" /></div>
-            <h3>Our Core <span>Commitment</span></h3>
-            <Link href="/careers" className="tp-join-btn">Join Our Team <IconArrow /></Link>
+            <h3>{c.commit?.heading} <span>{c.commit?.heading_highlight}</span></h3>
+            <Link href={c.commit?.button_url || "/careers"} className="tp-join-btn">{c.commit?.button_label} <IconArrow /></Link>
           </div>
           <div className="tp-commit-right">
             <div className="tp-commit-img">
@@ -205,15 +194,18 @@ export default function TeachersPage() {
               <img src="/images/commit_difference.png" alt="Make a difference" />
             </div>
             <div className="tp-values">
-              {VALUES.map((v) => (
-                <div className="tp-value" key={v.ar}>
-                  <div className={`tp-value-icon ${v.color}`}>{v.icon}</div>
-                  <div>
-                    <div className="ar">{v.ar}</div>
-                    <div className="en">{v.en}</div>
+              {values.map((v, i) => {
+                const style = VALUE_STYLES[i % VALUE_STYLES.length];
+                return (
+                  <div className="tp-value" key={i}>
+                    <div className={`tp-value-icon ${style.color}`}>{style.icon}</div>
+                    <div>
+                      <div className="ar">{v.ar}</div>
+                      <div className="en">{v.en}</div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
@@ -222,18 +214,18 @@ export default function TeachersPage() {
       {/* ===== LEARN ONLINE ===== */}
       <section className="tp-learn">
         <div className="tp-head">
-          <span className="tp-badge">Learn Online</span>
+          <span className="tp-badge">{c.learn?.badge}</span>
           <div className="tp-diamond-div"><span className="line" /><span className="dia" /><span className="line" /></div>
-          <h2>Learn with a Professional<br /><span>Quran Teacher Online</span></h2>
+          <h2>{c.learn?.title_line1}<br /><span>{c.learn?.title_highlight}</span></h2>
         </div>
         <div className="tp-acc">
-          {LEARN.map((f, i) => {
+          {learnItems.map((f, i) => {
             const open = openLearn === i;
             return (
               <div key={i} className={`tp-item ${open ? "open" : ""}`}>
                 <button type="button" className="tp-q" aria-expanded={open} onClick={() => setOpenLearn(open ? null : i)} suppressHydrationWarning>
                   <div className="tp-q-icon-wrap">
-                    <span className="tp-q-icon">{f.icon}</span>
+                    <span className="tp-q-icon">{LEARN_ICONS[i % LEARN_ICONS.length]}</span>
                   </div>
                   <div className="tp-q-separator" />
                   <div className="tp-q-text">
@@ -254,18 +246,18 @@ export default function TeachersPage() {
       {/* ===== WHAT WOULD YOU LIKE TO DO ===== */}
       <section className="tp-choose">
         <div className="tp-head">
-          <span className="tp-badge">Teacher &amp; Students</span>
+          <span className="tp-badge">{c.choose?.badge}</span>
           <div className="tp-diamond-div"><span className="line" /><span className="dia" /><span className="line" /></div>
-          <h2>What Would You <span>Like to Do?</span></h2>
-          <p>Whether you want to learn the Quran online or become a Quran teacher, we&apos;re here to support and guide you every step of the way.</p>
+          <h2>{c.choose?.title} <span>{c.choose?.title_highlight}</span></h2>
+          <p>{c.choose?.subtitle}</p>
         </div>
         <div className="tp-choose-grid">
-          {CHOOSE.map((c) => (
-            <div className="tp-choose-card" key={c.title}>
-              <div className="tp-choose-icon">{c.icon}</div>
-              <h3>{c.title}</h3>
-              <p>{c.desc}</p>
-              <Link href={c.href} className="tp-choose-btn">{c.btn} <IconArrow /></Link>
+          {chooseCards.map((card, i) => (
+            <div className="tp-choose-card" key={i}>
+              <div className="tp-choose-icon">{CHOOSE_ICONS[i % CHOOSE_ICONS.length]}</div>
+              <h3>{card.title}</h3>
+              <p>{card.desc}</p>
+              <Link href={card.href || "#"} className="tp-choose-btn">{card.btn} <IconArrow /></Link>
             </div>
           ))}
         </div>
@@ -274,17 +266,18 @@ export default function TeachersPage() {
       {/* ===== FAQ ===== */}
       <section className="tp-faq">
         <div className="tp-head">
-          <span className="tp-badge solid">Teachers FAQ</span>
+          <span className="tp-badge solid">{c.faq?.badge}</span>
           <div className="tp-diamond-div"><span className="line" /><span className="dia" /><span className="line" /></div>
-          <h2>Questions About Our <span>Teachers</span></h2>
+          <h2>{c.faq?.title} <span>{c.faq?.title_highlight}</span></h2>
         </div>
         <div className="tp-faq-list">
-          {FAQS.map((f, i) => {
+          {faqItems.map((f, i) => {
+            const style = FAQ_STYLES[i % FAQ_STYLES.length];
             const open = openFaq === i;
             return (
               <div key={i} className={`tp-faq-item ${open ? "open" : ""}`}>
                 <button type="button" className="tp-faq-q" aria-expanded={open} onClick={() => setOpenFaq(open ? null : i)} suppressHydrationWarning>
-                  <span className={`tp-faq-icon ${f.color}`}>{f.icon}</span>
+                  <span className={`tp-faq-icon ${style.color}`}>{style.icon}</span>
                   <span className="tp-faq-qtext">{f.q}</span>
                   <IconChevron className={`tp-chevron ${open ? "open" : ""}`} />
                 </button>
