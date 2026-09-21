@@ -135,6 +135,7 @@ export default function AdminDashboard() {
     password: "",
     logo_text: "",
     logo_url: "",
+    admin_loader_logo_url: "",
     contact_email: "",
     contact_phone: "",
     contact_hours: "",
@@ -146,6 +147,8 @@ export default function AdminDashboard() {
   });
   const [logoText, setLogoText] = useState("yaqeen");
   const [logoUrl, setLogoUrl] = useState("");
+  // Admin loader / login logo (falls back to the site logo when empty)
+  const [adminLoaderLogo, setAdminLoaderLogo] = useState("");
 
   // Logged-in staff identity + permissions (gates which sidebar tabs are shown)
   const [currentAdmin, setCurrentAdmin] = useState(null);
@@ -637,6 +640,7 @@ export default function AdminDashboard() {
           password: data.password,
           logo_text: data.logo_text || "",
           logo_url: data.logo_url || "",
+          admin_loader_logo_url: data.admin_loader_logo_url || "",
           contact_email: data.contact_email || "",
           contact_phone: data.contact_phone || "",
           contact_hours: data.contact_hours || "",
@@ -661,12 +665,13 @@ export default function AdminDashboard() {
       try {
         const { data, error } = await supabase
           .from("site_settings")
-          .select("logo_text, logo_url")
+          .select("*")
           .eq("id", "global")
           .single();
         if (data) {
           setLogoText(data.logo_text || "yaqeen");
           setLogoUrl(data.logo_url || "");
+          setAdminLoaderLogo(data.admin_loader_logo_url || "");
         }
       } catch (err) {
         console.warn("Could not load logo from site_settings:", err);
@@ -709,6 +714,7 @@ export default function AdminDashboard() {
               password: data.password,
               logo_text: data.logo_text || "",
               logo_url: data.logo_url || "",
+              admin_loader_logo_url: data.admin_loader_logo_url || "",
               contact_email: data.contact_email || "",
               contact_phone: data.contact_phone || "",
               contact_hours: data.contact_hours || "",
@@ -918,6 +924,27 @@ export default function AdminDashboard() {
   const freeTrials = contacts.filter((c) => (c.subject || "").startsWith(FREE_TRIAL_PREFIX));
   const inquiries = contacts.filter((c) => !(c.subject || "").startsWith(FREE_TRIAL_PREFIX));
 
+  // Upload the admin loader / login logo (separate from the site logo).
+  const handleAdminLogoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setLoading(true);
+    try {
+      const fileExt = file.name.split(".").pop();
+      const filePath = `logos/adminlogo_${Date.now()}.${fileExt}`;
+      const { error: uploadError } = await supabase.storage.from("blog-images").upload(filePath, file);
+      if (uploadError) throw uploadError;
+      const { data } = supabase.storage.from("blog-images").getPublicUrl(filePath);
+      setProfileForm((prev) => ({ ...prev, admin_loader_logo_url: data.publicUrl }));
+      setAdminLoaderLogo(data.publicUrl);
+      adminSwal.fire({ icon: "success", title: "Admin Logo Uploaded!", text: "Click 'Save Settings & Credentials' below to save.", confirmButtonColor: "var(--primary-color)", background: "#111827", color: "#fff" });
+    } catch (err) {
+      adminSwal.fire({ icon: "error", title: "Upload Failed", text: err.message || "Failed to upload logo.", confirmButtonColor: "var(--primary-color)", background: "#111827", color: "#fff" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleLogoUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -987,6 +1014,7 @@ export default function AdminDashboard() {
           password: profileForm.password,
           logo_text: profileForm.logo_text,
           logo_url: profileForm.logo_url,
+          admin_loader_logo_url: profileForm.admin_loader_logo_url,
           contact_email: profileForm.contact_email,
           contact_phone: profileForm.contact_phone,
           contact_hours: profileForm.contact_hours,
@@ -1001,6 +1029,7 @@ export default function AdminDashboard() {
       if (data.success) {
         setLogoText(profileForm.logo_text);
         setLogoUrl(profileForm.logo_url);
+        setAdminLoaderLogo(profileForm.admin_loader_logo_url);
         adminSwal.fire({
           icon: "success",
           title: "Profile Updated!",
@@ -2487,6 +2516,14 @@ export default function AdminDashboard() {
     return (
       <div style={{ ...adminThemeStyle, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "20px" }}>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
+          {(adminLoaderLogo || logoUrl) && (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src={adminLoaderLogo || logoUrl}
+              alt={logoText || "Yaqeen"}
+              style={{ height: "52px", width: "auto", maxWidth: "200px", objectFit: "contain", marginBottom: "4px" }}
+            />
+          )}
           <div style={{
             width: "40px",
             height: "40px",
@@ -2527,18 +2564,18 @@ export default function AdminDashboard() {
         <div className="glass-panel" style={{ padding: "40px", width: "100%", maxWidth: "400px", display: "flex", flexDirection: "column", gap: "20px" }}>
           <div style={{ textAlign: "center" }}>
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "16px", minHeight: "44px" }}>
-              {logoUrl ? (
+              {(adminLoaderLogo || logoUrl) ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
-                <img 
-                  src={logoUrl} 
-                  alt={logoText || "Yaqeen"} 
-                  style={{ 
-                    height: "40px", 
-                    maxHeight: "44px", 
-                    width: "auto", 
-                    objectFit: "contain", 
-                    borderRadius: "4px" 
-                  }} 
+                <img
+                  src={adminLoaderLogo || logoUrl}
+                  alt={logoText || "Yaqeen"}
+                  style={{
+                    height: "40px",
+                    maxHeight: "44px",
+                    width: "auto",
+                    objectFit: "contain",
+                    borderRadius: "4px"
+                  }}
                 />
               ) : (
                 <span style={{ 
@@ -4264,6 +4301,27 @@ export default function AdminDashboard() {
                       Remove Image Logo (Fallback to Text)
                     </button>
                   )}
+                </div>
+
+                {/* Admin Loader / Login Logo */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px", borderTop: "1px solid var(--card-border)", paddingTop: "16px", marginTop: "4px" }}>
+                  <label style={formLabelStyle}>Admin Loader / Login Logo <span style={{ color: "var(--fg-muted)", fontWeight: 400, fontSize: "12px" }}>(admin loading &amp; login screen — blank rakho to site logo use hoga)</span></label>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                    <input type="text" value={profileForm.admin_loader_logo_url} onChange={(e) => setProfileForm(prev => ({ ...prev, admin_loader_logo_url: e.target.value }))} placeholder="https://.../admin-logo.png" style={formInputStyle} />
+                    <input type="file" accept="image/*" onChange={handleAdminLogoUpload} style={{ ...formInputStyle, padding: "8px 12px", fontSize: "13px" }} />
+                  </div>
+                  <div style={{ marginTop: "6px", padding: "12px", border: "1px dashed var(--card-border)", borderRadius: "8px", background: "rgba(0,0,0,0.01)", display: "flex", alignItems: "center", gap: "10px" }}>
+                    <span style={{ fontSize: "11px", color: "var(--fg-muted)" }}>Preview:</span>
+                    {(profileForm.admin_loader_logo_url || profileForm.logo_url) ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img src={profileForm.admin_loader_logo_url || profileForm.logo_url} alt="Admin logo" style={{ height: "36px", width: "auto", objectFit: "contain" }} />
+                    ) : (
+                      <span style={{ fontSize: "12px", color: "var(--fg-muted)" }}>Using site logo / text fallback</span>
+                    )}
+                    {profileForm.admin_loader_logo_url && (
+                      <button type="button" onClick={() => setProfileForm(prev => ({ ...prev, admin_loader_logo_url: "" }))} style={{ marginLeft: "auto", color: "#ef4444", border: "none", background: "none", fontSize: "11px", cursor: "pointer", padding: 0 }}>Remove (use site logo)</button>
+                    )}
+                  </div>
                 </div>
               </div>
 
