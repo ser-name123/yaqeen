@@ -6,6 +6,7 @@ import "./pricing.css";
 import { supabase } from "@/lib/supabase";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import { usePageContent } from "@/lib/use-page-content";
+import { getPlanPrice } from "@/lib/geo-pricing";
 
 // Seamless, intricate Islamic geometric lace star pattern URL (Girih tiling with overlapping circles)
 const LACE_BACKGROUND_PATTERN = 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'160\' height=\'160\' viewBox=\'0 0 160 160\'%3E%3Cg fill=\'none\' stroke=\'%23C99B4D\' stroke-width=\'0.5\' stroke-opacity=\'0.08\'%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'80\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'80\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'80\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'80\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'80\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'80\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'80\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'80\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'80\'/%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'40\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'40\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'40\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'40\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'40\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'40\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'40\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'40\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'40\'/%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'20\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'20\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'20\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'20\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'20\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'20\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'20\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'20\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'20\'/%3E%3Ccircle cx=\'80\' cy=\'80\' r=\'10\'/%3E%3Ccircle cx=\'0\' cy=\'0\' r=\'10\'/%3E%3Ccircle cx=\'160\' cy=\'0\' r=\'10\'/%3E%3Ccircle cx=\'0\' cy=\'160\' r=\'10\'/%3E%3Ccircle cx=\'160\' cy=\'160\' r=\'10\'/%3E%3Ccircle cx=\'80\' cy=\'0\' r=\'10\'/%3E%3Ccircle cx=\'0\' cy=\'80\' r=\'10\'/%3E%3Ccircle cx=\'160\' cy=\'80\' r=\'10\'/%3E%3Ccircle cx=\'80\' cy=\'160\' r=\'10\'/%3E%3Crect x=\'68\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(0 80 80)\'/%3E%3Crect x=\'68\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(45 80 80)\'/%3E%3Crect x=\'-12\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(0 0 0)\'/%3E%3Crect x=\'-12\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(45 0 0)\'/%3E%3Crect x=\'148\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(0 160 0)\'/%3E%3Crect x=\'148\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(45 160 0)\'/%3E%3Crect x=\'-12\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(0 0 160)\'/%3E%3Crect x=\'-12\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(45 0 160)\'/%3E%3Crect x=\'148\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(0 160 160)\'/%3E%3Crect x=\'148\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(45 160 160)\'/%3E%3Crect x=\'68\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(0 80 0)\'/%3E%3Crect x=\'68\' y=\'-12\' width=\'24\' height=\'24\' transform=\'rotate(45 80 0)\'/%3E%3Crect x=\'-12\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(0 0 80)\'/%3E%3Crect x=\'-12\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(45 0 80)\'/%3E%3Crect x=\'148\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(0 160 80)\'/%3E%3Crect x=\'148\' y=\'68\' width=\'24\' height=\'24\' transform=\'rotate(45 160 80)\'/%3E%3Crect x=\'68\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(0 80 160)\'/%3E%3Crect x=\'68\' y=\'148\' width=\'24\' height=\'24\' transform=\'rotate(45 80 160)\'/%3E%3Crect x=\'74\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(0 80 80)\'/%3E%3Crect x=\'74\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(45 80 80)\'/%3E%3Crect x=\'-6\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(0 0 0)\'/%3E%3Crect x=\'-6\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(45 0 0)\'/%3E%3Crect x=\'154\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(0 160 0)\'/%3E%3Crect x=\'154\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(45 160 0)\'/%3E%3Crect x=\'-6\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(0 0 160)\'/%3E%3Crect x=\'-6\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(45 0 160)\'/%3E%3Crect x=\'154\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(0 160 160)\'/%3E%3Crect x=\'154\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(45 160 160)\'/%3E%3Crect x=\'74\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(0 80 0)\'/%3E%3Crect x=\'74\' y=\'-6\' width=\'12\' height=\'12\' transform=\'rotate(45 80 0)\'/%3E%3Crect x=\'-6\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(0 0 80)\'/%3E%3Crect x=\'-6\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(45 0 80)\'/%3E%3Crect x=\'154\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(0 160 80)\'/%3E%3Crect x=\'154\' y=\'74\' width=\'12\' height=\'12\' transform=\'rotate(45 160 80)\'/%3E%3Crect x=\'74\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(0 80 160)\'/%3E%3Crect x=\'74\' y=\'154\' width=\'12\' height=\'12\' transform=\'rotate(45 80 160)\'/%3E%3C/g%3E%3C/svg%3E")';
@@ -156,6 +157,8 @@ export default function PricingPage() {
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
   const [familyImgError, setFamilyImgError] = useState(false);
   const [badgeImgError, setBadgeImgError] = useState(false);
+  const [currency, setCurrency] = useState("USD");
+  const [detectedCountry, setDetectedCountry] = useState("");
   const trustItems = c.trust || [];
   const footnotes = c.footnotes || [];
   const benefits = c.family?.benefits || [];
@@ -166,6 +169,9 @@ export default function PricingPage() {
       name: "Basic",
       subtitle: "Entry Level Package",
       price: "8.00",
+      price_usd: "8.00",
+      price_gbp: "6.50",
+      price_aed: "30.00",
       period: "/hour",
       icon: "plane",
       badge: null,
@@ -188,6 +194,9 @@ export default function PricingPage() {
       name: "Essentials",
       subtitle: "Core Feature Set",
       price: "9.00",
+      price_usd: "9.00",
+      price_gbp: "7.50",
+      price_aed: "35.00",
       period: "/hour",
       icon: "star",
       badge: null,
@@ -210,6 +219,9 @@ export default function PricingPage() {
       name: "Premium",
       subtitle: "Advanced Benefits",
       price: "11.00",
+      price_usd: "11.00",
+      price_gbp: "9.00",
+      price_aed: "40.00",
       period: "/hour",
       icon: "diamond",
       badge: "Best Value",
@@ -232,6 +244,9 @@ export default function PricingPage() {
       name: "Platinum",
       subtitle: "Top-tier Access",
       price: "14.00",
+      price_usd: "14.00",
+      price_gbp: "11.50",
+      price_aed: "50.00",
       period: "/hour",
       icon: "crown",
       badge: null,
@@ -250,8 +265,24 @@ export default function PricingPage() {
       ]
     }
   ]);
+
   useEffect(() => {
-    async function fetchPlans() {
+    async function initLocationAndPlans() {
+      // Auto-detect based on visitor location/country
+      try {
+        const res = await fetch("/api/detect-country");
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.currency) {
+            setCurrency(data.currency);
+            if (data.country) setDetectedCountry(data.country);
+          }
+        }
+      } catch (geoErr) {
+        console.warn("Pricing country detection notice:", geoErr);
+      }
+
+      // Fetch database plans
       try {
         const { data, error } = await supabase
           .from("pricing_plans")
@@ -267,7 +298,8 @@ export default function PricingPage() {
         console.warn("Could not load pricing plans from Supabase, using defaults:", err);
       }
     }
-    fetchPlans();
+
+    initLocationAndPlans();
   }, []);
 
   useEffect(() => {
@@ -283,9 +315,7 @@ export default function PricingPage() {
     animatedElements.forEach(el => observer.observe(el));
 
     return () => observer.disconnect();
-    // Re-run after async data loads so newly-rendered plan cards (from Supabase)
-    // also get observed and revealed — otherwise they stay at opacity:0.
-  }, [plans]);
+  }, [plans, currency]);
 
   return (
     <div className="pricing-page-container" style={{ backgroundImage: LACE_BACKGROUND_PATTERN }}>
@@ -336,6 +366,7 @@ export default function PricingPage() {
               const isPremium = lowerName === "premium";
               const cardClass = `plan-card plan-${lowerName} ${isPremium ? "highlighted-card" : ""} reveal-stagger`;
               const btnClass = `plan-btn btn-${lowerName}`;
+              const activeRate = getPlanPrice(plan, currency);
               
               return (
                 <div key={plan.id} className={cardClass}>
@@ -355,7 +386,22 @@ export default function PricingPage() {
                   
                   <div className="plan-price-row">
                     <span className="plan-price">
-                      <span className="price-currency">$</span>{plan.price}
+                      {currency === "AED" ? (
+                        <>
+                          <span className="price-currency" style={{ fontSize: "16px", marginRight: "4px" }}>AED</span>
+                          {activeRate}
+                        </>
+                      ) : currency === "GBP" ? (
+                        <>
+                          <span className="price-currency">£</span>
+                          {activeRate}
+                        </>
+                      ) : (
+                        <>
+                          <span className="price-currency">$</span>
+                          {activeRate}
+                        </>
+                      )}
                     </span>
                     {plan.period && <span className="plan-price-period">{plan.period}</span>}
                   </div>
@@ -372,7 +418,7 @@ export default function PricingPage() {
                     ))}
                   </div>
 
-                  <Link href="/book-free-trial" style={{ width: "100%", textDecoration: "none" }}>
+                  <Link href={`/student-form?plan=${encodeURIComponent(plan.name)}`} style={{ width: "100%", textDecoration: "none" }}>
                     <button className={btnClass}>Choose {plan.name}</button>
                   </Link>
                 </div>
@@ -551,7 +597,7 @@ export default function PricingPage() {
 
         {/* Right: Golden Badge Space */}
         <div className="fdb-right-badge-space">
-          <Link href="/book-free-trial" className="fdb-right-badge-link">
+          <Link href="/register" className="fdb-right-badge-link">
             {!badgeImgError ? (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img 
@@ -623,7 +669,7 @@ export default function PricingPage() {
         {/* CTA Button */}
         <div className="reveal-slide-up" style={{ display: "flex", justifyContent: "center", width: "100%", marginTop: "56px" }}>
           <Link
-            href={c.faq?.cta_url || "/book-free-trial"}
+            href={c.faq?.cta_url || "/register"}
             className="faq-cta-btn"
             style={{ textDecoration: "none" }}
           >

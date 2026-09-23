@@ -336,7 +336,7 @@ export default function CTABanner() {
           
           {/* Gold Action Button */}
           <Link
-            href="/book-free-trial"
+            href="/register"
             style={{
               backgroundColor: "#C99B4D",
               borderRadius: "16px",
@@ -373,7 +373,7 @@ export default function CTABanner() {
 
           {/* Calendar Free Trial Link */}
           <Link 
-            href="/book-free-trial"
+            href="/register"
             style={{
               display: "flex",
               alignItems: "center",

@@ -11,6 +11,7 @@ import AdminPages from "@/components/AdminPages";
 import AdminSeo from "@/components/AdminSeo";
 import AdminTopbar from "@/components/AdminTopbar";
 import AdminStaff from "@/components/AdminStaff";
+import AdminDataTable from "@/components/AdminDataTable";
 import { htmlToText } from "@/lib/richtext";
 import { hasTab, canManageStaff, allowedTabs, ADMIN_TABS } from "@/lib/roles";
 
@@ -157,9 +158,11 @@ export default function AdminDashboard() {
   // Data states
   const [blogs, setBlogs] = useState([]);
   const [contacts, setContacts] = useState([]);
+  const [newsletterSubscribers, setNewsletterSubscribers] = useState([]);
   const [leadsCount, setLeadsCount] = useState(0);
   const [seoSettings, setSeoSettings] = useState({ title: "", description: "", keywords: "", favicon_url: "" });
   const [activeTab, setActiveTab] = useState("overview"); // overview, blogs, contacts, seo, profile
+  const [geoFilter, setGeoFilter] = useState("all"); // 'all' | 'trials' | 'students' | 'inquiries'
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false); // hamburger drawer on mobile
@@ -217,6 +220,9 @@ export default function AdminDashboard() {
     name: "",
     subtitle: "",
     price: "",
+    price_usd: "",
+    price_gbp: "",
+    price_aed: "",
     period: "/hour",
     icon: "plane",
     badge: "",
@@ -618,6 +624,27 @@ export default function AdminDashboard() {
         .order("order_index", { ascending: true })
         .order("created_at", { ascending: false });
       if (!planErr) setPlans(planData || []);
+
+      // 9. Fetch newsletter subscribers
+      try {
+        const { data: subData, error: subErr } = await supabase
+          .from("newsletter_subscribers")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (!subErr && subData && subData.length > 0) {
+          setNewsletterSubscribers(subData);
+        } else {
+          const token = localStorage.getItem("aero_admin_token");
+          if (token) {
+            const res = await fetch("/api/newsletter", { headers: { Authorization: `Bearer ${token}` } });
+            const d = await res.json();
+            if (d.success && d.subscribers) setNewsletterSubscribers(d.subscribers);
+          }
+        }
+      } catch (subFetchErr) {
+        console.warn("Could not load newsletter subscribers:", subFetchErr);
+      }
     } catch (err) {
       console.error("Error loading dashboard data:", err);
     } finally {
@@ -759,6 +786,68 @@ export default function AdminDashboard() {
     }
   }, []);
 
+  // 10-minute Idle / Inactivity Auto-Logout Manager
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    const INACTIVITY_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes
+    let timeoutId;
+
+    const performAutoLogout = () => {
+      localStorage.removeItem("aero_admin_token");
+      localStorage.removeItem("aero_admin_last_active");
+      setIsAuthenticated(false);
+      setOtpSent(false);
+      adminSwal.fire({
+        icon: "info",
+        title: "Session Expired",
+        text: "You have been logged out due to 10 minutes of inactivity.",
+        confirmButtonColor: "#8c5d31",
+        background: "#FFFDF9",
+        color: "#2C251E"
+      });
+    };
+
+    const updateActivity = () => {
+      const now = Date.now();
+      localStorage.setItem("aero_admin_last_active", String(now));
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(performAutoLogout, INACTIVITY_TIMEOUT_MS);
+    };
+
+    // Check if session was already idle before page reload / tab switch
+    const lastActiveStr = localStorage.getItem("aero_admin_last_active");
+    if (lastActiveStr) {
+      const elapsed = Date.now() - Number(lastActiveStr);
+      if (elapsed >= INACTIVITY_TIMEOUT_MS) {
+        performAutoLogout();
+        return;
+      } else {
+        timeoutId = setTimeout(performAutoLogout, INACTIVITY_TIMEOUT_MS - elapsed);
+      }
+    } else {
+      updateActivity();
+    }
+
+    const activityEvents = ["mousedown", "mousemove", "keydown", "scroll", "touchstart", "click"];
+    let lastThrottled = 0;
+
+    const handleUserActivity = () => {
+      const now = Date.now();
+      if (now - lastThrottled > 5000) { // Throttle updates to once every 5 seconds
+        lastThrottled = now;
+        updateActivity();
+      }
+    };
+
+    activityEvents.forEach((evt) => window.addEventListener(evt, handleUserActivity, { passive: true }));
+
+    return () => {
+      clearTimeout(timeoutId);
+      activityEvents.forEach((evt) => window.removeEventListener(evt, handleUserActivity));
+    };
+  }, [isAuthenticated]);
+
   // Fetch admin dashboard metrics and records
   useEffect(() => {
     if (isAuthenticated) {
@@ -835,6 +924,7 @@ export default function AdminDashboard() {
       const data = await res.json();
       if (data.success) {
         localStorage.setItem("aero_admin_token", data.sessionToken);
+        localStorage.setItem("aero_admin_last_active", String(Date.now()));
         setIsAuthenticated(true);
         adminSwal.fire({
           icon: "success",
@@ -894,6 +984,7 @@ export default function AdminDashboard() {
       setPasswordInput("");
       setOtpInput("");
       localStorage.removeItem("aero_admin_token");
+      localStorage.removeItem("aero_admin_last_active");
       adminSwal.fire({
         icon: "success",
         title: "Logged Out",
@@ -1168,7 +1259,7 @@ export default function AdminDashboard() {
         adminSwal.fire({
           icon: "success",
           title: "Sitemap Generated!",
-          text: `Successfully generated and saved sitemap.xml to the public folder! It contains ${data.urlCount} pages.`,
+          text: `Successfully generated and updated sitemap! It contains ${data.urlCount} pages and is live at /sitemap.xml.`,
           confirmButtonColor: "var(--primary-color)"
         });
       } else {
@@ -2254,11 +2345,12 @@ export default function AdminDashboard() {
 
   const handleSavePlan = async (e) => {
     e.preventDefault();
-    if (!planForm.name || !planForm.price) {
+    const effectiveUsdPrice = planForm.price_usd || planForm.price;
+    if (!planForm.name || !effectiveUsdPrice) {
       adminSwal.fire({
         icon: "warning",
         title: "Missing Fields",
-        text: "Plan Name and Price are required!",
+        text: "Plan Name and USD Price ($) are required!",
         confirmButtonColor: "var(--primary-color)",
         background: "#111827",
         color: "#fff"
@@ -2270,7 +2362,10 @@ export default function AdminDashboard() {
     const payload = {
       name: planForm.name,
       subtitle: planForm.subtitle || null,
-      price: planForm.price,
+      price: effectiveUsdPrice,
+      price_usd: effectiveUsdPrice,
+      price_gbp: planForm.price_gbp || null,
+      price_aed: planForm.price_aed || null,
       period: planForm.period || "/hour",
       icon: planForm.icon || "plane",
       badge: planForm.badge || null,
@@ -2300,6 +2395,9 @@ export default function AdminDashboard() {
         name: "",
         subtitle: "",
         price: "",
+        price_usd: "",
+        price_gbp: "",
+        price_aed: "",
         period: "/hour",
         icon: "plane",
         badge: "",
@@ -2310,7 +2408,7 @@ export default function AdminDashboard() {
       adminSwal.fire({
         icon: "success",
         title: "Saved!",
-        text: "Pricing plan saved successfully.",
+        text: "Pricing plan saved successfully with multi-currency rates.",
         confirmButtonColor: "var(--primary-color)",
         background: "#111827",
         color: "#fff"
@@ -2335,6 +2433,9 @@ export default function AdminDashboard() {
       name: "",
       subtitle: "",
       price: "",
+      price_usd: "",
+      price_gbp: "",
+      price_aed: "",
       period: "/hour",
       icon: "plane",
       badge: "",
@@ -2347,10 +2448,14 @@ export default function AdminDashboard() {
 
   const triggerEditPlan = (plan) => {
     setEditingPlanId(plan.id);
+    const usdVal = plan.price_usd || plan.price || "";
     setPlanForm({
       name: plan.name || "",
       subtitle: plan.subtitle || "",
-      price: plan.price || "",
+      price: usdVal,
+      price_usd: usdVal,
+      price_gbp: plan.price_gbp || "",
+      price_aed: plan.price_aed || "",
       period: plan.period || "/hour",
       icon: plan.icon || "plane",
       badge: plan.badge || "",
@@ -2396,6 +2501,151 @@ export default function AdminDashboard() {
         confirmButtonColor: "var(--primary-color)",
         background: "#111827",
         color: "#fff"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // --- NEWSLETTER SUBSCRIBERS ACTIONS ---
+  const handleDeleteSubscriber = async (id, email) => {
+    const result = await adminSwal.fire({
+      title: "Remove Subscriber?",
+      text: `Are you sure you want to remove ${email || "this subscriber"} from the newsletter list?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "var(--card-border)",
+      confirmButtonText: "Yes, delete",
+      background: "#111827",
+      color: "#fff"
+    });
+    if (!result.isConfirmed) return;
+
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("aero_admin_token");
+      const res = await fetch(`/api/newsletter?id=${encodeURIComponent(id || "")}&email=${encodeURIComponent(email || "")}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.message || "Failed to remove subscriber.");
+      
+      setNewsletterSubscribers((prev) => prev.filter((s) => s.id !== id && s.email !== email));
+      adminSwal.fire({
+        icon: "success",
+        title: "Deleted!",
+        text: "Subscriber has been removed from the mailing list.",
+        confirmButtonColor: "var(--primary-color)"
+      });
+    } catch (err) {
+      adminSwal.fire({
+        icon: "error",
+        title: "Delete Failed",
+        text: err.message,
+        confirmButtonColor: "var(--primary-color)"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCopySubscriberEmails = () => {
+    if (!newsletterSubscribers || newsletterSubscribers.length === 0) {
+      adminSwal.fire({ icon: "info", title: "No emails", text: "No subscribers found to copy." });
+      return;
+    }
+    const emails = Array.from(new Set(newsletterSubscribers.map((s) => s.email).filter(Boolean))).join(", ");
+    navigator.clipboard.writeText(emails).then(() => {
+      adminSwal.fire({
+        icon: "success",
+        title: "Emails Copied!",
+        text: `${newsletterSubscribers.length} subscriber email(s) copied to your clipboard.`,
+        timer: 2000,
+        showConfirmButton: false
+      });
+    }).catch(() => {
+      adminSwal.fire({ icon: "error", title: "Copy Failed", text: "Could not access clipboard." });
+    });
+  };
+
+  const handleExportSubscribersCSV = () => {
+    if (!newsletterSubscribers || newsletterSubscribers.length === 0) {
+      adminSwal.fire({ icon: "info", title: "No subscribers", text: "No data available to export." });
+      return;
+    }
+    const headers = ["Email Address", "Source", "Location", "IP Address", "Status", "Subscribed Date"];
+    const rows = newsletterSubscribers.map((s) => [
+      s.email || "",
+      s.source || "Website",
+      [s.city, s.country].filter((v) => v && v !== "Unknown").join(", ") || s.country || "",
+      s.ip_address || "",
+      s.status || "subscribed",
+      s.created_at ? new Date(s.created_at).toLocaleString() : ""
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((row) =>
+        row.map((val) => {
+          const stringVal = String(val).replace(/"/g, '""');
+          return `"${stringVal}"`;
+        }).join(",")
+      )
+    ].join("\r\n");
+
+    const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Yaqeen_Newsletter_Subscribers_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleAddSubscriberManual = async () => {
+    const { value: email } = await adminSwal.fire({
+      title: "Add Subscriber Manually",
+      text: "Enter the email address of the subscriber:",
+      input: "email",
+      inputPlaceholder: "subscriber@example.com",
+      showCancelButton: true,
+      confirmButtonText: "Add Subscriber",
+      cancelButtonText: "Cancel",
+      inputValidator: (value) => {
+        if (!value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          return "Please enter a valid email address!";
+        }
+      }
+    });
+
+    if (!email) return;
+
+    setLoading(true);
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), source: "Admin Manual" })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.message || "Failed to add subscriber.");
+      
+      fetchDashboardData();
+      adminSwal.fire({
+        icon: "success",
+        title: "Subscriber Added!",
+        text: `Successfully added ${email} to the newsletter list.`,
+        confirmButtonColor: "var(--primary-color)"
+      });
+    } catch (err) {
+      adminSwal.fire({
+        icon: "error",
+        title: "Failed to Add",
+        text: err.message,
+        confirmButtonColor: "var(--primary-color)"
       });
     } finally {
       setLoading(false);
@@ -2695,16 +2945,30 @@ export default function AdminDashboard() {
     );
   }
 
-  // Group contacts by country
-  const getCountryStats = () => {
+  // Group leads (Free Trials, Student Registrations, Inquiries) by country
+  const getCountryStats = (type = geoFilter) => {
     const stats = {};
-    contacts.forEach(c => {
-      const country = c.country || "Unknown";
-      stats[country] = (stats[country] || 0) + 1;
-    });
-    return Object.entries(stats)
-      .map(([country, count]) => ({ country, count }))
-      .sort((a, b) => b.count - a.count);
+    
+    const countItem = (item, category) => {
+      const country = (item.country && item.country !== "Unknown") ? item.country.trim() : (item.location ? item.location.split(",").pop().trim() : "Unknown");
+      if (!stats[country]) {
+        stats[country] = { country, total: 0, trials: 0, students: 0, inquiries: 0 };
+      }
+      stats[country].total += 1;
+      if (category === "trials") stats[country].trials += 1;
+      if (category === "students") stats[country].students += 1;
+      if (category === "inquiries") stats[country].inquiries += 1;
+    };
+
+    freeTrials.forEach(item => countItem(item, "trials"));
+    studentApps.forEach(item => countItem(item, "students"));
+    inquiries.forEach(item => countItem(item, "inquiries"));
+
+    const sortKey = type === "all" ? "total" : type === "trials" ? "trials" : type === "students" ? "students" : "inquiries";
+    
+    return Object.values(stats)
+      .filter(item => item[sortKey] > 0)
+      .sort((a, b) => b[sortKey] - a[sortKey]);
   };
 
   // Group contacts by ISP provider
@@ -2722,20 +2986,46 @@ export default function AdminDashboard() {
 
   const getCountryFlag = (country) => {
     if (!country) return "🌐";
+    const clean = country.trim().toLowerCase();
     const codeMap = {
-      "india": "🇮🇳",
-      "united states": "🇺🇸",
-      "united kingdom": "🇬🇧",
-      "united arab emirates": "🇦🇪",
-      "saudi arabia": "🇸🇦",
-      "pakistan": "🇵🇰",
-      "canada": "🇨🇦",
-      "australia": "🇦🇺",
-      "bangladesh": "🇧🇩",
-      "germany": "🇩🇪",
-      "france": "🇫🇷"
+      "united arab emirates": "🇦🇪", "uae": "🇦🇪",
+      "united kingdom": "🇬🇧", "uk": "🇬🇧", "england": "🇬🇧", "scotland": "🇬🇧",
+      "united states": "🇺🇸", "usa": "🇺🇸", "us": "🇺🇸",
+      "canada": "🇨🇦", "ca": "🇨🇦",
+      "india": "🇮🇳", "in": "🇮🇳",
+      "pakistan": "🇵🇰", "pk": "🇵🇰",
+      "saudi arabia": "🇸🇦", "ksa": "🇸🇦",
+      "australia": "🇦🇺", "au": "🇦🇺",
+      "germany": "🇩🇪", "de": "🇩🇪",
+      "france": "🇫🇷", "fr": "🇫🇷",
+      "bangladesh": "🇧🇩", "bd": "🇧🇩",
+      "egypt": "🇪🇬", "eg": "🇪🇬",
+      "turkey": "🇹🇷", "türkiye": "🇹🇷", "tr": "🇹🇷",
+      "qatar": "🇶🇦", "qa": "🇶🇦",
+      "kuwait": "🇰🇼", "kw": "🇰🇼",
+      "oman": "🇴🇲", "om": "🇴🇲",
+      "bahrain": "🇧🇭", "bh": "🇧🇭",
+      "malaysia": "🇲🇾", "my": "🇲🇾",
+      "singapore": "🇸🇬", "sg": "🇸🇬",
+      "indonesia": "🇮🇩", "id": "🇮🇩",
+      "tunisia": "🇹🇳", "tn": "🇹🇳",
+      "morocco": "🇲🇦", "ma": "🇲🇦",
+      "algeria": "🇩🇿", "dz": "🇩🇿",
+      "romania": "🇷🇴", "ro": "🇷🇴",
+      "philippines": "🇵🇭", "ph": "🇵🇭",
+      "jordan": "🇯🇴", "jo": "🇯🇴",
+      "lebanon": "🇱🇧", "lb": "🇱🇧",
+      "south africa": "🇿🇦", "za": "🇿🇦",
+      "nigeria": "🇳🇬", "ng": "🇳🇬",
+      "netherlands": "🇳🇱", "nl": "🇳🇱",
+      "sweden": "🇸🇪", "se": "🇸🇪",
+      "norway": "🇳🇴", "no": "🇳🇴",
+      "new zealand": "🇳🇿", "nz": "🇳🇿",
+      "ireland": "🇮🇪", "ie": "🇮🇪",
+      "italy": "🇮🇹", "it": "🇮🇹",
+      "spain": "🇪🇸", "es": "🇪🇸"
     };
-    return codeMap[country.toLowerCase()] || "🌐";
+    return codeMap[clean] || "🌐";
   };
 
   return (
@@ -2948,6 +3238,7 @@ export default function AdminDashboard() {
           counts={{
             freeTrials: freeTrials.length,
             inquiries: inquiries.length,
+            newsletter: newsletterSubscribers.length,
             teacherApps: teacherApps.length,
             studentApps: studentApps.length,
           }}
@@ -2962,6 +3253,7 @@ export default function AdminDashboard() {
             <h2 style={{ fontSize: "28px", fontWeight: "500" }}>
               {activeTab === "overview" && "System Overview"}
               {activeTab === "landingPages" && "Landing Page Management"}
+              {activeTab === "newsletter" && "Newsletter Subscribers"}
               {activeTab === "blogs" && (isEditingBlog ? (editingBlogId ? "Edit Blog Post" : "Write New Publication") : "Blog Publications")}
               {activeTab === "contacts" && "Contact Query Logs"}
               {activeTab === "liveChat" && "Live Chat"}
@@ -2982,6 +3274,7 @@ export default function AdminDashboard() {
             <p style={{ color: "var(--fg-muted)", fontSize: "14px", marginTop: "4px" }}>
               {activeTab === "overview" && "Real-time summary metrics across database logs."}
               {activeTab === "landingPages" && "Create and customize multiple high-converting landing pages, URLs, SEO, and dynamic section content."}
+              {activeTab === "newsletter" && "View, search, export, and manage your newsletter subscribers and mailing list."}
               {activeTab === "blogs" && "Author articles, categories, list points, and search engine fields."}
               {activeTab === "contacts" && "Review customer forms, inquiries, and details."}
               {activeTab === "liveChat" && "Chat live with website visitors. AI answers until you reply, then it pauses for that chat."}
@@ -3034,6 +3327,126 @@ export default function AdminDashboard() {
         {/* TAB: LANDING PAGES */}
         {activeTab === "landingPages" && <AdminLandingPages />}
 
+        {/* TAB: NEWSLETTER SUBSCRIBERS */}
+        {activeTab === "newsletter" && (
+          <div className="glass-panel" style={{ padding: "24px" }}>
+            <AdminDataTable
+              title="Newsletter Subscribers List"
+              subtitle={`Total ${newsletterSubscribers.length} subscriber(s) enrolled in the newsletter.`}
+              data={newsletterSubscribers}
+              keyField="id"
+              defaultPageSize={10}
+              searchPlaceholder="Search by email, location, source, IP address..."
+              searchKeys={["email", "city", "country", "source", "ip_address"]}
+              headerAction={
+                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                  <button
+                    onClick={handleCopySubscriberEmails}
+                    className="btn-secondary"
+                    style={{ padding: "8px 14px", fontSize: "12.5px", display: "inline-flex", alignItems: "center", gap: "6px" }}
+                  >
+                    📋 Copy All Emails
+                  </button>
+                  <button
+                    onClick={handleExportSubscribersCSV}
+                    className="btn-secondary"
+                    style={{ padding: "8px 14px", fontSize: "12.5px", display: "inline-flex", alignItems: "center", gap: "6px" }}
+                  >
+                    📥 Export CSV
+                  </button>
+                  <button
+                    onClick={handleAddSubscriberManual}
+                    className="btn-primary"
+                    style={{ padding: "8px 16px", fontSize: "13px" }}
+                  >
+                    + Add Subscriber
+                  </button>
+                </div>
+              }
+              columns={[
+                {
+                  key: "email",
+                  label: "Email Address",
+                  render: (s) => (
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <span style={{ fontSize: "16px" }}>✉️</span>
+                      <a href={`mailto:${s.email}`} style={{ color: "#2B1F14", fontWeight: "600", textDecoration: "none" }}>
+                        {s.email}
+                      </a>
+                    </div>
+                  )
+                },
+                {
+                  key: "country",
+                  label: "Location",
+                  render: (s) => (
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "12.5px" }}>
+                      <span style={{ fontSize: "15px" }}>{getCountryFlag(s.country)}</span>
+                      <span>{s.city && s.city !== "Unknown" ? `${s.city}, ` : ""}{s.country || "Unknown"}</span>
+                    </span>
+                  )
+                },
+                {
+                  key: "source",
+                  label: "Source",
+                  render: (s) => (
+                    <span style={{
+                      padding: "3px 9px",
+                      backgroundColor: "rgba(201, 155, 77, 0.12)",
+                      border: "1px solid rgba(201, 155, 77, 0.3)",
+                      borderRadius: "6px",
+                      fontSize: "11px",
+                      fontWeight: "600",
+                      color: "#8C5D31"
+                    }}>
+                      {s.source || "Website"}
+                    </span>
+                  )
+                },
+                {
+                  key: "created_at",
+                  label: "Subscribed On",
+                  render: (s) => (
+                    <span style={{ color: "var(--fg-muted)", fontSize: "12px", whiteSpace: "nowrap" }}>
+                      {s.created_at ? new Date(s.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "—"}
+                    </span>
+                  )
+                },
+                {
+                  key: "status",
+                  label: "Status",
+                  render: () => (
+                    <span style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "4px",
+                      padding: "3px 8px",
+                      backgroundColor: "rgba(22, 163, 74, 0.1)",
+                      border: "1px solid rgba(22, 163, 74, 0.25)",
+                      borderRadius: "99px",
+                      color: "#16a34a",
+                      fontSize: "11px",
+                      fontWeight: "700"
+                    }}>
+                      <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "#16a34a" }}></span>
+                      Subscribed
+                    </span>
+                  )
+                }
+              ]}
+              actions={(s) => (
+                <button
+                  onClick={() => handleDeleteSubscriber(s.id, s.email)}
+                  className="btn-secondary"
+                  style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}
+                >
+                  Delete
+                </button>
+              )}
+            />
+          </div>
+        )}
+
         {/* TAB: LIVE CHAT */}
         {activeTab === "liveChat" && <AdminChat />}
 
@@ -3044,70 +3457,86 @@ export default function AdminDashboard() {
 
         {/* TAB 1: OVERVIEW */}
         {activeTab === "overview" && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
             {/* Stats Cards Row */}
-            <div className="admin-overview-grid" style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "12px" }}>
-              <div className="glass-panel" style={{ padding: "16px 12px" }}>
-                <div style={{ color: "var(--fg-muted)", fontSize: "11px" }}>Published Blogs</div>
-                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "8px", color: "var(--secondary-color)" }}>{blogs.length}</div>
+            <div className="admin-overview-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(135px, 1fr))", gap: "14px" }}>
+              <div className="glass-panel" style={{ padding: "16px 14px", borderLeft: "3.5px solid #0284c7" }}>
+                <div style={{ color: "var(--fg-muted)", fontSize: "11px", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.4px" }}>Free Trials</div>
+                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "6px", color: "#0284c7" }}>{freeTrials.length}</div>
               </div>
-              <div className="glass-panel" style={{ padding: "16px 12px" }}>
-                <div style={{ color: "var(--fg-muted)", fontSize: "11px" }}>Registered Teachers</div>
-                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "8px", color: "#C99B4D" }}>{teachers.length}</div>
+              <div className="glass-panel" style={{ padding: "16px 14px", borderLeft: "3.5px solid #16a34a" }}>
+                <div style={{ color: "var(--fg-muted)", fontSize: "11px", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.4px" }}>Registrations</div>
+                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "6px", color: "#16a34a" }}>{studentApps.length}</div>
               </div>
-              <div className="glass-panel" style={{ padding: "16px 12px" }}>
-                <div style={{ color: "var(--fg-muted)", fontSize: "11px" }}>Client Testimonials</div>
-                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "8px", color: "#8c5d31" }}>{testimonials.length}</div>
+              <div className="glass-panel" style={{ padding: "16px 14px", borderLeft: "3.5px solid #d97706", cursor: "pointer" }} onClick={() => handleTabChange("newsletter")}>
+                <div style={{ color: "var(--fg-muted)", fontSize: "11px", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.4px" }}>Newsletter</div>
+                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "6px", color: "#d97706" }}>{newsletterSubscribers.length}</div>
               </div>
-              <div className="glass-panel" style={{ padding: "16px 12px" }}>
-                <div style={{ color: "var(--fg-muted)", fontSize: "11px" }}>Active Courses</div>
-                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "8px", color: "#4A5D3B" }}>{courses.length}</div>
+              <div className="glass-panel" style={{ padding: "16px 14px", borderLeft: "3.5px solid var(--accent-color)" }}>
+                <div style={{ color: "var(--fg-muted)", fontSize: "11px", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.4px" }}>Inquiries</div>
+                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "6px", color: "var(--accent-color)" }}>{inquiries.length}</div>
               </div>
-              <div className="glass-panel" style={{ padding: "16px 12px" }}>
-                <div style={{ color: "var(--fg-muted)", fontSize: "11px" }}>Active Plans</div>
-                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "8px", color: "#C99B4D" }}>{plans.length}</div>
+              <div className="glass-panel" style={{ padding: "16px 14px", borderLeft: "3.5px solid var(--secondary-color)" }}>
+                <div style={{ color: "var(--fg-muted)", fontSize: "11px", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.4px" }}>Published Blogs</div>
+                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "6px", color: "var(--secondary-color)" }}>{blogs.length}</div>
               </div>
-              <div className="glass-panel" style={{ padding: "16px 12px" }}>
-                <div style={{ color: "var(--fg-muted)", fontSize: "11px" }}>Contact Forms</div>
-                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "8px", color: "var(--accent-color)" }}>{contacts.length}</div>
+              <div className="glass-panel" style={{ padding: "16px 14px", borderLeft: "3.5px solid #C99B4D" }}>
+                <div style={{ color: "var(--fg-muted)", fontSize: "11px", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.4px" }}>Teachers</div>
+                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "6px", color: "#C99B4D" }}>{teachers.length}</div>
               </div>
-              <div className="glass-panel" style={{ padding: "16px 12px" }}>
-                <div style={{ color: "var(--fg-muted)", fontSize: "11px" }}>Waitlist Leads</div>
-                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "8px", color: "var(--primary-color)" }}>{leadsCount}</div>
+              <div className="glass-panel" style={{ padding: "16px 14px", borderLeft: "3.5px solid #4A5D3B" }}>
+                <div style={{ color: "var(--fg-muted)", fontSize: "11px", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.4px" }}>Courses</div>
+                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "6px", color: "#4A5D3B" }}>{courses.length}</div>
+              </div>
+              <div className="glass-panel" style={{ padding: "16px 14px", borderLeft: "3.5px solid #8c5d31" }}>
+                <div style={{ color: "var(--fg-muted)", fontSize: "11px", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.4px" }}>Testimonials</div>
+                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "6px", color: "#8c5d31" }}>{testimonials.length}</div>
+              </div>
+              <div className="glass-panel" style={{ padding: "16px 14px", borderLeft: "3.5px solid #6366f1" }}>
+                <div style={{ color: "var(--fg-muted)", fontSize: "11px", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.4px" }}>Active Plans</div>
+                <div style={{ fontSize: "28px", fontWeight: "800", marginTop: "6px", color: "#6366f1" }}>{plans.length}</div>
               </div>
             </div>
 
             {/* Analytics and Inquiries Container */}
-            <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: "24px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1.15fr 0.85fr", gap: "24px" }}>
               {/* Left Side: Recent Inquiries */}
               <div className="glass-panel" style={{ padding: "24px" }}>
-                <h3 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "16px" }}>Recent Inquiries</h3>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                  <h3 style={{ fontSize: "18px", fontWeight: "600", margin: 0 }}>Recent Inquiries</h3>
+                  <button onClick={() => setActiveTab("contacts")} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>
+                    View All &rarr;
+                  </button>
+                </div>
+
                 {contacts.length === 0 ? (
-                  <p style={{ color: "var(--fg-muted)", fontSize: "14px" }}>No recent contact messages found.</p>
+                  <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>No recent messages found.</p>
                 ) : (
                   <div style={{ overflowX: "auto" }}>
-                    <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "13.5px" }}>
                       <thead>
-                        <tr style={{ borderBottom: "1px solid var(--card-border)", color: "var(--fg-muted)" }}>
-                          <th style={{ padding: "12px" }}>Name</th>
-                          <th style={{ padding: "12px" }}>Email</th>
-                          <th style={{ padding: "12px" }}>Subject</th>
-                          <th style={{ padding: "12px" }}>Submitted At</th>
-                          <th style={{ padding: "12px", textAlign: "right" }}>Actions</th>
+                        <tr style={{ borderBottom: "1.5px solid var(--card-border)", color: "var(--fg-muted)", fontSize: "12px", textTransform: "uppercase" }}>
+                          <th style={{ padding: "10px 12px" }}>Name</th>
+                          <th style={{ padding: "10px 12px" }}>Email</th>
+                          <th style={{ padding: "10px 12px" }}>Subject</th>
+                          <th style={{ padding: "10px 12px" }}>Date</th>
+                          <th style={{ padding: "10px 12px", textAlign: "right" }}>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {contacts.slice(0, 10).map((c) => (
-                          <tr key={c.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
-                            <td style={{ padding: "12px", fontWeight: "600" }}>{c.name}</td>
-                            <td style={{ padding: "12px" }}><a href={`mailto:${c.email}`} style={{ color: "var(--secondary-color)", textDecoration: "none" }}>{c.email}</a></td>
-                            <td style={{ padding: "12px" }}>{c.subject}</td>
-                            <td style={{ padding: "12px" }}>{new Date(c.created_at).toLocaleDateString()}</td>
-                            <td style={{ padding: "12px", textAlign: "right" }}>
+                        {contacts.slice(0, 8).map((c) => (
+                          <tr key={c.id} style={{ borderBottom: "1px solid rgba(0,0,0,0.04)" }}>
+                            <td style={{ padding: "10px 12px", fontWeight: "600" }}>{c.name}</td>
+                            <td style={{ padding: "10px 12px" }}>
+                              <a href={`mailto:${c.email}`} style={{ color: "var(--secondary-color)", textDecoration: "none" }}>{c.email}</a>
+                            </td>
+                            <td style={{ padding: "10px 12px", maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.subject}</td>
+                            <td style={{ padding: "10px 12px", color: "var(--fg-muted)", whiteSpace: "nowrap" }}>{new Date(c.created_at).toLocaleDateString()}</td>
+                            <td style={{ padding: "10px 12px", textAlign: "right" }}>
                               <button 
                                 onClick={() => setSelectedContact(c)} 
                                 className="btn-secondary" 
-                                style={{ padding: "4px 10px", fontSize: "12px" }}
+                                style={{ padding: "3px 8px", fontSize: "11.5px" }}
                               >
                                 View
                               </button>
@@ -3124,35 +3553,104 @@ export default function AdminDashboard() {
               <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
                 {/* Country Breakdown Panel */}
                 <div className="glass-panel" style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
-                  <h3 style={{ fontSize: "16px", fontWeight: "600", color: "#2B1F14", margin: 0, fontFamily: "var(--font-serif), Georgia, serif" }}>
-                    🌍 Country Geolocation Analytics
-                  </h3>
-                  
-                  {contacts.length === 0 ? (
-                    <p style={{ color: "var(--fg-muted)", fontSize: "13px" }}>No location data logged yet.</p>
-                  ) : (
-                    <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-                      {getCountryStats().map(({ country, count }) => {
-                        const percent = Math.round((count / contacts.length) * 100);
-                        return (
-                          <div key={country} style={{ fontSize: "13px" }}>
-                            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px", fontWeight: "500" }}>
-                              <span>{getCountryFlag(country)} {country}</span>
-                              <span style={{ color: "var(--secondary-color)" }}>{count} {count === 1 ? "user" : "users"} ({percent}%)</span>
-                            </div>
-                            <div style={{ width: "100%", height: "6px", backgroundColor: "rgba(0,0,0,0.03)", borderRadius: "3px", overflow: "hidden" }}>
-                              <div style={{
-                                width: `${percent}%`,
-                                height: "100%",
-                                backgroundColor: "var(--secondary-color)",
-                                borderRadius: "3px"
-                              }} />
-                            </div>
-                          </div>
-                        );
-                      })}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "10px" }}>
+                    <div>
+                      <h3 style={{ fontSize: "16px", fontWeight: "600", color: "#2B1F14", margin: 0, fontFamily: "var(--font-serif), Georgia, serif", display: "flex", alignItems: "center", gap: "6px" }}>
+                        <span style={{ display: "inline-block", width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#16a34a" }} />
+                        Country Geolocation Analytics
+                      </h3>
+                      <p style={{ fontSize: "12px", color: "var(--fg-muted)", margin: "3px 0 0 0" }}>Country-wise breakdown of trials, registrations & inquiries.</p>
                     </div>
-                  )}
+                  </div>
+
+                  {/* Filter Pills */}
+                  <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+                    {[
+                      { key: "all", label: "All Leads", count: freeTrials.length + studentApps.length + inquiries.length },
+                      { key: "trials", label: "Free Trials", count: freeTrials.length, color: "#0284c7" },
+                      { key: "students", label: "Registrations", count: studentApps.length, color: "#16a34a" },
+                      { key: "inquiries", label: "Inquiries", count: inquiries.length, color: "var(--accent-color)" },
+                    ].map((tab) => {
+                      const isActive = geoFilter === tab.key;
+                      return (
+                        <button
+                          key={tab.key}
+                          type="button"
+                          onClick={() => setGeoFilter(tab.key)}
+                          style={{
+                            padding: "4px 10px",
+                            fontSize: "12px",
+                            fontWeight: "600",
+                            borderRadius: "6px",
+                            border: isActive ? "1px solid var(--primary-color)" : "1px solid #e5dec9",
+                            backgroundColor: isActive ? "var(--primary-color)" : "#ffffff",
+                            color: isActive ? "#ffffff" : "#4a3e31",
+                            cursor: "pointer",
+                            transition: "all 0.15s ease"
+                          }}
+                        >
+                          {tab.label} ({tab.count})
+                        </button>
+                      );
+                    })}
+                  </div>
+                  
+                  {(() => {
+                    const stats = getCountryStats(geoFilter);
+                    const totalForCategory = stats.reduce((acc, curr) => {
+                      const val = geoFilter === "all" ? curr.total : geoFilter === "trials" ? curr.trials : geoFilter === "students" ? curr.students : curr.inquiries;
+                      return acc + val;
+                    }, 0);
+
+                    if (stats.length === 0 || totalForCategory === 0) {
+                      return (
+                        <p style={{ color: "var(--fg-muted)", fontSize: "13px", textAlign: "center", padding: "20px 0" }}>
+                          No data logged yet for {geoFilter === "all" ? "this selection" : geoFilter}.
+                        </p>
+                      );
+                    }
+
+                    return (
+                      <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxHeight: "400px", overflowY: "auto", paddingRight: "4px" }}>
+                        {stats.map((item) => {
+                          const count = geoFilter === "all" ? item.total : geoFilter === "trials" ? item.trials : geoFilter === "students" ? item.students : item.inquiries;
+                          const percent = Math.round((count / (totalForCategory || 1)) * 100);
+
+                          return (
+                            <div key={item.country} style={{ fontSize: "13px" }}>
+                              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+                                <span style={{ fontWeight: "600", color: "#2B1F14", display: "flex", alignItems: "center", gap: "6px" }}>
+                                  <span style={{ fontSize: "15px" }}>{getCountryFlag(item.country)}</span>
+                                  <span>{item.country}</span>
+                                </span>
+                                
+                                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                                  {geoFilter === "all" && (
+                                    <span style={{ fontSize: "11px", color: "var(--fg-muted)" }}>
+                                      ({item.trials}T / {item.students}R / {item.inquiries}I)
+                                    </span>
+                                  )}
+                                  <strong style={{ color: "var(--primary-color)" }}>
+                                    {count} {count === 1 ? "user" : "users"} ({percent}%)
+                                  </strong>
+                                </div>
+                              </div>
+
+                              <div style={{ width: "100%", height: "6px", backgroundColor: "#f0ebe1", borderRadius: "3px", overflow: "hidden" }}>
+                                <div style={{
+                                  width: `${percent}%`,
+                                  height: "100%",
+                                  backgroundColor: geoFilter === "trials" ? "#0284c7" : geoFilter === "students" ? "#16a34a" : "var(--primary-color)",
+                                  borderRadius: "3px",
+                                  transition: "width 0.3s ease"
+                                }} />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
             </div>
@@ -3165,46 +3663,53 @@ export default function AdminDashboard() {
             {!isEditingBlog ? (
               // Blogs List Screen
               <div className="glass-panel" style={{ padding: "24px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                  <h3 style={{ fontSize: "18px", fontWeight: "600" }}>Published Records</h3>
-                  <button onClick={triggerCreateBlog} className="btn-primary" style={{ padding: "8px 16px", fontSize: "13px" }}>
-                    + New Blog Post
-                  </button>
-                </div>
-
-                {blogs.length === 0 ? (
-                  <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>No posts created. Click New Blog to write your first post.</p>
-                ) : (
-                  <div style={{ overflowX: "auto" }}>
-                    <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
-                      <thead>
-                        <tr style={{ borderBottom: "1px solid var(--card-border)", color: "var(--fg-muted)" }}>
-                          <th style={{ padding: "12px" }}>Title</th>
-                          <th style={{ padding: "12px" }}>Category</th>
-                          <th style={{ padding: "12px" }}>Author</th>
-                          <th style={{ padding: "12px" }}>Slug</th>
-                          <th style={{ padding: "12px" }}>Published</th>
-                          <th style={{ padding: "12px", textAlign: "right" }}>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {blogs.map((b) => (
-                          <tr key={b.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
-                            <td style={{ padding: "12px", fontWeight: "600" }}>{b.title}</td>
-                            <td style={{ padding: "12px" }}><span style={{ padding: "3px 8px", background: "rgba(255,255,255,0.05)", borderRadius: "4px", fontSize: "12px" }}>{b.category}</span></td>
-                            <td style={{ padding: "12px" }}>{b.author}</td>
-                            <td style={{ padding: "12px", fontFamily: "monospace", color: "var(--fg-muted)" }}>{b.slug}</td>
-                            <td style={{ padding: "12px", color: "var(--fg-muted)", whiteSpace: "nowrap" }}>{b.created_at ? new Date(b.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "—"}</td>
-                            <td style={{ padding: "12px", textAlign: "right", display: "flex", gap: "8px", justifyContent: "flex-end" }}>
-                              <button onClick={() => triggerEditBlog(b)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>Edit</button>
-                              <button onClick={() => handleDeleteBlog(b.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>Delete</button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
+                <AdminDataTable
+                  title="Published Articles"
+                  subtitle="Manage all blog articles and publications across the website."
+                  data={blogs}
+                  keyField="id"
+                  defaultPageSize={10}
+                  searchPlaceholder="Search blogs by title, category, author, slug..."
+                  searchKeys={["title", "category", "author", "slug"]}
+                  headerAction={
+                    <button onClick={triggerCreateBlog} className="btn-primary" style={{ padding: "8px 16px", fontSize: "13px" }}>
+                      + New Blog Post
+                    </button>
+                  }
+                  columns={[
+                    {
+                      key: "title",
+                      label: "Title",
+                      render: (b) => <strong style={{ color: "#2B1F14" }}>{b.title}</strong>
+                    },
+                    {
+                      key: "category",
+                      label: "Category",
+                      render: (b) => <span style={{ padding: "3px 8px", background: "rgba(74, 93, 59, 0.08)", border: "1px solid rgba(74, 93, 59, 0.2)", borderRadius: "4px", fontSize: "11.5px", color: "#4A5D3B", fontWeight: "600" }}>{b.category}</span>
+                    },
+                    {
+                      key: "author",
+                      label: "Author",
+                      render: (b) => b.author || "—"
+                    },
+                    {
+                      key: "slug",
+                      label: "Slug",
+                      render: (b) => <span style={{ fontFamily: "monospace", color: "var(--fg-muted)", fontSize: "12.5px" }}>{b.slug}</span>
+                    },
+                    {
+                      key: "created_at",
+                      label: "Published",
+                      render: (b) => (b.created_at ? new Date(b.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "—")
+                    }
+                  ]}
+                  actions={(b) => (
+                    <>
+                      <button onClick={() => triggerEditBlog(b)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>Edit</button>
+                      <button onClick={() => handleDeleteBlog(b.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>Delete</button>
+                    </>
+                  )}
+                />
               </div>
             ) : (
               // Blog Write / Edit Form
@@ -3479,273 +3984,305 @@ export default function AdminDashboard() {
         {/* TAB 3: CONTACT INBOX */}
         {activeTab === "contacts" && (
           <div className="glass-panel" style={{ padding: "24px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", gap: "16px", flexWrap: "wrap" }}>
-              <h3 style={{ fontSize: "18px", fontWeight: "600", margin: 0 }}>Received Inquiries</h3>
-              {inquiries.length > 0 && (
-                <button 
-                  onClick={() => exportToExcel(inquiries, `Contact_Inquiries_${new Date().toISOString().slice(0,10)}`)}
-                  className="btn-primary" 
-                  style={{ 
-                    padding: "8px 16px", 
-                    fontSize: "13px", 
-                    display: "inline-flex", 
-                    alignItems: "center", 
-                    gap: "6px" 
-                  }}
-                >
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="7 10 12 15 17 10" />
-                    <line x1="12" y1="15" x2="12" y2="3" />
-                  </svg>
-                  Export to Excel
-                </button>
+            <AdminDataTable
+              title="Contact Messages Inbox"
+              subtitle="General inquiries received from website visitors."
+              data={inquiries}
+              keyField="id"
+              defaultPageSize={10}
+              searchPlaceholder="Search by name, email, subject..."
+              searchKeys={["name", "email", "subject", "message"]}
+              headerAction={
+                inquiries.length > 0 && (
+                  <button 
+                    onClick={() => exportContactsToExcel(inquiries, `Contact_Messages_${new Date().toISOString().slice(0,10)}`)}
+                    className="btn-primary" 
+                    style={{ 
+                      padding: "8px 16px", 
+                      fontSize: "13px", 
+                      display: "inline-flex", 
+                      alignItems: "center", 
+                      gap: "6px" 
+                    }}
+                  >
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Export to Excel
+                  </button>
+                )
+              }
+              columns={[
+                {
+                  key: "name",
+                  label: "Name",
+                  render: (msg) => <strong style={{ color: "#2B1F14" }}>{msg.name}</strong>
+                },
+                {
+                  key: "email",
+                  label: "Email",
+                  render: (msg) => (
+                    <a href={`mailto:${msg.email}`} style={{ color: "var(--secondary-color)", textDecoration: "none", fontWeight: "500" }}>
+                      {msg.email}
+                    </a>
+                  )
+                },
+                {
+                  key: "subject",
+                  label: "Subject",
+                  render: (msg) => msg.subject || "—"
+                },
+                {
+                  key: "created_at",
+                  label: "Date",
+                  render: (msg) => new Date(msg.created_at).toLocaleString()
+                }
+              ]}
+              actions={(msg) => (
+                <>
+                  <button onClick={() => setSelectedContact(msg)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>
+                    View Detail
+                  </button>
+                  <button onClick={() => handleDeleteContact(msg.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>
+                    Delete
+                  </button>
+                </>
               )}
-            </div>
-            
-            {inquiries.length === 0 ? (
-              <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>Inbox empty. All clean!</p>
-            ) : (
-              <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
-                  <thead>
-                    <tr style={{ borderBottom: "1px solid var(--card-border)", color: "var(--fg-muted)" }}>
-                      <th style={{ padding: "12px" }}>Name</th>
-                      <th style={{ padding: "12px" }}>Email</th>
-                      <th style={{ padding: "12px" }}>Subject</th>
-                      <th style={{ padding: "12px" }}>Date</th>
-                      <th style={{ padding: "12px", textAlign: "right" }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {inquiries.map((msg) => (
-                      <tr key={msg.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
-                        <td style={{ padding: "12px", fontWeight: "600" }}>{msg.name}</td>
-                        <td style={{ padding: "12px" }}>
-                          <a href={`mailto:${msg.email}`} style={{ color: "var(--secondary-color)", textDecoration: "none" }}>{msg.email}</a>
-                        </td>
-                        <td style={{ padding: "12px" }}>{msg.subject}</td>
-                        <td style={{ padding: "12px" }}>{new Date(msg.created_at).toLocaleString()}</td>
-                        <td style={{ padding: "12px", textAlign: "right", display: "flex", gap: "8px", justifyContent: "flex-end", height: "49px", alignItems: "center" }}>
-                          <button onClick={() => setSelectedContact(msg)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>
-                            View Detail
-                          </button>
-                          <button onClick={() => handleDeleteContact(msg.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+            />
           </div>
         )}
 
         {activeTab === "freeTrials" && (
           <div className="glass-panel" style={{ padding: "24px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", gap: "16px", flexWrap: "wrap" }}>
-              <h3 style={{ fontSize: "18px", fontWeight: "600", margin: 0 }}>Free Trial Class Bookings</h3>
-              {freeTrials.length > 0 && (
-                <button 
-                  onClick={() => exportToExcel(freeTrials, `Free_Trial_Bookings_${new Date().toISOString().slice(0,10)}`)}
-                  className="btn-primary" 
-                  style={{ 
-                    padding: "8px 16px", 
-                    fontSize: "13px", 
-                    display: "inline-flex", 
-                    alignItems: "center", 
-                    gap: "6px" 
-                  }}
-                >
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="7 10 12 15 17 10" />
-                    <line x1="12" y1="15" x2="12" y2="3" />
-                  </svg>
-                  Export to Excel
-                </button>
+            <AdminDataTable
+              title="Free Trial Class Bookings"
+              subtitle="Review and manage free trial class booking requests submitted by visitors."
+              data={freeTrials}
+              keyField="id"
+              defaultPageSize={10}
+              searchPlaceholder="Search by name, email, course..."
+              searchKeys={["name", "email", "subject", "message", "phone"]}
+              headerAction={
+                freeTrials.length > 0 && (
+                  <button 
+                    onClick={() => exportToExcel(freeTrials, `Free_Trial_Bookings_${new Date().toISOString().slice(0,10)}`)}
+                    className="btn-primary" 
+                    style={{ 
+                      padding: "8px 16px", 
+                      fontSize: "13px", 
+                      display: "inline-flex", 
+                      alignItems: "center", 
+                      gap: "6px" 
+                    }}
+                  >
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Export to Excel
+                  </button>
+                )
+              }
+              columns={[
+                {
+                  key: "name",
+                  label: "Name",
+                  render: (booking) => <strong style={{ color: "#2B1F14" }}>{booking.name}</strong>
+                },
+                {
+                  key: "email",
+                  label: "Email",
+                  render: (booking) => (
+                    <a href={`mailto:${booking.email}`} style={{ color: "var(--secondary-color)", textDecoration: "none", fontWeight: "500" }}>
+                      {booking.email}
+                    </a>
+                  )
+                },
+                {
+                  key: "course",
+                  label: "Interested In",
+                  render: (booking) => {
+                    const parts = (booking.subject || "").split("—");
+                    return parts.length > 1 ? parts[1].trim() : (booking.subject || "General");
+                  }
+                },
+                {
+                  key: "created_at",
+                  label: "Booked On",
+                  render: (booking) => new Date(booking.created_at).toLocaleString()
+                }
+              ]}
+              actions={(booking) => (
+                <>
+                  <button onClick={() => setSelectedContact(booking)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>
+                    View Detail
+                  </button>
+                  <button onClick={() => handleDeleteContact(booking.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>
+                    Delete
+                  </button>
+                </>
               )}
-            </div>
-
-            {freeTrials.length === 0 ? (
-              <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>No free trial bookings yet.</p>
-            ) : (
-              <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
-                  <thead>
-                    <tr style={{ borderBottom: "1px solid var(--card-border)", color: "var(--fg-muted)" }}>
-                      <th style={{ padding: "12px" }}>Name</th>
-                      <th style={{ padding: "12px" }}>Email</th>
-                      <th style={{ padding: "12px" }}>Interested In</th>
-                      <th style={{ padding: "12px" }}>Booked On</th>
-                      <th style={{ padding: "12px", textAlign: "right" }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {freeTrials.map((booking) => {
-                      const parts = (booking.subject || "").split("—");
-                      const course = parts.length > 1 ? parts[1].trim() : "General";
-                      return (
-                        <tr key={booking.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
-                          <td style={{ padding: "12px", fontWeight: "600" }}>{booking.name}</td>
-                          <td style={{ padding: "12px" }}>
-                            <a href={`mailto:${booking.email}`} style={{ color: "var(--secondary-color)", textDecoration: "none" }}>{booking.email}</a>
-                          </td>
-                          <td style={{ padding: "12px" }}>{course}</td>
-                          <td style={{ padding: "12px" }}>{new Date(booking.created_at).toLocaleString()}</td>
-                          <td style={{ padding: "12px", textAlign: "right", display: "flex", gap: "8px", justifyContent: "flex-end", height: "49px", alignItems: "center" }}>
-                            <button onClick={() => setSelectedContact(booking)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>
-                              View Detail
-                            </button>
-                            <button onClick={() => handleDeleteContact(booking.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>
-                              Delete
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            )}
+            />
           </div>
         )}
 
         {activeTab === "teacherApps" && (
           <div className="glass-panel" style={{ padding: "24px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", gap: "16px", flexWrap: "wrap" }}>
-              <h3 style={{ fontSize: "18px", fontWeight: "600", margin: 0 }}>Teacher Job Applications</h3>
-              {teacherApps.length > 0 && (
-                <button 
-                  onClick={() => exportTeachersToExcel(teacherApps, `Teacher_Applications_${new Date().toISOString().slice(0,10)}`)}
-                  className="btn-primary" 
-                  style={{ 
-                    padding: "8px 16px", 
-                    fontSize: "13px", 
-                    display: "inline-flex", 
-                    alignItems: "center", 
-                    gap: "6px" 
-                  }}
-                >
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="7 10 12 15 17 10" />
-                    <line x1="12" y1="15" x2="12" y2="3" />
-                  </svg>
-                  Export to Excel
-                </button>
+            <AdminDataTable
+              title="Teacher Job Applications"
+              subtitle="Review and manage teacher employment applications."
+              data={teacherApps}
+              keyField="id"
+              defaultPageSize={10}
+              searchPlaceholder="Search by teacher name, email, role..."
+              searchKeys={["first_name", "last_name", "email", "applying_for"]}
+              headerAction={
+                teacherApps.length > 0 && (
+                  <button 
+                    onClick={() => exportTeachersToExcel(teacherApps, `Teacher_Applications_${new Date().toISOString().slice(0,10)}`)}
+                    className="btn-primary" 
+                    style={{ 
+                      padding: "8px 16px", 
+                      fontSize: "13px", 
+                      display: "inline-flex", 
+                      alignItems: "center", 
+                      gap: "6px" 
+                    }}
+                  >
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Export to Excel
+                  </button>
+                )
+              }
+              columns={[
+                {
+                  key: "name",
+                  label: "Name",
+                  render: (app) => <strong style={{ color: "#2B1F14" }}>{`${app.first_name || ""} ${app.last_name || ""}`.trim() || "—"}</strong>
+                },
+                {
+                  key: "email",
+                  label: "Email",
+                  render: (app) => (
+                    <a href={`mailto:${app.email}`} style={{ color: "var(--secondary-color)", textDecoration: "none", fontWeight: "500" }}>
+                      {app.email}
+                    </a>
+                  )
+                },
+                {
+                  key: "applying_for",
+                  label: "Applying For",
+                  render: (app) => app.applying_for || "—"
+                },
+                {
+                  key: "created_at",
+                  label: "Applied On",
+                  render: (app) => new Date(app.created_at).toLocaleString()
+                }
+              ]}
+              actions={(app) => (
+                <>
+                  <button onClick={() => setSelectedTeacherApp(app)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>
+                    View Detail
+                  </button>
+                  <button onClick={() => handleDeleteTeacherApp(app.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>
+                    Delete
+                  </button>
+                </>
               )}
-            </div>
-
-            {teacherApps.length === 0 ? (
-              <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>No teacher applications yet.</p>
-            ) : (
-              <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
-                  <thead>
-                    <tr style={{ borderBottom: "1px solid var(--card-border)", color: "var(--fg-muted)" }}>
-                      <th style={{ padding: "12px" }}>Name</th>
-                      <th style={{ padding: "12px" }}>Email</th>
-                      <th style={{ padding: "12px" }}>Applying For</th>
-                      <th style={{ padding: "12px" }}>Applied On</th>
-                      <th style={{ padding: "12px", textAlign: "right" }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {teacherApps.map((app) => (
-                      <tr key={app.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
-                        <td style={{ padding: "12px", fontWeight: "600" }}>{`${app.first_name || ""} ${app.last_name || ""}`.trim() || "—"}</td>
-                        <td style={{ padding: "12px" }}>
-                          <a href={`mailto:${app.email}`} style={{ color: "var(--secondary-color)", textDecoration: "none" }}>{app.email}</a>
-                        </td>
-                        <td style={{ padding: "12px" }}>{app.applying_for || "—"}</td>
-                        <td style={{ padding: "12px" }}>{new Date(app.created_at).toLocaleString()}</td>
-                        <td style={{ padding: "12px", textAlign: "right", display: "flex", gap: "8px", justifyContent: "flex-end", height: "49px", alignItems: "center" }}>
-                          <button onClick={() => setSelectedTeacherApp(app)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>
-                            View Detail
-                          </button>
-                          <button onClick={() => handleDeleteTeacherApp(app.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+            />
           </div>
         )}
 
         {activeTab === "studentApps" && (
           <div className="glass-panel" style={{ padding: "24px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", gap: "16px", flexWrap: "wrap" }}>
-              <h3 style={{ fontSize: "18px", fontWeight: "600", margin: 0 }}>Student Registrations</h3>
-              {studentApps.length > 0 && (
-                <button 
-                  onClick={() => exportStudentsToExcel(studentApps, `Student_Registrations_${new Date().toISOString().slice(0,10)}`)}
-                  className="btn-primary" 
-                  style={{ 
-                    padding: "8px 16px", 
-                    fontSize: "13px", 
-                    display: "inline-flex", 
-                    alignItems: "center", 
-                    gap: "6px" 
-                  }}
-                >
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="7 10 12 15 17 10" />
-                    <line x1="12" y1="15" x2="12" y2="3" />
-                  </svg>
-                  Export to Excel
-                </button>
+            <AdminDataTable
+              title="Student Registrations"
+              subtitle="All registered student applications with selected courses and pricing plans."
+              data={studentApps}
+              keyField="id"
+              defaultPageSize={10}
+              searchPlaceholder="Search by student name, email, course..."
+              searchKeys={["first_name", "last_name", "email", "course", "pricing_plan", "country"]}
+              headerAction={
+                studentApps.length > 0 && (
+                  <button 
+                    onClick={() => exportStudentsToExcel(studentApps, `Student_Registrations_${new Date().toISOString().slice(0,10)}`)}
+                    className="btn-primary" 
+                    style={{ 
+                      padding: "8px 16px", 
+                      fontSize: "13px", 
+                      display: "inline-flex", 
+                      alignItems: "center", 
+                      gap: "6px" 
+                    }}
+                  >
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Export to Excel
+                  </button>
+                )
+              }
+              columns={[
+                {
+                  key: "name",
+                  label: "Name",
+                  render: (app) => <strong style={{ color: "#2B1F14" }}>{`${app.first_name || ""} ${app.last_name || ""}`.trim() || "—"}</strong>
+                },
+                {
+                  key: "email",
+                  label: "Email",
+                  render: (app) => (
+                    <a href={`mailto:${app.email}`} style={{ color: "var(--secondary-color)", textDecoration: "none", fontWeight: "500" }}>
+                      {app.email}
+                    </a>
+                  )
+                },
+                {
+                  key: "course",
+                  label: "Course",
+                  render: (app) => app.course || "—"
+                },
+                {
+                  key: "pricing_plan",
+                  label: "Plan",
+                  render: (app) => app.pricing_plan || "—"
+                },
+                {
+                  key: "monthly_price",
+                  label: "Price/Month",
+                  render: (app) => {
+                    const sym = app.currency === "AED" ? "AED " : app.currency === "GBP" ? "£" : "$";
+                    return `${sym}${app.monthly_price || "0"}`;
+                  }
+                },
+                {
+                  key: "created_at",
+                  label: "Applied On",
+                  render: (app) => new Date(app.created_at).toLocaleString()
+                }
+              ]}
+              actions={(app) => (
+                <>
+                  <button onClick={() => setSelectedStudentApp(app)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>
+                    View Detail
+                  </button>
+                  <button onClick={() => handleDeleteStudentApp(app.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>
+                    Delete
+                  </button>
+                </>
               )}
-            </div>
-
-            {studentApps.length === 0 ? (
-              <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>No student registrations yet.</p>
-            ) : (
-              <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
-                  <thead>
-                    <tr style={{ borderBottom: "1px solid var(--card-border)", color: "var(--fg-muted)" }}>
-                      <th style={{ padding: "12px" }}>Name</th>
-                      <th style={{ padding: "12px" }}>Email</th>
-                      <th style={{ padding: "12px" }}>Course</th>
-                      <th style={{ padding: "12px" }}>Plan</th>
-                      <th style={{ padding: "12px" }}>Price/Month</th>
-                      <th style={{ padding: "12px" }}>Applied On</th>
-                      <th style={{ padding: "12px", textAlign: "right" }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {studentApps.map((app) => (
-                      <tr key={app.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
-                        <td style={{ padding: "12px", fontWeight: "600" }}>{`${app.first_name || ""} ${app.last_name || ""}`.trim() || "—"}</td>
-                        <td style={{ padding: "12px" }}>
-                          <a href={`mailto:${app.email}`} style={{ color: "var(--secondary-color)", textDecoration: "none" }}>{app.email}</a>
-                        </td>
-                        <td style={{ padding: "12px" }}>{app.course || "—"}</td>
-                        <td style={{ padding: "12px" }}>{app.pricing_plan || "—"}</td>
-                        <td style={{ padding: "12px" }}>${app.monthly_price || "0"}</td>
-                        <td style={{ padding: "12px" }}>{new Date(app.created_at).toLocaleString()}</td>
-                        <td style={{ padding: "12px", textAlign: "right", display: "flex", gap: "8px", justifyContent: "flex-end", height: "49px", alignItems: "center" }}>
-                          <button onClick={() => setSelectedStudentApp(app)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>
-                            View Detail
-                          </button>
-                          <button onClick={() => handleDeleteStudentApp(app.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+            />
           </div>
         )}
 
@@ -3763,11 +4300,12 @@ export default function AdminDashboard() {
               <div style={{ padding: "24px", overflowY: "auto", textAlign: "left" }}>
                 {(() => {
                   const a = selectedStudentApp;
+                  const sym = a.currency === "AED" ? "AED " : a.currency === "GBP" ? "£" : "$";
                   const rows = [
                     ["Gender", a.gender], ["Email", a.email], ["Mobile", `${a.dial_code || ""} ${a.mobile || ""}`.trim()],
-                    ["Country", a.country], ["Age Group", a.age_group],
+                    ["Country", a.country], ["Currency", a.currency || "USD"], ["Age Group", a.age_group],
                     ["Course", a.course], ["Hours / Week", a.hours_per_week],
-                    ["Pricing Plan", a.pricing_plan], ["Estimated Price/Month", `$${a.monthly_price}`],
+                    ["Pricing Plan", a.pricing_plan], ["Estimated Price/Month", `${sym}${a.monthly_price || "0"}`],
                     ["Preferred Days", a.preferred_days], ["Preferred Start Date", a.preferred_date],
                     ["Preferred Daily Time", a.preferred_time], ["Applied On", new Date(a.created_at).toLocaleString()]
                   ];
@@ -3872,39 +4410,58 @@ export default function AdminDashboard() {
           <div>
             {!isEditingJob ? (
               <div className="glass-panel" style={{ padding: "24px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                  <h3 style={{ fontSize: "18px", fontWeight: "600" }}>Job Openings</h3>
-                  <button onClick={triggerCreateJob} className="btn-primary" style={{ padding: "8px 16px", fontSize: "13px" }}>+ Add Job</button>
-                </div>
-                {careerJobs.length === 0 ? (
-                  <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>No job openings yet. Click &ldquo;Add Job&rdquo; to create one.</p>
-                ) : (
-                  <div style={{ overflowX: "auto" }}>
-                    <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
-                      <thead>
-                        <tr style={{ borderBottom: "1px solid var(--card-border)", color: "var(--fg-muted)" }}>
-                          <th style={{ padding: "12px", width: "70px" }}>Order</th>
-                          <th style={{ padding: "12px" }}>Title</th>
-                          <th style={{ padding: "12px" }}>Job Title</th>
-                          <th style={{ padding: "12px", textAlign: "right" }}>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {careerJobs.map((job) => (
-                          <tr key={job.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
-                            <td style={{ padding: "12px" }}>{job.order_index}</td>
-                            <td style={{ padding: "12px", fontWeight: "600" }}>{job.title}</td>
-                            <td style={{ padding: "12px" }}>{job.job_title}</td>
-                            <td style={{ padding: "12px", textAlign: "right", display: "flex", gap: "8px", justifyContent: "flex-end", height: "49px", alignItems: "center" }}>
-                              <button onClick={() => triggerEditJob(job)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>Edit</button>
-                              <button onClick={() => handleDeleteJob(job.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>Delete</button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
+                <AdminDataTable
+                  title="Job Openings"
+                  subtitle="Manage open positions and career opportunities for teachers and staff."
+                  data={careerJobs}
+                  keyField="id"
+                  defaultPageSize={10}
+                  searchPlaceholder="Search jobs by title, category, meta..."
+                  searchKeys={["title", "job_title", "meta", "badge", "description"]}
+                  headerAction={
+                    <button onClick={triggerCreateJob} className="btn-primary" style={{ padding: "8px 16px", fontSize: "13px" }}>
+                      + Add Job
+                    </button>
+                  }
+                  columns={[
+                    {
+                      key: "title",
+                      label: "Position Title",
+                      render: (job) => <strong style={{ color: "#2B1F14" }}>{job.title}</strong>
+                    },
+                    {
+                      key: "job_title",
+                      label: "Job Category",
+                      render: (job) => job.job_title || "—"
+                    },
+                    {
+                      key: "badge",
+                      label: "Badge",
+                      render: (job) => (
+                        <span style={{ padding: "3px 8px", background: "rgba(74, 93, 59, 0.08)", border: "1px solid rgba(74, 93, 59, 0.2)", borderRadius: "4px", fontSize: "11px", color: "#4A5D3B", fontWeight: "600" }}>
+                          {job.badge || "Online"}
+                        </span>
+                      )
+                    },
+                    {
+                      key: "order_index",
+                      label: "Order",
+                      align: "center",
+                      width: "70px",
+                      render: (job) => job.order_index ?? 0
+                    }
+                  ]}
+                  actions={(job) => (
+                    <>
+                      <button onClick={() => triggerEditJob(job)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>
+                        Edit
+                      </button>
+                      <button onClick={() => handleDeleteJob(job.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>
+                        Delete
+                      </button>
+                    </>
+                  )}
+                />
               </div>
             ) : (
               <form onSubmit={handleSaveJob} className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
@@ -4479,55 +5036,73 @@ export default function AdminDashboard() {
             {!isEditingTeacher ? (
               // Teachers List Screen
               <div className="glass-panel" style={{ padding: "24px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                  <h3 style={{ fontSize: "18px", fontWeight: "600" }}>Islamic Teachers</h3>
-                  <button onClick={triggerCreateTeacher} className="btn-primary" style={{ padding: "8px 16px", fontSize: "13px" }}>
-                    + Register Teacher
-                  </button>
-                </div>
-
-                {teachers.length === 0 ? (
-                  <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>No teacher profiles found. Click Register Teacher to add one.</p>
-                ) : (
-                  <div style={{ overflowX: "auto" }}>
-                    <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
-                      <thead>
-                        <tr style={{ borderBottom: "1px solid var(--card-border)", color: "var(--fg-muted)" }}>
-                          <th style={{ padding: "12px" }}>Avatar</th>
-                          <th style={{ padding: "12px" }}>Name</th>
-                          <th style={{ padding: "12px" }}>Languages</th>
-                          <th style={{ padding: "12px" }}>Experience</th>
-                          <th style={{ padding: "12px" }}>Specialization</th>
-                          <th style={{ padding: "12px" }}>Sort Order</th>
-                          <th style={{ padding: "12px", textAlign: "right" }}>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {teachers.map((t) => (
-                          <tr key={t.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
-                            <td style={{ padding: "12px" }}>
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img 
-                                src={t.avatar_url || "/images/teacher_rahman.png"} 
-                                alt={t.name} 
-                                style={{ width: "40px", height: "40px", borderRadius: "50%", objectFit: "cover", border: "1px solid var(--card-border)" }} 
-                              />
-                            </td>
-                            <td style={{ padding: "12px", fontWeight: "600" }}>{t.name}</td>
-                            <td style={{ padding: "12px" }}>{t.languages}</td>
-                            <td style={{ padding: "12px" }}>{t.experience}</td>
-                            <td style={{ padding: "12px" }}>{t.specialization}</td>
-                            <td style={{ padding: "12px" }}>{t.order_index}</td>
-                            <td style={{ padding: "12px", textAlign: "right", display: "flex", gap: "8px", justifyContent: "flex-end", height: "64px", alignItems: "center" }}>
-                              <button onClick={() => triggerEditTeacher(t)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>Edit</button>
-                              <button onClick={() => handleDeleteTeacher(t.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>Delete</button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
+                <AdminDataTable
+                  title="Islamic Teachers"
+                  subtitle="Manage qualified Quran and Islamic studies teacher profiles."
+                  data={teachers}
+                  keyField="id"
+                  defaultPageSize={10}
+                  searchPlaceholder="Search teachers by name, language, specialization..."
+                  searchKeys={["name", "languages", "experience", "specialization", "bio"]}
+                  headerAction={
+                    <button onClick={triggerCreateTeacher} className="btn-primary" style={{ padding: "8px 16px", fontSize: "13px" }}>
+                      + Register Teacher
+                    </button>
+                  }
+                  columns={[
+                    {
+                      key: "avatar_url",
+                      label: "Avatar",
+                      width: "60px",
+                      align: "center",
+                      render: (t) => (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img 
+                          src={t.avatar_url || "/images/teacher_rahman.png"} 
+                          alt={t.name} 
+                          style={{ width: "40px", height: "40px", borderRadius: "50%", objectFit: "cover", border: "1px solid var(--card-border)", margin: "0 auto", display: "block" }} 
+                        />
+                      )
+                    },
+                    {
+                      key: "name",
+                      label: "Name",
+                      render: (t) => <strong style={{ color: "#2B1F14" }}>{t.name}</strong>
+                    },
+                    {
+                      key: "languages",
+                      label: "Languages",
+                      render: (t) => t.languages || "—"
+                    },
+                    {
+                      key: "experience",
+                      label: "Experience",
+                      render: (t) => t.experience || "—"
+                    },
+                    {
+                      key: "specialization",
+                      label: "Specialization",
+                      render: (t) => t.specialization || "—"
+                    },
+                    {
+                      key: "order_index",
+                      label: "Sort Order",
+                      align: "center",
+                      width: "90px",
+                      render: (t) => t.order_index ?? 0
+                    }
+                  ]}
+                  actions={(t) => (
+                    <>
+                      <button onClick={() => triggerEditTeacher(t)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>
+                        Edit
+                      </button>
+                      <button onClick={() => handleDeleteTeacher(t.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>
+                        Delete
+                      </button>
+                    </>
+                  )}
+                />
               </div>
             ) : (
               // Teacher Register / Edit Form
@@ -4669,59 +5244,81 @@ export default function AdminDashboard() {
             {!isEditingTestimonial ? (
               // Testimonials List Screen
               <div className="glass-panel" style={{ padding: "24px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                  <h3 style={{ fontSize: "18px", fontWeight: "600" }}>Client Testimonials</h3>
-                  <button onClick={triggerCreateTestimonial} className="btn-primary" style={{ padding: "8px 16px", fontSize: "13px" }}>
-                    + Add Testimonial
-                  </button>
-                </div>
-
-                {testimonials.length === 0 ? (
-                  <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>No testimonials found. Click Add Testimonial to create one.</p>
-                ) : (
-                  <div style={{ overflowX: "auto" }}>
-                    <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
-                      <thead>
-                        <tr style={{ borderBottom: "1px solid var(--card-border)", color: "var(--fg-muted)" }}>
-                          <th style={{ padding: "12px" }}>Avatar</th>
-                          <th style={{ padding: "12px" }}>Author Name</th>
-                          <th style={{ padding: "12px" }}>Role</th>
-                          <th style={{ padding: "12px" }}>Content Snippet</th>
-                          <th style={{ padding: "12px" }}>Target Pages</th>
-                          <th style={{ padding: "12px" }}>Sort Order</th>
-                          <th style={{ padding: "12px", textAlign: "right" }}>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {testimonials.map((t) => (
-                          <tr key={t.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
-                            <td style={{ padding: "12px" }}>
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img 
-                                src={t.avatar_url || "/images/testi_ayesha.png"} 
-                                alt={t.name} 
-                                style={{ width: "40px", height: "40px", borderRadius: "50%", objectFit: "cover", border: "1px solid var(--card-border)" }} 
-                              />
-                            </td>
-                            <td style={{ padding: "12px", fontWeight: "600" }}>{t.name}</td>
-                            <td style={{ padding: "12px" }}>{t.role}</td>
-                            <td style={{ padding: "12px", maxWidth: "250px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.content}</td>
-                            <td style={{ padding: "12px" }}>
-                              <span style={{ padding: "3px 8px", background: "rgba(201, 155, 77, 0.08)", border: "1px solid rgba(201, 155, 77, 0.2)", borderRadius: "4px", fontSize: "11px", color: "#8c5d31", fontWeight: "600", textTransform: "uppercase" }}>
-                                {t.page_target === "all" ? "All Pages" : t.page_target}
-                              </span>
-                            </td>
-                            <td style={{ padding: "12px" }}>{t.order_index}</td>
-                            <td style={{ padding: "12px", textAlign: "right", display: "flex", gap: "8px", justifyContent: "flex-end", height: "64px", alignItems: "center" }}>
-                              <button onClick={() => triggerEditTestimonial(t)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>Edit</button>
-                              <button onClick={() => handleDeleteTestimonial(t.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>Delete</button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
+                <AdminDataTable
+                  title="Client Testimonials"
+                  subtitle="Parent and student feedback displayed across website pages."
+                  data={testimonials}
+                  keyField="id"
+                  defaultPageSize={10}
+                  searchPlaceholder="Search testimonials by name, role, content..."
+                  searchKeys={["name", "role", "content", "page_target"]}
+                  headerAction={
+                    <button onClick={triggerCreateTestimonial} className="btn-primary" style={{ padding: "8px 16px", fontSize: "13px" }}>
+                      + Add Testimonial
+                    </button>
+                  }
+                  columns={[
+                    {
+                      key: "avatar_url",
+                      label: "Avatar",
+                      width: "60px",
+                      align: "center",
+                      render: (t) => (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img 
+                          src={t.avatar_url || "/images/testi_ayesha.png"} 
+                          alt={t.name} 
+                          style={{ width: "40px", height: "40px", borderRadius: "50%", objectFit: "cover", border: "1px solid var(--card-border)", margin: "0 auto", display: "block" }} 
+                        />
+                      )
+                    },
+                    {
+                      key: "name",
+                      label: "Author Name",
+                      render: (t) => <strong style={{ color: "#2B1F14" }}>{t.name}</strong>
+                    },
+                    {
+                      key: "role",
+                      label: "Role",
+                      render: (t) => t.role || "—"
+                    },
+                    {
+                      key: "content",
+                      label: "Content Snippet",
+                      render: (t) => (
+                        <div style={{ maxWidth: "260px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={t.content}>
+                          {t.content}
+                        </div>
+                      )
+                    },
+                    {
+                      key: "page_target",
+                      label: "Target Pages",
+                      render: (t) => (
+                        <span style={{ padding: "3px 8px", background: "rgba(201, 155, 77, 0.08)", border: "1px solid rgba(201, 155, 77, 0.2)", borderRadius: "4px", fontSize: "11px", color: "#8c5d31", fontWeight: "600", textTransform: "uppercase" }}>
+                          {t.page_target === "all" ? "All Pages" : t.page_target}
+                        </span>
+                      )
+                    },
+                    {
+                      key: "order_index",
+                      label: "Sort Order",
+                      align: "center",
+                      width: "90px",
+                      render: (t) => t.order_index ?? 0
+                    }
+                  ]}
+                  actions={(t) => (
+                    <>
+                      <button onClick={() => triggerEditTestimonial(t)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>
+                        Edit
+                      </button>
+                      <button onClick={() => handleDeleteTestimonial(t.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>
+                        Delete
+                      </button>
+                    </>
+                  )}
+                />
               </div>
             ) : (
               // Testimonial Register / Edit Form
@@ -4915,55 +5512,72 @@ export default function AdminDashboard() {
             {!isEditingCourse ? (
               // Courses List Screen
               <div className="glass-panel" style={{ padding: "24px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                  <h3 style={{ fontSize: "18px", fontWeight: "600" }}>Active Courses</h3>
-                  <button onClick={triggerCreateCourse} className="btn-primary" style={{ padding: "8px 16px", fontSize: "13px" }}>
-                    + Add Course
-                  </button>
-                </div>
-
-                {courses.length === 0 ? (
-                  <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>No courses found. Click Add Course to create one.</p>
-                ) : (
-                  <div style={{ overflowX: "auto" }}>
-                    <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
-                      <thead>
-                        <tr style={{ borderBottom: "1px solid var(--card-border)", color: "var(--fg-muted)" }}>
-                          <th style={{ padding: "12px" }}>Thumbnail</th>
-                          <th style={{ padding: "12px" }}>Course Title</th>
-                          <th style={{ padding: "12px" }}>Icon Tag</th>
-                          <th style={{ padding: "12px" }}>Sort Order</th>
-                          <th style={{ padding: "12px", textAlign: "right" }}>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {courses.map((c) => (
-                          <tr key={c.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
-                            <td style={{ padding: "12px" }}>
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img 
-                                src={c.image_url || "/images/course_quran.png"} 
-                                alt={c.title} 
-                                style={{ width: "70px", height: "45px", borderRadius: "6px", objectFit: "cover", border: "1px solid var(--card-border)" }} 
-                              />
-                            </td>
-                            <td style={{ padding: "12px", fontWeight: "600" }}>{c.title}</td>
-                            <td style={{ padding: "12px" }}>
-                              <span style={{ padding: "3px 8px", background: "rgba(74, 93, 59, 0.08)", border: "1px solid rgba(74, 93, 59, 0.2)", borderRadius: "4px", fontSize: "11px", color: "#4A5D3B", fontWeight: "600", textTransform: "uppercase" }}>
-                                {c.icon}
-                              </span>
-                            </td>
-                            <td style={{ padding: "12px" }}>{c.order_index}</td>
-                            <td style={{ padding: "12px", textAlign: "right", display: "flex", gap: "8px", justifyContent: "flex-end", height: "69px", alignItems: "center" }}>
-                              <button onClick={() => triggerEditCourse(c)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>Edit</button>
-                              <button onClick={() => handleDeleteCourse(c.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>Delete</button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
+                <AdminDataTable
+                  title="Active Courses"
+                  subtitle="Manage course catalog, modules, curriculums, and lesson detail pages."
+                  data={courses}
+                  keyField="id"
+                  defaultPageSize={10}
+                  searchPlaceholder="Search courses by title, level, icon..."
+                  searchKeys={["title", "level", "icon", "short_description", "description"]}
+                  headerAction={
+                    <button onClick={triggerCreateCourse} className="btn-primary" style={{ padding: "8px 16px", fontSize: "13px" }}>
+                      + Add Course
+                    </button>
+                  }
+                  columns={[
+                    {
+                      key: "image_url",
+                      label: "Thumbnail",
+                      width: "90px",
+                      align: "center",
+                      render: (c) => (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img 
+                          src={c.image_url || "/images/course_quran.png"} 
+                          alt={c.title} 
+                          style={{ width: "70px", height: "45px", borderRadius: "6px", objectFit: "cover", border: "1px solid var(--card-border)", margin: "0 auto", display: "block" }} 
+                        />
+                      )
+                    },
+                    {
+                      key: "title",
+                      label: "Course Title",
+                      render: (c) => <strong style={{ color: "#2B1F14" }}>{c.title}</strong>
+                    },
+                    {
+                      key: "icon",
+                      label: "Icon Tag",
+                      render: (c) => (
+                        <span style={{ padding: "3px 8px", background: "rgba(74, 93, 59, 0.08)", border: "1px solid rgba(74, 93, 59, 0.2)", borderRadius: "4px", fontSize: "11px", color: "#4A5D3B", fontWeight: "600", textTransform: "uppercase" }}>
+                          {c.icon || "book"}
+                        </span>
+                      )
+                    },
+                    {
+                      key: "level",
+                      label: "Level",
+                      render: (c) => c.level || "—"
+                    },
+                    {
+                      key: "order_index",
+                      label: "Sort Order",
+                      align: "center",
+                      width: "90px",
+                      render: (c) => c.order_index ?? 0
+                    }
+                  ]}
+                  actions={(c) => (
+                    <>
+                      <button onClick={() => triggerEditCourse(c)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>
+                        Edit
+                      </button>
+                      <button onClick={() => handleDeleteCourse(c.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>
+                        Delete
+                      </button>
+                    </>
+                  )}
+                />
               </div>
             ) : (
               // Course Create / Edit Form
@@ -5164,62 +5778,89 @@ export default function AdminDashboard() {
             {!isEditingPlan ? (
               // Plans List Screen
               <div className="glass-panel" style={{ padding: "24px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                  <h3 style={{ fontSize: "18px", fontWeight: "600" }}>Pricing Packages</h3>
-                  <button onClick={triggerCreatePlan} className="btn-primary" style={{ padding: "8px 16px", fontSize: "13px" }}>
-                    + Create Package
-                  </button>
-                </div>
-
-                {plans.length === 0 ? (
-                  <p style={{ color: "var(--fg-muted)", fontSize: "14px", textAlign: "center", padding: "40px 0" }}>No pricing packages found. Click Create Package to add one.</p>
-                ) : (
-                  <div style={{ overflowX: "auto" }}>
-                    <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "14px" }}>
-                      <thead>
-                        <tr style={{ borderBottom: "1px solid var(--card-border)", color: "var(--fg-muted)" }}>
-                          <th style={{ padding: "12px" }}>Package Name</th>
-                          <th style={{ padding: "12px" }}>Subtitle</th>
-                          <th style={{ padding: "12px" }}>Rate Price</th>
-                          <th style={{ padding: "12px" }}>Icon</th>
-                          <th style={{ padding: "12px" }}>Ribbon Badge</th>
-                          <th style={{ padding: "12px" }}>Features Count</th>
-                          <th style={{ padding: "12px" }}>Sort Order</th>
-                          <th style={{ padding: "12px", textAlign: "right" }}>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {plans.map((p) => (
-                          <tr key={p.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
-                            <td style={{ padding: "12px", fontWeight: "600" }}>{p.name}</td>
-                            <td style={{ padding: "12px" }}>{p.subtitle}</td>
-                            <td style={{ padding: "12px", fontWeight: "600" }}>${p.price}{p.period}</td>
-                            <td style={{ padding: "12px" }}>
-                              <span style={{ padding: "3px 8px", background: "rgba(201, 155, 77, 0.08)", border: "1px solid rgba(201, 155, 77, 0.2)", borderRadius: "4px", fontSize: "11px", color: "#8c5d31", fontWeight: "600", textTransform: "uppercase" }}>
-                                {p.icon}
-                              </span>
-                            </td>
-                            <td style={{ padding: "12px" }}>
-                              {p.badge ? (
-                                <span style={{ padding: "3px 8px", background: "rgba(74, 93, 59, 0.08)", border: "1px solid rgba(74, 93, 59, 0.2)", borderRadius: "4px", fontSize: "11px", color: "#4A5D3B", fontWeight: "600" }}>
-                                  {p.badge}
-                                </span>
-                              ) : (
-                                <span style={{ color: "var(--fg-muted)", fontSize: "12px" }}>—</span>
-                              )}
-                            </td>
-                            <td style={{ padding: "12px" }}>{p.features?.length || 0} items</td>
-                            <td style={{ padding: "12px" }}>{p.order_index}</td>
-                            <td style={{ padding: "12px", textAlign: "right", display: "flex", gap: "8px", justifyContent: "flex-end", height: "53px", alignItems: "center" }}>
-                              <button onClick={() => triggerEditPlan(p)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>Edit</button>
-                              <button onClick={() => handleDeletePlan(p.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>Delete</button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
+                <AdminDataTable
+                  title="Pricing Packages"
+                  subtitle="Manage tuition packages, pricing plans, and course feature lists."
+                  data={plans}
+                  keyField="id"
+                  defaultPageSize={10}
+                  searchPlaceholder="Search plans by name, price, badge..."
+                  searchKeys={["name", "subtitle", "price", "badge", "icon"]}
+                  headerAction={
+                    <button onClick={triggerCreatePlan} className="btn-primary" style={{ padding: "8px 16px", fontSize: "13px" }}>
+                      + Create Package
+                    </button>
+                  }
+                  columns={[
+                    {
+                      key: "name",
+                      label: "Package Name",
+                      render: (p) => <strong style={{ color: "#2B1F14" }}>{p.name}</strong>
+                    },
+                    {
+                      key: "subtitle",
+                      label: "Subtitle",
+                      render: (p) => p.subtitle || "—"
+                    },
+                    {
+                      key: "price_usd",
+                      label: "🇺🇸 USD ($)",
+                      render: (p) => <span style={{ fontWeight: "700", color: "#8c5d31" }}>${p.price_usd || p.price || "—"}{p.period}</span>
+                    },
+                    {
+                      key: "price_gbp",
+                      label: "🇬🇧 Europe (£)",
+                      render: (p) => <span style={{ fontWeight: "700", color: "#4A5D3B" }}>{p.price_gbp ? `£${p.price_gbp}${p.period}` : "—"}</span>
+                    },
+                    {
+                      key: "price_aed",
+                      label: "🇦🇪 Gulf (AED)",
+                      render: (p) => <span style={{ fontWeight: "700", color: "#C99B4D" }}>{p.price_aed ? `AED ${p.price_aed}${p.period}` : "—"}</span>
+                    },
+                    {
+                      key: "icon",
+                      label: "Icon",
+                      render: (p) => (
+                        <span style={{ padding: "3px 8px", background: "rgba(201, 155, 77, 0.08)", border: "1px solid rgba(201, 155, 77, 0.2)", borderRadius: "4px", fontSize: "11px", color: "#8c5d31", fontWeight: "600", textTransform: "uppercase" }}>
+                          {p.icon || "plane"}
+                        </span>
+                      )
+                    },
+                    {
+                      key: "badge",
+                      label: "Ribbon Badge",
+                      render: (p) => p.badge ? (
+                        <span style={{ padding: "3px 8px", background: "rgba(74, 93, 59, 0.08)", border: "1px solid rgba(74, 93, 59, 0.2)", borderRadius: "4px", fontSize: "11px", color: "#4A5D3B", fontWeight: "600" }}>
+                          {p.badge}
+                        </span>
+                      ) : (
+                        <span style={{ color: "var(--fg-muted)", fontSize: "12px" }}>—</span>
+                      )
+                    },
+                    {
+                      key: "features",
+                      label: "Features Count",
+                      render: (p) => `${p.features?.length || 0} items`
+                    },
+                    {
+                      key: "order_index",
+                      label: "Sort Order",
+                      align: "center",
+                      width: "80px",
+                      render: (p) => p.order_index ?? 0
+                    }
+                  ]}
+                  actions={(p) => (
+                    <>
+                      <button onClick={() => triggerEditPlan(p)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px" }}>
+                        Edit
+                      </button>
+                      <button onClick={() => handleDeletePlan(p.id)} className="btn-secondary" style={{ padding: "4px 10px", fontSize: "12px", color: "#ef4444" }}>
+                        Delete
+                      </button>
+                    </>
+                  )}
+                />
               </div>
             ) : (
               // Plan Create / Edit Form
@@ -5251,37 +5892,81 @@ export default function AdminDashboard() {
                     </div>
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "20px" }}>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                      <label style={formLabelStyle}>Price Rate ($) *</label>
-                      <input
-                        type="text"
-                        value={planForm.price}
-                        onChange={(e) => setPlanForm(prev => ({ ...prev, price: e.target.value }))}
-                        placeholder="e.g. 8.00"
-                        required
-                        style={formInputStyle}
-                      />
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                      <label style={formLabelStyle}>Rate Period</label>
-                      <input
-                        type="text"
-                        value={planForm.period}
-                        onChange={(e) => setPlanForm(prev => ({ ...prev, period: e.target.value }))}
-                        placeholder="e.g. /hour"
-                        style={formInputStyle}
-                      />
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                      <label style={formLabelStyle}>Sort Order Index</label>
-                      <input
-                        type="number"
-                        value={planForm.order_index}
-                        onChange={(e) => setPlanForm(prev => ({ ...prev, order_index: e.target.value }))}
-                        placeholder="e.g. 1"
-                        style={formInputStyle}
-                      />
+                  {/* Multi-Currency Price Grid */}
+                  <div style={{
+                    backgroundColor: "#FAF5EE",
+                    border: "1px solid #EADDC8",
+                    borderRadius: "12px",
+                    padding: "16px 18px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "12px"
+                  }}>
+                    <span style={{ fontSize: "12px", fontWeight: "700", color: "#2B1F14", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                      🌍 Country / Region Wise Pricing
+                    </span>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 120px 100px", gap: "14px" }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                        <label style={{ ...formLabelStyle, fontSize: "12px", color: "#8c5d31" }}>
+                          🇺🇸 USD Price ($) * <span style={{ fontSize: "10.5px", fontWeight: 400 }}>(Other / Default)</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={planForm.price_usd || planForm.price}
+                          onChange={(e) => setPlanForm(prev => ({ ...prev, price: e.target.value, price_usd: e.target.value }))}
+                          placeholder="e.g. 8.00"
+                          required
+                          style={formInputStyle}
+                        />
+                      </div>
+
+                      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                        <label style={{ ...formLabelStyle, fontSize: "12px", color: "#4A5D3B" }}>
+                          🇬🇧 Europe Price (£) <span style={{ fontSize: "10.5px", fontWeight: 400 }}>(UK & Europe - GBP)</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={planForm.price_gbp}
+                          onChange={(e) => setPlanForm(prev => ({ ...prev, price_gbp: e.target.value }))}
+                          placeholder="e.g. 6.50"
+                          style={formInputStyle}
+                        />
+                      </div>
+
+                      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                        <label style={{ ...formLabelStyle, fontSize: "12px", color: "#C99B4D" }}>
+                          🇦🇪 Gulf Price (AED) <span style={{ fontSize: "10.5px", fontWeight: 400 }}>(GCC - Dirham)</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={planForm.price_aed}
+                          onChange={(e) => setPlanForm(prev => ({ ...prev, price_aed: e.target.value }))}
+                          placeholder="e.g. 30.00"
+                          style={formInputStyle}
+                        />
+                      </div>
+
+                      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                        <label style={formLabelStyle}>Period</label>
+                        <input
+                          type="text"
+                          value={planForm.period}
+                          onChange={(e) => setPlanForm(prev => ({ ...prev, period: e.target.value }))}
+                          placeholder="/hour"
+                          style={formInputStyle}
+                        />
+                      </div>
+
+                      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                        <label style={formLabelStyle}>Order</label>
+                        <input
+                          type="number"
+                          value={planForm.order_index}
+                          onChange={(e) => setPlanForm(prev => ({ ...prev, order_index: e.target.value }))}
+                          placeholder="1"
+                          style={formInputStyle}
+                        />
+                      </div>
                     </div>
                   </div>
 

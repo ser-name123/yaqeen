@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { DEFAULT_LANDING_PAGE_CONTENT } from "@/lib/landing-page-defaults";
 
-function getIconSvg(name, color = "#2E6A3B", size = 20) {
+function getIconSvg(name, color = "#556B3B", size = 20) {
   if (!name) return null;
   const raw = String(name).trim();
   
@@ -304,7 +304,7 @@ export default function LandingPageTemplate({ initialPage }) {
   const faqList = faqs.items && faqs.items.length ? faqs.items : DEFAULT_LANDING_PAGE_CONTENT.faqs.items;
 
   return (
-    <div style={{ backgroundColor: "#FFFFFF", minHeight: "100vh", color: "#1F2937", fontFamily: "var(--font-poppins), sans-serif" }}>
+    <div style={{ backgroundColor: "#FAF7F2", background: "linear-gradient(180deg, #FAF6F0 0%, #FFFDF9 25%, #FAF7F2 60%, #FFFDF9 100%)", minHeight: "100vh", color: "#2B1F14", fontFamily: "var(--font-poppins), sans-serif" }}>
       <style>{`
         .lp-rich-text {
           display: block;
@@ -344,7 +344,7 @@ export default function LandingPageTemplate({ initialPage }) {
       {/* =========================================================================
          SECTION 1: HERO & HIGHLIGHTS
          ========================================================================= */}
-      <section style={{ backgroundColor: "#FFFFFF", padding: "8px 0 32px 0" }}>
+      <section style={{ background: "radial-gradient(ellipse at 50% 0%, #FAF1E4 0%, #FAF6F0 55%, #FFFDF9 100%)", padding: "16px 0 36px 0", position: "relative" }}>
         <div style={{ maxWidth: "1350px", width: "100%", margin: "0 auto", boxSizing: "border-box" }} className="landing-container">
           
           {/* TOP HERO GRID */}
@@ -365,23 +365,23 @@ export default function LandingPageTemplate({ initialPage }) {
               {/* Main Headline */}
               <h1 style={{ 
                 fontSize: "clamp(28px, 3.2vw, 44px)", 
-                fontWeight: "600", 
-                color: "#111827", 
+                fontWeight: "700", 
+                color: "#111111", 
                 lineHeight: "1.2", 
                 marginBottom: "20px",
                 letterSpacing: "-0.3px"
               }}>
                 {hero.headlinePrefix}<br />
-                <span style={{ color: "#D37B24", fontWeight: "600" }}>{hero.headlineHighlight1}</span>{hero.headlineMiddle || " with"}<br />
-                <span style={{ color: "#2E6A3B", fontWeight: "600" }}>{hero.headlineHighlight2}</span><br />
+                <span style={{ color: "#C99B4D", fontWeight: "700" }}>{hero.headlineHighlight1}</span>{hero.headlineMiddle || " with"}<br />
+                <span style={{ color: "#556B3B", fontWeight: "700" }}>{hero.headlineHighlight2}</span><br />
                 {hero.headlineSuffix}
               </h1>
 
-              {/* Subheading / Tag with Orange Vertical Line */}
+              {/* Subheading / Tag with Gold Vertical Line */}
               {hero.tagline && (
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "18px" }}>
-                  <div style={{ width: "3.5px", height: "22px", backgroundColor: "#D37B24", borderRadius: "2px", flexShrink: 0 }} />
-                  <p style={{ fontSize: "clamp(15px, 1.35vw, 17.5px)", fontWeight: "600", color: "#1F2937", margin: 0 }}>
+                  <div style={{ width: "3.5px", height: "22px", backgroundColor: "#C99B4D", borderRadius: "2px", flexShrink: 0 }} />
+                  <p style={{ fontSize: "clamp(15px, 1.35vw, 17.5px)", fontWeight: "600", color: "#2B1F14", margin: 0 }}>
                     {hero.tagline}
                   </p>
                 </div>
@@ -391,7 +391,7 @@ export default function LandingPageTemplate({ initialPage }) {
               <div style={{ 
                 fontSize: "clamp(13.5px, 1.1vw, 14.8px)", 
                 lineHeight: "1.65", 
-                color: "#4B5563", 
+                color: "#5C4D3C", 
                 marginBottom: "32px", 
                 fontWeight: "400",
                 maxWidth: "620px"
@@ -403,27 +403,27 @@ export default function LandingPageTemplate({ initialPage }) {
               <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
                 {hero.primaryBtnText && (
                   <Link
-                    href={hero.primaryBtnUrl || "/book-free-trial"}
+                    href={hero.primaryBtnUrl || "/register"}
                     style={{
                       textDecoration: "none",
                       display: "inline-flex",
                       alignItems: "center",
                       gap: "8px",
                       padding: "13px 28px",
-                      borderRadius: "8px",
-                      backgroundColor: "#CE7823",
+                      borderRadius: "9999px",
+                      backgroundColor: "#C99B4D",
                       color: "#FFFFFF",
                       fontSize: "14px",
                       fontWeight: "600",
-                      boxShadow: "0 4px 14px rgba(206, 120, 35, 0.25)",
+                      boxShadow: "0 6px 18px rgba(201, 155, 77, 0.28)",
                       transition: "all 0.2s ease"
                     }}
                     onMouseOver={(e) => {
-                      e.currentTarget.style.backgroundColor = "#B56518";
+                      e.currentTarget.style.backgroundColor = "#B3853B";
                       e.currentTarget.style.transform = "translateY(-1px)";
                     }}
                     onMouseOut={(e) => {
-                      e.currentTarget.style.backgroundColor = "#CE7823";
+                      e.currentTarget.style.backgroundColor = "#C99B4D";
                       e.currentTarget.style.transform = "translateY(0)";
                     }}
                   >
@@ -440,16 +440,16 @@ export default function LandingPageTemplate({ initialPage }) {
                       alignItems: "center",
                       gap: "8px",
                       padding: "12px 26px",
-                      borderRadius: "8px",
+                      borderRadius: "9999px",
                       backgroundColor: "#FFFFFF",
-                      border: "1.5px solid #CE7823",
-                      color: "#CE7823",
+                      border: "1.5px solid #C99B4D",
+                      color: "#C99B4D",
                       fontSize: "14px",
                       fontWeight: "600",
                       transition: "all 0.2s ease"
                     }}
                     onMouseOver={(e) => {
-                      e.currentTarget.style.backgroundColor = "#FDF7F0";
+                      e.currentTarget.style.backgroundColor = "#FDF8F0";
                       e.currentTarget.style.transform = "translateY(-1px)";
                     }}
                     onMouseOut={(e) => {
@@ -472,9 +472,9 @@ export default function LandingPageTemplate({ initialPage }) {
                   position: "relative",
                   borderRadius: "24px",
                   overflow: "hidden",
-                  boxShadow: "0 20px 40px -15px rgba(0,0,0,0.1)",
-                  border: "1px solid #F3F4F6",
-                  backgroundColor: "#FAF9F6"
+                  boxShadow: "0 20px 40px -15px rgba(43, 31, 20, 0.12)",
+                  border: "1px solid #F5EBDD",
+                  backgroundColor: "#FAF8F5"
                 }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -496,12 +496,12 @@ export default function LandingPageTemplate({ initialPage }) {
                     position: "absolute",
                     top: "16px",
                     left: "16px",
-                    backgroundColor: "rgba(255, 255, 255, 0.94)",
+                    backgroundColor: "rgba(255, 255, 255, 0.95)",
                     backdropFilter: "blur(6px)",
                     borderRadius: "14px",
                     padding: "10px 14px",
-                    boxShadow: "0 6px 20px rgba(0,0,0,0.06)",
-                    border: "1px solid rgba(255,255,255,0.8)",
+                    boxShadow: "0 6px 20px rgba(43, 31, 20, 0.08)",
+                    border: "1px solid rgba(245, 235, 221, 0.9)",
                     display: "flex",
                     flexDirection: "column",
                     gap: "2px",
@@ -513,11 +513,11 @@ export default function LandingPageTemplate({ initialPage }) {
                       width: "24px", 
                       height: "24px", 
                       borderRadius: "6px", 
-                      backgroundColor: "#EBF5EE", 
+                      backgroundColor: "rgba(85, 107, 59, 0.12)", 
                       display: "flex", 
                       alignItems: "center", 
                       justifyContent: "center", 
-                      color: "#2E6A3B" 
+                      color: "#556B3B" 
                     }}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <rect x="2" y="3" width="20" height="14" rx="2" />
@@ -525,11 +525,11 @@ export default function LandingPageTemplate({ initialPage }) {
                         <line x1="12" y1="17" x2="12" y2="21" />
                       </svg>
                     </div>
-                    <span style={{ fontSize: "11px", fontWeight: "700", color: "#1F2937", lineHeight: "1.2" }}>
+                    <span style={{ fontSize: "11px", fontWeight: "700", color: "#2B1F14", lineHeight: "1.2" }}>
                       {hero.badgeLiveText}
                     </span>
                   </div>
-                  <span style={{ fontSize: "9px", color: "#6B7280", marginTop: "4px", lineHeight: "1.2" }}>
+                  <span style={{ fontSize: "9px", color: "#7C7267", marginTop: "4px", lineHeight: "1.2" }}>
                     {hero.badgeLiveSubtext}
                   </span>
                 </div>
@@ -540,18 +540,18 @@ export default function LandingPageTemplate({ initialPage }) {
                     position: "absolute",
                     top: "16px",
                     right: "16px",
-                    backgroundColor: "rgba(255, 255, 255, 0.94)",
+                    backgroundColor: "rgba(255, 255, 255, 0.95)",
                     backdropFilter: "blur(6px)",
                     borderRadius: "12px",
                     padding: "8px 14px",
-                    boxShadow: "0 6px 20px rgba(0,0,0,0.06)",
-                    border: "1px solid rgba(255,255,255,0.8)",
+                    boxShadow: "0 6px 20px rgba(43, 31, 20, 0.08)",
+                    border: "1px solid rgba(245, 235, 221, 0.9)",
                     display: "flex",
                     alignItems: "center",
                     gap: "8px"
                   }}
                 >
-                  <div style={{ color: "#2E6A3B" }}>
+                  <div style={{ color: "#556B3B" }}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <circle cx="12" cy="12" r="10" />
                       <line x1="2" y1="12" x2="22" y2="12" />
@@ -559,8 +559,8 @@ export default function LandingPageTemplate({ initialPage }) {
                     </svg>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column" }}>
-                    <span style={{ fontSize: "9px", color: "#6B7280", lineHeight: "1.1" }}>Students Worldwide</span>
-                    <span style={{ fontSize: "14px", fontWeight: "800", color: "#1F2937", lineHeight: "1.1" }}>{hero.badgeStudentsNumber || "80+"}</span>
+                    <span style={{ fontSize: "9px", color: "#7C7267", lineHeight: "1.1" }}>Students Worldwide</span>
+                    <span style={{ fontSize: "14px", fontWeight: "800", color: "#2B1F14", lineHeight: "1.1" }}>{hero.badgeStudentsNumber || "80+"}</span>
                   </div>
                 </div>
 
@@ -570,24 +570,24 @@ export default function LandingPageTemplate({ initialPage }) {
                     position: "absolute",
                     top: "68px",
                     right: "16px",
-                    backgroundColor: "rgba(255, 255, 255, 0.94)",
+                    backgroundColor: "rgba(255, 255, 255, 0.95)",
                     backdropFilter: "blur(6px)",
                     borderRadius: "10px",
                     padding: "6px 12px",
-                    boxShadow: "0 6px 20px rgba(0,0,0,0.06)",
-                    border: "1px solid rgba(255,255,255,0.8)",
+                    boxShadow: "0 6px 20px rgba(43, 31, 20, 0.08)",
+                    border: "1px solid rgba(245, 235, 221, 0.9)",
                     display: "flex",
                     alignItems: "center",
                     gap: "6px"
                   }}
                 >
-                  <div style={{ color: "#2E6A3B" }}>
+                  <div style={{ color: "#556B3B" }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <circle cx="12" cy="12" r="10" />
                       <polyline points="12 6 12 12 16 14" />
                     </svg>
                   </div>
-                  <span style={{ fontSize: "10.5px", fontWeight: "700", color: "#1F2937" }}>
+                  <span style={{ fontSize: "10.5px", fontWeight: "700", color: "#2B1F14" }}>
                     {hero.badgeTimingsText}
                   </span>
                 </div>
@@ -600,7 +600,7 @@ export default function LandingPageTemplate({ initialPage }) {
                   <p style={{ 
                     fontSize: "12.5px", 
                     lineHeight: "1.6", 
-                    color: "#4B5563", 
+                    color: "#5C4D3C", 
                     margin: 0,
                     whiteSpace: "pre-line"
                   }}>
@@ -613,7 +613,7 @@ export default function LandingPageTemplate({ initialPage }) {
 
           </div>
 
-          {/* BOTTOM HIGHLIGHT STRIP (Image 1) */}
+          {/* BOTTOM HIGHLIGHT STRIP */}
           <div 
             style={{
               display: "grid",
@@ -627,14 +627,14 @@ export default function LandingPageTemplate({ initialPage }) {
             <div 
               style={{
                 backgroundColor: "#FFFFFF",
-                border: "1px solid #EBE4D7",
+                border: "1px solid #F5EBDD",
                 borderRadius: "16px",
                 padding: "16px 20px",
                 display: "grid",
                 gridTemplateColumns: "repeat(4, 1fr)",
                 gap: "14px",
                 alignItems: "center",
-                boxShadow: "0 4px 16px rgba(0,0,0,0.02)"
+                boxShadow: "0 4px 16px rgba(43, 31, 20, 0.03)"
               }}
               className="strip-features-box"
             >
@@ -646,18 +646,18 @@ export default function LandingPageTemplate({ initialPage }) {
                     alignItems: "center",
                     gap: "12px",
                     paddingLeft: idx === 0 ? "0" : "14px",
-                    borderLeft: idx === 0 ? "none" : "1px solid #ECE7DD"
+                    borderLeft: idx === 0 ? "none" : "1px solid #F5EBDD"
                   }}
                   className="strip-feature-item"
                 >
-                  <div style={{ color: "#2E6A3B", flexShrink: 0, display: "flex", alignItems: "center" }}>
-                    {getIconSvg(item.icon, "#2E6A3B", 26)}
+                  <div style={{ color: "#556B3B", flexShrink: 0, display: "flex", alignItems: "center" }}>
+                    {getIconSvg(item.icon, "#556B3B", 26)}
                   </div>
                   <div>
-                    <h4 style={{ fontSize: "13px", fontWeight: "700", color: "#111827", margin: "0 0 2px 0", lineHeight: "1.25" }}>
+                    <h4 style={{ fontSize: "13px", fontWeight: "700", color: "#2B1F14", margin: "0 0 2px 0", lineHeight: "1.25" }}>
                       {item.title}
                     </h4>
-                    <div style={{ fontSize: "10.5px", color: "#6B7280", margin: 0, lineHeight: "1.35" }}>
+                    <div style={{ fontSize: "10.5px", color: "#7C7267", margin: 0, lineHeight: "1.35" }}>
                       {renderRichText(item.description)}
                     </div>
                   </div>
@@ -665,18 +665,18 @@ export default function LandingPageTemplate({ initialPage }) {
               ))}
             </div>
 
-            {/* Right Card: Journey box with solid green icon, title, divider & description */}
+            {/* Right Card: Journey box with solid olive green icon, title, divider & description */}
             <div 
               style={{
                 backgroundColor: "#FFFFFF",
-                border: "1px solid #EBE4D7",
+                border: "1px solid #F5EBDD",
                 borderRadius: "16px",
                 padding: "16px 22px",
                 display: "grid",
                 gridTemplateColumns: "auto auto 1px 1fr",
                 gap: "16px",
                 alignItems: "center",
-                boxShadow: "0 4px 16px rgba(0,0,0,0.02)"
+                boxShadow: "0 4px 16px rgba(43, 31, 20, 0.03)"
               }}
               className="strip-journey-card-box"
             >
@@ -684,7 +684,7 @@ export default function LandingPageTemplate({ initialPage }) {
                 width: "44px",
                 height: "44px",
                 borderRadius: "12px",
-                backgroundColor: "#2E6A3B",
+                backgroundColor: "#556B3B",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -697,13 +697,13 @@ export default function LandingPageTemplate({ initialPage }) {
                 </svg>
               </div>
               <div style={{ minWidth: "120px", maxWidth: "145px" }}>
-                <h4 style={{ fontSize: "13.5px", fontWeight: "700", color: "#111827", margin: 0, lineHeight: "1.25" }}>
+                <h4 style={{ fontSize: "13.5px", fontWeight: "700", color: "#2B1F14", margin: 0, lineHeight: "1.25" }}>
                   {hero.stripRightCard?.title || "Begin Your Quran Learning Journey"}
                 </h4>
               </div>
-              <div style={{ width: "1px", height: "46px", backgroundColor: "#ECE7DD" }} className="strip-right-divider" />
+              <div style={{ width: "1px", height: "46px", backgroundColor: "#F5EBDD" }} className="strip-right-divider" />
               <div>
-                <div style={{ fontSize: "10.5px", color: "#4B5563", margin: 0, lineHeight: "1.4" }}>
+                <div style={{ fontSize: "10.5px", color: "#5C4D3C", margin: 0, lineHeight: "1.4" }}>
                   {renderRichText(hero.stripRightCard?.text, "Whether you are a beginner or looking to improve your Tajweed, memorization, or Islamic knowledge, we have the right course for you. Learn in a way that fits your pace, your goals, and your lifestyle.")}
                 </div>
               </div>
@@ -717,7 +717,7 @@ export default function LandingPageTemplate({ initialPage }) {
       {/* =========================================================================
          SECTION 2: WHY CHOOSE US
          ========================================================================= */}
-      <section style={{ backgroundColor: "#FFFFFF", padding: "40px 0" }}>
+      <section style={{ background: "linear-gradient(180deg, #FFFDF9 0%, #FAF6F0 50%, #FAF7F2 100%)", padding: "44px 0" }}>
         <div style={{ maxWidth: "1350px", width: "100%", margin: "0 auto", boxSizing: "border-box" }} className="landing-container">
           
           {/* Section Heading with Accent Line */}
@@ -725,7 +725,7 @@ export default function LandingPageTemplate({ initialPage }) {
             <h2 style={{ 
               fontSize: "clamp(26px, 3.2vw, 38px)", 
               fontWeight: "700", 
-              color: "#111827", 
+              color: "#2B1F14", 
               lineHeight: "1.25", 
               margin: "0 0 10px 0",
               letterSpacing: "-0.4px",
@@ -734,17 +734,17 @@ export default function LandingPageTemplate({ initialPage }) {
               {whyChoose.headingPrefix ? (
                 <>
                   {whyChoose.headingPrefix}
-                  <span style={{ color: "#CE7823" }}>{whyChoose.headingHighlight || "Institute?"}</span>
+                  <span style={{ color: "#C99B4D" }}>{whyChoose.headingHighlight || "Institute?"}</span>
                 </>
               ) : (
                 <>
                   Why Choose Online Quran Classes<br />
-                  <span style={{ color: "#1E3A24" }}>at Yaqeen </span>
-                  <span style={{ color: "#CE7823" }}>Institute?</span>
+                  <span style={{ color: "#556B3B" }}>at Yaqeen </span>
+                  <span style={{ color: "#C99B4D" }}>Institute?</span>
                 </>
               )}
             </h2>
-            <div style={{ width: "38px", height: "3.5px", backgroundColor: "#1E3A24", borderRadius: "2px" }} />
+            <div style={{ width: "38px", height: "3.5px", backgroundColor: "#556B3B", borderRadius: "2px" }} />
           </div>
 
           {/* Lead Intro Text */}
@@ -752,7 +752,7 @@ export default function LandingPageTemplate({ initialPage }) {
             <p style={{ 
               fontSize: "clamp(13px, 1.05vw, 14.5px)", 
               lineHeight: "1.7", 
-              color: "#374151", 
+              color: "#5C4D3C", 
               margin: 0,
               whiteSpace: "pre-line"
             }}>
@@ -776,21 +776,21 @@ export default function LandingPageTemplate({ initialPage }) {
                   width: "46px",
                   height: "46px",
                   borderRadius: "12px",
-                  backgroundColor: "#F7F5EE",
-                  border: "1px solid #ECE7DA",
+                  backgroundColor: "rgba(85, 107, 59, 0.08)",
+                  border: "1px solid rgba(85, 107, 59, 0.18)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "#2E6A3B",
+                  color: "#556B3B",
                   flexShrink: 0
                 }}>
-                  {getIconSvg(feat.icon || "monitor", "#2E6A3B", 22)}
+                  {getIconSvg(feat.icon || "monitor", "#556B3B", 22)}
                 </div>
                 <div>
-                  <h3 style={{ fontSize: "15px", fontWeight: "700", color: "#111827", margin: "0 0 4px 0", lineHeight: "1.3" }}>
+                  <h3 style={{ fontSize: "15px", fontWeight: "700", color: "#2B1F14", margin: "0 0 4px 0", lineHeight: "1.3" }}>
                     {feat.title}
                   </h3>
-                  <div style={{ fontSize: "12.5px", lineHeight: "1.55", color: "#4B5563", margin: 0 }}>
+                  <div style={{ fontSize: "12.5px", lineHeight: "1.55", color: "#5C4D3C", margin: 0 }}>
                     {renderRichText(feat.description)}
                   </div>
                 </div>
@@ -802,45 +802,45 @@ export default function LandingPageTemplate({ initialPage }) {
           <div 
             style={{
               backgroundColor: "#FFFFFF",
-              border: "1px solid #ECE7DD",
+              border: "1px solid #F5EBDD",
               borderRadius: "18px",
               padding: "24px 32px",
               display: "grid",
               gridTemplateColumns: "auto 1fr auto",
               gap: "24px",
               alignItems: "center",
-              boxShadow: "0 4px 20px rgba(0,0,0,0.03)"
+              boxShadow: "0 4px 20px rgba(43, 31, 20, 0.04)"
             }}
             className="why-bottom-action-card scroll-reveal-scale delay-2"
           >
-            {/* Left Big Dark Green Star Icon Circle */}
+            {/* Left Big Dark Forest Star Icon Circle */}
             <div style={{
               width: "60px",
               height: "60px",
               borderRadius: "50%",
-              backgroundColor: "#263B29",
+              backgroundColor: "#3C4E28",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               flexShrink: 0,
-              boxShadow: "0 4px 12px rgba(38, 59, 41, 0.2)"
+              boxShadow: "0 4px 12px rgba(60, 78, 40, 0.2)"
             }}>
-              {getIconSvg("star", "#CE7823", 26)}
+              {getIconSvg("star", "#C99B4D", 26)}
             </div>
 
             {/* Middle Title & Description */}
             <div>
-              <h3 style={{ fontSize: "16.5px", fontWeight: "700", color: "#111827", margin: "0 0 6px 0", lineHeight: "1.3" }}>
+              <h3 style={{ fontSize: "16.5px", fontWeight: "700", color: "#2B1F14", margin: "0 0 6px 0", lineHeight: "1.3" }}>
                 {whyChoose.bottomBox?.title || "Start Your Online Quran Learning Journey Today"}
               </h3>
-              <div style={{ fontSize: "12px", color: "#4B5563", margin: 0, lineHeight: "1.5" }}>
+              <div style={{ fontSize: "12px", color: "#5C4D3C", margin: 0, lineHeight: "1.5" }}>
                 {renderRichText(whyChoose.bottomBox?.description, "Whether you are looking for online Quran classes for kids, Quran lessons for beginners, Quran memorization (Hifz) program, or Islamic Studies courses - Yaqeen Institute is here to help you every step of the way.")}
               </div>
             </div>
 
             {/* Right Buttons & Trust Note */}
             <div style={{ 
-              borderLeft: "1px solid #ECE7DD", 
+              borderLeft: "1px solid #F5EBDD", 
               paddingLeft: "24px", 
               display: "flex", 
               flexDirection: "column", 
@@ -848,27 +848,27 @@ export default function LandingPageTemplate({ initialPage }) {
               minWidth: "220px" 
             }} className="why-action-right-box">
               <Link
-                href={whyChoose.bottomBox?.primaryBtnUrl || "/book-free-trial"}
+                href={whyChoose.bottomBox?.primaryBtnUrl || "/register"}
                 style={{
                   textDecoration: "none",
-                  backgroundColor: "#CE7823",
+                  backgroundColor: "#C99B4D",
                   color: "#FFFFFF",
                   padding: "10px 20px",
-                  borderRadius: "8px",
+                  borderRadius: "9999px",
                   fontSize: "13px",
                   fontWeight: "600",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   gap: "8px",
-                  boxShadow: "0 3px 10px rgba(206, 120, 35, 0.2)",
+                  boxShadow: "0 3px 10px rgba(201, 155, 77, 0.25)",
                   transition: "all 0.2s ease"
                 }}
                 onMouseOver={(e) => {
-                  e.currentTarget.style.backgroundColor = "#B56518";
+                  e.currentTarget.style.backgroundColor = "#B3853B";
                 }}
                 onMouseOut={(e) => {
-                  e.currentTarget.style.backgroundColor = "#CE7823";
+                  e.currentTarget.style.backgroundColor = "#C99B4D";
                 }}
               >
                 {whyChoose.bottomBox?.primaryBtnText || "Book Free Trial Class"} <span>→</span>
@@ -879,10 +879,10 @@ export default function LandingPageTemplate({ initialPage }) {
                 style={{
                   textDecoration: "none",
                   backgroundColor: "#FFFFFF",
-                  border: "1.5px solid #CE7823",
-                  color: "#CE7823",
+                  border: "1.5px solid #C99B4D",
+                  color: "#C99B4D",
                   padding: "9px 20px",
-                  borderRadius: "8px",
+                  borderRadius: "9999px",
                   fontSize: "13px",
                   fontWeight: "600",
                   display: "flex",
@@ -892,7 +892,7 @@ export default function LandingPageTemplate({ initialPage }) {
                   transition: "all 0.2s ease"
                 }}
                 onMouseOver={(e) => {
-                  e.currentTarget.style.backgroundColor = "#FDF3E7";
+                  e.currentTarget.style.backgroundColor = "#FDF8F0";
                 }}
                 onMouseOut={(e) => {
                   e.currentTarget.style.backgroundColor = "#FFFFFF";
@@ -901,8 +901,8 @@ export default function LandingPageTemplate({ initialPage }) {
                 {whyChoose.bottomBox?.secondaryBtnText || "Contact Us"} <span>→</span>
               </Link>
 
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "5px", fontSize: "10px", color: "#6B7280", marginTop: "2px" }}>
-                {getIconSvg("globe", "#6B7280", 12)}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "5px", fontSize: "10px", color: "#7C7267", marginTop: "2px" }}>
+                {getIconSvg("globe", "#7C7267", 12)}
                 <span>{whyChoose.bottomBox?.trustBadgeText || "Trusted by thousands of students and parents worldwide."}</span>
               </div>
             </div>
@@ -913,9 +913,9 @@ export default function LandingPageTemplate({ initialPage }) {
       </section>
 
       {/* =========================================================================
-         SECTION 3: THE YAQEEN INSTITUTE DIFFERENCE (New Screenshot)
+         SECTION 3: THE YAQEEN INSTITUTE DIFFERENCE
          ========================================================================= */}
-      <section style={{ backgroundColor: "#FFFFFF", padding: "36px 0", position: "relative" }}>
+      <section style={{ background: "linear-gradient(180deg, #FAF7F2 0%, #FFFDF9 45%, #FAF5EE 100%)", padding: "40px 0", position: "relative" }}>
         <div style={{ maxWidth: "1350px", width: "100%", margin: "0 auto", boxSizing: "border-box" }} className="landing-container">
           
           <div 
@@ -930,20 +930,20 @@ export default function LandingPageTemplate({ initialPage }) {
             {/* COLUMN 1: 5 LEFT STACKED FEATURE CARDS */}
             <div style={{ display: "flex", flexDirection: "column", gap: "10px", justifyContent: "space-between" }} className="scroll-reveal-left">
               {diffLeftCards.map((card, idx) => {
-                const isOrange = card.colorTheme === "orange" || idx % 2 === 0;
-                const iconBg = isOrange ? "#FDF3E7" : "#EAF4ED";
-                const iconColor = isOrange ? "#CE7823" : "#2E6A3B";
+                const isGold = card.colorTheme === "orange" || idx % 2 === 0;
+                const iconBg = isGold ? "rgba(201, 155, 77, 0.12)" : "rgba(85, 107, 59, 0.12)";
+                const iconColor = isGold ? "#C99B4D" : "#556B3B";
 
                 return (
                   <div key={idx} style={{
                     backgroundColor: "#FFFFFF",
-                    border: "1px solid #ECE7DD",
+                    border: "1px solid #F5EBDD",
                     borderRadius: "14px",
                     padding: "11px 14px",
                     display: "flex",
                     alignItems: "center",
                     gap: "12px",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.02)"
+                    boxShadow: "0 2px 8px rgba(43, 31, 20, 0.02)"
                   }}>
                     <div style={{
                       width: "38px",
@@ -959,10 +959,10 @@ export default function LandingPageTemplate({ initialPage }) {
                       {getIconSvg(card.icon, iconColor, 18)}
                     </div>
                     <div>
-                      <h4 style={{ fontSize: "12.5px", fontWeight: "700", color: "#111827", margin: "0 0 2px 0", lineHeight: "1.25" }}>
+                      <h4 style={{ fontSize: "12.5px", fontWeight: "700", color: "#2B1F14", margin: "0 0 2px 0", lineHeight: "1.25" }}>
                         {card.title}
                       </h4>
-                      <div style={{ fontSize: "10.5px", color: "#6B7280", margin: 0, lineHeight: "1.35" }}>
+                      <div style={{ fontSize: "10.5px", color: "#7C7267", margin: 0, lineHeight: "1.35" }}>
                         {renderRichText(card.description)}
                       </div>
                     </div>
@@ -985,8 +985,9 @@ export default function LandingPageTemplate({ initialPage }) {
                 <div style={{ marginBottom: "12px" }}>
                   <span style={{
                     display: "inline-block",
-                    backgroundColor: "#FDF3E7",
-                    color: "#B2651B",
+                    backgroundColor: "rgba(201, 155, 77, 0.12)",
+                    color: "#8C5D31",
+                    border: "1px solid rgba(201, 155, 77, 0.3)",
                     padding: "4px 14px",
                     borderRadius: "12px",
                     fontSize: "10px",
@@ -1002,13 +1003,13 @@ export default function LandingPageTemplate({ initialPage }) {
                 <h2 style={{
                   fontSize: "clamp(28px, 3vw, 40px)",
                   fontWeight: "700",
-                  color: "#111827",
+                  color: "#2B1F14",
                   lineHeight: "1.15",
                   margin: "0 0 18px 0",
                   letterSpacing: "-0.5px"
                 }}>
                   {difference.centerHeadingPrefix || "The Yaqeen Institute"}
-                  <span style={{ color: "#CE7823", display: "block" }}>
+                  <span style={{ color: "#C99B4D", display: "block" }}>
                     {difference.centerHeadingHighlight || "Difference"}
                   </span>
                 </h2>
@@ -1019,7 +1020,7 @@ export default function LandingPageTemplate({ initialPage }) {
                     <p key={idx} style={{
                       fontSize: "12.5px",
                       lineHeight: "1.65",
-                      color: "#4B5563",
+                      color: "#5C4D3C",
                       margin: 0
                     }}>
                       {renderRichText(para)}
@@ -1035,15 +1036,15 @@ export default function LandingPageTemplate({ initialPage }) {
                   gridTemplateColumns: "repeat(4, 1fr)",
                   gap: "8px",
                   alignItems: "flex-start",
-                  borderTop: "1px solid #ECE7DD",
+                  borderTop: "1px solid #F5EBDD",
                   paddingTop: "16px"
                 }}
                 className="diff-pillars-row"
               >
                 {diffCenterPillars.map((pillar, idx) => {
-                  const isOrange = pillar.colorTheme === "orange" || idx % 2 === 0;
-                  const iconBg = isOrange ? "#FDF3E7" : "#EAF4ED";
-                  const iconColor = isOrange ? "#CE7823" : "#2E6A3B";
+                  const isGold = pillar.colorTheme === "orange" || idx % 2 === 0;
+                  const iconBg = isGold ? "rgba(201, 155, 77, 0.12)" : "rgba(85, 107, 59, 0.12)";
+                  const iconColor = isGold ? "#C99B4D" : "#556B3B";
 
                   return (
                     <div 
@@ -1051,7 +1052,7 @@ export default function LandingPageTemplate({ initialPage }) {
                       style={{
                         paddingLeft: idx === 0 ? "0" : "12px",
                         paddingRight: "8px",
-                        borderLeft: idx === 0 ? "none" : "1px solid #ECE7DD"
+                        borderLeft: idx === 0 ? "none" : "1px solid #F5EBDD"
                       }}
                       className="diff-pillar-item"
                     >
@@ -1068,10 +1069,10 @@ export default function LandingPageTemplate({ initialPage }) {
                       }}>
                         {getIconSvg(pillar.icon, iconColor, 16)}
                       </div>
-                      <h4 style={{ fontSize: "11.5px", fontWeight: "700", color: "#111827", margin: "0 0 2px 0", lineHeight: "1.25" }}>
+                      <h4 style={{ fontSize: "11.5px", fontWeight: "700", color: "#2B1F14", margin: "0 0 2px 0", lineHeight: "1.25" }}>
                         {pillar.title}
                       </h4>
-                      <p style={{ fontSize: "10px", color: "#6B7280", margin: 0, lineHeight: "1.3" }}>
+                      <p style={{ fontSize: "10px", color: "#7C7267", margin: 0, lineHeight: "1.3" }}>
                         {pillar.description}
                       </p>
                     </div>
@@ -1081,22 +1082,22 @@ export default function LandingPageTemplate({ initialPage }) {
 
             </div>
 
-            {/* COLUMN 3: RIGHT DARK GREEN CARD */}
+            {/* COLUMN 3: RIGHT DARK FOREST CARD */}
             <div 
               style={{
-                backgroundColor: "#263B29",
+                backgroundColor: "#3C4E28",
                 borderRadius: "22px",
                 padding: "30px 24px",
                 color: "#FFFFFF",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
-                boxShadow: "0 12px 32px rgba(38, 59, 41, 0.22)"
+                boxShadow: "0 12px 32px rgba(60, 78, 40, 0.25)"
               }}
               className="scroll-reveal-right"
             >
               <div>
-                <span style={{ fontSize: "10.5px", fontWeight: "700", letterSpacing: "2px", color: "#E5A663", textTransform: "uppercase", display: "block" }}>
+                <span style={{ fontSize: "10.5px", fontWeight: "700", letterSpacing: "2px", color: "#C99B4D", textTransform: "uppercase", display: "block" }}>
                   — {diffRight.tag || "START YOUR"}
                 </span>
                 
@@ -1104,9 +1105,9 @@ export default function LandingPageTemplate({ initialPage }) {
                   {diffRight.title || "Quran Journey\nToday"}
                 </h3>
 
-                <div style={{ width: "36px", height: "2px", backgroundColor: "#CE7823", margin: "14px 0 16px 0", borderRadius: "1px" }} />
+                <div style={{ width: "36px", height: "2px", backgroundColor: "#C99B4D", margin: "14px 0 16px 0", borderRadius: "1px" }} />
 
-                <p style={{ fontSize: "12px", lineHeight: "1.6", color: "#E0EAE2", margin: "0 0 24px 0" }}>
+                <p style={{ fontSize: "12px", lineHeight: "1.6", color: "#E5EBDD", margin: "0 0 24px 0" }}>
                   {diffRight.description || "Join thousands of families worldwide who trust Yaqeen Institute for authentic, high-quality, and personalized Quran education."}
                 </p>
               </div>
@@ -1114,26 +1115,26 @@ export default function LandingPageTemplate({ initialPage }) {
               <div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px" }}>
                   <Link
-                    href={diffRight.primaryBtnUrl || "/book-free-trial"}
+                    href={diffRight.primaryBtnUrl || "/register"}
                     style={{
                       textDecoration: "none",
-                      backgroundColor: "#CE7823",
+                      backgroundColor: "#C99B4D",
                       color: "#FFFFFF",
                       padding: "12px 20px",
-                      borderRadius: "24px",
+                      borderRadius: "9999px",
                       fontSize: "13px",
                       fontWeight: "600",
                       textAlign: "center",
                       display: "block",
-                      boxShadow: "0 4px 12px rgba(206,120,35,0.25)",
+                      boxShadow: "0 4px 12px rgba(201, 155, 77, 0.35)",
                       transition: "all 0.2s ease"
                     }}
                     onMouseOver={(e) => {
-                      e.currentTarget.style.backgroundColor = "#B56518";
+                      e.currentTarget.style.backgroundColor = "#B3853B";
                       e.currentTarget.style.transform = "translateY(-1px)";
                     }}
                     onMouseOut={(e) => {
-                      e.currentTarget.style.backgroundColor = "#CE7823";
+                      e.currentTarget.style.backgroundColor = "#C99B4D";
                       e.currentTarget.style.transform = "translateY(0)";
                     }}
                   >
@@ -1145,10 +1146,10 @@ export default function LandingPageTemplate({ initialPage }) {
                     style={{
                       textDecoration: "none",
                       backgroundColor: "transparent",
-                      border: "1px solid rgba(255,255,255,0.35)",
+                      border: "1px solid rgba(255,255,255,0.4)",
                       color: "#FFFFFF",
                       padding: "10px 20px",
-                      borderRadius: "24px",
+                      borderRadius: "9999px",
                       fontSize: "13px",
                       fontWeight: "600",
                       textAlign: "center",
@@ -1156,12 +1157,12 @@ export default function LandingPageTemplate({ initialPage }) {
                       transition: "all 0.2s ease"
                     }}
                     onMouseOver={(e) => {
-                      e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)";
-                      e.currentTarget.style.borderColor = "rgba(255,255,255,0.6)";
+                      e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.12)";
+                      e.currentTarget.style.borderColor = "rgba(255,255,255,0.7)";
                     }}
                     onMouseOut={(e) => {
                       e.currentTarget.style.backgroundColor = "transparent";
-                      e.currentTarget.style.borderColor = "rgba(255,255,255,0.35)";
+                      e.currentTarget.style.borderColor = "rgba(255,255,255,0.4)";
                     }}
                   >
                     {diffRight.secondaryBtnText || "Contact Us"}
@@ -1169,8 +1170,8 @@ export default function LandingPageTemplate({ initialPage }) {
                 </div>
 
                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <div style={{ color: "#CE7823", flexShrink: 0 }}>
-                    {getIconSvg("shield", "#CE7823", 16)}
+                  <div style={{ color: "#C99B4D", flexShrink: 0 }}>
+                    {getIconSvg("shield", "#C99B4D", 16)}
                   </div>
                   <span style={{ fontSize: "10.5px", color: "#C5D6C8", lineHeight: "1.3" }}>
                     {diffRight.trustBadgeText || "Trusted by families who value Islamic education."}
@@ -1190,13 +1191,13 @@ export default function LandingPageTemplate({ initialPage }) {
               alignItems: "center",
               marginTop: "28px",
               paddingTop: "20px",
-              borderTop: "1px solid #ECE7DD"
+              borderTop: "1px solid #F5EBDD"
             }}
             className="diff-bottom-bar scroll-reveal delay-1"
           >
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <div style={{ width: "24px", height: "2px", backgroundColor: "#CE7823", borderRadius: "1px" }} />
-              <span style={{ fontSize: "10.5px", fontWeight: "700", letterSpacing: "1.4px", color: "#6B7280", textTransform: "uppercase" }}>
+              <div style={{ width: "24px", height: "2px", backgroundColor: "#C99B4D", borderRadius: "1px" }} />
+              <span style={{ fontSize: "10.5px", fontWeight: "700", letterSpacing: "1.4px", color: "#7C7267", textTransform: "uppercase" }}>
                 {difference.taglineLeft || "MORE THAN CLASSES. A BRIGHTER TOMORROW."}
               </span>
             </div>
@@ -1206,13 +1207,13 @@ export default function LandingPageTemplate({ initialPage }) {
                 fontFamily: "var(--font-lora), 'Caveat', cursive, serif", 
                 fontStyle: "italic", 
                 fontSize: "20px", 
-                color: "#1F2937", 
+                color: "#2B1F14", 
                 letterSpacing: "0.2px",
                 fontWeight: "500"
               }}>
                 {difference.taglineRight || "Knowledge for a Brighter Tomorrow"}
               </span>
-              <div style={{ width: "24px", height: "2px", backgroundColor: "#CE7823", borderRadius: "1px" }} />
+              <div style={{ width: "24px", height: "2px", backgroundColor: "#C99B4D", borderRadius: "1px" }} />
             </div>
           </div>
 
@@ -1220,19 +1221,20 @@ export default function LandingPageTemplate({ initialPage }) {
       </section>
 
       {/* =========================================================================
-         SECTION 4: TRUSTED BY MUSLIM FAMILIES ACROSS THE UK (Image 2)
+         SECTION 4: TRUSTED BY MUSLIM FAMILIES ACROSS THE UK
          ========================================================================= */}
-      <section style={{ backgroundColor: "#FFFFFF", padding: "28px 0", position: "relative" }}>
+      <section style={{ background: "linear-gradient(180deg, #FAF5EE 0%, #FAF8F5 50%, #FAF5EE 100%)", padding: "32px 0", position: "relative" }}>
         <div style={{ maxWidth: "1350px", width: "100%", margin: "0 auto", boxSizing: "border-box" }} className="landing-container">
           
           <div 
             style={{
-              backgroundColor: "#FAF7F2",
+              backgroundColor: "#FFFDF9",
               borderRadius: "24px",
-              border: "1px solid #EAE3D5",
+              border: "1px solid #EADDC8",
               padding: "36px 40px",
               position: "relative",
-              overflow: "hidden"
+              overflow: "hidden",
+              boxShadow: "0 6px 24px rgba(43, 31, 20, 0.03)"
             }}
             className="uk-families-wrapper scroll-reveal"
           >
@@ -1244,7 +1246,7 @@ export default function LandingPageTemplate({ initialPage }) {
               width: "80px",
               height: "60px",
               opacity: 0.15,
-              backgroundImage: "radial-gradient(#CE7823 1.5px, transparent 1.5px)",
+              backgroundImage: "radial-gradient(#C99B4D 1.5px, transparent 1.5px)",
               backgroundSize: "8px 8px",
               pointerEvents: "none"
             }} />
@@ -1256,10 +1258,10 @@ export default function LandingPageTemplate({ initialPage }) {
                 <img src={ukTrust.logoUrl || "/images/logo.png"} alt="Yaqeen Institute Logo" style={{ height: "42px", width: "auto", display: "block" }} />
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "2.5px", color: "#6B7280", textTransform: "uppercase" }}>
+                <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "2.5px", color: "#7C7267", textTransform: "uppercase" }}>
                   {ukTrust.tagline || "LEARN • GROW • BELONG"}
                 </span>
-                <div style={{ width: "36px", height: "2px", backgroundColor: "#CE7823", borderRadius: "1px" }} />
+                <div style={{ width: "36px", height: "2px", backgroundColor: "#C99B4D", borderRadius: "1px" }} />
               </div>
             </div>
 
@@ -1283,8 +1285,9 @@ export default function LandingPageTemplate({ initialPage }) {
                   <div style={{ marginBottom: "14px" }}>
                     <span style={{
                       display: "inline-block",
-                      backgroundColor: "#EDE5D8",
-                      color: "#B2651B",
+                      backgroundColor: "rgba(201, 155, 77, 0.12)",
+                      color: "#8C5D31",
+                      border: "1px solid rgba(201, 155, 77, 0.3)",
                       padding: "5px 14px",
                       borderRadius: "14px",
                       fontSize: "10.5px",
@@ -1300,20 +1303,20 @@ export default function LandingPageTemplate({ initialPage }) {
                   <h2 style={{
                     fontSize: "clamp(26px, 2.6vw, 36px)",
                     fontWeight: "700",
-                    color: "#111827",
+                    color: "#2B1F14",
                     lineHeight: "1.24",
                     margin: "0 0 16px 0",
                     letterSpacing: "-0.4px"
                   }}>
                     {ukTrust.headingPrefix || "Trusted by Muslim Families Across the "}
-                    <span style={{ color: "#CE7823" }}>{ukTrust.headingHighlight || "United Kingdom"}</span>
+                    <span style={{ color: "#C99B4D" }}>{ukTrust.headingHighlight || "United Kingdom"}</span>
                   </h2>
 
                   {/* Paragraph */}
                   <p style={{
                     fontSize: "13px",
                     lineHeight: "1.65",
-                    color: "#4B5563",
+                    color: "#5C4D3C",
                     margin: "0 0 24px 0"
                   }}>
                     {renderRichText(ukTrust.leadParagraph, "At Yaqeen Institute, thousands of families across England, Scotland, Wales, and Northern Ireland place their trust in us for high-quality Quran education. Our commitment to academic excellence, strong values, and student development has made us a preferred choice for parents who want the best Islamic education for their children.")}
@@ -1322,15 +1325,15 @@ export default function LandingPageTemplate({ initialPage }) {
 
                 {/* Key Highlights Card */}
                 <div style={{
-                  backgroundColor: "#EFE8DC",
+                  backgroundColor: "#F5EFE6",
                   borderRadius: "16px",
                   padding: "20px 22px"
                 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
-                    <h4 style={{ fontSize: "14px", fontWeight: "700", color: "#111827", margin: 0 }}>
+                    <h4 style={{ fontSize: "14px", fontWeight: "700", color: "#2B1F14", margin: 0 }}>
                       {ukTrust.highlightsBoxTitle || "Key Highlights of Yaqeen Institute"}
                     </h4>
-                    <div style={{ width: "28px", height: "2px", backgroundColor: "#CE7823", borderRadius: "1px" }} />
+                    <div style={{ width: "28px", height: "2px", backgroundColor: "#C99B4D", borderRadius: "1px" }} />
                   </div>
 
                   <div 
@@ -1348,21 +1351,21 @@ export default function LandingPageTemplate({ initialPage }) {
                           height: "32px",
                           borderRadius: "50%",
                           backgroundColor: "#FFFFFF",
-                          border: "1px solid #DFD7CA",
+                          border: "1px solid #EADDC8",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          color: "#2E6A3B",
+                          color: "#556B3B",
                           flexShrink: 0,
                           marginTop: "2px"
                         }}>
-                          {getIconSvg(item.icon, "#2E6A3B", 16)}
+                          {getIconSvg(item.icon, "#556B3B", 16)}
                         </div>
                         <div>
-                          <h5 style={{ fontSize: "12px", fontWeight: "700", color: "#111827", margin: "0 0 2px 0", lineHeight: "1.25" }}>
+                          <h5 style={{ fontSize: "12px", fontWeight: "700", color: "#2B1F14", margin: "0 0 2px 0", lineHeight: "1.25" }}>
                             {item.title}
                           </h5>
-                          <p style={{ fontSize: "10px", color: "#6B7280", margin: 0, lineHeight: "1.3" }}>
+                          <p style={{ fontSize: "10px", color: "#7C7267", margin: 0, lineHeight: "1.3" }}>
                             {item.description}
                           </p>
                         </div>
@@ -1379,8 +1382,8 @@ export default function LandingPageTemplate({ initialPage }) {
                   backgroundColor: "#FFFFFF",
                   borderRadius: "20px",
                   padding: "32px 34px",
-                  border: "1px solid #ECE7DD",
-                  boxShadow: "0 4px 20px rgba(0,0,0,0.02)",
+                  border: "1px solid #F5EBDD",
+                  boxShadow: "0 4px 20px rgba(43, 31, 20, 0.03)",
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center"
@@ -1390,22 +1393,22 @@ export default function LandingPageTemplate({ initialPage }) {
                 <h3 style={{
                   fontSize: "22px",
                   fontWeight: "700",
-                  color: "#111827",
+                  color: "#2B1F14",
                   margin: 0,
                   lineHeight: "1.25"
                 }}>
                   {ukTrust.whyCardHeadingPrefix || "Why Families Choose "}
-                  <span style={{ color: "#CE7823" }}>{ukTrust.whyCardHeadingHighlight || "Yaqeen Institute"}</span>
+                  <span style={{ color: "#C99B4D" }}>{ukTrust.whyCardHeadingHighlight || "Yaqeen Institute"}</span>
                 </h3>
 
-                <div style={{ width: "42px", height: "2.5px", backgroundColor: "#CE7823", borderRadius: "2px", margin: "12px 0 18px 0" }} />
+                <div style={{ width: "42px", height: "2.5px", backgroundColor: "#C99B4D", borderRadius: "2px", margin: "12px 0 18px 0" }} />
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                   {(ukTrust.whyCardParagraphs && ukTrust.whyCardParagraphs.length ? ukTrust.whyCardParagraphs : DEFAULT_LANDING_PAGE_CONTENT.ukTrust.whyCardParagraphs).map((para, idx) => (
                     <p key={idx} style={{
                       fontSize: "12px",
                       lineHeight: "1.65",
-                      color: "#4B5563",
+                      color: "#5C4D3C",
                       margin: 0
                     }}>
                       {renderRichText(para)}
@@ -1421,14 +1424,14 @@ export default function LandingPageTemplate({ initialPage }) {
               style={{
                 backgroundColor: "#FFFFFF",
                 borderRadius: "18px",
-                border: "1px solid #ECE7DD",
+                border: "1px solid #F5EBDD",
                 padding: "14px 24px",
                 marginTop: "28px",
                 display: "grid",
                 gridTemplateColumns: "1.35fr auto 1.1fr auto 0.95fr",
                 gap: "20px",
                 alignItems: "center",
-                boxShadow: "0 4px 16px rgba(0,0,0,0.02)",
+                boxShadow: "0 4px 16px rgba(43, 31, 20, 0.03)",
                 position: "relative",
                 zIndex: 1
               }}
@@ -1440,27 +1443,27 @@ export default function LandingPageTemplate({ initialPage }) {
                   width: "36px",
                   height: "36px",
                   borderRadius: "8px",
-                  backgroundColor: "#EAF4ED",
-                  color: "#2E6A3B",
+                  backgroundColor: "rgba(85, 107, 59, 0.1)",
+                  color: "#556B3B",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   flexShrink: 0
                 }}>
-                  {getIconSvg("calendar", "#2E6A3B", 18)}
+                  {getIconSvg("calendar", "#556B3B", 18)}
                 </div>
                 <div>
-                  <h4 style={{ fontSize: "12px", fontWeight: "700", color: "#111827", margin: "0 0 2px 0" }}>
+                  <h4 style={{ fontSize: "12px", fontWeight: "700", color: "#2B1F14", margin: "0 0 2px 0" }}>
                     {ukTrust.bottomStrip?.item1Title || "Start Your Quran Learning Journey Today"}
                   </h4>
-                  <p style={{ fontSize: "10px", color: "#6B7280", margin: 0, lineHeight: "1.3" }}>
+                  <p style={{ fontSize: "10px", color: "#7C7267", margin: 0, lineHeight: "1.3" }}>
                     {ukTrust.bottomStrip?.item1Desc || "Take the first step towards a brighter future with quality, flexible, and personalized Quran education."}
                   </p>
                 </div>
               </div>
 
               {/* Divider */}
-              <div style={{ width: "1px", height: "38px", backgroundColor: "#ECE7DD" }} className="uk-bar-divider" />
+              <div style={{ width: "1px", height: "38px", backgroundColor: "#F5EBDD" }} className="uk-bar-divider" />
 
               {/* Segment 2 */}
               <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -1468,20 +1471,20 @@ export default function LandingPageTemplate({ initialPage }) {
                   width: "32px",
                   height: "32px",
                   borderRadius: "50%",
-                  backgroundColor: "#EAF4ED",
-                  color: "#2E6A3B",
+                  backgroundColor: "rgba(85, 107, 59, 0.1)",
+                  color: "#556B3B",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   flexShrink: 0
                 }}>
-                  {getIconSvg("shield", "#2E6A3B", 16)}
+                  {getIconSvg("shield", "#556B3B", 16)}
                 </div>
                 <div>
-                  <h4 style={{ fontSize: "12px", fontWeight: "700", color: "#111827", margin: "0 0 2px 0" }}>
+                  <h4 style={{ fontSize: "12px", fontWeight: "700", color: "#2B1F14", margin: "0 0 2px 0" }}>
                     {ukTrust.bottomStrip?.item2Title || "Safe & Authentic"}
                   </h4>
-                  <p style={{ fontSize: "10px", color: "#6B7280", margin: 0, lineHeight: "1.3" }}>
+                  <p style={{ fontSize: "10px", color: "#7C7267", margin: 0, lineHeight: "1.3" }}>
                     {ukTrust.bottomStrip?.item2Desc || "A trusted learning environment for your peace of mind."}
                   </p>
                 </div>
@@ -1490,28 +1493,28 @@ export default function LandingPageTemplate({ initialPage }) {
               {/* Segment 3: CTA Button */}
               <div>
                 <Link
-                  href={ukTrust.bottomStrip?.btnUrl || "/book-free-trial"}
+                  href={ukTrust.bottomStrip?.btnUrl || "/register"}
                   style={{
                     textDecoration: "none",
-                    backgroundColor: "#CE7823",
+                    backgroundColor: "#C99B4D",
                     color: "#FFFFFF",
                     padding: "11px 24px",
-                    borderRadius: "24px",
+                    borderRadius: "9999px",
                     fontSize: "13px",
                     fontWeight: "600",
                     whiteSpace: "nowrap",
                     display: "inline-flex",
                     alignItems: "center",
                     gap: "6px",
-                    boxShadow: "0 4px 12px rgba(206,120,35,0.22)",
+                    boxShadow: "0 4px 12px rgba(201, 155, 77, 0.28)",
                     transition: "all 0.2s ease"
                   }}
                   onMouseOver={(e) => {
-                    e.currentTarget.style.backgroundColor = "#B56518";
+                    e.currentTarget.style.backgroundColor = "#B3853B";
                     e.currentTarget.style.transform = "translateY(-1px)";
                   }}
                   onMouseOut={(e) => {
-                    e.currentTarget.style.backgroundColor = "#CE7823";
+                    e.currentTarget.style.backgroundColor = "#C99B4D";
                     e.currentTarget.style.transform = "translateY(0)";
                   }}
                 >
@@ -1520,22 +1523,22 @@ export default function LandingPageTemplate({ initialPage }) {
               </div>
 
               {/* Segment 4 */}
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", borderLeft: "1px solid #ECE7DD", paddingLeft: "16px" }} className="uk-bar-right-item">
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", borderLeft: "1px solid #F5EBDD", paddingLeft: "16px" }} className="uk-bar-right-item">
                 <div style={{
                   width: "32px",
                   height: "32px",
                   borderRadius: "50%",
-                  backgroundColor: "#FDF3E7",
-                  color: "#CE7823",
+                  backgroundColor: "rgba(201, 155, 77, 0.12)",
+                  color: "#C99B4D",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   flexShrink: 0
                 }}>
-                  {getIconSvg("heart", "#CE7823", 16)}
+                  {getIconSvg("heart", "#C99B4D", 16)}
                 </div>
                 <div>
-                  <h4 style={{ fontSize: "11.5px", fontWeight: "700", color: "#111827", margin: 0, lineHeight: "1.25", whiteSpace: "pre-line" }}>
+                  <h4 style={{ fontSize: "11.5px", fontWeight: "700", color: "#2B1F14", margin: 0, lineHeight: "1.25", whiteSpace: "pre-line" }}>
                     {ukTrust.bottomStrip?.item4Title || "Nurturing\nBrighter Futures"}
                   </h4>
                 </div>
@@ -1551,19 +1554,19 @@ export default function LandingPageTemplate({ initialPage }) {
       {/* =========================================================================
          SECTION 5: COURSES SHOWCASE
          ========================================================================= */}
-      <section style={{ backgroundColor: "#FFFFFF", padding: "40px 0", position: "relative" }}>
+      <section style={{ background: "linear-gradient(180deg, #FAF5EE 0%, #FAF1E4 50%, #FAF7F2 100%)", padding: "48px 0", position: "relative" }}>
         <div style={{ maxWidth: "1350px", width: "100%", margin: "0 auto", boxSizing: "border-box" }} className="landing-container">
           
           {/* Section Header */}
           <div style={{ textAlign: "center", marginBottom: "32px" }} className="scroll-reveal">
-            <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "2.5px", color: "#CE7823", textTransform: "uppercase", display: "inline-block", marginBottom: "10px" }}>
+            <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "2.5px", color: "#C99B4D", textTransform: "uppercase", display: "inline-block", marginBottom: "10px" }}>
               {courses.tag || "EXPLORE OUR COMPREHENSIVE PROGRAMS"}
             </span>
-            <h2 style={{ fontSize: "clamp(26px, 3.2vw, 38px)", fontWeight: "700", color: "#111827", lineHeight: "1.25", margin: "0 0 16px 0", whiteSpace: "pre-line" }}>
+            <h2 style={{ fontSize: "clamp(26px, 3.2vw, 38px)", fontWeight: "700", color: "#2B1F14", lineHeight: "1.25", margin: "0 0 16px 0", whiteSpace: "pre-line" }}>
               {courses.mainHeadingPrefix || "Online Quran Courses\nat "}
-              <span style={{ color: "#CE7823" }}>{courses.mainHeadingHighlight || "Yaqeen Institute"}</span>
+              <span style={{ color: "#C99B4D" }}>{courses.mainHeadingHighlight || "Yaqeen Institute"}</span>
             </h2>
-            <div style={{ fontSize: "clamp(12.5px, 1.05vw, 14px)", lineHeight: "1.65", color: "#4B5563", maxWidth: "860px", margin: "0 auto" }}>
+            <div style={{ fontSize: "clamp(12.5px, 1.05vw, 14px)", lineHeight: "1.65", color: "#5C4D3C", maxWidth: "860px", margin: "0 auto" }}>
               {renderRichText(courses.subheading)}
             </div>
           </div>
@@ -1580,8 +1583,8 @@ export default function LandingPageTemplate({ initialPage }) {
           >
             {courseCards.map((card, idx) => {
               const isGreen = card.colorTheme === "green";
-              const themeColor = isGreen ? "#2E6A3B" : "#CE7823";
-              const themeBg = isGreen ? "#EBF5EE" : "#FDF3E7";
+              const themeColor = isGreen ? "#556B3B" : "#C99B4D";
+              const themeBg = isGreen ? "rgba(85, 107, 59, 0.1)" : "rgba(201, 155, 77, 0.12)";
               const numStr = card.number || card.id || `0${idx + 1}`;
 
               return (
@@ -1589,13 +1592,13 @@ export default function LandingPageTemplate({ initialPage }) {
                   key={idx}
                   style={{
                     backgroundColor: "#FFFFFF",
-                    border: "1px solid #ECE7DD",
+                    border: "1px solid #F5EBDD",
                     borderRadius: "16px",
                     padding: "20px 15px",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
-                    boxShadow: "0 2px 10px rgba(0,0,0,0.02)",
+                    boxShadow: "0 2px 10px rgba(43, 31, 20, 0.02)",
                     transition: "all 0.3s ease",
                     position: "relative"
                   }}
@@ -1631,19 +1634,19 @@ export default function LandingPageTemplate({ initialPage }) {
                     </div>
 
                     {/* Course Title */}
-                    <h3 style={{ fontSize: "14.5px", fontWeight: "700", color: "#111827", margin: "0 0 8px 0", lineHeight: "1.3" }}>
+                    <h3 style={{ fontSize: "14.5px", fontWeight: "700", color: "#2B1F14", margin: "0 0 8px 0", lineHeight: "1.3" }}>
                       {card.title}
                     </h3>
 
                     {/* Description */}
-                    <div style={{ fontSize: "11px", color: "#4B5563", lineHeight: "1.45", margin: "0 0 16px 0", minHeight: "34px" }}>
+                    <div style={{ fontSize: "11px", color: "#5C4D3C", lineHeight: "1.45", margin: "0 0 16px 0", minHeight: "34px" }}>
                       {renderRichText(card.description)}
                     </div>
 
                     {/* Bullet Points */}
                     <ul style={{ listStyle: "none", padding: 0, margin: "0 0 18px 0", display: "flex", flexDirection: "column", gap: "8px" }}>
                       {(card.bulletPoints || []).map((pt, pIdx) => (
-                        <li key={pIdx} style={{ fontSize: "10.5px", color: "#374151", display: "flex", alignItems: "flex-start", gap: "7px", lineHeight: "1.3" }}>
+                        <li key={pIdx} style={{ fontSize: "10.5px", color: "#4A3B2C", display: "flex", alignItems: "flex-start", gap: "7px", lineHeight: "1.3" }}>
                           <span style={{ 
                             width: "14px", 
                             height: "14px", 
@@ -1670,7 +1673,7 @@ export default function LandingPageTemplate({ initialPage }) {
                   <div style={{
                     marginTop: "auto",
                     paddingTop: "14px",
-                    borderTop: "1px dashed #ECE7DD",
+                    borderTop: "1px dashed #F5EBDD",
                     display: "flex",
                     alignItems: "flex-start",
                     gap: "8px"
@@ -1690,10 +1693,10 @@ export default function LandingPageTemplate({ initialPage }) {
                       {getIconSvg("user", themeColor, 13)}
                     </div>
                     <div>
-                      <span style={{ fontSize: "10.5px", fontWeight: "700", color: "#111827", display: "block", marginBottom: "1px" }}>
+                      <span style={{ fontSize: "10.5px", fontWeight: "700", color: "#2B1F14", display: "block", marginBottom: "1px" }}>
                         Ideal For:
                       </span>
-                      <p style={{ fontSize: "10px", color: "#4B5563", margin: 0, lineHeight: "1.35" }}>
+                      <p style={{ fontSize: "10px", color: "#5C4D3C", margin: 0, lineHeight: "1.35" }}>
                         {card.idealFor}
                       </p>
                     </div>
@@ -1711,10 +1714,10 @@ export default function LandingPageTemplate({ initialPage }) {
               width: "100%",
               margin: "32px auto 0 auto",
               backgroundColor: "#FFFFFF",
-              border: "1px solid #EDE8DF",
+              border: "1px solid #F5EBDD",
               borderRadius: "50px",
               padding: "9px 24px",
-              boxShadow: "0 4px 18px rgba(0,0,0,0.03)",
+              boxShadow: "0 4px 18px rgba(43, 31, 20, 0.03)",
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
@@ -1729,24 +1732,24 @@ export default function LandingPageTemplate({ initialPage }) {
                 width: "38px",
                 height: "38px",
                 borderRadius: "50%",
-                backgroundColor: "#FDF3E7",
-                color: "#CE7823",
+                backgroundColor: "rgba(201, 155, 77, 0.12)",
+                color: "#C99B4D",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 flexShrink: 0
               }}>
-                {getIconSvg("book", "#CE7823", 18)}
+                {getIconSvg("book", "#C99B4D", 18)}
               </div>
 
               {/* Left Divider */}
-              <div style={{ width: "1px", height: "30px", backgroundColor: "#EDE8DF", margin: "0 14px", flexShrink: 0 }} className="courses-bar-divider" />
+              <div style={{ width: "1px", height: "30px", backgroundColor: "#F5EBDD", margin: "0 14px", flexShrink: 0 }} className="courses-bar-divider" />
 
               <div>
-                <h4 style={{ fontSize: "13.5px", fontWeight: "700", color: "#111827", margin: "0 0 2px 0" }}>
+                <h4 style={{ fontSize: "13.5px", fontWeight: "700", color: "#2B1F14", margin: "0 0 2px 0" }}>
                   {courses.bottomStrip?.title || "Start Your Quran Learning Journey Today"}
                 </h4>
-                <div style={{ fontSize: "11px", color: "#6B7280", margin: 0, lineHeight: "1.35" }}>
+                <div style={{ fontSize: "11px", color: "#7C7267", margin: 0, lineHeight: "1.35" }}>
                   {renderRichText(courses.bottomStrip?.desc, "Take the first step towards a brighter future with quality, flexible, and personalized Quran education.")}
                 </div>
               </div>
@@ -1758,25 +1761,25 @@ export default function LandingPageTemplate({ initialPage }) {
                 href={courses.bottomStrip?.btnUrl || "/courses"}
                 style={{
                   textDecoration: "none",
-                  backgroundColor: "#1B3420",
+                  backgroundColor: "#556B3B",
                   color: "#FFFFFF",
                   padding: "9px 24px",
-                  borderRadius: "30px",
+                  borderRadius: "9999px",
                   fontSize: "12.5px",
                   fontWeight: "600",
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "6px",
-                  boxShadow: "0 3px 10px rgba(27, 52, 32, 0.25)",
+                  boxShadow: "0 3px 10px rgba(85, 107, 59, 0.25)",
                   transition: "all 0.2s ease",
                   whiteSpace: "nowrap"
                 }}
                 onMouseOver={(e) => {
-                  e.currentTarget.style.backgroundColor = "#122516";
+                  e.currentTarget.style.backgroundColor = "#43552E";
                   e.currentTarget.style.transform = "translateY(-1px)";
                 }}
                 onMouseOut={(e) => {
-                  e.currentTarget.style.backgroundColor = "#1B3420";
+                  e.currentTarget.style.backgroundColor = "#556B3B";
                   e.currentTarget.style.transform = "translateY(0)";
                 }}
               >
@@ -1784,7 +1787,7 @@ export default function LandingPageTemplate({ initialPage }) {
               </Link>
 
               {/* Right Divider */}
-              <div style={{ width: "1px", height: "30px", backgroundColor: "#EDE8DF", margin: "0 18px", flexShrink: 0 }} className="courses-bar-divider" />
+              <div style={{ width: "1px", height: "30px", backgroundColor: "#F5EBDD", margin: "0 18px", flexShrink: 0 }} className="courses-bar-divider" />
 
               {/* Script Tagline */}
               <div style={{ display: "flex", alignItems: "center" }} className="courses-bar-script">
@@ -1792,7 +1795,7 @@ export default function LandingPageTemplate({ initialPage }) {
                   fontFamily: "'Caveat', 'Dancing Script', 'Brush Script MT', cursive, Georgia, serif", 
                   fontStyle: "italic", 
                   fontSize: "22px", 
-                  color: "#4A6984",
+                  color: "#556B3B",
                   fontWeight: "600",
                   letterSpacing: "0.2px",
                   lineHeight: "1",
@@ -1800,7 +1803,7 @@ export default function LandingPageTemplate({ initialPage }) {
                 }}>
                   {courses.bottomStrip?.tagline || "Your Journey Starts Here"}
                 </span>
-                <span style={{ width: "36px", height: "1.5px", backgroundColor: "#CE7823", display: "inline-block", marginLeft: "12px", flexShrink: 0 }}></span>
+                <span style={{ width: "36px", height: "1.5px", backgroundColor: "#C99B4D", display: "inline-block", marginLeft: "12px", flexShrink: 0 }}></span>
               </div>
             </div>
 
@@ -1812,21 +1815,21 @@ export default function LandingPageTemplate({ initialPage }) {
       {/* =========================================================================
          SECTION 6: JOURNEY & PILLARS
          ========================================================================= */}
-      <section style={{ backgroundColor: "#FFFFFF", padding: "40px 0", position: "relative" }}>
+      <section style={{ background: "linear-gradient(180deg, #FAF7F2 0%, #FFFDF9 50%, #FAF5EE 100%)", padding: "46px 0", position: "relative" }}>
         <div style={{ maxWidth: "1350px", width: "100%", margin: "0 auto", boxSizing: "border-box" }} className="landing-container">
           
           {/* Eyebrow with decorative lines & Heading */}
           <div style={{ textAlign: "center", marginBottom: "36px" }} className="scroll-reveal">
             <div style={{ display: "inline-flex", alignItems: "center", gap: "12px", marginBottom: "10px" }}>
-              <span style={{ width: "32px", height: "1.5px", backgroundColor: "#CE7823", display: "inline-block" }}></span>
-              <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "2.5px", color: "#CE7823", textTransform: "uppercase" }}>
+              <span style={{ width: "32px", height: "1.5px", backgroundColor: "#C99B4D", display: "inline-block" }}></span>
+              <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "2.5px", color: "#C99B4D", textTransform: "uppercase" }}>
                 {journey.tag || "AT YAQEEN INSTITUTE"}
               </span>
-              <span style={{ width: "32px", height: "1.5px", backgroundColor: "#CE7823", display: "inline-block" }}></span>
+              <span style={{ width: "32px", height: "1.5px", backgroundColor: "#C99B4D", display: "inline-block" }}></span>
             </div>
-            <h2 style={{ fontSize: "clamp(26px, 3.2vw, 38px)", fontWeight: "700", color: "#111827", lineHeight: "1.25", margin: 0 }}>
+            <h2 style={{ fontSize: "clamp(26px, 3.2vw, 38px)", fontWeight: "700", color: "#2B1F14", lineHeight: "1.25", margin: 0 }}>
               {journey.headingPrefix || "Your Quran Journey, "}
-              <span style={{ color: "#CE7823" }}>{journey.headingHighlight || "Our Responsibility."}</span>
+              <span style={{ color: "#C99B4D" }}>{journey.headingHighlight || "Our Responsibility."}</span>
             </h2>
           </div>
 
@@ -1848,7 +1851,7 @@ export default function LandingPageTemplate({ initialPage }) {
                   <p key={idx} style={{ 
                     fontSize: "12.5px", 
                     lineHeight: "1.65", 
-                    color: "#374151", 
+                    color: "#5C4D3C", 
                     margin: idx === 0 ? "0 0 16px 0" : "0" 
                   }}>
                     {renderRichText(para)}
@@ -1856,8 +1859,8 @@ export default function LandingPageTemplate({ initialPage }) {
                 ))}
               </div>
               <div style={{ marginTop: "24px" }}>
-                <div style={{ width: "32px", height: "1.5px", backgroundColor: "#CE7823", marginBottom: "10px" }} />
-                <span style={{ fontSize: "9.5px", fontWeight: "700", letterSpacing: "1.5px", color: "#6B7280", textTransform: "uppercase" }}>
+                <div style={{ width: "32px", height: "1.5px", backgroundColor: "#C99B4D", marginBottom: "10px" }} />
+                <span style={{ fontSize: "9.5px", fontWeight: "700", letterSpacing: "1.5px", color: "#7C7267", textTransform: "uppercase" }}>
                   {journey.leftTagline || "KNOWLEDGE TODAY, A BRIGHTER TOMORROW."}
                 </span>
               </div>
@@ -1866,8 +1869,8 @@ export default function LandingPageTemplate({ initialPage }) {
             {/* Column 2: Center Light Cream Card */}
             <div 
               style={{
-                backgroundColor: "#FAF7F2",
-                border: "1px solid #ECE7DD",
+                backgroundColor: "#FAF8F5",
+                border: "1px solid #F5EBDD",
                 borderRadius: "16px",
                 padding: "24px 22px",
                 display: "flex",
@@ -1878,23 +1881,23 @@ export default function LandingPageTemplate({ initialPage }) {
               className="scroll-reveal delay-1"
             >
               {(journey.centerParagraphs || DEFAULT_LANDING_PAGE_CONTENT.journey.centerParagraphs || []).map((para, idx) => (
-                <div key={idx} style={{ fontSize: "12px", lineHeight: "1.6", color: "#4B5563", margin: 0 }}>
+                <div key={idx} style={{ fontSize: "12px", lineHeight: "1.6", color: "#5C4D3C", margin: 0 }}>
                   {renderRichText(para)}
                 </div>
               ))}
             </div>
 
-            {/* Column 3: Dark Green Card ("What You Will Gain") */}
+            {/* Column 3: Dark Forest Card ("What You Will Gain") */}
             <div 
               style={{
-                backgroundColor: "#263B29",
+                backgroundColor: "#3C4E28",
                 borderRadius: "18px",
                 padding: "24px 20px",
                 color: "#FFFFFF",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
-                boxShadow: "0 6px 20px rgba(38, 59, 41, 0.2)"
+                boxShadow: "0 6px 20px rgba(60, 78, 40, 0.2)"
               }}
               className="scroll-reveal delay-2"
             >
@@ -1902,7 +1905,7 @@ export default function LandingPageTemplate({ initialPage }) {
                 <h3 style={{ fontSize: "17px", fontWeight: "700", color: "#FFFFFF", margin: "0 0 8px 0" }}>
                   {journey.gainCard?.title || "What You Will Gain"}
                 </h3>
-                <div style={{ width: "28px", height: "2px", backgroundColor: "#CE7823", marginBottom: "18px" }} />
+                <div style={{ width: "28px", height: "2px", backgroundColor: "#C99B4D", marginBottom: "18px" }} />
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                   {(journey.gainCard?.items || DEFAULT_LANDING_PAGE_CONTENT.journey.gainCard.items || []).map((item, idx) => (
@@ -1911,17 +1914,17 @@ export default function LandingPageTemplate({ initialPage }) {
                         width: "32px",
                         height: "32px",
                         borderRadius: "8px",
-                        border: "1px solid rgba(206, 120, 35, 0.4)",
-                        backgroundColor: "rgba(206, 120, 35, 0.1)",
-                        color: "#E5A862",
+                        border: "1px solid rgba(201, 155, 77, 0.4)",
+                        backgroundColor: "rgba(201, 155, 77, 0.15)",
+                        color: "#C99B4D",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         flexShrink: 0
                       }}>
-                        {getIconSvg(item.icon || "book", "#E5A862", 16)}
+                        {getIconSvg(item.icon || "book", "#C99B4D", 16)}
                       </div>
-                      <span style={{ fontSize: "12.5px", fontWeight: "600", color: "#F3F4F6" }}>
+                      <span style={{ fontSize: "12.5px", fontWeight: "600", color: "#FFFFFF" }}>
                         {item.title}
                       </span>
                     </div>
@@ -1935,12 +1938,12 @@ export default function LandingPageTemplate({ initialPage }) {
                   fontFamily: "Georgia, 'Times New Roman', serif", 
                   fontStyle: "italic", 
                   fontSize: "15px", 
-                  color: "#E5A862",
+                  color: "#C99B4D", 
                   lineHeight: "1.25"
                 }}>
                   {journey.gainCard?.tagline || "A Brighter You\nThrough Knowledge"}
                 </span>
-                <span style={{ width: "20px", height: "1.5px", backgroundColor: "#CE7823", display: "inline-block" }}></span>
+                <span style={{ width: "20px", height: "1.5px", backgroundColor: "#C99B4D", display: "inline-block" }}></span>
               </div>
             </div>
 
@@ -1951,13 +1954,13 @@ export default function LandingPageTemplate({ initialPage }) {
                 fontStyle: "italic",
                 fontSize: "17px",
                 lineHeight: "1.4",
-                color: "#1F3B26",
+                color: "#3C4E28",
                 fontWeight: "600",
                 margin: "0 0 10px 0"
               }}>
                 {journey.quoteText || "“Knowledge today, a brighter tomorrow.”"}
               </p>
-              <div style={{ width: "24px", height: "1.5px", backgroundColor: "#CE7823" }} />
+              <div style={{ width: "24px", height: "1.5px", backgroundColor: "#C99B4D" }} />
             </div>
 
           </div>
@@ -1966,13 +1969,13 @@ export default function LandingPageTemplate({ initialPage }) {
           <div 
             style={{
               backgroundColor: "#FFFFFF",
-              border: "1px solid #ECE7DD",
+              border: "1px solid #F5EBDD",
               borderRadius: "16px",
               padding: "14px 20px",
               display: "grid",
               gridTemplateColumns: "repeat(5, 1fr)",
               alignItems: "center",
-              boxShadow: "0 4px 18px rgba(0,0,0,0.02)"
+              boxShadow: "0 4px 18px rgba(43, 31, 20, 0.02)"
             }}
             className="journey-bottom-strip scroll-reveal-scale delay-2"
           >
@@ -1984,7 +1987,7 @@ export default function LandingPageTemplate({ initialPage }) {
                   alignItems: "center", 
                   gap: "10px", 
                   padding: "0 10px", 
-                  borderLeft: idx === 0 ? "none" : "1px solid #ECE7DD" 
+                  borderLeft: idx === 0 ? "none" : "1px solid #F5EBDD" 
                 }}
                 className="journey-pillar-cell"
               >
@@ -1992,20 +1995,20 @@ export default function LandingPageTemplate({ initialPage }) {
                   width: "36px",
                   height: "36px",
                   borderRadius: "50%",
-                  backgroundColor: "#FDF3E7",
-                  color: "#CE7823",
+                  backgroundColor: "rgba(201, 155, 77, 0.12)",
+                  color: "#C99B4D",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   flexShrink: 0
                 }}>
-                  {getIconSvg(pil.icon || "star", "#CE7823", 18)}
+                  {getIconSvg(pil.icon || "star", "#C99B4D", 18)}
                 </div>
                 <div>
-                  <h4 style={{ fontSize: "11.5px", fontWeight: "700", color: "#111827", margin: "0 0 2px 0", lineHeight: "1.25" }}>
+                  <h4 style={{ fontSize: "11.5px", fontWeight: "700", color: "#2B1F14", margin: "0 0 2px 0", lineHeight: "1.25" }}>
                     {pil.title}
                   </h4>
-                  <p style={{ fontSize: "10px", color: "#6B7280", margin: 0, lineHeight: "1.3", whiteSpace: "pre-line" }}>
+                  <p style={{ fontSize: "10px", color: "#7C7267", margin: 0, lineHeight: "1.3", whiteSpace: "pre-line" }}>
                     {pil.subtitle}
                   </p>
                 </div>
@@ -2019,41 +2022,41 @@ export default function LandingPageTemplate({ initialPage }) {
       {/* =========================================================================
          SECTION 7: FAQS
          ========================================================================= */}
-      <section style={{ backgroundColor: "#FFFFFF", padding: "40px 0 54px 0", position: "relative" }}>
+      <section style={{ background: "linear-gradient(180deg, #FAF5EE 0%, #FAF1E4 100%)", padding: "48px 0 64px 0", position: "relative" }}>
         <div style={{ maxWidth: "1350px", width: "100%", margin: "0 auto", boxSizing: "border-box" }} className="landing-container">
           
           {/* Header */}
           <div style={{ textAlign: "center", marginBottom: "32px" }} className="scroll-reveal">
             <div style={{ display: "inline-flex", alignItems: "center", gap: "12px", marginBottom: "10px" }}>
-              <span style={{ width: "32px", height: "1.5px", backgroundColor: "#CE7823", display: "inline-block" }}></span>
-              <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "2.5px", color: "#CE7823", textTransform: "uppercase" }}>
+              <span style={{ width: "32px", height: "1.5px", backgroundColor: "#C99B4D", display: "inline-block" }}></span>
+              <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "2.5px", color: "#C99B4D", textTransform: "uppercase" }}>
                 {faqs.tag || "FAQs"}
               </span>
-              <span style={{ width: "32px", height: "1.5px", backgroundColor: "#CE7823", display: "inline-block" }}></span>
+              <span style={{ width: "32px", height: "1.5px", backgroundColor: "#C99B4D", display: "inline-block" }}></span>
             </div>
-            <h2 style={{ fontSize: "clamp(26px, 3.2vw, 38px)", fontWeight: "700", color: "#111827", lineHeight: "1.25", margin: "0 0 10px 0" }}>
+            <h2 style={{ fontSize: "clamp(26px, 3.2vw, 38px)", fontWeight: "700", color: "#2B1F14", lineHeight: "1.25", margin: "0 0 10px 0" }}>
               {faqs.headingPrefix || "Frequently Asked "}
-              <span style={{ color: "#263B29" }}>{faqs.headingHighlight || "Questions"}</span>
+              <span style={{ color: "#556B3B" }}>{faqs.headingHighlight || "Questions"}</span>
             </h2>
-            <p style={{ fontSize: "13.5px", color: "#4B5563", margin: "0 auto", maxWidth: "600px", lineHeight: "1.5" }}>
+            <p style={{ fontSize: "13.5px", color: "#5C4D3C", margin: "0 auto", maxWidth: "600px", lineHeight: "1.5" }}>
               {faqs.subtitle || "Everything you need to know about our online Quran classes."}
             </p>
           </div>
 
-          {/* FAQ 6 Rows Grid */}
+          {/* FAQ Rows Grid */}
           <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "1150px", margin: "0 auto" }}>
             {faqList.map((faq, idx) => (
               <div 
                 key={faq.id || idx}
                 style={{
                   backgroundColor: "#FFFFFF",
-                  border: "1px solid #ECE7DD",
+                  border: "1px solid #F5EBDD",
                   borderRadius: "12px",
                   padding: "14px 20px",
                   display: "flex",
                   alignItems: "center",
                   gap: "16px",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.02)",
+                  boxShadow: "0 2px 8px rgba(43, 31, 20, 0.02)",
                   transition: "all 0.2s ease"
                 }}
                 className="faq-horizontal-card scroll-reveal"
@@ -2063,35 +2066,35 @@ export default function LandingPageTemplate({ initialPage }) {
                   width: "42px",
                   height: "42px",
                   borderRadius: "50%",
-                  backgroundColor: "#FDF3E7",
-                  color: "#CE7823",
+                  backgroundColor: "rgba(201, 155, 77, 0.12)",
+                  color: "#C99B4D",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   flexShrink: 0
                 }}>
-                  {getIconSvg(faq.icon || (idx === 0 ? "book" : idx === 1 ? "user" : idx === 2 ? "screen" : idx === 3 ? "calendar" : idx === 4 ? "laptop" : "gift"), "#CE7823", 20)}
+                  {getIconSvg(faq.icon || (idx === 0 ? "book" : idx === 1 ? "user" : idx === 2 ? "screen" : idx === 3 ? "calendar" : idx === 4 ? "laptop" : "gift"), "#C99B4D", 20)}
                 </div>
 
                 {/* Question Block */}
                 <div style={{ minWidth: "190px", maxWidth: "230px", flexShrink: 0 }} className="faq-question-col">
-                  <h3 style={{ fontSize: "13.5px", fontWeight: "700", color: "#111827", margin: 0, lineHeight: "1.35" }}>
+                  <h3 style={{ fontSize: "13.5px", fontWeight: "700", color: "#2B1F14", margin: 0, lineHeight: "1.35" }}>
                     {faq.question}
                   </h3>
                 </div>
 
                 {/* Vertical Hairline Divider */}
-                <div style={{ width: "1px", height: "36px", backgroundColor: "#ECE7DD", flexShrink: 0 }} className="faq-card-divider" />
+                <div style={{ width: "1px", height: "36px", backgroundColor: "#F5EBDD", flexShrink: 0 }} className="faq-card-divider" />
 
                 {/* Answer Block */}
                 <div style={{ flex: "1 1 auto" }} className="faq-answer-col">
-                  <div style={{ fontSize: "12.5px", color: "#4B5563", margin: 0, lineHeight: "1.5" }}>
+                  <div style={{ fontSize: "12.5px", color: "#5C4D3C", margin: 0, lineHeight: "1.5" }}>
                     {renderRichText(faq.answer)}
                   </div>
                 </div>
 
                 {/* Right Down Chevron Arrow */}
-                <div style={{ color: "#374151", display: "flex", alignItems: "center", flexShrink: 0, paddingLeft: "6px" }}>
+                <div style={{ color: "#8C5D31", display: "flex", alignItems: "center", flexShrink: 0, paddingLeft: "6px" }}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="6 9 12 15 18 9" />
                   </svg>
@@ -2107,7 +2110,7 @@ export default function LandingPageTemplate({ initialPage }) {
       <style jsx>{`
           .course-card-hover:hover {
             transform: translateY(-4px);
-            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06) !important;
+            box-shadow: 0 10px 28px rgba(43, 31, 20, 0.08) !important;
           }
           @media (max-width: 1200px) {
             .courses-5card-grid {

@@ -16,7 +16,7 @@ create table if not exists public.page_seo (
 insert into public.page_seo (id) values
   ('home'), ('about'), ('courses'), ('pricing'), ('teachers'),
   ('testimonials'), ('careers'), ('faqs'), ('contact'),
-  ('bookTrial'), ('privacy'), ('terms')
+  ('bookTrial'), ('privacy'), ('terms'), ('refund'), ('cookies')
 on conflict (id) do nothing;
 
 -- Canonical base URL lives on the existing global seo_settings row.

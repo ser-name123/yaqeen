@@ -7,8 +7,8 @@ export const revalidate = 0; // Fresh fetch
 
 const RESERVED_SLUGS = new Set([
   "about", "admin", "api", "blog", "book-free-trial", "careers", "contact",
-  "courses", "faqs", "landing", "pricing", "privacy", "student-form",
-  "teacher-application", "teachers", "terms", "testimonials", "favicon.ico"
+  "cookies", "courses", "faqs", "landing", "pricing", "privacy", "refund",
+  "register", "student-form", "teacher-application", "teachers", "terms", "testimonials", "favicon.ico"
 ]);
 
 async function getLandingPageData(slug) {

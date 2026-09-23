@@ -708,7 +708,7 @@ export default function Home() {
 
               {/* Button */}
               <div style={{ marginBottom: "40px" }}>
-                <Link href={c.hero?.cta_url || "/book-free-trial"} style={{
+                <Link href={c.hero?.cta_url || "/register"} style={{
                   textDecoration: "none",
                   display: "inline-flex",
                   alignItems: "center",
@@ -1441,7 +1441,7 @@ export default function Home() {
         </div>
 
         <div className="oqc-cta reveal-slide-up">
-          <Link href={c.oqc?.cta_url || "/book-free-trial"} className="oqc-cta-btn">
+          <Link href={c.oqc?.cta_url || "/register"} className="oqc-cta-btn">
             {c.oqc?.cta_label}
           </Link>
         </div>
@@ -1771,21 +1771,18 @@ export default function Home() {
                 e.preventDefault();
                 if (!newsEmail) return;
                 try {
-                  // Save lead to Supabase contacts
-                  const { error } = await supabase
-                    .from("contacts")
-                    .insert([{ 
-                      email: newsEmail, 
-                      name: "Newsletter Subscriber", 
-                      message: "Subscribed to newsletter" 
-                    }]);
-                  
-                  if (error) throw error;
+                  const res = await fetch("/api/newsletter", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      email: newsEmail.trim(),
+                      source: "Homepage Newsletter"
+                    })
+                  });
                   setNewsSubmitted(true);
                   setNewsEmail("");
                 } catch (err) {
                   console.error("Error subscribing to newsletter:", err);
-                  // Fallback success if database table schema differs
                   setNewsSubmitted(true);
                 }
               }}

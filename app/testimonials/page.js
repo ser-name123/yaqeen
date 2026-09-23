@@ -101,7 +101,7 @@ export default function TestimonialsPage() {
       <section className="tpg-cta">
         <h2>{content.cta?.title}</h2>
         <p>{content.cta?.subtitle}</p>
-        <Link href={content.cta?.button_url || "/book-free-trial"} className="tpg-cta-btn">{content.cta?.button_label} <IconArrow /></Link>
+        <Link href={content.cta?.button_url || "/register"} className="tpg-cta-btn">{content.cta?.button_label} <IconArrow /></Link>
       </section>
 
       {/* Testimonials FAQ */}

@@ -5,6 +5,7 @@ import "./contact.css";
 import ContactForm from "@/components/ContactForm";
 import { useSettings } from "@/lib/settings-context";
 import { usePageContent } from "@/lib/use-page-content";
+import { getWhatsAppLink } from "@/lib/whatsapp";
 
 export default function ContactPage() {
   const c = usePageContent("contact");
@@ -172,7 +173,11 @@ export default function ContactPage() {
               </div>
               <div className="contact-info-text-group">
                 <span className="contact-info-item-label">{c.info.phone_label}</span>
-                <span className="contact-info-item-value">{contactPhone}</span>
+                <span className="contact-info-item-value">
+                  <a href={getWhatsAppLink(socialWhatsapp, contactPhone)} target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "none" }}>
+                    {contactPhone}
+                  </a>
+                </span>
               </div>
             </div>
 

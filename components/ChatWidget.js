@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback, Fragment } from "react";
 import { supabase } from "@/lib/supabase";
 import { useSettings } from "@/lib/settings-context";
+import { getWhatsAppLink } from "@/lib/whatsapp";
 import "./ChatWidget.css";
 
 const LS_KEY = "yaqeen_chat_session";
@@ -99,9 +100,8 @@ export default function ChatWidget() {
   const openRef = useRef(open);
   useEffect(() => { openRef.current = open; }, [open]);
 
-  const { contactPhone } = useSettings();
-  const waDigits = (contactPhone || "+44 7700 183483").replace(/[^\d]/g, "");
-  const waLink = `https://wa.me/${waDigits}`;
+  const { contactPhone, socialWhatsapp } = useSettings();
+  const waLink = getWhatsAppLink(socialWhatsapp, contactPhone);
 
   /* restore an existing session on mount */
   useEffect(() => {
@@ -306,7 +306,7 @@ export default function ChatWidget() {
                 <>
                   <div className="cw-menu-backdrop" onClick={() => setMenuOpen(false)} />
                   <div className="cw-menu">
-                    <a href="/book-free-trial" className="cw-menu-item" onClick={() => setMenuOpen(false)}><ICal /> Book a Free Trial</a>
+                    <a href="/register" className="cw-menu-item" onClick={() => setMenuOpen(false)}><ICal /> Book a Free Trial</a>
                     {sessionId && <button className="cw-menu-item danger" onClick={endChat}><IEnd /> End Chat</button>}
                   </div>
                 </>
@@ -333,7 +333,7 @@ export default function ChatWidget() {
           <>
             {/* quick actions */}
             <div className="cw-actions">
-              <a href="/book-free-trial" className="cw-action primary"><ICal /> Book a Free Trial</a>
+              <a href="/register" className="cw-action primary"><ICal /> Book a Free Trial</a>
               <a href={waLink} target="_blank" rel="noopener noreferrer" className="cw-action wa"><IWhatsApp /> WhatsApp</a>
             </div>
 

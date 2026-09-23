@@ -157,7 +157,7 @@ export default function CourseDetailPage() {
             <span className="cd-badge">Online Course</span>
             <h1>{title}</h1>
             <p>{heroSub}</p>
-            <Link href="/book-free-trial" className="cd-hero-btn">Get Started <IconArrow /></Link>
+            <Link href="/register" className="cd-hero-btn">Get Started <IconArrow /></Link>
             
             <div className="cd-meta">
               {meta.map((m) => (
@@ -267,7 +267,7 @@ export default function CourseDetailPage() {
           <div className="cd-side-card cd-side-join">
             <h3>Ready to begin?</h3>
             <p>Book a free trial class and experience our teaching before you enrol.</p>
-            <Link href="/book-free-trial" className="cd-side-btn">Join Us <IconArrow /></Link>
+            <Link href="/register" className="cd-side-btn">Join Us <IconArrow /></Link>
           </div>
 
           {others.length > 0 && (
@@ -291,7 +291,7 @@ export default function CourseDetailPage() {
       <section className="cd-cta gold">
         <h2>With our help, you can become your own guiding star.</h2>
         <p>Let&apos;s get started — book your free trial class today.</p>
-        <Link href="/book-free-trial" className="cd-cta-btn">Get Trial Class Now <IconArrow /></Link>
+        <Link href="/register" className="cd-cta-btn">Get Trial Class Now <IconArrow /></Link>
       </section>
 
       {/* FAQ */}

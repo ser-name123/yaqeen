@@ -29,6 +29,7 @@ export default function AdminTopbar({ adminEmail = "", counts = {}, onNavigate, 
   const notifItems = [
     { label: "Free Trial Bookings", tab: "freeTrials", n: counts.freeTrials || 0 },
     { label: "Contact Inquiries", tab: "contacts", n: counts.inquiries || 0 },
+    { label: "Newsletter Subscribers", tab: "newsletter", n: counts.newsletter || 0 },
     { label: "Teacher Applications", tab: "teacherApps", n: counts.teacherApps || 0 },
     { label: "Student Registrations", tab: "studentApps", n: counts.studentApps || 0 },
     { label: "Live Chat", tab: "liveChat", n: counts.chats || 0 },

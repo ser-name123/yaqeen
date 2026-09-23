@@ -97,7 +97,7 @@ export default function Navbar({ faviconUrl = "" }) {
           </a>
 
           {/* Book Trial Badge */}
-          <Link href={layout.header_cta_url || "/book-free-trial"} className="header-cta-pill">{layout.header_cta_label}</Link>
+          <Link href={layout.header_cta_url || "/register"} className="header-cta-pill">{layout.header_cta_label}</Link>
 
           <button className="mobile-toggle" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle menu" suppressHydrationWarning style={{ border: "none", background: "none", cursor: "pointer" }}>
             <span style={{ transform: isOpen ? "rotate(45deg) translate(5px, 5px)" : "none", backgroundColor: "var(--fg-color)" }}></span>
@@ -130,7 +130,7 @@ export default function Navbar({ faviconUrl = "" }) {
             )
           ))}
           <a href={telHref} className="nav-phone" style={{ display: "inline-flex", justifyContent: "center", marginTop: "6px" }}><IconPhone /> {phone}</a>
-          <Link href={layout.header_cta_url || "/book-free-trial"} className="nav-cta" style={{ display: "inline-flex", justifyContent: "center" }} onClick={() => setIsOpen(false)}>{layout.header_cta_label}</Link>
+          <Link href={layout.header_cta_url || "/register"} className="nav-cta" style={{ display: "inline-flex", justifyContent: "center" }} onClick={() => setIsOpen(false)}>{layout.header_cta_label}</Link>
         </div>
       )}
     </header>

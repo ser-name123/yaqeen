@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import { DEFAULT_LANDING_PAGE_CONTENT, DEFAULT_LANDING_PAGE_SEO } from "@/lib/landing-page-defaults";
 import { AdminIconPicker, AdminImagePicker } from "./AdminLandingAssetPickers";
 import RichTextEditor from "@/components/RichTextEditor";
+import AdminDataTable from "@/components/AdminDataTable";
 import "./AdminLandingPages.css";
 
 export function getPagePublicPath(page) {
@@ -357,13 +358,9 @@ export default function AdminLandingPages() {
     });
   };
 
-  // Filtered pages for table view
-  const filteredPages = pages.filter((p) => {
-    const matchesSearch =
-      (p.title || "").toLowerCase().includes(search.toLowerCase()) ||
-      (p.slug || "").toLowerCase().includes(search.toLowerCase());
-    const matchesStatus = statusFilter === "all" || p.status === statusFilter;
-    return matchesSearch && matchesStatus;
+  // Filtered pages for table view (by status)
+  const statusFilteredPages = pages.filter((p) => {
+    return statusFilter === "all" || p.status === statusFilter;
   });
 
   // =========================================================================
@@ -372,105 +369,101 @@ export default function AdminLandingPages() {
   if (!editingPageId || !pageData) {
     return (
       <div className="alp-wrap">
-        {/* Action Top Bar */}
-        <div className="alp-action-bar">
-          <div className="alp-search-box">
-            <input
-              type="text"
-              placeholder="Search by title or slug..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="alp-search-input"
-            />
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="alp-filter-select"
-            >
-              <option value="all">All Statuses</option>
-              <option value="published">Published</option>
-              <option value="draft">Draft</option>
-            </select>
-          </div>
-
-          <button onClick={handleCreateNew} className="alp-btn-create">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-            Create Landing Page
-          </button>
-        </div>
-
-        {/* Table List */}
-        <div className="alp-table-card">
+        <div className="glass-panel" style={{ padding: "24px" }}>
           {loading ? (
             <div style={{ padding: "40px", textAlign: "center", color: "#6B7280" }}>
               Loading landing pages...
             </div>
-          ) : filteredPages.length === 0 ? (
-            <div style={{ padding: "50px", textAlign: "center", color: "#6B7280" }}>
-              <p style={{ fontSize: "16px", fontWeight: "600", marginBottom: "8px" }}>No landing pages found.</p>
-              <p style={{ fontSize: "13.5px" }}>Click &quot;Create Landing Page&quot; to build your first dynamic landing page.</p>
-            </div>
           ) : (
-            <table className="alp-table">
-              <thead>
-                <tr>
-                  <th>Page Title & URL</th>
-                  <th>Status</th>
-                  <th>Last Updated</th>
-                  <th style={{ textAlign: "right" }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredPages.map((page) => (
-                  <tr key={page.id || page.slug}>
-                    <td>
-                      <div className="alp-page-title-cell">
-                        <span className="alp-page-title">{page.title}</span>
-                        <span className="alp-page-slug">
-                          URL: 
-                          <a href={getPagePublicPath(page)} target="_blank" rel="noopener noreferrer">
-                            {getPagePublicPath(page)} ↗
-                          </a>
-                        </span>
-                      </div>
-                    </td>
-                    <td>
-                      <span className={`alp-status-badge ${page.status || "published"}`}>
-                        <span className="alp-badge-dot" />
-                        {page.status === "draft" ? "Draft" : "Published"}
-                      </span>
-                    </td>
-                    <td style={{ color: "#6B7280", fontSize: "13px" }}>
-                      {page.updated_at ? new Date(page.updated_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "Recently"}
-                    </td>
-                    <td>
-                      <div className="alp-actions" style={{ justifyContent: "flex-end" }}>
-                        <button onClick={() => handleEdit(page.id)} className="alp-btn-action edit">
-                          ✏️ Edit
-                        </button>
-                        <button onClick={() => handleDuplicate(page)} className="alp-btn-action">
-                          📋 Duplicate
-                        </button>
-                        <a
-                          href={getPagePublicPath(page)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="alp-btn-action"
-                        >
-                          👁️ View
+            <AdminDataTable
+              title="Dynamic Landing Pages"
+              subtitle="Custom marketing funnels, promo pages and regional landing pages."
+              data={statusFilteredPages}
+              keyField="id"
+              defaultPageSize={10}
+              searchPlaceholder="Search by title, slug..."
+              searchKeys={["title", "slug"]}
+              headerAction={
+                <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="alp-filter-select"
+                    style={{ height: "38px" }}
+                  >
+                    <option value="all">All Statuses</option>
+                    <option value="published">Published</option>
+                    <option value="draft">Draft</option>
+                  </select>
+                  <button onClick={handleCreateNew} className="btn-primary" style={{ padding: "8px 16px", fontSize: "13px", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <line x1="12" y1="5" x2="12" y2="19" />
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    Create Landing Page
+                  </button>
+                </div>
+              }
+              columns={[
+                {
+                  key: "title",
+                  label: "Page Title & URL",
+                  render: (page) => (
+                    <div className="alp-page-title-cell">
+                      <span className="alp-page-title" style={{ fontWeight: "600", color: "#2B1F14" }}>{page.title}</span>
+                      <span className="alp-page-slug" style={{ fontSize: "12px", color: "var(--fg-muted)" }}>
+                        URL:{" "}
+                        <a href={getPagePublicPath(page)} target="_blank" rel="noopener noreferrer" style={{ color: "#8c5d31", textDecoration: "none" }}>
+                          {getPagePublicPath(page)} ↗
                         </a>
-                        <button onClick={() => handleDelete(page)} className="alp-btn-action delete">
-                          🗑️ Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      </span>
+                    </div>
+                  )
+                },
+                {
+                  key: "status",
+                  label: "Status",
+                  width: "130px",
+                  render: (page) => (
+                    <span className={`alp-status-badge ${page.status || "published"}`}>
+                      <span className="alp-badge-dot" />
+                      {page.status === "draft" ? "Draft" : "Published"}
+                    </span>
+                  )
+                },
+                {
+                  key: "updated_at",
+                  label: "Last Updated",
+                  width: "140px",
+                  render: (page) => (
+                    <span style={{ color: "#6B7280", fontSize: "13px" }}>
+                      {page.updated_at ? new Date(page.updated_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "Recently"}
+                    </span>
+                  )
+                }
+              ]}
+              actions={(page) => (
+                <div className="alp-actions" style={{ justifyContent: "flex-end" }}>
+                  <button onClick={() => handleEdit(page.id)} className="alp-btn-action edit">
+                    ✏️ Edit
+                  </button>
+                  <button onClick={() => handleDuplicate(page)} className="alp-btn-action">
+                    📋 Duplicate
+                  </button>
+                  <a
+                    href={getPagePublicPath(page)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="alp-btn-action"
+                  >
+                    👁️ View
+                  </a>
+                  <button onClick={() => handleDelete(page)} className="alp-btn-action delete">
+                    🗑️ Delete
+                  </button>
+                </div>
+              )}
+            />
           )}
         </div>
       </div>

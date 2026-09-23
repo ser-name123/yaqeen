@@ -7,7 +7,7 @@ const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://yaqeeninstitute.o
 
 const FIELDS = [
   "first_name", "last_name", "email", "age_group", "gender", "dial_code", "mobile", "country",
-  "course", "hours_per_week", "pricing_plan", "monthly_price", "preferred_days", "preferred_date",
+  "course", "hours_per_week", "pricing_plan", "monthly_price", "currency", "preferred_days", "preferred_date",
   "preferred_time"
 ];
 

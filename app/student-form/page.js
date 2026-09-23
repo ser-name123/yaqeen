@@ -135,12 +135,15 @@ function CustomSelect({ value, onChange, options, placeholder, invalid, rootClas
   );
 }
 
+import { CURRENCIES, getPlanPrice, formatPriceWithCurrency, detectCurrencyFromCountry } from "@/lib/geo-pricing";
+
 export default function StudentFormPage() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [plans, setPlans] = useState([]);
+  const [currency, setCurrency] = useState("USD");
 
   // Form State
   const [firstName, setFirstName] = useState("");
@@ -210,6 +213,8 @@ export default function StudentFormPage() {
             if (match) {
               setCountry(match.name);
               setDialCode(match.dial);
+              const autoCurrency = data.currency || detectCurrencyFromCountry(match.name);
+              setCurrency(autoCurrency);
             }
           }
         } catch (e) {
@@ -232,7 +237,7 @@ export default function StudentFormPage() {
     }
   }, [mounted]);
 
-  // Synchronized Selection: Country -> Dial Code
+  // Synchronized Selection: Country -> Dial Code & Auto-Currency
   const handleCountryChange = (cName) => {
     setCountry(cName);
     if (errors.country) setErrors((prev) => ({ ...prev, country: "" }));
@@ -240,10 +245,12 @@ export default function StudentFormPage() {
     const match = COUNTRIES.find((c) => c.name === cName);
     if (match) {
       setDialCode(match.dial);
+      const autoCurrency = detectCurrencyFromCountry(cName);
+      setCurrency(autoCurrency);
     }
   };
 
-  // Synchronized Selection: Dial Code -> Country
+  // Synchronized Selection: Dial Code -> Country & Auto-Currency
   const handleDialCodeChange = (code) => {
     setDialCode(code);
     
@@ -252,6 +259,8 @@ export default function StudentFormPage() {
     if (match) {
       setCountry(match.name);
       if (errors.country) setErrors((prev) => ({ ...prev, country: "" }));
+      const autoCurrency = detectCurrencyFromCountry(match.name);
+      setCurrency(autoCurrency);
     }
   };
 
@@ -284,13 +293,15 @@ export default function StudentFormPage() {
 
   // Calculate price per month for a plan
   const calculateMonthlyPrice = (rate) => {
-    return hoursPerWeek ? hoursPerWeek * rate * 4 : 0;
+    return hoursPerWeek ? Math.round(hoursPerWeek * parseFloat(rate) * 4) : 0;
   };
 
   // Selected plan's final price
   const getSelectedPlanPrice = () => {
     const selected = plans.find((p) => p.name === pricingPlan);
-    return selected ? calculateMonthlyPrice(Number(selected.price)) : 0;
+    if (!selected) return 0;
+    const rate = getPlanPrice(selected, currency);
+    return calculateMonthlyPrice(rate);
   };
 
   // Validate Step 1
@@ -355,6 +366,7 @@ export default function StudentFormPage() {
       course: course,
       hours_per_week: hoursPerWeek,
       pricing_plan: pricingPlan,
+      currency: currency,
       monthly_price: getSelectedPlanPrice(),
       preferred_days: preferredDays,
       preferred_date: preferredDate,
@@ -662,32 +674,43 @@ export default function StudentFormPage() {
 
                   <div className="bft-field">
                     <div className="pricing-header-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <label className="bft-label">Choose Your Pricing Plan<span className="req">*</span></label>
-                      <label className="bft-label" style={{ width: "100px", textAlign: "center" }}>Pricing / Month</label>
+                      <label className="bft-label">
+                        Choose Your Pricing Plan<span className="req">*</span>
+                        <span style={{ fontSize: "11.5px", color: "#8c5d31", fontWeight: "600", marginLeft: "8px" }}>
+                          ({currency === "AED" ? "🇦🇪 Gulf AED" : currency === "GBP" ? "🇬🇧 Europe GBP" : "🇺🇸 USD"})
+                        </span>
+                      </label>
+                      <label className="bft-label" style={{ minWidth: "120px", textAlign: "right" }}>Pricing / Month</label>
                     </div>
                     <div className="pricing-grid">
-                      {plans.map((plan) => (
-                        <div className="pricing-row" key={plan.name}>
-                          <label className={`bft-radio pricing-option-label ${pricingPlan === plan.name ? "checked" : ""}`} style={{ margin: 0 }}>
-                            <input
-                              type="radio"
-                              name="pricingPlan"
-                              value={plan.name}
-                              checked={pricingPlan === plan.name}
-                              onChange={() => {
-                                setPricingPlan(plan.name);
-                                if (errors.pricingPlan) setErrors((prev) => ({ ...prev, pricingPlan: "" }));
-                              }}
-                            />
-                            <span className="dot" />
-                            <span>{plan.name}</span>
-                            <span style={{ color: "#6B5B47", fontSize: "13px", marginLeft: "8px" }}>- ${Number(plan.price)}/Hour</span>
-                          </label>
-                          <div className="pricing-calc-box">
-                            {hoursPerWeek ? `$${calculateMonthlyPrice(Number(plan.price))}` : "—"}
+                      {plans.map((plan) => {
+                        const rate = getPlanPrice(plan, currency);
+                        const currSymbol = currency === "AED" ? "AED " : currency === "GBP" ? "£" : "$";
+                        const monthly = calculateMonthlyPrice(rate);
+
+                        return (
+                          <div className="pricing-row" key={plan.name}>
+                            <label className={`bft-radio pricing-option-label ${pricingPlan === plan.name ? "checked" : ""}`} style={{ margin: 0 }}>
+                              <input
+                                type="radio"
+                                name="pricingPlan"
+                                value={plan.name}
+                                checked={pricingPlan === plan.name}
+                                onChange={() => {
+                                  setPricingPlan(plan.name);
+                                  if (errors.pricingPlan) setErrors((prev) => ({ ...prev, pricingPlan: "" }));
+                                }}
+                              />
+                              <span className="dot" />
+                              <span style={{ fontWeight: "700" }}>{plan.name}</span>
+                              <span style={{ color: "#6B5B47", fontSize: "13px", marginLeft: "8px" }}>- {currSymbol}{rate}/Hour</span>
+                            </label>
+                            <div className="pricing-calc-box" style={{ fontWeight: "700", color: "#4A5D3B" }}>
+                              {hoursPerWeek ? `${currSymbol}${monthly}` : "—"}
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                     {errors.pricingPlan && <p className="bft-error">{errors.pricingPlan}</p>}
                   </div>

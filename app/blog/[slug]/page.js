@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import BlogReactions from "@/components/BlogReactions";
 import "./blog-details.css";
 
 // Rich fallback article to match mockup screenshots exactly
@@ -388,6 +389,9 @@ export default function BlogDetail() {
               ))}
             </div>
           </div>
+
+          {/* Article Reactions / Feedback Widget */}
+          <BlogReactions slug={blog?.slug || slug} />
 
           {/* Next / Previous post selection row */}
           <div className="blog-details-nav-box reveal-slide-up">

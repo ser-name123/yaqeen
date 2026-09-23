@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase";
 import { hasTab } from "@/lib/roles";
-import fs from "fs";
-import path from "path";
+import { generateSitemapData } from "@/lib/sitemap-builder";
 
 // Validate the caller's session token and return their admin row (or null)
 async function validateSession(request, supabaseAdmin) {
@@ -33,129 +32,27 @@ export async function POST(request) {
       return NextResponse.json({ success: false, message: "You do not have permission for the SEO Manager." }, { status: 403 });
     }
 
-    const { siteUrl } = await request.json();
-    if (!siteUrl) {
-      return NextResponse.json({ success: false, message: "Website URL is required." }, { status: 400 });
-    }
+    const { siteUrl } = await request.json().catch(() => ({}));
 
-    // Clean siteUrl (remove trailing slash)
-    const cleanedUrl = siteUrl.trim().replace(/\/$/, "");
+    // Generate sitemap XML and all entries dynamically
+    const { entries, siteUrl: resolvedUrl } = await generateSitemapData(siteUrl);
 
-    // Static pages
-    const staticPaths = [
-      { path: "", priority: "1.0", changeFrequency: "weekly" },
-      { path: "/courses", priority: "0.9", changeFrequency: "weekly" },
-      { path: "/pricing", priority: "0.8", changeFrequency: "monthly" },
-      { path: "/about", priority: "0.7", changeFrequency: "monthly" },
-      { path: "/teachers", priority: "0.7", changeFrequency: "weekly" },
-      { path: "/testimonials", priority: "0.6", changeFrequency: "monthly" },
-      { path: "/blog", priority: "0.7", changeFrequency: "weekly" },
-      { path: "/faqs", priority: "0.6", changeFrequency: "monthly" },
-      { path: "/careers", priority: "0.6", changeFrequency: "monthly" },
-      { path: "/contact", priority: "0.6", changeFrequency: "monthly" },
-      { path: "/book-free-trial", priority: "0.8", changeFrequency: "monthly" },
-      { path: "/teacher-application", priority: "0.6", changeFrequency: "monthly" },
-      { path: "/privacy", priority: "0.3", changeFrequency: "yearly" },
-      { path: "/terms", priority: "0.3", changeFrequency: "yearly" }
-    ];
-
-    const slugify = (text) => {
-      if (!text) return "";
-      return text
-        .toString()
-        .toLowerCase()
-        .trim()
-        .replace(/\s+/g, "-")
-        .replace(/[^\w\-]+/g, "")
-        .replace(/\-\-+/g, "-")
-        .replace(/^-+/, "")
-        .replace(/-+$/, "");
-    };
-
-    // Override static page paths with any admin-configured canonical slugs.
-    const keyByPath = {
-      "": "home", "/courses": "courses", "/pricing": "pricing", "/about": "about",
-      "/teachers": "teachers", "/testimonials": "testimonials", "/faqs": "faqs",
-      "/careers": "careers", "/contact": "contact", "/book-free-trial": "bookTrial",
-      "/privacy": "privacy", "/terms": "terms",
-    };
-    let seoSlugByKey = {};
-    try {
-      const { data: seoRows } = await supabaseAdmin.from("page_seo").select("id, slug");
-      for (const r of seoRows || []) {
-        if (r.slug) seoSlugByKey[r.id] = r.slug.startsWith("/") ? r.slug : `/${r.slug}`;
+    // Save site_url to seo_settings if passed
+    if (siteUrl && resolvedUrl) {
+      try {
+        await supabaseAdmin.from("seo_settings").upsert({
+          id: "global",
+          site_url: resolvedUrl,
+          updated_at: new Date().toISOString()
+        });
+      } catch (dbErr) {
+        console.warn("Could not save site_url to seo_settings:", dbErr.message);
       }
-    } catch (e) {
-      console.warn("Sitemap: page_seo read skipped:", e.message);
     }
-
-    const entries = [...staticPaths.map(r => {
-      const key = keyByPath[r.path];
-      const slug = key && seoSlugByKey[key];
-      const finalPath = slug !== undefined && slug !== null ? (slug === "/" ? "" : slug) : r.path;
-      return {
-        loc: `${cleanedUrl}${finalPath}`,
-        lastmod: new Date().toISOString(),
-        changefreq: r.changeFrequency,
-        priority: r.priority
-      };
-    })];
-
-    // Fetch dynamic routes
-    try {
-      const [{ data: courses }, { data: blogs }] = await Promise.all([
-        supabaseAdmin.from("courses").select("id, title, updated_at"),
-        supabaseAdmin.from("blogs").select("slug, updated_at, created_at")
-      ]);
-
-      if (courses) {
-        for (const c of courses) {
-          entries.push({
-            loc: `${cleanedUrl}/courses/${slugify(c.title)}`,
-            lastmod: c.updated_at ? new Date(c.updated_at).toISOString() : new Date().toISOString(),
-            changefreq: "monthly",
-            priority: "0.6"
-          });
-        }
-      }
-
-      if (blogs) {
-        for (const b of blogs) {
-          entries.push({
-            loc: `${cleanedUrl}/blog/${b.slug}`,
-            lastmod: b.updated_at ? new Date(b.updated_at).toISOString() : (b.created_at ? new Date(b.created_at).toISOString() : new Date().toISOString()),
-            changefreq: "monthly",
-            priority: "0.6"
-          });
-        }
-      }
-    } catch (dbErr) {
-      console.warn("Sitemap generator DB read warning:", dbErr);
-    }
-
-    // Build sitemap XML
-    let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
-    xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
-    for (const entry of entries) {
-      xml += `  <url>\n`;
-      xml += `    <loc>${entry.loc}</loc>\n`;
-      xml += `    <lastmod>${entry.lastmod}</lastmod>\n`;
-      xml += `    <changefreq>${entry.changefreq}</changefreq>\n`;
-      xml += `    <priority>${entry.priority}</priority>\n`;
-      xml += `  </url>\n`;
-    }
-    xml += `</urlset>`;
-
-    // Save to public/sitemap.xml
-    const publicPath = path.join(process.cwd(), "public");
-    if (!fs.existsSync(publicPath)) {
-      fs.mkdirSync(publicPath, { recursive: true });
-    }
-    fs.writeFileSync(path.join(publicPath, "sitemap.xml"), xml, "utf8");
 
     return NextResponse.json({ 
       success: true, 
-      message: "Sitemap generated successfully.", 
+      message: "Sitemap generated and updated successfully.", 
       path: "/sitemap.xml",
       urlCount: entries.length
     });

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSettings } from "@/lib/settings-context";
 import { supabase } from "@/lib/supabase";
 import { FOOTER_DEFAULTS } from "@/lib/layout";
+import { getWhatsAppLink } from "@/lib/whatsapp";
 
 const slugify = (text) => {
   if (!text) return "";
@@ -85,21 +86,26 @@ export default function Footer({ faviconUrl: propFaviconUrl }) {
     setNewsletterError("");
 
     try {
-      if (supabase) {
-        await supabase.from("leads").insert([
-          {
-            email: newsletterEmail.trim(),
-            name: "Footer Newsletter Subscriber",
-            message: "Subscribed via website footer",
-          },
-        ]);
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: newsletterEmail.trim(),
+          source: "Website Footer"
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setNewsletterSuccess(true);
+        setNewsletterEmail("");
+        setTimeout(() => setNewsletterSuccess(false), 5000);
+      } else {
+        setNewsletterError(data.message || "Failed to subscribe.");
       }
-      setNewsletterSuccess(true);
-      setNewsletterEmail("");
-      setTimeout(() => setNewsletterSuccess(false), 5000);
     } catch (err) {
       console.error("Footer newsletter subscription error:", err);
-      setNewsletterSuccess(true); // Still show success for UI grace
+      // Show success for UI grace
+      setNewsletterSuccess(true);
       setNewsletterEmail("");
       setTimeout(() => setNewsletterSuccess(false), 5000);
     } finally {
@@ -122,10 +128,7 @@ export default function Footer({ faviconUrl: propFaviconUrl }) {
   const displayFacebook = socialFacebook || "https://facebook.com";
   const displayInstagram = socialInstagram || "https://instagram.com";
   const displayYoutube = socialYoutube || "https://youtube.com";
-
-  const whatsappPhone = contactPhone || "+44 7488 848483";
-  const cleanWhatsappPhone = whatsappPhone.replace(/[^\d]/g, "");
-  const displayWhatsapp = `https://wa.me/${cleanWhatsappPhone}`;
+  const displayWhatsapp = getWhatsAppLink(socialWhatsapp, contactPhone);
 
   const displayPhone = contactPhone || "+44 7488 848483";
   const displayEmail = contactEmail || "info@yaqeeninstitute.com";
@@ -326,11 +329,9 @@ export default function Footer({ faviconUrl: propFaviconUrl }) {
             <div className="footer-social-section">
               <span className="footer-social-heading">{layout.social_heading}</span>
               <div className="footer-social-row">
-                {socialWhatsapp && socialWhatsapp !== "" && (
-                  <a href={displayWhatsapp} target="_blank" rel="noopener noreferrer" className="footer-social-circle whatsapp" aria-label="WhatsApp" title="WhatsApp">
-                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 2c-5.517 0-9.993 4.476-9.993 9.993 0 1.763.459 3.479 1.332 4.996l-1.37 5.007 5.128-1.346a9.92 9.92 0 0 0 4.903 1.328h.005c5.515 0 9.991-4.476 9.991-9.993 0-2.674-1.042-5.188-2.932-7.078-1.89-1.89-4.405-2.932-7.076-2.932zm4.904 13.064c-.269.761-1.385 1.4-1.9 1.452-.464.048-.7.218-2.783-.628-2.148-.872-3.486-3.08-3.593-3.223-.107-.143-.872-1.161-.872-2.213 0-1.052.554-1.57.751-1.782.197-.213.43-.269.574-.269.143 0 .287.005.412.011.127.005.297-.048.464.356.172.417.59 1.439.64 1.543.053.104.088.228.018.368-.07.139-.105.228-.21.35-.105.122-.22.274-.315.374-.105.109-.215.228-.093.439.122.21.541.893 1.157 1.442.795.707 1.463.926 1.667 1.03.205.104.325.088.446-.053.122-.143.522-.607.662-.813.14-.205.281-.172.473-.101.192.071 1.221.576 1.43.681.21.104.35.156.402.246.053.09.053.522-.216 1.283z"/></svg>
-                  </a>
-                )}
+                <a href={displayWhatsapp} target="_blank" rel="noopener noreferrer" className="footer-social-circle whatsapp" aria-label="WhatsApp" title="WhatsApp">
+                  <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 2c-5.517 0-9.993 4.476-9.993 9.993 0 1.763.459 3.479 1.332 4.996l-1.37 5.007 5.128-1.346a9.92 9.92 0 0 0 4.903 1.328h.005c5.515 0 9.991-4.476 9.991-9.993 0-2.674-1.042-5.188-2.932-7.078-1.89-1.89-4.405-2.932-7.076-2.932zm4.904 13.064c-.269.761-1.385 1.4-1.9 1.452-.464.048-.7.218-2.783-.628-2.148-.872-3.486-3.08-3.593-3.223-.107-.143-.872-1.161-.872-2.213 0-1.052.554-1.57.751-1.782.197-.213.43-.269.574-.269.143 0 .287.005.412.011.127.005.297-.048.464.356.172.417.59 1.439.64 1.543.053.104.088.228.018.368-.07.139-.105.228-.21.35-.105.122-.22.274-.315.374-.105.109-.215.228-.093.439.122.21.541.893 1.157 1.442.795.707 1.463.926 1.667 1.03.205.104.325.088.446-.053.122-.143.522-.607.662-.813.14-.205.281-.172.473-.101.192.071 1.221.576 1.43.681.21.104.35.156.402.246.053.09.053.522-.216 1.283z"/></svg>
+                </a>
                 {socialFacebook && socialFacebook !== "" && (
                   <a href={displayFacebook} target="_blank" rel="noopener noreferrer" className="footer-social-circle facebook" aria-label="Facebook" title="Facebook">
                     <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/></svg>
@@ -384,6 +385,10 @@ export default function Footer({ faviconUrl: propFaviconUrl }) {
             <Link href="/terms" className="footer-legal-link">Terms of Service</Link>
             <span className="footer-legal-separator">·</span>
             <Link href="/privacy" className="footer-legal-link">Privacy Policy</Link>
+            <span className="footer-legal-separator">·</span>
+            <Link href="/refund" className="footer-legal-link">Refund Policy</Link>
+            <span className="footer-legal-separator">·</span>
+            <Link href="/cookies" className="footer-legal-link">Cookies Policy</Link>
             <span className="footer-legal-separator">·</span>
             <a href="/sitemap.xml" target="_blank" rel="noopener noreferrer" className="footer-legal-link">Sitemap</a>
           </div>

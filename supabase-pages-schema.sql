@@ -17,6 +17,8 @@ insert into public.page_content (id, content) values
   ('contact', '{}'::jsonb),
   ('privacy', '{}'::jsonb),
   ('terms', '{}'::jsonb),
+  ('refund', '{}'::jsonb),
+  ('cookies', '{}'::jsonb),
   ('faqs', '{}'::jsonb),
   ('careers', '{}'::jsonb),
   ('testimonials', '{}'::jsonb),
