@@ -6,16 +6,107 @@ import "./teachers.css";
 import { supabase } from "@/lib/supabase";
 import { usePageContent } from "@/lib/use-page-content";
 
-/* Fallback teachers if the Manage Teachers list is empty */
+/* 9 Standard Fallback Teachers matching Yaqeen Institute Brand Mockup */
 const DEFAULT_TEACHERS = [
-  { id: "d1", name: "Rahman Ali", specialization: "Qur'an, Tajweed", languages: "Arabic, English", experience: "8+ Years" },
-  { id: "d2", name: "Aisha Khan", specialization: "Tafseer, Hadith", languages: "Arabic, English", experience: "6+ Years" },
-  { id: "d3", name: "Saad Ahmed", specialization: "Fiqh, Seerah", languages: "Arabic, English", experience: "10+ Years" },
-  { id: "d4", name: "Maryam Zahra", specialization: "Islamic Studies", languages: "Arabic, English", experience: "7+ Years" },
-  { id: "d5", name: "Imran Qureshi", specialization: "Qur'an, Tajweed", languages: "Arabic, English", experience: "9+ Years" },
-  { id: "d6", name: "Hafsa Noor", specialization: "Arabic Grammar, Tajweed", languages: "Arabic, English", experience: "5+ Years" },
-  { id: "d7", name: "Bilal Faisal", specialization: "Islamic Studies, Akhlaaq", languages: "Arabic, English", experience: "6+ Years" },
-  { id: "d8", name: "Sumayya Fatima", specialization: "Hadith, Qur'an Recitation", languages: "Arabic, English", experience: "4+ Years" }
+  {
+    id: 1,
+    name: "Ustadh Mazin Yasir",
+    title: "Senior Quran & Tajweed Specialist",
+    avatar_url: "/images/teacher_mazin.jpg",
+    languages: "Arabic, English",
+    experience: "3+ Years",
+    specialization: "Qur'an, Tajweed, Islamic Studies",
+    education: "Degree in Islamic Studies & Quranic Sciences • Ijazah in Hafs 'an 'Asim",
+    bio: "Ustadh Mazin is an enthusiastic and supportive teacher who specializes in guiding beginner and intermediate students through Quran recitation with proper Makharij (articulation points) and Tajweed rules. His interactive approach helps children and adults develop confidence and a deep spiritual connection with the Holy Quran."
+  },
+  {
+    id: 2,
+    name: "Ustadha Naira Tarek",
+    title: "Arabic Language & Quran Instructor",
+    avatar_url: "/images/teacher_naira.jpg",
+    languages: "Arabic, English",
+    experience: "4+ Years",
+    specialization: "Qur'an, Arabic Language, Islamic Studies",
+    education: "Bachelor of Arts in Arabic Linguistics & Classical Quranic Grammar",
+    bio: "Ustadha Naira has trained hundreds of young learners and female students worldwide. She blends classical Arabic grammar with engaging conversational practice and gentle Tajweed correction, creating an encouraging environment where students flourish."
+  },
+  {
+    id: 3,
+    name: "Ustadh Mohammed Sabry",
+    title: "Azhari Scholar & Hifz Coach",
+    avatar_url: "/images/teacher_sabry.jpg",
+    languages: "Arabic, English",
+    experience: "4+ Years",
+    specialization: "Tajweed, Hifz, Arabic Language, Fiqh, Seerah",
+    education: "Graduate of Al-Azhar University (Faculty of Usul al-Din) • Certified Hafiz",
+    bio: "Ustadh Mohammed Sabry has memorized the entire Quran with multiple Ijazat. He specializes in intensive Hifz (memorization) coaching, Quranic Tafseer, and foundational Fiqh. His methodical revision strategies help students retain their memorization effortlessly."
+  },
+  {
+    id: 4,
+    name: "Ustadha Amir Attaf",
+    title: "Senior Tafseer & Islamic Studies Teacher",
+    avatar_url: "/images/teacher_amira.jpg",
+    languages: "Arabic, English",
+    experience: "10+ Years",
+    specialization: "Qur'an, Tajweed, Tafseer, Islamic Studies",
+    education: "Master's in Islamic Studies • Certified Tajweed Educator",
+    bio: "With over a decade of teaching experience across the UK and Middle East, Ustadha Amir is renowned for her profound knowledge of Quranic Tafseer and spiritual development. She tailors every class to each student's individual pace, ensuring both intellectual clarity and heart-centered learning."
+  },
+  {
+    id: 5,
+    name: "Ustadh Rahman Ali",
+    title: "Lead Recitation & Makharij Coach",
+    avatar_url: "/images/teacher_rahman.png",
+    languages: "Arabic, English, Urdu",
+    experience: "8+ Years",
+    specialization: "Qur'an, Tajweed, Noorani Qaida",
+    education: "Certified Qari • Ijazah in Ten Minor Qira'at",
+    bio: "Ustadh Rahman specializes in foundational Noorani Qaida for young beginners and advanced Tajweed melody and rhythm for older students. His patient demeanor makes learning smooth and enjoyable for all age groups."
+  },
+  {
+    id: 6,
+    name: "Ustadha Aisha Khan",
+    title: "Hadith & Islamic Manners Instructor",
+    avatar_url: "/images/teacher_aisha.png",
+    languages: "Arabic, English",
+    experience: "6+ Years",
+    specialization: "Tafseer, Hadith, Akhlaaq",
+    education: "Alimiyyah Degree in Islamic Theology and Hadith Studies",
+    bio: "Ustadha Aisha focuses on bringing the prophetic traditions (Sunnah) to life for modern Muslim families. She guides students in understanding daily prayers, prophetic character, and essential Islamic ethics."
+  },
+  {
+    id: 7,
+    name: "Ustadh Saad Ahmed",
+    title: "Fiqh & Seerah Department Head",
+    avatar_url: "/images/teacher_saad.png",
+    languages: "Arabic, English, Urdu",
+    experience: "10+ Years",
+    specialization: "Fiqh, Seerah, Islamic History",
+    education: "Graduate in Islamic Jurisprudence & Classical Arabic",
+    bio: "Ustadh Saad has dedicated over ten years to teaching Islamic history, the blessed life of Prophet Muhammad (PBUH), and practical day-to-day Fiqh rules. He is known for clear explanations that demystify complex questions."
+  },
+  {
+    id: 8,
+    name: "Ustadha Maryam Zahra",
+    title: "Youth & Kids Quran Specialist",
+    avatar_url: "/images/teacher_maryam.png",
+    languages: "Arabic, English, Urdu",
+    experience: "7+ Years",
+    specialization: "Islamic Studies, Noorani Qaida, Tajweed",
+    education: "Certified Childhood Quran Pedagogy Educator",
+    bio: "Ustadha Maryam brings creativity and warmth to her online classroom. She uses interactive gamified learning, digital whiteboards, and positive reinforcement to help children build lifelong love for the Quran."
+  },
+  {
+    id: 9,
+    name: "Ustadh Imran Qureshi",
+    title: "Advanced Qira'at & Memorization Mentor",
+    avatar_url: "/images/teacher_imran.jpg",
+    languages: "Arabic, English",
+    experience: "9+ Years",
+    specialization: "Qur'an, Tajweed, Qira'at, Hifz",
+    education: "Certified Hafiz with High Sanad (Isnad) in Recitation",
+    bio: "Ustadh Imran has mentored dozens of students to full Quran memorization. His structured revision milestones and deep understanding of recitation rules empower students to achieve excellence in both memorization and spiritual reflection."
+  }
 ];
 
 /* ---------------- Icons ---------------- */
@@ -39,8 +130,12 @@ const IconRefresh = ({ size = 20 }) => (<svg width={size} height={size} viewBox=
 const IconHeadset = ({ size = 20 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6" /><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" /></svg>);
 const IconGrowth = ({ size = 22 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18" /><rect x="7" y="12" width="3" height="6" /><rect x="12" y="8" width="3" height="10" /><rect x="17" y="4" width="3" height="14" /></svg>);
 const IconUserStar = ({ size = 22 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="10" cy="8" r="4" /><path d="M2 21v-1a6 6 0 0 1 10-4.47" /><path d="m18 12 1.2 2.4 2.8.4-2 2 .5 2.8L18 20l-2.5 1.6.5-2.8-2-2 2.8-.4z" /></svg>);
+const IconClose = ({ size = 20 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>);
+const IconGraduation = ({ size = 16 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z" /><path d="M6 12v5c3 3 9 3 12 0v-5" /></svg>);
+const IconCheck = ({ size = 16 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>);
+const IconSparkle = ({ size = 16 }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="#C99B4D" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z" /></svg>);
 
-/* ---------------- Presentational icon/style pools (text comes from CMS) ---------------- */
+/* ---------------- Presentational icon/style pools ---------------- */
 const HERO_BADGE_ICONS = [<IconBook size={15} />, <IconBadge size={15} />, <IconStar size={15} />, <IconMosque size={15} />, <IconChat size={15} />];
 const HERO_FEATURE_ICONS = [<IconBadge />, <IconBook />, <IconMonitor />, <IconUser />];
 const VALUE_STYLES = [
@@ -75,9 +170,12 @@ function Avatar({ url, name, className }) {
 export default function TeachersPage() {
   const c = usePageContent("teachers");
   const [teachers, setTeachers] = useState(DEFAULT_TEACHERS);
-  const [openLearn, setOpenLearn] = useState(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
 
+  const [openLearn, setOpenLearn] = useState(null);
   const [openFaq, setOpenFaq] = useState(null);
+
   const heroBadges = c.hero?.badges || [];
   const heroFeatures = c.hero?.features || [];
   const values = c.commit?.values || [];
@@ -95,31 +193,63 @@ export default function TeachersPage() {
           .order("order_index", { ascending: true })
           .order("created_at", { ascending: false });
         if (error) throw error;
-        if (active && data && data.length > 0) setTeachers(data);
+        if (active && data && data.length > 0) {
+          // Merge with default seed data to ensure rich fields like bio/education exist
+          const merged = data.map(dbT => {
+            const fallback = DEFAULT_TEACHERS.find(d => d.name.toLowerCase() === dbT.name.toLowerCase()) || {};
+            return {
+              ...fallback,
+              ...dbT,
+              bio: dbT.bio || fallback.bio || "",
+              education: dbT.education || fallback.education || "",
+              title: dbT.title || fallback.title || "Qualified Quran & Islamic Studies Teacher"
+            };
+          });
+          setTeachers(merged);
+        }
       } catch (err) {
-        console.warn("Could not load teachers, using defaults:", err);
+        console.warn("Could not load teachers from Supabase, using defaults:", err);
       }
     }
     fetchTeachers();
     return () => { active = false; };
   }, []);
 
+  // Handle ESC key to close modal
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") setSelectedTeacher(null);
+    };
+    if (selectedTeacher) {
+      window.addEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "unset";
+    };
+  }, [selectedTeacher]);
+
   // Fixed, curated hero photos for a clean reference-style collage
   const collageLeft = ["/images/teacher_rahman.png", "/images/teacher_maryam.png"];
   const collageRight = ["/images/teacher_aisha.png", "/images/teacher_saad.png"];
+
+  // Display 4 teachers on first row, and expand to all 9 (4x3 layout) when isExpanded is true
+  const displayedTeachers = isExpanded ? teachers : teachers.slice(0, 4);
 
   return (
     <main className="tp-page">
       {/* ===== HERO ===== */}
       <section className="tp-hero">
         <div className="tp-hero-inner">
-          <div className="tp-hero-dots">{Array.from({ length: 9 }).map((_, i) => <span key={i} />)}</div>
-          <div>
-            <span className="tp-hero-label">{c.hero?.label}</span>
-            <h1 className="tp-hero-title">{c.hero?.title}</h1>
+          <div className="tp-hero-content">
+            <span className="tp-hero-label">{c.hero?.label || "Meet Our Teachers"}</span>
+            <h1 className="tp-hero-title">{c.hero?.title || "Learn from Experienced & Caring Teachers"}</h1>
             <div className="tp-hero-rule"><span className="line" /><span className="dia" /></div>
             <p className="tp-hero-sub">
-              {c.hero?.subtitle}
+              {c.hero?.subtitle || "Our qualified Quran, Arabic, and Islamic Studies teachers provide personalized online guidance for students of all ages."}
             </p>
             <div className="tp-hero-badges">
               {heroBadges.map((label, i) => <span className="b" key={i}>{HERO_BADGE_ICONS[i % HERO_BADGE_ICONS.length]}<span className="lbl">{label}</span></span>)}
@@ -155,38 +285,236 @@ export default function TeachersPage() {
         </div>
       </section>
 
-      {/* ===== TEACHERS GRID ===== */}
-      <section className="tp-teachers">
+      {/* ===== TEACHERS GRID (4-COLUMN 4x3 LAYOUT) ===== */}
+      <section className="tp-teachers" id="teachers-grid">
         <div className="tp-head">
-          <span className="tp-badge">{c.grid?.badge}</span>
+          <span className="tp-badge">{c.grid?.badge || "MEET OUR TEACHERS"}</span>
           <div className="tp-diamond-div"><span className="line" /><span className="dia" /><span className="line" /></div>
-          <h2>{c.grid?.title_line1}<br />{c.grid?.title_line2_prefix}<span>{c.grid?.title_highlight}</span></h2>
-          <p>{c.grid?.subtitle}</p>
+          <h2>
+            {c.grid?.title_line1 || "Learn from Experienced"}<br />
+            {c.grid?.title_line2_prefix || "and "}
+            <span>{c.grid?.title_highlight || "Caring Teachers."}</span>
+          </h2>
+          <p>{c.grid?.subtitle || "Our teachers are qualified, experienced, and passionate about helping you grow in your Islamic knowledge."}</p>
         </div>
+
+        {/* 4 Cards Per Row Grid */}
         <div className="tp-grid">
-          {teachers.map((t) => (
-            <div className="tp-card" key={t.id}>
-              <Avatar url={t.avatar_url} name={t.name} />
-              <h4>{t.name}</h4>
-              <div className="tp-card-rule" />
-              <div className="tp-card-details">
-                {t.languages && <div className="tp-card-detail"><IconGlobe /><span><strong>Languages:</strong> {t.languages}</span></div>}
-                {t.experience && <div className="tp-card-detail"><IconBriefcase /><span><strong>Experience:</strong> {t.experience}</span></div>}
-                {t.specialization && <div className="tp-card-detail"><IconStar /><span><strong>Specialization:</strong> {t.specialization}</span></div>}
+          {displayedTeachers.map((t) => (
+            <div 
+              className="tp-card" 
+              key={t.id}
+              onClick={() => setSelectedTeacher(t)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setSelectedTeacher(t); }}
+            >
+              <div className="tp-card-avatar-wrap">
+                <Avatar url={t.avatar_url} name={t.name} />
+                <span className="tp-card-badge-exp">{t.experience || "Certified"}</span>
               </div>
+
+              <h4 className="tp-card-name">{t.name}</h4>
+              {t.title && <span className="tp-card-title-tag">{t.title}</span>}
+              
+              <div className="tp-card-rule" />
+
+              <div className="tp-card-details">
+                {t.languages && (
+                  <div className="tp-card-detail">
+                    <IconGlobe />
+                    <span><strong>Languages:</strong> {t.languages}</span>
+                  </div>
+                )}
+                {t.experience && (
+                  <div className="tp-card-detail">
+                    <IconBriefcase />
+                    <span><strong>Experience:</strong> {t.experience}</span>
+                  </div>
+                )}
+                {t.specialization && (
+                  <div className="tp-card-detail">
+                    <IconStar />
+                    <span><strong>Specialization:</strong> {t.specialization}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* View Profile Action Button */}
+              <button 
+                type="button" 
+                className="tp-card-view-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedTeacher(t);
+                }}
+              >
+                <span>About Teacher</span>
+                <IconArrow size={13} />
+              </button>
             </div>
           ))}
         </div>
+
+        {/* View More Teachers (4x3 Toggle) Button */}
+        {teachers.length > 4 && (
+          <div className="tp-view-more-container">
+            <button
+              type="button"
+              className="tp-view-more-btn"
+              onClick={() => {
+                setIsExpanded(!isExpanded);
+                if (isExpanded) {
+                  const el = document.getElementById("teachers-grid");
+                  if (el) el.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
+            >
+              <span>{isExpanded ? "Show Fewer Teachers" : `View More Teachers (${teachers.length} Total)`}</span>
+              <IconChevron className={`tp-vm-chevron ${isExpanded ? "rotated" : ""}`} size={18} />
+            </button>
+          </div>
+        )}
       </section>
+
+      {/* ===== TEACHER DETAILS POPUP MODAL ===== */}
+      {selectedTeacher && (
+        <div className="tp-modal-overlay" onClick={() => setSelectedTeacher(null)}>
+          <div 
+            className="tp-modal-card" 
+            onClick={(e) => e.stopPropagation()} 
+            role="dialog" 
+            aria-modal="true" 
+            aria-labelledby="teacher-modal-name"
+          >
+            {/* Modal Header Close */}
+            <button 
+              type="button" 
+              className="tp-modal-close" 
+              onClick={() => setSelectedTeacher(null)}
+              aria-label="Close modal"
+            >
+              <IconClose size={20} />
+            </button>
+
+            {/* Profile Overview */}
+            <div className="tp-modal-profile">
+              <div className="tp-modal-avatar-wrap">
+                <Avatar url={selectedTeacher.avatar_url} name={selectedTeacher.name} className="tp-modal-avatar" />
+                <div className="tp-modal-verified" title="Verified Yaqeen Teacher">
+                  <IconCheck size={13} />
+                </div>
+              </div>
+
+              <div className="tp-modal-header-info">
+                <div className="tp-modal-pill-row">
+                  <span className="tp-modal-pill gold"><IconSparkle size={12} /> Certified Instructor</span>
+                  <span className="tp-modal-pill green">{selectedTeacher.experience || "Experienced"}</span>
+                </div>
+                <h3 id="teacher-modal-name" className="tp-modal-name">{selectedTeacher.name}</h3>
+                <p className="tp-modal-title">{selectedTeacher.title || "Qualified Quran & Arabic Specialist"}</p>
+              </div>
+            </div>
+
+            {/* Modal Content Sections */}
+            <div className="tp-modal-body">
+              {/* Quick Info Grid */}
+              <div className="tp-modal-meta-grid">
+                <div className="tp-modal-meta-item">
+                  <div className="tp-meta-icon"><IconGlobe size={18} /></div>
+                  <div className="tp-meta-text">
+                    <label>Languages</label>
+                    <span>{selectedTeacher.languages || "Arabic, English"}</span>
+                  </div>
+                </div>
+
+                <div className="tp-modal-meta-item">
+                  <div className="tp-meta-icon"><IconBriefcase size={18} /></div>
+                  <div className="tp-meta-text">
+                    <label>Teaching Experience</label>
+                    <span>{selectedTeacher.experience || "5+ Years"}</span>
+                  </div>
+                </div>
+
+                <div className="tp-modal-meta-item">
+                  <div className="tp-meta-icon"><IconStar size={18} /></div>
+                  <div className="tp-meta-text">
+                    <label>Specialization</label>
+                    <span>{selectedTeacher.specialization || "Quran & Tajweed"}</span>
+                  </div>
+                </div>
+
+                {selectedTeacher.education && (
+                  <div className="tp-modal-meta-item">
+                    <div className="tp-meta-icon"><IconGraduation size={18} /></div>
+                    <div className="tp-meta-text">
+                      <label>Education & Ijazah</label>
+                      <span>{selectedTeacher.education}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Biography Section */}
+              <div className="tp-modal-bio-block">
+                <h4>About {selectedTeacher.name}</h4>
+                <div 
+                  className="tp-modal-bio-content"
+                  dangerouslySetInnerHTML={{
+                    __html: selectedTeacher.bio 
+                      ? selectedTeacher.bio 
+                      : `<p>${selectedTeacher.name} is a dedicated and qualified educator with extensive experience in Quran recitation, Tajweed, and Islamic studies. Committed to nurturing both understanding and spiritual connection in every student.</p>`
+                  }}
+                />
+              </div>
+
+              {/* Core Strengths */}
+              <div className="tp-modal-strengths">
+                <div className="tp-strength-item">
+                  <IconCheck size={16} />
+                  <span>1-on-1 Interactive Mentorship</span>
+                </div>
+                <div className="tp-strength-item">
+                  <IconCheck size={16} />
+                  <span>Native Arabic & Fluent English</span>
+                </div>
+                <div className="tp-strength-item">
+                  <IconCheck size={16} />
+                  <span>Verified & Background Checked</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer CTAs */}
+            <div className="tp-modal-footer">
+              <Link 
+                href="/book-free-trial" 
+                className="tp-modal-cta-btn"
+                onClick={() => setSelectedTeacher(null)}
+              >
+                <span>Book a Free Trial with Teacher</span>
+                <IconArrow size={16} />
+              </Link>
+              <button 
+                type="button" 
+                className="tp-modal-dismiss-btn"
+                onClick={() => setSelectedTeacher(null)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ===== CORE COMMITMENT ===== */}
       <section className="tp-commit">
         <div className="tp-commit-inner">
           <div>
-            <p className="lead">{c.commit?.lead}</p>
+            <p className="lead">{c.commit?.lead || "Our teachers are vetted scholars dedicated to imparting traditional knowledge with modern teaching methodologies."}</p>
             <div className="tp-commit-rule"><span className="line" /><IconGear /><span className="line" /></div>
-            <h3>{c.commit?.heading} <span>{c.commit?.heading_highlight}</span></h3>
-            <Link href={c.commit?.button_url || "/careers"} className="tp-join-btn">{c.commit?.button_label} <IconArrow /></Link>
+            <h3>{c.commit?.heading || "Join Our Growing Family of"} <span>{c.commit?.heading_highlight || "Learners & Teachers"}</span></h3>
+            <Link href={c.commit?.button_url || "/careers"} className="tp-join-btn">{c.commit?.button_label || "Teach with Us"} <IconArrow /></Link>
           </div>
           <div className="tp-commit-right">
             <div className="tp-commit-img">
@@ -214,9 +542,9 @@ export default function TeachersPage() {
       {/* ===== LEARN ONLINE ===== */}
       <section className="tp-learn">
         <div className="tp-head">
-          <span className="tp-badge">{c.learn?.badge}</span>
+          <span className="tp-badge">{c.learn?.badge || "LEARN ONLINE"}</span>
           <div className="tp-diamond-div"><span className="line" /><span className="dia" /><span className="line" /></div>
-          <h2>{c.learn?.title_line1}<br /><span>{c.learn?.title_highlight}</span></h2>
+          <h2>{c.learn?.title_line1 || "How Our Online Learning"}<br /><span>{c.learn?.title_highlight || "Works for You"}</span></h2>
         </div>
         <div className="tp-acc">
           {learnItems.map((f, i) => {
@@ -246,10 +574,10 @@ export default function TeachersPage() {
       {/* ===== WHAT WOULD YOU LIKE TO DO ===== */}
       <section className="tp-choose">
         <div className="tp-head">
-          <span className="tp-badge">{c.choose?.badge}</span>
+          <span className="tp-badge">{c.choose?.badge || "DISCOVER"}</span>
           <div className="tp-diamond-div"><span className="line" /><span className="dia" /><span className="line" /></div>
-          <h2>{c.choose?.title} <span>{c.choose?.title_highlight}</span></h2>
-          <p>{c.choose?.subtitle}</p>
+          <h2>{c.choose?.title || "Choose Your"} <span>{c.choose?.title_highlight || "Learning Path"}</span></h2>
+          <p>{c.choose?.subtitle || "Start your Quran and Islamic journey with our tailored programs."}</p>
         </div>
         <div className="tp-choose-grid">
           {chooseCards.map((card, i) => (
@@ -266,9 +594,9 @@ export default function TeachersPage() {
       {/* ===== FAQ ===== */}
       <section className="tp-faq">
         <div className="tp-head">
-          <span className="tp-badge solid">{c.faq?.badge}</span>
+          <span className="tp-badge solid">{c.faq?.badge || "FAQ"}</span>
           <div className="tp-diamond-div"><span className="line" /><span className="dia" /><span className="line" /></div>
-          <h2>{c.faq?.title} <span>{c.faq?.title_highlight}</span></h2>
+          <h2>{c.faq?.title || "Frequently Asked"} <span>{c.faq?.title_highlight || "Questions"}</span></h2>
         </div>
         <div className="tp-faq-list">
           {faqItems.map((f, i) => {

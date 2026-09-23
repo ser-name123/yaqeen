@@ -173,10 +173,12 @@ export default function AdminDashboard() {
   const [editingTeacherId, setEditingTeacherId] = useState(null);
   const [teacherForm, setTeacherForm] = useState({
     name: "",
+    title: "",
     avatar_url: "",
     languages: "",
     experience: "",
     specialization: "",
+    education: "",
     bio: "",
     order_index: 0
   });
@@ -1746,15 +1748,17 @@ export default function AdminDashboard() {
     setLoading(true);
     const payload = {
       name: teacherForm.name,
+      title: teacherForm.title || null,
       avatar_url: teacherForm.avatar_url || null,
       languages: teacherForm.languages,
       experience: teacherForm.experience,
       specialization: teacherForm.specialization,
+      education: teacherForm.education || null,
       bio: teacherForm.bio || null,
       order_index: parseInt(teacherForm.order_index) || 0
     };
 
-    // Save helper — retries without `bio` if that column hasn't been added yet
+    // Save helper — retries with fallback if specific columns haven't been added yet
     const saveTeacher = async (data) => {
       if (editingTeacherId) {
         return supabase.from("teachers").update(data).eq("id", editingTeacherId);
@@ -1764,23 +1768,25 @@ export default function AdminDashboard() {
 
     try {
       let { error } = await saveTeacher(payload);
-      if (error && String(error.message || "").toLowerCase().includes("bio")) {
-        // The bio column isn't set up yet — save the rest so teacher management still works
-        const { bio, ...withoutBio } = payload;
-        void bio;
-        ({ error } = await saveTeacher(withoutBio));
+      if (error) {
+        // Fallback retry omitting optional newer columns if database table is older
+        const { title, education, bio, ...basicPayload } = payload;
+        void title; void education; void bio;
+        const retryRes = await saveTeacher(basicPayload);
+        if (retryRes.error) throw error;
       }
-      if (error) throw error;
 
       // Reset Form
       setIsEditingTeacher(false);
       setEditingTeacherId(null);
       setTeacherForm({
         name: "",
+        title: "",
         avatar_url: "",
         languages: "",
         experience: "",
         specialization: "",
+        education: "",
         bio: "",
         order_index: 0
       });
@@ -1811,10 +1817,13 @@ export default function AdminDashboard() {
     setEditingTeacherId(null);
     setTeacherForm({
       name: "",
+      title: "",
       avatar_url: "",
       languages: "",
       experience: "",
       specialization: "",
+      education: "",
+      bio: "",
       order_index: 0
     });
     setIsEditingTeacher(true);
@@ -1824,10 +1833,12 @@ export default function AdminDashboard() {
     setEditingTeacherId(teacher.id);
     setTeacherForm({
       name: teacher.name || "",
+      title: teacher.title || "",
       avatar_url: teacher.avatar_url || "",
       languages: teacher.languages || "",
       experience: teacher.experience || "",
       specialization: teacher.specialization || "",
+      education: teacher.education || "",
       bio: teacher.bio || "",
       order_index: teacher.order_index || 0
     });
@@ -5066,8 +5077,13 @@ export default function AdminDashboard() {
                     },
                     {
                       key: "name",
-                      label: "Name",
-                      render: (t) => <strong style={{ color: "#2B1F14" }}>{t.name}</strong>
+                      label: "Name & Title",
+                      render: (t) => (
+                        <div style={{ display: "flex", flexDirection: "column" }}>
+                          <strong style={{ color: "#2B1F14" }}>{t.name}</strong>
+                          {t.title && <span style={{ fontSize: "11px", color: "#8c5d31" }}>{t.title}</span>}
+                        </div>
+                      )
                     },
                     {
                       key: "languages",
@@ -5110,15 +5126,25 @@ export default function AdminDashboard() {
                 <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
                   <h3 style={{ fontSize: "18px", fontWeight: "600", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px" }}>Teacher Details</h3>
                   
-                  <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "20px" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1.5fr 1fr", gap: "20px" }}>
                     <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                       <label style={formLabelStyle}>Full Name *</label>
                       <input
                         type="text"
                         value={teacherForm.name}
                         onChange={(e) => setTeacherForm(prev => ({ ...prev, name: e.target.value }))}
-                        placeholder="e.g. Ustadh Rahman Ali"
+                        placeholder="e.g. Ustadh Mazin Yasir"
                         required
+                        style={formInputStyle}
+                      />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Title / Role Tag</label>
+                      <input
+                        type="text"
+                        value={teacherForm.title}
+                        onChange={(e) => setTeacherForm(prev => ({ ...prev, title: e.target.value }))}
+                        placeholder="e.g. Senior Quran & Tajweed Specialist"
                         style={formInputStyle}
                       />
                     </div>
@@ -5159,24 +5185,36 @@ export default function AdminDashboard() {
                     </div>
                   </div>
 
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    <label style={formLabelStyle}>Specialization / Subjects *</label>
-                    <input
-                      type="text"
-                      value={teacherForm.specialization}
-                      onChange={(e) => setTeacherForm(prev => ({ ...prev, specialization: e.target.value }))}
-                      placeholder="e.g. Qur'an, Tajweed"
-                      required
-                      style={formInputStyle}
-                    />
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Specialization / Subjects *</label>
+                      <input
+                        type="text"
+                        value={teacherForm.specialization}
+                        onChange={(e) => setTeacherForm(prev => ({ ...prev, specialization: e.target.value }))}
+                        placeholder="e.g. Qur'an, Tajweed, Islamic Studies"
+                        required
+                        style={formInputStyle}
+                      />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Education & Ijazah (Qualifications)</label>
+                      <input
+                        type="text"
+                        value={teacherForm.education}
+                        onChange={(e) => setTeacherForm(prev => ({ ...prev, education: e.target.value }))}
+                        placeholder="e.g. Degree in Islamic Studies • Ijazah in Hafs 'an 'Asim"
+                        style={formInputStyle}
+                      />
+                    </div>
                   </div>
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    <label style={formLabelStyle}>Bio / Description (shown on the Featured Teacher card)</label>
+                    <label style={formLabelStyle}>Bio / Description (shown in Teacher Details Modal)</label>
                     <RichTextEditor
                       value={teacherForm.bio}
                       onChange={(html) => setTeacherForm(prev => ({ ...prev, bio: html }))}
-                      placeholder="Passionate and dedicated educator with a love for helping students grow and succeed…"
+                      placeholder="Passionate and dedicated educator with a love for helping students grow and succeed in their Quranic journey…"
                       minHeight="110px"
                     />
                   </div>
