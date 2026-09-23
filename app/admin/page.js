@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import "quill/dist/quill.snow.css";
 import AdminChat from "@/components/AdminChat";
 import AdminFooter from "@/components/AdminFooter";
+import AdminLandingPages from "@/components/AdminLandingPages";
 import AdminPages from "@/components/AdminPages";
 import AdminSeo from "@/components/AdminSeo";
 import AdminTopbar from "@/components/AdminTopbar";
@@ -2960,6 +2961,7 @@ export default function AdminDashboard() {
           <div>
             <h2 style={{ fontSize: "28px", fontWeight: "500" }}>
               {activeTab === "overview" && "System Overview"}
+              {activeTab === "landingPages" && "Landing Page Management"}
               {activeTab === "blogs" && (isEditingBlog ? (editingBlogId ? "Edit Blog Post" : "Write New Publication") : "Blog Publications")}
               {activeTab === "contacts" && "Contact Query Logs"}
               {activeTab === "liveChat" && "Live Chat"}
@@ -2979,6 +2981,7 @@ export default function AdminDashboard() {
             </h2>
             <p style={{ color: "var(--fg-muted)", fontSize: "14px", marginTop: "4px" }}>
               {activeTab === "overview" && "Real-time summary metrics across database logs."}
+              {activeTab === "landingPages" && "Create and customize multiple high-converting landing pages, URLs, SEO, and dynamic section content."}
               {activeTab === "blogs" && "Author articles, categories, list points, and search engine fields."}
               {activeTab === "contacts" && "Review customer forms, inquiries, and details."}
               {activeTab === "liveChat" && "Chat live with website visitors. AI answers until you reply, then it pauses for that chat."}
@@ -3027,6 +3030,9 @@ export default function AdminDashboard() {
             {loading && <span style={{ color: "var(--secondary-color)", fontSize: "13px" }}>Syncing Database...</span>}
           </div>
         </div>
+
+        {/* TAB: LANDING PAGES */}
+        {activeTab === "landingPages" && <AdminLandingPages />}
 
         {/* TAB: LIVE CHAT */}
         {activeTab === "liveChat" && <AdminChat />}
