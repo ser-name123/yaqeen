@@ -147,21 +147,84 @@
   border-color: #CE9A3B;
 }
 
-/* Highlight / Best Value Card Styles */
-.plan-card.highlighted-card {
-  border: 2px solid #CE9A3B;
-  box-shadow: 0 12px 36px rgba(206, 154, 59, 0.12);
+/* Highlight / Best Value Card Styles (Dark Olive Green Theme for Premium) */
+.plan-card.highlighted-card,
+.plan-card.plan-premium {
+  background: #3B4B28;
+  background: linear-gradient(165deg, #445630 0%, #2D3A1F 100%);
+  border: 2px solid #C99B4D;
+  box-shadow: 0 16px 40px rgba(45, 58, 31, 0.32), 0 0 0 1px rgba(201, 155, 77, 0.25);
+  color: #FFFFFF;
 }
 
-.plan-card.highlighted-card:hover {
-  box-shadow: 0 25px 50px rgba(206, 154, 59, 0.2);
+.plan-card.highlighted-card:hover,
+.plan-card.plan-premium:hover {
+  transform: translateY(-8px);
+  border-color: #E5C378;
+  box-shadow: 0 24px 50px rgba(45, 58, 31, 0.45), 0 0 0 1px #C99B4D;
+}
+
+.plan-card.plan-premium .plan-icon-wrap {
+  background-color: #2D3A1F;
+  border: 2px solid #C99B4D;
+  color: #F4C978;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.plan-card.plan-premium:hover .plan-icon-wrap {
+  border-color: #F4C978;
+  background-color: #3B4B28;
+  color: #FFFFFF;
+}
+
+.plan-card.plan-premium .plan-title {
+  color: #FFFFFF;
+}
+
+.plan-card.plan-premium .plan-subtitle {
+  color: #D6E0CC;
+}
+
+.plan-card.plan-premium .plan-divider {
+  background-color: #C99B4D;
+  opacity: 0.8;
+}
+
+.plan-card.plan-premium .plan-price {
+  color: #F4C978;
+}
+
+.plan-card.plan-premium .plan-price-period {
+  color: #D6E0CC;
+}
+
+.plan-card.plan-premium .feature-text {
+  color: #FFFFFF;
+}
+
+.plan-card.plan-premium .feature-text.included {
+  color: #FFFFFF;
+}
+
+.plan-card.plan-premium .feature-text.excluded {
+  color: rgba(230, 238, 222, 0.65);
+}
+
+.plan-card.plan-premium .feature-icon-check {
+  background-color: rgba(201, 155, 77, 0.25);
+  border-color: #F4C978;
+  color: #F4C978;
+}
+
+.plan-card.plan-premium .feature-icon-cross {
+  color: #F87171;
 }
 
 .best-value-badge {
   position: absolute;
   top: -12px;
   right: 24px;
-  background-color: #CE9A3B;
+  background-color: #C99B4D;
   color: #FFFFFF;
   font-size: 10px;
   font-weight: 800;
@@ -169,7 +232,7 @@
   border-radius: 4px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  box-shadow: 0 4px 10px rgba(206, 154, 59, 0.25);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
   z-index: 10;
 }
 
@@ -180,7 +243,7 @@
   left: 0;
   right: 0;
   height: 6px;
-  background-color: #CE9A3B;
+  background-color: #C99B4D;
   clip-path: polygon(0 0, 50% 100%, 100% 0);
 }
 
@@ -364,13 +427,15 @@
 }
 
 .plan-btn.btn-premium {
-  background-color: #3A2412; /* Rich dark brown */
+  background: #C99B4D;
+  background: linear-gradient(135deg, #D4A759 0%, #B8852C 100%);
   color: #FFFFFF;
-  box-shadow: 0 4px 12px rgba(58, 36, 18, 0.2);
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
 }
 .plan-btn.btn-premium:hover {
-  background-color: #25160A;
-  box-shadow: 0 8px 20px rgba(58, 36, 18, 0.35);
+  background: linear-gradient(135deg, #E0B466 0%, #C49137 100%);
+  box-shadow: 0 8px 22px rgba(201, 155, 77, 0.45);
 }
 
 .plan-btn.btn-platinum {

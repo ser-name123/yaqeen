@@ -236,8 +236,8 @@ export default function TeachersPage() {
   const collageLeft = ["/images/teacher_rahman.png", "/images/teacher_maryam.png"];
   const collageRight = ["/images/teacher_aisha.png", "/images/teacher_saad.png"];
 
-  // Display 4 teachers on first row, and expand to all 9 (4x3 layout) when isExpanded is true
-  const displayedTeachers = isExpanded ? teachers : teachers.slice(0, 4);
+  // Display 8 teachers (4x2 layout), and expand to all teachers when isExpanded is true
+  const displayedTeachers = isExpanded ? teachers : teachers.slice(0, 8);
 
   return (
     <main className="tp-page">
@@ -356,8 +356,8 @@ export default function TeachersPage() {
           ))}
         </div>
 
-        {/* View More Teachers (4x3 Toggle) Button */}
-        {teachers.length > 4 && (
+        {/* View More Teachers (Toggle) Button */}
+        {teachers.length > 8 && (
           <div className="tp-view-more-container">
             <button
               type="button"

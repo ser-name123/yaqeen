@@ -51,7 +51,7 @@ export default function CTABanner() {
       {/* Responsive styling for the CTA Banner */}
       <style dangerouslySetInnerHTML={{__html: `
         .cta-banner-wrapper {
-          border: none !important;
+          border: 1.5px solid #C99B4D !important;
         }
         @media (max-width: 1024px) {
           .cta-banner-wrapper {
@@ -113,7 +113,7 @@ export default function CTABanner() {
         maxWidth: "1200px",
         backgroundColor: "#FCFAF6",
         borderRadius: "24px",
-        border: "none", // Removed border as requested
+        border: "1.5px solid #C99B4D",
         boxShadow: "0 10px 30px rgba(44, 37, 30, 0.02)",
         padding: "25px 40px 25px 270px", // Standard balanced padding-left
         display: "flex",
