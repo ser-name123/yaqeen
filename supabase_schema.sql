@@ -225,7 +225,7 @@ CREATE TABLE IF NOT EXISTS public.site_settings (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Migration statement to add columns to existing table
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS notification_emails TEXT DEFAULT '';
 ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS contact_email TEXT DEFAULT 'info@yaqeeninstitute.com';
 ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS contact_phone TEXT DEFAULT '+44 7700 183483';
 ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS contact_hours TEXT DEFAULT '24x7 - We''re always here for you.';

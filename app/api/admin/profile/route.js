@@ -61,6 +61,7 @@ export async function GET(request) {
       logo_text: settings?.logo_text || "yaqeen",
       logo_url: settings?.logo_url || "",
       admin_loader_logo_url: settings?.admin_loader_logo_url || "",
+      notification_emails: settings?.notification_emails || "",
       contact_email: settings?.contact_email || "info@yaqeeninstitute.com",
       contact_phone: settings?.contact_phone || "+44 7700 183483",
       contact_hours: settings?.contact_hours || "24x7 - We're always here for you.",
@@ -101,6 +102,7 @@ export async function PUT(request) {
       logo_text,
       logo_url,
       admin_loader_logo_url,
+      notification_emails,
       contact_email,
       contact_phone,
       contact_hours,
@@ -149,6 +151,7 @@ export async function PUT(request) {
         logo_text: logo_text || "yaqeen",
         logo_url: logo_url || null,
         admin_loader_logo_url: admin_loader_logo_url || null,
+        notification_emails: notification_emails !== undefined ? notification_emails.trim() : "",
         contact_email: contact_email || "info@yaqeeninstitute.com",
         contact_phone: contact_phone || "+44 7700 183483",
         contact_hours: contact_hours || "24x7 - We're always here for you.",
@@ -176,6 +179,7 @@ export async function PUT(request) {
         delete fallbackPayload.header_scripts;
         delete fallbackPayload.body_scripts;
         delete fallbackPayload.footer_scripts;
+        delete fallbackPayload.notification_emails;
         const res = await supabaseAdmin.from("site_settings").upsert(fallbackPayload);
         settingsError = res.error;
       }

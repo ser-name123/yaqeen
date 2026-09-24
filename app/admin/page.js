@@ -142,6 +142,7 @@ export default function AdminDashboard() {
     logo_text: "",
     logo_url: "",
     admin_loader_logo_url: "",
+    notification_emails: "",
     contact_email: "",
     contact_phone: "",
     contact_hours: "",
@@ -680,6 +681,7 @@ export default function AdminDashboard() {
           logo_text: data.logo_text || "",
           logo_url: data.logo_url || "",
           admin_loader_logo_url: data.admin_loader_logo_url || "",
+          notification_emails: data.notification_emails || "",
           contact_email: data.contact_email || "",
           contact_phone: data.contact_phone || "",
           contact_hours: data.contact_hours || "",
@@ -758,6 +760,7 @@ export default function AdminDashboard() {
               logo_text: data.logo_text || "",
               logo_url: data.logo_url || "",
               admin_loader_logo_url: data.admin_loader_logo_url || "",
+              notification_emails: data.notification_emails || "",
               contact_email: data.contact_email || "",
               contact_phone: data.contact_phone || "",
               contact_hours: data.contact_hours || "",
@@ -1261,6 +1264,7 @@ export default function AdminDashboard() {
           logo_text: profileForm.logo_text,
           logo_url: profileForm.logo_url,
           admin_loader_logo_url: profileForm.admin_loader_logo_url,
+          notification_emails: profileForm.notification_emails,
           contact_email: profileForm.contact_email,
           contact_phone: profileForm.contact_phone,
           contact_hours: profileForm.contact_hours,
@@ -5205,6 +5209,48 @@ export default function AdminDashboard() {
                     )}
                     {profileForm.admin_loader_logo_url && (
                       <button type="button" onClick={() => setProfileForm(prev => ({ ...prev, admin_loader_logo_url: "" }))} style={{ marginLeft: "auto", color: "#ef4444", border: "none", background: "none", fontSize: "11px", cursor: "pointer", padding: 0 }}>Remove (use site logo)</button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "16px", borderLeft: "4px solid #C99B4D" }}>
+                <div>
+                  <h3 style={{ fontSize: "18px", fontWeight: "600", display: "flex", alignItems: "center", gap: "8px" }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C99B4D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                    </svg>
+                    Website Form Notification Email(s)
+                  </h3>
+                  <p style={{ fontSize: "13px", color: "var(--fg-muted)", marginTop: "4px", lineHeight: "1.5" }}>
+                    Website ke sabhi forms (Contact Us, Free Trial, Student Registration, Teacher Application, Newsletter, etc.) ka email notification sirf inhin email addresses par bheja jayega.
+                  </p>
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label style={formLabelStyle}>
+                    Notification Recipient Email(s) <span style={{ color: "var(--fg-muted)", fontSize: "12px", fontWeight: "normal" }}>(Ek se zyada ke liye comma <code>,</code> lagayein)</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={profileForm.notification_emails || ""}
+                    onChange={(e) => setProfileForm((prev) => ({ ...prev, notification_emails: e.target.value }))}
+                    placeholder="e.g. admin@yaqeeninstitute.com, admissions@yaqeeninstitute.com"
+                    style={formInputStyle}
+                  />
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", marginTop: "4px" }}>
+                    <span style={{ fontSize: "12px", color: "var(--fg-muted)" }}>Active Recipient(s):</span>
+                    {(profileForm.notification_emails || "").split(/[\r\n,;]+/).map(e => e.trim()).filter(Boolean).length > 0 ? (
+                      (profileForm.notification_emails || "").split(/[\r\n,;]+/).map(e => e.trim()).filter(Boolean).map((em, idx) => (
+                        <span key={idx} style={{ fontSize: "11px", backgroundColor: "rgba(201, 155, 77, 0.15)", color: "#C99B4D", padding: "3px 10px", borderRadius: "12px", border: "1px solid rgba(201, 155, 77, 0.3)", fontWeight: "500" }}>
+                          ✓ {em}
+                        </span>
+                      ))
+                    ) : (
+                      <span style={{ fontSize: "12px", color: "#eab308", fontStyle: "italic" }}>
+                        Default: All Admin Accounts & Contact Email ({profileForm.contact_email || "support@yaqeeninstitute.online"})
+                      </span>
                     )}
                   </div>
                 </div>
