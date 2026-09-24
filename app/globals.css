@@ -3245,7 +3245,7 @@ h4 {
    ========================================================================== */
 .footer {
   width: 100%;
-  padding: 0 24px 20px 24px;
+  padding: 0 24px 14px 24px;
   background: linear-gradient(180deg, #2A1C12 0%, #1F140C 50%, #170E08 100%);
   position: relative;
   display: flex;
@@ -3295,10 +3295,10 @@ h4 {
   width: 100%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  padding: 16px 0;
+  gap: 14px;
+  padding: 10px 0;
   border-bottom: 1px solid rgba(215, 207, 192, 0.12);
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .footer-trust-item {
@@ -3373,12 +3373,12 @@ h4 {
   font-weight: 800;
   color: #E8BA69;
   letter-spacing: 1.4px;
-  margin: 0 0 22px 0;
+  margin: 0 0 12px 0;
   text-transform: uppercase;
   font-family: var(--font-sans), sans-serif;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .footer-title-bar {
@@ -3605,17 +3605,17 @@ h4 {
 .footer-contact-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .footer-contact-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   text-decoration: none;
-  padding: 8px 12px;
+  padding: 6px 10px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(215, 207, 192, 0.08);
@@ -3629,9 +3629,9 @@ h4 {
 }
 
 .footer-contact-icon {
-  width: 34px;
-  height: 34px;
-  min-width: 34px;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
   border-radius: 8px;
   background: rgba(201, 155, 77, 0.14);
   color: #E8BA69;
@@ -3643,7 +3643,7 @@ h4 {
 .footer-contact-text {
   display: flex;
   flex-direction: column;
-  line-height: 1.3;
+  line-height: 1.25;
 }
 
 .footer-contact-label {
@@ -3654,7 +3654,7 @@ h4 {
 }
 
 .footer-contact-val {
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 700;
   color: #F5EFE6;
 }
@@ -3665,23 +3665,23 @@ h4 {
   background: rgba(0, 0, 0, 0.25);
   border: 1px solid rgba(201, 155, 77, 0.16);
   border-radius: 12px;
-  padding: 14px 16px;
-  margin-bottom: 14px;
+  padding: 10px 14px;
+  margin-bottom: 8px;
 }
 
 .footer-newsletter-title {
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 700;
   color: #F8F4EE;
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .footer-newsletter-desc {
-  font-size: 12px;
+  font-size: 11.5px;
   color: #BDB3A2;
-  margin: 0 0 12px 0;
-  line-height: 1.4;
+  margin: 0 0 8px 0;
+  line-height: 1.35;
 }
 
 .footer-newsletter-form {
@@ -3697,12 +3697,12 @@ h4 {
 
 .footer-newsletter-input {
   width: 100%;
-  height: 40px;
+  height: 36px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(201, 155, 77, 0.28);
   border-radius: 8px;
-  padding: 0 46px 0 12px;
-  font-size: 13px;
+  padding: 0 42px 0 10px;
+  font-size: 12.5px;
   color: #FFFFFF;
   outline: none;
   transition: all 0.2s ease;
@@ -3721,9 +3721,9 @@ h4 {
 
 .footer-newsletter-btn {
   position: absolute;
-  right: 4px;
-  width: 32px;
-  height: 32px;
+  right: 3px;
+  width: 30px;
+  height: 30px;
   border-radius: 6px;
   background: linear-gradient(135deg, #C99B4D 0%, #B3853B 100%);
   border: none;
@@ -3748,7 +3748,7 @@ h4 {
 .footer-newsletter-msg-success {
   font-size: 12px;
   color: #4ADE80;
-  margin: 8px 0 0 0;
+  margin: 6px 0 0 0;
   font-weight: 600;
 }
 
@@ -3771,25 +3771,25 @@ h4 {
 }
 
 .footer-social-heading {
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 700;
   color: #BDB3A2;
   text-transform: uppercase;
   letter-spacing: 1px;
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 
 .footer-social-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .footer-social-circle {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -3801,8 +3801,8 @@ h4 {
 }
 
 .footer-social-circle:hover {
-  transform: translateY(-3px) scale(1.06);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 }
 
 .footer-social-circle.whatsapp { background-color: #25D366; }
@@ -3815,13 +3815,13 @@ h4 {
    ========================================================================== */
 .footer-bottom-bar {
   width: 100%;
-  margin-top: 24px;
-  padding-top: 16px;
+  margin-top: 12px;
+  padding-top: 10px;
   border-top: 1px solid rgba(215, 207, 192, 0.12);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 16px;
   flex-wrap: wrap;
 }
 
@@ -4242,4 +4242,124 @@ h4 {
 /* Admin content padding — smaller on phones */
 @media (max-width: 640px) {
   .admin-body-pad { padding: 16px 16px 32px 16px !important; }
+}
+
+/* =========================================================================
+   POPULAR SEARCHES (LANDING PAGES) BAR IN FOOTER
+   ========================================================================= */
+.footer-popular-searches-box {
+  width: 100%;
+  margin: 12px 0 8px 0;
+  padding: 8px 14px;
+  background: rgba(15, 11, 8, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+}
+
+.footer-popular-searches-box:hover {
+  border-color: rgba(201, 155, 77, 0.35);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+
+.footer-popular-searches-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  padding: 4px 0;
+  cursor: pointer;
+  user-select: none;
+  flex-shrink: 0;
+  text-align: left;
+}
+
+.footer-popular-search-icon-wrap {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #F5EFE6;
+  transition: all 0.2s ease;
+}
+
+.footer-popular-searches-header:hover .footer-popular-search-icon-wrap {
+  border-color: #E8BA69;
+  color: #E8BA69;
+  transform: scale(1.05);
+}
+
+.footer-popular-search-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+}
+
+.footer-popular-toggle-btn {
+  font-size: 18px;
+  font-weight: 800;
+  color: #E8BA69;
+  line-height: 1;
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.footer-popular-searches-header:hover .footer-popular-toggle-btn {
+  transform: scale(1.2);
+}
+
+.footer-popular-pills-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  flex: 1;
+  transition: all 0.3s ease;
+}
+
+.footer-popular-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 8px;
+  color: #E0D7CA;
+  font-size: 12.5px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  line-height: 1.3;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.footer-popular-pill:hover {
+  background: rgba(201, 155, 77, 0.16);
+  border-color: rgba(201, 155, 77, 0.45);
+  color: #FFFFFF;
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 900px) {
+  .footer-popular-searches-box {
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px;
+  }
 }

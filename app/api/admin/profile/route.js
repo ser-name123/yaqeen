@@ -68,7 +68,11 @@ export async function GET(request) {
       social_facebook: settings?.social_facebook || "",
       social_instagram: settings?.social_instagram || "",
       social_youtube: settings?.social_youtube || "",
-      social_whatsapp: settings?.social_whatsapp || ""
+      social_whatsapp: settings?.social_whatsapp || "",
+      google_tag_id: settings?.google_tag_id || "",
+      header_scripts: settings?.header_scripts || "",
+      body_scripts: settings?.body_scripts || "",
+      footer_scripts: settings?.footer_scripts || ""
     });
   } catch (error) {
     console.error("Profile GET error:", error);
@@ -104,7 +108,11 @@ export async function PUT(request) {
       social_facebook,
       social_instagram,
       social_youtube,
-      social_whatsapp
+      social_whatsapp,
+      google_tag_id,
+      header_scripts,
+      body_scripts,
+      footer_scripts
     } = await request.json();
 
     if (!email || !password) {
@@ -132,32 +140,50 @@ export async function PUT(request) {
       );
     }
 
-    // Site-wide settings (logo/contact/social) may only be changed by admins
+    // Site-wide settings (logo/contact/social/scripts) may only be changed by admins
     // who can manage staff (super admins). Other staff just update their own
     // login above; the site settings are left untouched.
     if (canManageStaff(admin)) {
-      const { error: settingsError } = await supabaseAdmin
+      const payload = {
+        id: "global",
+        logo_text: logo_text || "yaqeen",
+        logo_url: logo_url || null,
+        admin_loader_logo_url: admin_loader_logo_url || null,
+        contact_email: contact_email || "info@yaqeeninstitute.com",
+        contact_phone: contact_phone || "+44 7700 183483",
+        contact_hours: contact_hours || "24x7 - We're always here for you.",
+        contact_support: contact_support || "We serve students from around the world.",
+        social_facebook: social_facebook || "",
+        social_instagram: social_instagram || "",
+        social_youtube: social_youtube || "",
+        social_whatsapp: social_whatsapp || "",
+        google_tag_id: google_tag_id !== undefined ? (google_tag_id || "").trim() : "",
+        header_scripts: header_scripts !== undefined ? (header_scripts || "") : "",
+        body_scripts: body_scripts !== undefined ? (body_scripts || "") : "",
+        footer_scripts: footer_scripts !== undefined ? (footer_scripts || "") : "",
+        updated_at: new Date().toISOString()
+      };
+
+      let { error: settingsError } = await supabaseAdmin
         .from("site_settings")
-        .upsert({
-          id: "global",
-          logo_text: logo_text || "yaqeen",
-          logo_url: logo_url || null,
-          admin_loader_logo_url: admin_loader_logo_url || null,
-          contact_email: contact_email || "info@yaqeeninstitute.com",
-          contact_phone: contact_phone || "+44 7700 183483",
-          contact_hours: contact_hours || "24x7 - We're always here for you.",
-          contact_support: contact_support || "We serve students from around the world.",
-          social_facebook: social_facebook || "",
-          social_instagram: social_instagram || "",
-          social_youtube: social_youtube || "",
-          social_whatsapp: social_whatsapp || "",
-          updated_at: new Date().toISOString()
-        });
+        .upsert(payload);
+
+      // Graceful fallback if columns do not exist yet in Supabase
+      if (settingsError && settingsError.message && (settingsError.message.includes("column") || settingsError.message.includes("does not exist"))) {
+        console.warn("Retrying site_settings update with legacy columns:", settingsError.message);
+        const fallbackPayload = { ...payload };
+        delete fallbackPayload.google_tag_id;
+        delete fallbackPayload.header_scripts;
+        delete fallbackPayload.body_scripts;
+        delete fallbackPayload.footer_scripts;
+        const res = await supabaseAdmin.from("site_settings").upsert(fallbackPayload);
+        settingsError = res.error;
+      }
 
       if (settingsError) {
         console.error("Site settings update error:", settingsError);
         return NextResponse.json(
-          { success: false, message: "Credentials updated, but failed to update site logo configurations." },
+          { success: false, message: "Credentials updated, but failed to update site configurations." },
           { status: 500 }
         );
       }

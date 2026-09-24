@@ -218,6 +218,10 @@ CREATE TABLE IF NOT EXISTS public.site_settings (
     social_instagram TEXT DEFAULT '',
     social_youtube TEXT DEFAULT '',
     social_whatsapp TEXT DEFAULT '',
+    google_tag_id TEXT DEFAULT '',
+    header_scripts TEXT DEFAULT '',
+    body_scripts TEXT DEFAULT '',
+    footer_scripts TEXT DEFAULT '',
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -230,6 +234,10 @@ ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS social_facebook TEXT D
 ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS social_instagram TEXT DEFAULT '';
 ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS social_youtube TEXT DEFAULT '';
 ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS social_whatsapp TEXT DEFAULT '';
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS google_tag_id TEXT DEFAULT '';
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS header_scripts TEXT DEFAULT '';
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS body_scripts TEXT DEFAULT '';
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS footer_scripts TEXT DEFAULT '';
 
 -- Enable RLS
 ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;

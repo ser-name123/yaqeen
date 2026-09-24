@@ -3,10 +3,36 @@
 import { useEffect, useState, useCallback } from "react";
 import RichTextEditor from "@/components/RichTextEditor";
 import { htmlToText } from "@/lib/richtext";
+import { supabase } from "@/lib/supabase";
 import "./AdminChat.css";
 import "./AdminFooter.css";
 
 const token = () => { try { return localStorage.getItem("aero_admin_token"); } catch { return null; } };
+
+const slugify = (text) => {
+  if (!text) return "";
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w\-]+/g, "")
+    .replace(/\-\-+/g, "-")
+    .replace(/^-+/, "")
+    .replace(/-+$/, "");
+};
+
+const DEFAULT_COURSE_OPTIONS = [
+  { title: "Quran Learning with Tajweed", url: "/courses/quran-learning-with-tajweed" },
+  { title: "Arabic Language Mastery", url: "/courses/arabic-language-mastery" },
+  { title: "Islamic Studies & Character Building", url: "/courses/islamic-studies-character-building" },
+  { title: "Quran Hifz Memorization", url: "/courses/quran-hifz-memorization" },
+  { title: "Noorani Qaida for Beginners", url: "/courses/noorani-qaida-for-beginners" },
+  { title: "Tafseer & Quran Understanding", url: "/courses/tafseer-quran-understanding" },
+  { title: "Quran Reading for Beginners", url: "/courses/quran-reading-for-beginners" },
+  { title: "Quran Tajweed Masterclass", url: "/courses/quran-tajweed-masterclass" },
+  { title: "Daily Duas & Islamic Manners", url: "/courses/daily-duas-islamic-manners" },
+];
 
 const TEXT_FIELDS = [
   ["footer_tagline", "Tagline (under brand name)"],
@@ -24,6 +50,7 @@ const TEXT_FIELDS = [
   ["newsletter_title", "Newsletter title"],
   ["newsletter_desc", "Newsletter sub-text"],
   ["social_heading", "Social heading"],
+  ["popular_searches_title", "Landing Pages / Searches Bar Title (e.g. Top Programs & Locations)"],
   ["footer_address", "Address (bottom bar)"],
   ["footer_ssl_text", "Security badge text"],
 ];
@@ -33,6 +60,7 @@ export default function AdminFooter() {
   const [saving, setSaving] = useState(false);
   const [savedMsg, setSavedMsg] = useState("");
   const [view, setView] = useState("header");   // 'header' | 'footer'
+  const [availableCourses, setAvailableCourses] = useState(DEFAULT_COURSE_OPTIONS);
 
   const authHeaders = () => ({ "Content-Type": "application/json", Authorization: `Bearer ${token()}` });
 
@@ -42,6 +70,31 @@ export default function AdminFooter() {
       const data = await res.json();
       if (data.success) setCfg({ ...data.config, explore_links: data.config.explore_links || [], trust_badges: data.config.trust_badges || [], footer_courses: data.config.footer_courses || [], header_links: data.config.header_links || [] });
     } catch { /* ignore */ }
+
+    try {
+      const { data: cData } = await supabase
+        .from("courses")
+        .select("id, title")
+        .order("order_index", { ascending: true })
+        .order("created_at", { ascending: false });
+
+      if (cData && cData.length > 0) {
+        const formatted = cData.map((c) => ({
+          title: c.title,
+          url: `/courses/${slugify(c.title)}`
+        }));
+        // Merge with default courses if any are missing
+        const existing = new Set(formatted.map((c) => (c.title || "").toLowerCase().trim()));
+        DEFAULT_COURSE_OPTIONS.forEach((def) => {
+          if (!existing.has(def.title.toLowerCase().trim())) {
+            formatted.push(def);
+          }
+        });
+        setAvailableCourses(formatted);
+      }
+    } catch (err) {
+      console.warn("Could not fetch available courses:", err);
+    }
   }, []);
 
   useEffect(() => { load(); }, [load]);
@@ -69,8 +122,14 @@ export default function AdminFooter() {
 
   // footer_courses helpers (optional custom list)
   const updCourse = (i, key, v) => setCfg((c) => { const a = [...c.footer_courses]; a[i] = { ...a[i], [key]: v }; return { ...c, footer_courses: a }; });
+  const updCourseFull = (i, label, url) => setCfg((c) => { const a = [...c.footer_courses]; a[i] = { ...a[i], label, url }; return { ...c, footer_courses: a }; });
   const addCourse = () => setCfg((c) => ({ ...c, footer_courses: [...c.footer_courses, { label: "", url: "/courses/" }] }));
+  const addCourseFromOption = (courseObj) => {
+    if (!courseObj) return;
+    setCfg((c) => ({ ...c, footer_courses: [...(c.footer_courses || []), { label: courseObj.title, url: courseObj.url }] }));
+  };
   const delCourse = (i) => setCfg((c) => ({ ...c, footer_courses: c.footer_courses.filter((_, x) => x !== i) }));
+  const moveCourse = (i, dir) => setCfg((c) => { const a = [...c.footer_courses]; const j = i + dir; if (j < 0 || j >= a.length) return c; [a[i], a[j]] = [a[j], a[i]]; return { ...c, footer_courses: a }; });
 
   // trust_badges helpers
   const updBadge = (i, key, v) => setCfg((c) => { const a = [...c.trust_badges]; a[i] = { ...a[i], [key]: v }; return { ...c, trust_badges: a }; });
@@ -176,15 +235,82 @@ export default function AdminFooter() {
 
         {/* footer courses (optional) */}
         <div className="af-section">
-          <div className="af-section-head"><h4>Footer courses (optional)</h4><button className="ac-add-btn" onClick={addCourse}>+ Add course</button></div>
-          <p className="ac-set-hint">Leave empty to auto-show your latest courses from “Manage Courses”. Add items here to set a custom list instead.</p>
-          {cfg.footer_courses.map((l, i) => (
-            <div className="af-row" key={i}>
-              <input className="ac-set-input" placeholder="Course label" value={l.label || ""} onChange={(e) => updCourse(i, "label", e.target.value)} />
-              <input className="ac-set-input" placeholder="URL (e.g. /courses/quran)" value={l.url || ""} onChange={(e) => updCourse(i, "url", e.target.value)} />
-              <div className="af-row-actions"><button className="del" onClick={() => delCourse(i)} title="Delete">🗑</button></div>
+          <div className="af-section-head">
+            <h4>Footer courses (optional)</h4>
+            <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
+              <select
+                className="ac-set-input"
+                style={{ width: "auto", minWidth: "220px", padding: "6px 10px", fontSize: "13px", cursor: "pointer" }}
+                defaultValue=""
+                onChange={(e) => {
+                  if (e.target.value) {
+                    const sel = availableCourses.find((c) => c.title === e.target.value);
+                    if (sel) addCourseFromOption(sel);
+                    e.target.value = "";
+                  }
+                }}
+              >
+                <option value="" disabled>+ Quick Add from Course List...</option>
+                {availableCourses.map((c, idx) => (
+                  <option key={idx} value={c.title}>{c.title}</option>
+                ))}
+              </select>
+              <button className="ac-add-btn" onClick={addCourse}>+ Add blank</button>
             </div>
-          ))}
+          </div>
+          <p className="ac-set-hint">Select a course from the dropdown to automatically fill title and link, or type manually. Leave empty to auto-show active courses from “Manage Courses”.</p>
+          {cfg.footer_courses.map((l, i) => {
+            const matchedCourse = availableCourses.find((c) => c.title === l.label);
+            return (
+              <div className="af-row" key={i} style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
+                {/* Course Quick Dropdown Picker */}
+                <select
+                  className="ac-set-input"
+                  style={{ flex: "0 0 200px", minWidth: "160px", padding: "8px 10px", fontSize: "13px", cursor: "pointer", backgroundColor: "#FAF5EC", borderColor: "#E2D4B2" }}
+                  value={matchedCourse ? l.label : ""}
+                  onChange={(e) => {
+                    const chosen = availableCourses.find((c) => c.title === e.target.value);
+                    if (chosen) {
+                      updCourseFull(i, chosen.title, chosen.url);
+                    }
+                  }}
+                >
+                  <option value="" disabled>-- Pick Course --</option>
+                  {availableCourses.map((c, idx) => (
+                    <option key={idx} value={c.title}>{c.title}</option>
+                  ))}
+                  {!matchedCourse && l.label && (
+                    <option value={l.label}>Custom: {l.label}</option>
+                  )}
+                </select>
+
+                {/* Course Label Input */}
+                <input
+                  className="ac-set-input"
+                  style={{ flex: "1 1 200px" }}
+                  placeholder="Course label"
+                  value={l.label || ""}
+                  onChange={(e) => updCourse(i, "label", e.target.value)}
+                />
+
+                {/* Course URL Input */}
+                <input
+                  className="ac-set-input"
+                  style={{ flex: "1 1 200px" }}
+                  placeholder="URL (e.g. /courses/quran)"
+                  value={l.url || ""}
+                  onChange={(e) => updCourse(i, "url", e.target.value)}
+                />
+
+                {/* Reorder and Delete Actions */}
+                <div className="af-row-actions">
+                  <button onClick={() => moveCourse(i, -1)} title="Move Up">↑</button>
+                  <button onClick={() => moveCourse(i, 1)} title="Move Down">↓</button>
+                  <button className="del" onClick={() => delCourse(i)} title="Delete">🗑</button>
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         {/* trust badges */}

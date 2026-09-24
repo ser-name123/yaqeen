@@ -2,11 +2,24 @@ import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase";
 import { sendMail } from "@/lib/mailer";
 import { adminOtpEmail } from "@/lib/email-templates";
+import { verifyAdminGeoAccess } from "@/lib/geo-guard";
 
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://yaqeeninstitute.online").replace(/\/$/, "");
 
 export async function POST(request) {
   try {
+    // 0. Geo-Fencing: Restrict Admin access to India only
+    const geo = await verifyAdminGeoAccess(request);
+    if (!geo.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Access Restricted: Admin console is only accessible within India. Your detected location: ${geo.country || "Non-India"}.`
+        },
+        { status: 403 }
+      );
+    }
+
     const { email, password } = await request.json();
 
     if (!email || !password) {

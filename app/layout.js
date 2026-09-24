@@ -2,6 +2,7 @@ import { Poppins, Lora } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 import LayoutWrapper from "@/components/LayoutWrapper";
+import CustomScripts from "@/components/CustomScripts";
 import { SettingsProvider } from "@/lib/settings-context";
 import { getSEOSettings, getSiteSettings } from "@/lib/db-cached";
 import { supabase } from "@/lib/supabase";
@@ -63,6 +64,11 @@ export default async function RootLayout({ children }) {
   let socialYoutube = "";
   let socialWhatsapp = "";
 
+  let googleTagId = "";
+  let headerScripts = "";
+  let bodyScripts = "";
+  let footerScripts = "";
+
   try {
     // Run DB queries in parallel using cached results (revalidate: 60s)
     const [siteData, seoData] = await Promise.all([
@@ -81,6 +87,10 @@ export default async function RootLayout({ children }) {
       socialInstagram = siteData.social_instagram || "";
       socialYoutube = siteData.social_youtube || "";
       socialWhatsapp = siteData.social_whatsapp || "";
+      googleTagId = siteData.google_tag_id || "";
+      headerScripts = siteData.header_scripts || "";
+      bodyScripts = siteData.body_scripts || "";
+      footerScripts = siteData.footer_scripts || "";
     }
 
     if (seoData && seoData.favicon_url) {
@@ -93,7 +103,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en" className={`${poppins.variable} ${lora.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
       <body suppressHydrationWarning>
-        {/* Google tag (gtag.js) - Google Ads */}
+        {/* Default Google tag (gtag.js) - Google Ads */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=AW-18317816315"
           strategy="afterInteractive"
@@ -107,7 +117,7 @@ export default async function RootLayout({ children }) {
           `}
         </Script>
 
-        {/* Google tag (gtag.js) - Google Analytics */}
+        {/* Default Google tag (gtag.js) - Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-6RGZGGEWN1"
           strategy="afterInteractive"
@@ -120,6 +130,31 @@ export default async function RootLayout({ children }) {
             gtag('config', 'G-6RGZGGEWN1');
           `}
         </Script>
+
+        {/* Dynamic Admin-Configured Google Tag ID (if specified and different from defaults) */}
+        {googleTagId && googleTagId !== "AW-18317816315" && googleTagId !== "G-6RGZGGEWN1" ? (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${googleTagId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="custom-google-tag-init" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${googleTagId}');
+              `}
+            </Script>
+          </>
+        ) : null}
+
+        {/* Injected Header, Body & Footer Custom Tracking Scripts */}
+        <CustomScripts
+          headerScripts={headerScripts}
+          bodyScripts={bodyScripts}
+          footerScripts={footerScripts}
+        />
 
         <SettingsProvider 
           logoText={logoText} 

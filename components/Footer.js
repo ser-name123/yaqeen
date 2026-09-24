@@ -37,8 +37,24 @@ const DEFAULT_COURSES = [
   { id: "daily-duas", title: "Daily Duas & Islamic Manners" },
 ];
 
+const DEFAULT_POPULAR_SEARCHES = [
+  { id: "def-1", slug: "online-quran-classes-uk", title: "Learn Quran Online" },
+  { id: "def-2", slug: "online-quran-classes-uk", title: "Quran Classes for Kids" },
+  { id: "def-3", slug: "online-quran-classes-uk", title: "Tajweed Courses" },
+  { id: "def-4", slug: "online-quran-classes-uk", title: "Quran Memorization" },
+  { id: "def-5", slug: "online-quran-classes-uk", title: "Islamic Studies Online" },
+  { id: "def-6", slug: "online-quran-classes-uk", title: "Arabic Language Course" },
+  { id: "def-7", slug: "online-quran-classes-uk", title: "Online Quran Tutor" },
+  { id: "def-8", slug: "online-quran-classes-uk", title: "Best Online Quran Classes in UK" },
+  { id: "def-9", slug: "online-quran-classes-uk", title: "1-on-1 Live Quran Classes" },
+  { id: "def-10", slug: "online-quran-classes-uk", title: "Female Quran Teacher Online" },
+  { id: "def-11", slug: "online-quran-classes-uk", title: "Noorani Qaida for Beginners" }
+];
+
 export default function Footer({ faviconUrl: propFaviconUrl }) {
   const [footerCourses, setFooterCourses] = useState(DEFAULT_COURSES);
+  const [landingPages, setLandingPages] = useState([]);
+  const [isSearchesExpanded, setIsSearchesExpanded] = useState(false);
   const [layout, setLayout] = useState(FOOTER_DEFAULTS);
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [newsletterLoading, setNewsletterLoading] = useState(false);
@@ -77,6 +93,30 @@ export default function Footer({ faviconUrl: propFaviconUrl }) {
       .then((r) => r.json())
       .then((d) => { if (d?.config) setLayout(d.config); })
       .catch(() => {});
+
+    async function loadLandingPages() {
+      try {
+        const { data, error } = await supabase
+          .from("landing_pages")
+          .select("id, slug, title, status")
+          .eq("status", "published")
+          .order("created_at", { ascending: false });
+
+        if (error) {
+          console.warn("Landing pages fetch warning for footer:", error.message);
+          return;
+        }
+
+        if (data && data.length > 0) {
+          setLandingPages(data.map((p) => ({ id: p.id, slug: p.slug, title: p.title })));
+        } else {
+          setLandingPages([]);
+        }
+      } catch (err) {
+        console.warn("Could not load landing pages for footer:", err);
+      }
+    }
+    loadLandingPages();
   }, []);
 
   const handleNewsletterSubmit = async (e) => {
@@ -353,6 +393,64 @@ export default function Footer({ faviconUrl: propFaviconUrl }) {
           </div>
 
         </div>
+
+        {/* =========================================================================
+           2.5. POPULAR SEARCHES (EXPANDABLE LANDING PAGES) BAR
+           ========================================================================= */}
+        {landingPages && landingPages.length > 0 && (() => {
+          const VISIBLE_LIMIT = 7;
+          const hasMoreLandingPages = landingPages.length > VISIBLE_LIMIT;
+          const itemsToDisplay = (isSearchesExpanded || !hasMoreLandingPages)
+            ? landingPages
+            : landingPages.slice(0, VISIBLE_LIMIT);
+
+          return (
+            <div className="footer-popular-searches-box">
+              {hasMoreLandingPages ? (
+                <button
+                  type="button"
+                  onClick={() => setIsSearchesExpanded(!isSearchesExpanded)}
+                  className="footer-popular-searches-header is-clickable"
+                  aria-expanded={isSearchesExpanded}
+                  aria-label="Toggle popular searches"
+                >
+                  <div className="footer-popular-search-icon-wrap">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                  </div>
+                  <span className="footer-popular-search-title">{layout.popular_searches_title || "Top Programs & Locations"}</span>
+                  <span className="footer-popular-toggle-btn">
+                    {isSearchesExpanded ? "−" : "+"}
+                  </span>
+                </button>
+              ) : (
+                <div className="footer-popular-searches-header static-header">
+                  <div className="footer-popular-search-icon-wrap">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                  </div>
+                  <span className="footer-popular-search-title">{layout.popular_searches_title || "Top Programs & Locations"}</span>
+                </div>
+              )}
+
+              <div className="footer-popular-pills-wrap">
+                {itemsToDisplay.map((item, idx) => (
+                  <Link
+                    key={item.id || idx}
+                    href={`/landing/${item.slug || "online-quran-classes-uk"}`}
+                    className="footer-popular-pill"
+                  >
+                    {item.title}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
 
         {/* =========================================================================
            3. BOTTOM BAR — logo, copyright, security & legal

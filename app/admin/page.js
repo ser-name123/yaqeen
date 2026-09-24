@@ -43,6 +43,8 @@ const adminSwal = {
   }
 };
 
+const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "842924769302-4tqdpi3jo87q7438ka4gi0md0urdirbd.apps.googleusercontent.com";
+
 // Blank course form — used for create/reset. Detail-page content fields are optional.
 const EMPTY_COURSE_FORM = {
   title: "", image_url: "", icon: "book", order_index: 0,
@@ -125,6 +127,8 @@ export default function AdminDashboard() {
   const [isVerifyingSession, setIsVerifyingSession] = useState(true);
   const [authLoading, setAuthLoading] = useState(false);
   const [gitInfo, setGitInfo] = useState("");
+  const [geoRestricted, setGeoRestricted] = useState(false);
+  const [detectedGeo, setDetectedGeo] = useState({ country: "", ip: "" });
 
   // Admin account management states
   const [adminAccounts, setAdminAccounts] = useState([]);
@@ -145,7 +149,11 @@ export default function AdminDashboard() {
     social_facebook: "",
     social_instagram: "",
     social_youtube: "",
-    social_whatsapp: ""
+    social_whatsapp: "",
+    google_tag_id: "",
+    header_scripts: "",
+    body_scripts: "",
+    footer_scripts: ""
   });
   const [logoText, setLogoText] = useState("yaqeen");
   const [logoUrl, setLogoUrl] = useState("");
@@ -165,6 +173,7 @@ export default function AdminDashboard() {
   const [geoFilter, setGeoFilter] = useState("all"); // 'all' | 'trials' | 'students' | 'inquiries'
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [backupLoading, setBackupLoading] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false); // hamburger drawer on mobile
 
   // Teachers management states
@@ -678,7 +687,11 @@ export default function AdminDashboard() {
           social_facebook: data.social_facebook || "",
           social_instagram: data.social_instagram || "",
           social_youtube: data.social_youtube || "",
-          social_whatsapp: data.social_whatsapp || ""
+          social_whatsapp: data.social_whatsapp || "",
+          google_tag_id: data.google_tag_id || "",
+          header_scripts: data.header_scripts || "",
+          body_scripts: data.body_scripts || "",
+          footer_scripts: data.footer_scripts || ""
         });
         setLogoText(data.logo_text || "yaqeen");
         setLogoUrl(data.logo_url || "");
@@ -752,7 +765,11 @@ export default function AdminDashboard() {
               social_facebook: data.social_facebook || "",
               social_instagram: data.social_instagram || "",
               social_youtube: data.social_youtube || "",
-              social_whatsapp: data.social_whatsapp || ""
+              social_whatsapp: data.social_whatsapp || "",
+              google_tag_id: data.google_tag_id || "",
+              header_scripts: data.header_scripts || "",
+              body_scripts: data.body_scripts || "",
+              footer_scripts: data.footer_scripts || ""
             });
             setLogoText(data.logo_text || "yaqeen");
             setLogoUrl(data.logo_url || "");
@@ -966,6 +983,141 @@ export default function AdminDashboard() {
     setOtpInput("");
   };
 
+  // Google Single Sign-On (SSO) Handler
+  const handleGoogleAuth = async ({ credential, code, redirectUri }) => {
+    setAuthLoading(true);
+    try {
+      const res = await fetch("/api/admin/google-sso", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ credential, code, redirectUri })
+      });
+      const data = await res.json();
+      if (data.success && data.sessionToken) {
+        localStorage.setItem("aero_admin_token", data.sessionToken);
+        localStorage.setItem("aero_admin_last_active", String(Date.now()));
+        setIsAuthenticated(true);
+        setOtpSent(false);
+        adminSwal.fire({
+          icon: "success",
+          title: "Welcome Back!",
+          text: `Logged in via Google SSO as ${data.admin?.email || "Admin"}. No OTP required.`,
+          timer: 1800,
+          showConfirmButton: false,
+          background: "#111827",
+          color: "#fff"
+        });
+      } else {
+        adminSwal.fire({
+          icon: "error",
+          title: "Access Denied",
+          text: data.message || "Google authentication failed. Only registered admin users are allowed.",
+          confirmButtonColor: "var(--primary-color)",
+          background: "#111827",
+          color: "#fff"
+        });
+      }
+    } catch (err) {
+      console.error("Google SSO error:", err);
+      adminSwal.fire({
+        icon: "error",
+        title: "Connection Error",
+        text: "Could not connect to Google SSO authentication service.",
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  // Trigger Google SSO via Google Identity Services or standard OAuth redirect
+  const triggerGoogleSignIn = () => {
+    if (typeof window === "undefined") return;
+
+    if (window.google?.accounts?.id) {
+      try {
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: (resp) => {
+            if (resp?.credential) {
+              handleGoogleAuth({ credential: resp.credential });
+            }
+          },
+          auto_select: false,
+          cancel_on_tap_outside: true
+        });
+        window.google.accounts.id.prompt((notification) => {
+          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+            redirectToGoogleOAuth();
+          }
+        });
+        return;
+      } catch (e) {
+        console.warn("GIS prompt fallback:", e);
+      }
+    }
+
+    redirectToGoogleOAuth();
+  };
+
+  const redirectToGoogleOAuth = () => {
+    const redirectUri = window.location.origin + "/admin";
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(
+      GOOGLE_CLIENT_ID
+    )}&redirect_uri=${encodeURIComponent(
+      redirectUri
+    )}&response_type=code&scope=openid%20email%20profile&prompt=select_account`;
+    window.location.href = authUrl;
+  };
+
+  // Listen for Google GIS client, OAuth redirect parameters, and Geo-Fencing check
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Check India-only Geo Access
+    fetch("/api/admin/geo-check")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.success && d.allowed === false) {
+          setGeoRestricted(true);
+          setDetectedGeo({ country: d.country || "Non-India", ip: d.ip || "" });
+        }
+      })
+      .catch(() => {});
+
+    // Check OAuth redirect ?code=...
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get("code");
+    if (code) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+      handleGoogleAuth({ code, redirectUri: window.location.origin + "/admin" });
+    }
+
+    // Load Google Identity Services script if not already present
+    if (!document.getElementById("google-gsi-client")) {
+      const script = document.createElement("script");
+      script.id = "google-gsi-client";
+      script.src = "https://accounts.google.com/gsi/client";
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        if (window.google?.accounts?.id) {
+          window.google.accounts.id.initialize({
+            client_id: GOOGLE_CLIENT_ID,
+            callback: (resp) => {
+              if (resp?.credential) {
+                handleGoogleAuth({ credential: resp.credential });
+              }
+            }
+          });
+        }
+      };
+      document.body.appendChild(script);
+    }
+  }, []);
+
   const handleLogout = async () => {
     const result = await adminSwal.fire({
       title: "Logout?",
@@ -1116,7 +1268,11 @@ export default function AdminDashboard() {
           social_facebook: profileForm.social_facebook,
           social_instagram: profileForm.social_instagram,
           social_youtube: profileForm.social_youtube,
-          social_whatsapp: profileForm.social_whatsapp
+          social_whatsapp: profileForm.social_whatsapp,
+          google_tag_id: profileForm.google_tag_id,
+          header_scripts: profileForm.header_scripts,
+          body_scripts: profileForm.body_scripts,
+          footer_scripts: profileForm.footer_scripts
         })
       });
       const data = await res.json();
@@ -1275,6 +1431,76 @@ export default function AdminDashboard() {
         text: err.message || "Something went wrong while generating the sitemap.",
         confirmButtonColor: "#ef4444"
       });
+    }
+  };
+
+  const handleEmailDatabaseBackup = async () => {
+    const token = localStorage.getItem("aero_admin_token");
+    if (!token) return;
+
+    const confirm = await adminSwal.fire({
+      title: "Email Database Backup?",
+      text: "This will export all tables (contacts, blogs, applications, leads, courses, settings, etc.) and email the complete JSON backup snapshot to ALL active admin email addresses.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "📦 Yes, Email Full Backup",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "var(--primary-color)",
+      background: "#111827",
+      color: "#fff"
+    });
+
+    if (!confirm.isConfirmed) return;
+
+    setBackupLoading(true);
+    adminSwal.fire({
+      title: "Exporting Database...",
+      text: "Fetching all database tables and sending backup emails to admins.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    try {
+      const res = await fetch("/api/admin/database-backup", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      if (data.success) {
+        adminSwal.fire({
+          icon: "success",
+          title: "Backup Emailed Successfully!",
+          html: `
+            <div style="text-align: left; font-size: 13px; color: #d1d5db; line-height: 1.6;">
+              <p><strong>Total Records:</strong> ${(Number(data.totalRecords) || 0).toLocaleString()}</p>
+              <p><strong>Backup File:</strong> <code>${data.fileName || "yaqeen-db-backup.json"}</code> (${data.fileSizeKB || "0"} KB)</p>
+              <p><strong>Delivered To:</strong> ${(data.recipients || []).join(", ")}</p>
+              <p style="margin-top: 10px; color: #10b981;">✓ All admin emails have received the full backup snapshot attachment.</p>
+            </div>
+          `,
+          confirmButtonColor: "var(--primary-color)",
+          background: "#111827",
+          color: "#fff"
+        });
+      } else {
+        throw new Error(data.message || "Failed to send database backup.");
+      }
+    } catch (err) {
+      console.error("Database backup failed:", err);
+      adminSwal.fire({
+        icon: "error",
+        title: "Backup Failed",
+        text: err.message || "An unexpected error occurred while generating database backup.",
+        confirmButtonColor: "var(--primary-color)",
+        background: "#111827",
+        color: "#fff"
+      });
+    } finally {
+      setBackupLoading(false);
     }
   };
 
@@ -2773,6 +2999,31 @@ export default function AdminDashboard() {
     transition: "all 0.3s ease"
   };
 
+  // Geo-Fencing Screen (Restricted to India only)
+  if (geoRestricted) {
+    return (
+      <div style={{ ...adminThemeStyle, display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "24px" }}>
+        <div className="glass-panel" style={{ padding: "40px", width: "100%", maxWidth: "460px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", borderRadius: "20px", boxShadow: "0 10px 30px rgba(44, 37, 30, 0.08)" }}>
+          <div style={{ width: "64px", height: "64px", borderRadius: "50%", backgroundColor: "rgba(239, 68, 68, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "28px" }}>
+            🚫
+          </div>
+          <h2 style={{ fontSize: "22px", fontWeight: "700", color: "#2c251e", margin: 0 }}>Access Restricted</h2>
+          <p style={{ color: "#7c7267", fontSize: "14px", lineHeight: "1.6", margin: 0 }}>
+            The Yaqeen Institute Admin Console is strictly geo-restricted to authorized regions (<strong>India 🇮🇳 only</strong>).
+          </p>
+          {detectedGeo.country && (
+            <div style={{ padding: "8px 16px", backgroundColor: "rgba(0,0,0,0.03)", borderRadius: "8px", fontSize: "12px", color: "#8c5d31", fontWeight: "600" }}>
+              Detected Region: {detectedGeo.country} {detectedGeo.ip ? `(${detectedGeo.ip})` : ""}
+            </div>
+          )}
+          <p style={{ fontSize: "12px", color: "#9ca3af", margin: "8px 0 0 0" }}>
+            If you are an authorized administrator, please ensure you access from an authorized Indian network connection.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   // Loading Screen (while checking local session token)
   if (isVerifyingSession) {
     return (
@@ -2861,39 +3112,99 @@ export default function AdminDashboard() {
           </div>
 
           {!otpSent ? (
-            <form onSubmit={handleLoginSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                <label htmlFor="email" style={{ fontSize: "12px", fontWeight: "600", color: "var(--fg-muted)" }}>Admin Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  placeholder="admin@example.com"
-                  value={emailInput}
-                  onChange={(e) => setEmailInput(e.target.value)}
-                  required
-                  disabled={authLoading}
-                  style={loginInputStyle}
-                />
-              </div>
-
-              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                <label htmlFor="password" style={{ fontSize: "12px", fontWeight: "600", color: "var(--fg-muted)" }}>Password</label>
-                <input
-                  type="password"
-                  id="password"
-                  placeholder="••••••••"
-                  value={passwordInput}
-                  onChange={(e) => setPasswordInput(e.target.value)}
-                  required
-                  disabled={authLoading}
-                  style={loginInputStyle}
-                />
-              </div>
-
-              <button type="submit" className="btn-primary" disabled={authLoading} style={{ justifyContent: "center", marginTop: "8px" }}>
-                {authLoading ? "Authenticating..." : "Send Verification OTP"}
+            <>
+              {/* Google SSO Button */}
+              <button
+                type="button"
+                onClick={triggerGoogleSignIn}
+                disabled={authLoading}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "12px",
+                  width: "100%",
+                  padding: "12px 20px",
+                  backgroundColor: "#ffffff",
+                  border: "1.5px solid #EADDC8",
+                  borderRadius: "9999px",
+                  color: "#2C251E",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  boxShadow: "0 2px 8px rgba(44, 37, 30, 0.04)",
+                  transition: "all 0.2s ease"
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = "#FAF5EC";
+                  e.currentTarget.style.borderColor = "#C99B4D";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = "#ffffff";
+                  e.currentTarget.style.borderColor = "#EADDC8";
+                }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24">
+                  <path
+                    fill="#4285F4"
+                    d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.36 24 12 24z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.04 0 12s.45 3.82 1.25 5.42l4.03-3.15z"
+                  />
+                  <path
+                    fill="#EA4335"
+                    d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.36 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
+                  />
+                </svg>
+                <span>Continue with Google</span>
               </button>
-            </form>
+
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", margin: "4px 0" }}>
+                <div style={{ flex: 1, height: "1px", backgroundColor: "var(--card-border)", opacity: 0.8 }} />
+                <span style={{ fontSize: "11px", color: "var(--fg-muted)", textTransform: "uppercase", letterSpacing: "0.8px", fontWeight: "600" }}>or sign in with email</span>
+                <div style={{ flex: 1, height: "1px", backgroundColor: "var(--card-border)", opacity: 0.8 }} />
+              </div>
+
+              <form onSubmit={handleLoginSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label htmlFor="email" style={{ fontSize: "12px", fontWeight: "600", color: "var(--fg-muted)" }}>Admin Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    placeholder="admin@example.com"
+                    value={emailInput}
+                    onChange={(e) => setEmailInput(e.target.value)}
+                    required
+                    disabled={authLoading}
+                    style={loginInputStyle}
+                  />
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label htmlFor="password" style={{ fontSize: "12px", fontWeight: "600", color: "var(--fg-muted)" }}>Password</label>
+                  <input
+                    type="password"
+                    id="password"
+                    placeholder="••••••••"
+                    value={passwordInput}
+                    onChange={(e) => setPasswordInput(e.target.value)}
+                    required
+                    disabled={authLoading}
+                    style={loginInputStyle}
+                  />
+                </div>
+
+                <button type="submit" className="btn-primary" disabled={authLoading} style={{ justifyContent: "center", marginTop: "8px" }}>
+                  {authLoading ? "Authenticating..." : "Send Verification OTP"}
+                </button>
+              </form>
+            </>
           ) : (
             <form onSubmit={handleVerifyOtpSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
@@ -4998,6 +5309,115 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               </div>
+
+              {/* Custom Tracking & Header / Body / Footer Scripts */}
+              <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px", marginBottom: "8px" }}>
+                    <h3 style={{ fontSize: "18px", fontWeight: "600", display: "flex", alignItems: "center", gap: "8px" }}>
+                      <span>📊</span> Website Tracking &amp; Custom Scripts
+                    </h3>
+                    <span style={{ fontSize: "11px", background: "rgba(59, 130, 246, 0.1)", color: "#3b82f6", border: "1px solid rgba(59, 130, 246, 0.2)", padding: "3px 8px", borderRadius: "12px", fontWeight: "600" }}>
+                      Header • Body • Footer
+                    </span>
+                  </div>
+                  <p style={{ color: "var(--fg-muted)", fontSize: "13px", lineHeight: "1.5" }}>
+                    Google Analytics (GA4), Google Tag Manager (GTM), Google Ads, Meta Pixel ya custom live chat widget scripts yahan add karein. Ye scripts pure website ke har page pe automatically load hongi.
+                  </p>
+                </div>
+
+                {/* Google Tag ID / GTM ID / GA4 */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px", background: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--card-border)", borderRadius: "8px", padding: "16px" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <label style={{ ...formLabelStyle, display: "flex", alignItems: "center", gap: "6px" }}>
+                      <span style={{ fontSize: "14px" }}>🎯</span> Google Measurement / Tag ID (GA4 / Google Ads)
+                    </label>
+                    <span style={{ fontSize: "11px", color: "var(--fg-muted)" }}>e.g. G-6RGZGGEWN1 ya AW-18317816315</span>
+                  </div>
+                  <input
+                    type="text"
+                    value={profileForm.google_tag_id}
+                    onChange={(e) => setProfileForm((prev) => ({ ...prev, google_tag_id: e.target.value }))}
+                    placeholder="G-XXXXXXXXXX ya AW-XXXXXXXXXX"
+                    style={formInputStyle}
+                  />
+                  <span style={{ fontSize: "11px", color: "var(--fg-muted)" }}>
+                    💡 Agar aapke paas Measurement ID hai to yahan enter karein. Agar direct <code>&lt;script&gt;</code> code snippet hai, to use neeche <strong>Header Scripts</strong> box me paste karein.
+                  </span>
+                </div>
+
+                {/* Header Scripts (<head>) */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <label style={{ ...formLabelStyle, display: "flex", alignItems: "center", gap: "6px" }}>
+                      <span>🏷️</span> Header Scripts (<code style={{ fontSize: "12px", color: "var(--primary-color)" }}>&lt;head&gt;</code> Insertion)
+                    </label>
+                    <span style={{ fontSize: "11px", color: "var(--fg-muted)" }}>Meta Pixel, GTM Head, Verification Tags</span>
+                  </div>
+                  <textarea
+                    rows={5}
+                    value={profileForm.header_scripts}
+                    onChange={(e) => setProfileForm((prev) => ({ ...prev, header_scripts: e.target.value }))}
+                    placeholder={`<!-- Paste scripts to be injected into <head> -->\n<script>\n  // Google Tag Manager / Meta Pixel Code\n</script>`}
+                    style={{
+                      ...formInputStyle,
+                      fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+                      fontSize: "12px",
+                      lineHeight: "1.4",
+                      tabSize: 2,
+                      whiteSpace: "pre"
+                    }}
+                  />
+                </div>
+
+                {/* Body (Top) Scripts (<body>) */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <label style={{ ...formLabelStyle, display: "flex", alignItems: "center", gap: "6px" }}>
+                      <span>🚀</span> Body (Top) Scripts (<code style={{ fontSize: "12px", color: "var(--primary-color)" }}>&lt;body&gt;</code> Start Insertion)
+                    </label>
+                    <span style={{ fontSize: "11px", color: "var(--fg-muted)" }}>GTM &lt;noscript&gt; iframe, Top banners</span>
+                  </div>
+                  <textarea
+                    rows={4}
+                    value={profileForm.body_scripts}
+                    onChange={(e) => setProfileForm((prev) => ({ ...prev, body_scripts: e.target.value }))}
+                    placeholder={`<!-- Paste scripts/noscripts for top of <body> -->\n<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>`}
+                    style={{
+                      ...formInputStyle,
+                      fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+                      fontSize: "12px",
+                      lineHeight: "1.4",
+                      tabSize: 2,
+                      whiteSpace: "pre"
+                    }}
+                  />
+                </div>
+
+                {/* Footer Scripts (Before </body>) */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <label style={{ ...formLabelStyle, display: "flex", alignItems: "center", gap: "6px" }}>
+                      <span>⚡</span> Footer Scripts (Before <code style={{ fontSize: "12px", color: "var(--primary-color)" }}>&lt;/body&gt;</code> Insertion)
+                    </label>
+                    <span style={{ fontSize: "11px", color: "var(--fg-muted)" }}>Chat Widgets (Tidio/Crisp), Conversion Pixels, Custom JS</span>
+                  </div>
+                  <textarea
+                    rows={4}
+                    value={profileForm.footer_scripts}
+                    onChange={(e) => setProfileForm((prev) => ({ ...prev, footer_scripts: e.target.value }))}
+                    placeholder={`<!-- Paste scripts to be injected at bottom before </body> -->\n<script src="//code.tidio.co/xxxxxx.js" async></script>`}
+                    style={{
+                      ...formInputStyle,
+                      fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+                      fontSize: "12px",
+                      lineHeight: "1.4",
+                      tabSize: 2,
+                      whiteSpace: "pre"
+                    }}
+                  />
+                </div>
+              </div>
               </>)}
 
               <button type="submit" className="btn-primary" style={{ width: "fit-content", alignSelf: "flex-end" }}>
@@ -5036,6 +5456,48 @@ export default function AdminDashboard() {
               >
                 🌐 Generate Sitemap
               </button>
+            </div>
+            )}
+
+            {/* Database Backup & Email Exporter Panel */}
+            {(!currentAdmin || canManageStaff(currentAdmin)) && (
+            <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px" }}>
+                <h3 style={{ fontSize: "18px", fontWeight: "600", display: "flex", alignItems: "center", gap: "8px" }}>
+                  <span>🗄️</span> Full Database Email Backup
+                </h3>
+                <span style={{ fontSize: "11px", background: "rgba(16, 185, 129, 0.1)", color: "#10b981", border: "1px solid rgba(16, 185, 129, 0.2)", padding: "3px 8px", borderRadius: "12px", fontWeight: "600" }}>
+                  Auto Attachment to All Admins
+                </span>
+              </div>
+              <p style={{ color: "var(--fg-muted)", fontSize: "13px", lineHeight: "1.5" }}>
+                Ek click par database ke saare tables (Contacts, Leads, Teachers, Student Applications, Courses, Pricing Plans, Testimonials, Blogs, SEO &amp; Site Settings) ka complete JSON backup snapshot generate hoga aur sabhi active admin accounts ke email address par safely email kar diya jaega.
+              </p>
+
+              <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap" }}>
+                <button
+                  type="button"
+                  onClick={handleEmailDatabaseBackup}
+                  disabled={backupLoading}
+                  className="btn-primary"
+                  style={{
+                    width: "fit-content",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                    color: "#fff",
+                    border: "none",
+                    cursor: backupLoading ? "not-allowed" : "pointer",
+                    opacity: backupLoading ? 0.7 : 1
+                  }}
+                >
+                  {backupLoading ? "⏳ Generating & Sending..." : "📦 Email Full Database Backup to All Admins"}
+                </button>
+                <span style={{ fontSize: "12px", color: "var(--fg-muted)" }}>
+                  Attachment format: <code>yaqeen-db-backup-[date].json</code>
+                </span>
+              </div>
             </div>
             )}
           </div>
