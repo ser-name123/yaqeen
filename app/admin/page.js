@@ -51,7 +51,8 @@ const EMPTY_COURSE_FORM = {
   short_description: "", description: "",
   level: "", class_duration: "", course_duration: "", mode: "", age_group: "",
   learn_points: "", requirements: "", who_for: "",
-  content_details: "", course_modules: "", faqs: ""
+  content_details: "", course_modules: "", faqs: "",
+  seo_title: "", seo_description: "", seo_keywords: ""
 };
 
 // Reusable Quill Rich Text Editor Component
@@ -175,6 +176,13 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [backupLoading, setBackupLoading] = useState(false);
+  // Custom sitemap.xml / robots.txt upload state. When `active`, the uploaded
+  // file is served at /sitemap.xml or /robots.txt and overrides the generated one.
+  const [customFiles, setCustomFiles] = useState({
+    sitemap: { active: false, content: "" },
+    robots: { active: false, content: "" },
+  });
+  const [customFilesBusy, setCustomFilesBusy] = useState("");
   const [mobileNavOpen, setMobileNavOpen] = useState(false); // hamburger drawer on mobile
 
   // Teachers management states
@@ -698,6 +706,8 @@ export default function AdminDashboard() {
         setLogoText(data.logo_text || "yaqeen");
         setLogoUrl(data.logo_url || "");
         setCurrentAdmin({ full_name: data.full_name || "", role: data.role || "super_admin", status: data.status || "active", permissions: Array.isArray(data.permissions) ? data.permissions : [] });
+        // Also load whether a custom sitemap/robots is currently uploaded.
+        loadCustomFiles();
       }
     } catch (err) {
       console.error("Error loading profile settings:", err);
@@ -1435,6 +1445,98 @@ export default function AdminDashboard() {
         text: err.message || "Something went wrong while generating the sitemap.",
         confirmButtonColor: "#ef4444"
       });
+    }
+  };
+
+  // Load whether a custom sitemap.xml / robots.txt is currently uploaded.
+  const loadCustomFiles = async () => {
+    try {
+      const token = localStorage.getItem("aero_admin_token");
+      if (!token) return;
+      const res = await fetch("/api/admin/sitemap-files", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.success) {
+        setCustomFiles({
+          sitemap: { active: data.sitemap.active, content: data.sitemap.content || "" },
+          robots: { active: data.robots.active, content: data.robots.content || "" },
+        });
+      }
+    } catch (err) {
+      console.warn("Could not load custom sitemap/robots state:", err.message);
+    }
+  };
+
+  // Upload a custom sitemap.xml or robots.txt (type = "sitemap" | "robots").
+  const handleUploadCustomFile = async (type, file) => {
+    if (!file) return;
+    const label = type === "sitemap" ? "sitemap.xml" : "robots.txt";
+    try {
+      setCustomFilesBusy(type);
+      const content = await file.text();
+      if (!content.trim()) {
+        setCustomFilesBusy("");
+        adminSwal.fire({ icon: "warning", title: "Empty file", text: `The selected ${label} file is empty.`, confirmButtonColor: "#ef4444" });
+        return;
+      }
+      const token = localStorage.getItem("aero_admin_token");
+      const res = await fetch("/api/admin/sitemap-files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ type, content }),
+      });
+      const data = await res.json();
+      setCustomFilesBusy("");
+      if (data.success) {
+        setCustomFiles((prev) => ({ ...prev, [type]: { active: true, content } }));
+        adminSwal.fire({
+          icon: "success",
+          title: "Uploaded!",
+          html: `Custom <code>${label}</code> is now live at <code>/${label}</code> and overrides the generated one.`,
+          confirmButtonColor: "var(--primary-color)",
+        });
+      } else {
+        throw new Error(data.message || "Upload failed.");
+      }
+    } catch (err) {
+      setCustomFilesBusy("");
+      adminSwal.fire({ icon: "error", title: "Upload Failed", text: err.message || "Something went wrong.", confirmButtonColor: "#ef4444" });
+    }
+  };
+
+  // Remove the custom file so the auto-generated one is served again.
+  const handleRemoveCustomFile = async (type) => {
+    const label = type === "sitemap" ? "sitemap.xml" : "robots.txt";
+    const confirm = await adminSwal.fire({
+      title: `Remove custom ${label}?`,
+      html: `The uploaded <code>${label}</code> will be deleted and the <b>auto-generated</b> version will be served again.`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, remove",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#ef4444",
+    });
+    if (!confirm.isConfirmed) return;
+    try {
+      setCustomFilesBusy(type);
+      const token = localStorage.getItem("aero_admin_token");
+      const res = await fetch("/api/admin/sitemap-files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ type, clear: true }),
+      });
+      const data = await res.json();
+      setCustomFilesBusy("");
+      if (data.success) {
+        setCustomFiles((prev) => ({ ...prev, [type]: { active: false, content: "" } }));
+        adminSwal.fire({ icon: "success", title: "Removed", text: `The generated ${label} is now served.`, confirmButtonColor: "var(--primary-color)" });
+      } else {
+        throw new Error(data.message || "Remove failed.");
+      }
+    } catch (err) {
+      setCustomFilesBusy("");
+      adminSwal.fire({ icon: "error", title: "Failed", text: err.message || "Something went wrong.", confirmButtonColor: "#ef4444" });
     }
   };
 
@@ -2439,7 +2541,11 @@ export default function AdminDashboard() {
       who_for: htmlToText(courseForm.who_for) || null,
       content_details: courseForm.content_details || null,
       course_modules: htmlToText(courseForm.course_modules) || null,
-      faqs: htmlToText(courseForm.faqs) || null
+      faqs: htmlToText(courseForm.faqs) || null,
+      // Per-course SEO (plain text — goes into <title>/<meta> on the detail page)
+      seo_title: (courseForm.seo_title || "").trim() || null,
+      seo_description: (courseForm.seo_description || "").trim() || null,
+      seo_keywords: (courseForm.seo_keywords || "").trim() || null
     };
 
     // Save helper — retries with only the base columns if the detail columns
@@ -2512,7 +2618,10 @@ export default function AdminDashboard() {
       who_for: course.who_for || "",
       content_details: course.content_details || "",
       course_modules: course.course_modules || "",
-      faqs: course.faqs || ""
+      faqs: course.faqs || "",
+      seo_title: course.seo_title || "",
+      seo_description: course.seo_description || "",
+      seo_keywords: course.seo_keywords || ""
     });
     setIsEditingCourse(true);
   };
@@ -5484,24 +5593,91 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* Sitemap Generator Panel */}
+            {/* Sitemap & Robots Panel */}
             {(!currentAdmin || canManageStaff(currentAdmin)) && (
             <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
               <div>
-                <h3 style={{ fontSize: "18px", fontWeight: "600", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px" }}>XML Sitemap Generator</h3>
+                <h3 style={{ fontSize: "18px", fontWeight: "600", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px" }}>Sitemap &amp; Robots.txt</h3>
                 <p style={{ color: "var(--fg-muted)", fontSize: "13px", marginTop: "10px" }}>
-                  Generate a static <code>sitemap.xml</code> file in the public assets folder of your server to improve search engine crawling and index all static and dynamic pages instantly.
+                  Auto-generate your <code>sitemap.xml</code> from all live pages, or <b>upload your own</b> <code>sitemap.xml</code> / <code>robots.txt</code>. When a file is uploaded, <b>only that file is served</b> at <code>/sitemap.xml</code> or <code>/robots.txt</code> and the generated one is ignored.
                 </p>
               </div>
 
-              <button
-                type="button"
-                onClick={handleGenerateSitemap}
-                className="btn-primary"
-                style={{ width: "fit-content", display: "inline-flex", alignItems: "center", gap: "8px" }}
-              >
-                🌐 Generate Sitemap
-              </button>
+              {/* Auto-generate */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+                  <button
+                    type="button"
+                    onClick={handleGenerateSitemap}
+                    className="btn-primary"
+                    style={{ width: "fit-content", display: "inline-flex", alignItems: "center", gap: "8px" }}
+                  >
+                    🌐 Generate Sitemap
+                  </button>
+                  {customFiles.sitemap.active && (
+                    <span style={{ fontSize: "12px", color: "#b45309", background: "rgba(245,158,11,0.12)", border: "1px solid rgba(245,158,11,0.3)", padding: "4px 10px", borderRadius: "10px" }}>
+                      ⚠️ A custom sitemap is uploaded — it overrides the generated one.
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Upload cards for sitemap.xml and robots.txt */}
+              {[
+                { type: "sitemap", label: "sitemap.xml", accept: ".xml,application/xml,text/xml", path: "/sitemap.xml" },
+                { type: "robots", label: "robots.txt", accept: ".txt,text/plain", path: "/robots.txt" },
+              ].map((f) => {
+                const state = customFiles[f.type];
+                const busy = customFilesBusy === f.type;
+                return (
+                  <div key={f.type} style={{ border: "1px solid var(--card-border)", borderRadius: "12px", padding: "16px 18px", display: "flex", flexDirection: "column", gap: "12px", background: "rgba(255,255,255,0.02)" }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px", flexWrap: "wrap" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <strong style={{ fontSize: "14px" }}>Custom <code>{f.label}</code></strong>
+                        {state.active ? (
+                          <span style={{ fontSize: "11px", fontWeight: 600, color: "#059669", background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)", padding: "3px 9px", borderRadius: "10px" }}>
+                            ● Uploaded — serving this
+                          </span>
+                        ) : (
+                          <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--fg-muted)", background: "rgba(120,120,120,0.1)", border: "1px solid var(--card-border)", padding: "3px 9px", borderRadius: "10px" }}>
+                            Using generated
+                          </span>
+                        )}
+                      </div>
+                      <a href={f.path} target="_blank" rel="noreferrer" style={{ fontSize: "12px", color: "var(--secondary-color)" }}>View {f.path} ↗</a>
+                    </div>
+
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+                      <label className="btn-secondary" style={{ width: "fit-content", display: "inline-flex", alignItems: "center", gap: "8px", cursor: busy ? "not-allowed" : "pointer", opacity: busy ? 0.6 : 1, margin: 0 }}>
+                        {busy ? "⏳ Uploading..." : (state.active ? "⬆️ Replace file" : "⬆️ Upload file")}
+                        <input
+                          type="file"
+                          accept={f.accept}
+                          disabled={busy}
+                          style={{ display: "none" }}
+                          onChange={(e) => { const file = e.target.files?.[0]; e.target.value = ""; handleUploadCustomFile(f.type, file); }}
+                        />
+                      </label>
+                      {state.active && (
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveCustomFile(f.type)}
+                          disabled={busy}
+                          style={{ fontSize: "13px", color: "#ef4444", background: "transparent", border: "1px solid rgba(239,68,68,0.35)", borderRadius: "8px", padding: "7px 14px", cursor: busy ? "not-allowed" : "pointer" }}
+                        >
+                          🗑️ Remove (use generated)
+                        </button>
+                      )}
+                    </div>
+
+                    {state.active && state.content && (
+                      <pre style={{ margin: 0, maxHeight: "120px", overflow: "auto", fontSize: "11px", lineHeight: 1.5, background: "rgba(0,0,0,0.04)", border: "1px solid var(--card-border)", borderRadius: "8px", padding: "10px", whiteSpace: "pre-wrap", wordBreak: "break-word", color: "var(--fg-muted)" }}>
+                        {state.content.slice(0, 1000)}{state.content.length > 1000 ? "\n… (truncated)" : ""}
+                      </pre>
+                    )}
+                  </div>
+                );
+              })}
             </div>
             )}
 
@@ -6301,6 +6477,26 @@ export default function AdminDashboard() {
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                     <label style={formLabelStyle}>Course FAQs <span style={{ color: "var(--fg-muted)", fontWeight: 400 }}>(one per line — format: Question | Answer)</span></label>
                     <RichTextEditor key={`cfaqs-${editingCourseId || "new"}`} value={courseForm.faqs} onChange={(html) => setCourseForm(p => ({ ...p, faqs: html }))} placeholder={"What does this course cover? | It covers... (one per line)"} minHeight="140px" />
+                  </div>
+                </div>
+
+                {/* Course SEO (Search Engine) */}
+                <div style={{ marginTop: "8px" }}>
+                  <h3 style={{ fontSize: "18px", fontWeight: "600", color: "#2B1F14", margin: "0 0 4px 0" }}>Course SEO (Search Engine)</h3>
+                  <p style={{ color: "var(--fg-muted)", fontSize: "13px", margin: "0 0 16px 0" }}>Ye is course ke detail page ke title &amp; meta tags me jaate hain. Khaali chhodoge to course title / short description apne-aap use hoga.</p>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>SEO Meta Title <span style={{ color: "var(--fg-muted)", fontWeight: 400 }}>({(courseForm.seo_title || "").length} chars · ~60 best)</span></label>
+                      <input type="text" value={courseForm.seo_title} onChange={(e) => setCourseForm(p => ({ ...p, seo_title: e.target.value }))} placeholder="e.g. Online Quran Tajweed Course — Yaqeen Institute" style={formInputStyle} />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>SEO Meta Description <span style={{ color: "var(--fg-muted)", fontWeight: 400 }}>({(courseForm.seo_description || "").length} chars · ~160 best)</span></label>
+                      <textarea rows={3} value={courseForm.seo_description} onChange={(e) => setCourseForm(p => ({ ...p, seo_description: e.target.value }))} placeholder="Short summary shown in Google search results for this course." style={{ ...formInputStyle, minHeight: "80px", resize: "vertical", lineHeight: 1.6 }} />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>SEO Keywords <span style={{ color: "var(--fg-muted)", fontWeight: 400 }}>(comma separated)</span></label>
+                      <input type="text" value={courseForm.seo_keywords} onChange={(e) => setCourseForm(p => ({ ...p, seo_keywords: e.target.value }))} placeholder="online quran classes, tajweed course, learn quran online" style={formInputStyle} />
+                    </div>
                   </div>
                 </div>
 
