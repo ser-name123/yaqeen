@@ -2,9 +2,17 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import "./teachers.css";
 import { supabase } from "@/lib/supabase";
 import { usePageContent } from "@/lib/use-page-content";
+import { ALL_TEACHERS } from "@/lib/teachers-data";
+
+// SEO-friendly URL for a teacher: prefer the admin-managed slug, else derive it from the name.
+const slugify = (text) =>
+  (text || "").toString().toLowerCase().trim()
+    .replace(/\s+/g, "-").replace(/[^\w-]+/g, "").replace(/--+/g, "-").replace(/^-+|-+$/g, "");
+const teacherHref = (t) => `/teachers/${t.slug || slugify(t.name) || t.id}`;
 
 /* 9 Standard Fallback Teachers matching Yaqeen Institute Brand Mockup */
 const DEFAULT_TEACHERS = [
@@ -168,6 +176,7 @@ function Avatar({ url, name, className }) {
 }
 
 export default function TeachersPage() {
+  const router = useRouter();
   const c = usePageContent("teachers");
   const [teachers, setTeachers] = useState(DEFAULT_TEACHERS);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -304,10 +313,11 @@ export default function TeachersPage() {
             <div 
               className="tp-card" 
               key={t.id}
-              onClick={() => setSelectedTeacher(t)}
+              onClick={() => router.push(teacherHref(t))}
               role="button"
               tabIndex={0}
-              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setSelectedTeacher(t); }}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") router.push(teacherHref(t)); }}
+              style={{ cursor: "pointer" }}
             >
               <div className="tp-card-avatar-wrap">
                 <Avatar url={t.avatar_url} name={t.name} />
@@ -346,7 +356,7 @@ export default function TeachersPage() {
                 className="tp-card-view-btn"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setSelectedTeacher(t);
+                  router.push(teacherHref(t));
                 }}
               >
                 <span>About Teacher</span>

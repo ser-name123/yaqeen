@@ -1340,7 +1340,12 @@ export default function CoursesPage() {
         {/* Teachers Cards Grid */}
         <div className="teachers-grid stagger-group">
           {teachers.map((teacher) => (
-            <div key={teacher.id} className="teacher-card reveal-stagger">
+            <Link 
+              key={teacher.id} 
+              href={`/teachers/${teacher.id}`} 
+              className="teacher-card reveal-stagger"
+              style={{ textDecoration: "none", color: "inherit", display: "block" }}
+            >
               <div className="teacher-avatar-wrap">
                 <img 
                   src={teacher.avatar_url || "/images/teacher_rahman.png"} 
@@ -1367,7 +1372,7 @@ export default function CoursesPage() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>

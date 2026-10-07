@@ -1360,7 +1360,12 @@ export default function Home() {
         {/* Teachers Cards Grid */}
         <div className="teachers-grid">
           {teachers.map((teacher) => (
-            <div key={teacher.id} className="teacher-card">
+            <Link 
+              key={teacher.id} 
+              href={`/teachers/${teacher.id}`} 
+              className="teacher-card"
+              style={{ textDecoration: "none", color: "inherit", display: "block" }}
+            >
               <div className="teacher-avatar-wrap">
                 <img 
                   src={teacher.avatar_url || "/images/teacher_rahman.png"} 
@@ -1387,7 +1392,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>

@@ -55,6 +55,47 @@ const EMPTY_COURSE_FORM = {
   seo_title: "", seo_description: "", seo_keywords: ""
 };
 
+const slugifyAdmin = (text) =>
+  (text || "").toString().toLowerCase().trim()
+    .replace(/\s+/g, "-").replace(/[^\w-]+/g, "").replace(/--+/g, "-").replace(/^-+|-+$/g, "") || null;
+
+const EMPTY_TEACHER_FORM = {
+  name: "", title: "", avatar_url: "", languages: "", experience: "",
+  specialization: "", education: "", bio: "", order_index: 0,
+  // Detail-page fields (all stored in DB — no static/local fallback)
+  slug: "", gender: "", country: "", headline: "",
+  short_bio: "", long_bio: "", quote: "",
+  education_title: "", education_sub: "",
+  approach_title: "", approach_desc: "",
+  academic_title: "", academic_desc: "",
+  // Per-teacher SEO
+  seo_title: "", seo_description: "", seo_keywords: "",
+  // Per-teacher "About" + "Verified Teachers" blocks (right side of detail page)
+  about_block: {
+    title_line1: "A Friendly, Supportive and",
+    title_highlight: "Professional Teacher",
+    subtitle_rest: "is committed to creating a positive and encouraging learning environment for every student.",
+    features: [
+      { title: "Warm and Approachable", desc: "Creates a comfortable and encouraging learning environment." },
+      { title: "Supportive Teaching Style", desc: "Patient and helpful, making students feel at ease." },
+      { title: "Focused on Your Goals", desc: "Designs lessons to match each student's level and needs." },
+      { title: "Dedicated Educator", desc: "Committed to helping students grow in their Quran and Arabic skills." },
+    ],
+  },
+  verified_block: {
+    badge: "OUR VERIFIED TEACHERS",
+    title_line1: "Dedicated. Experienced.",
+    title_highlight: "Committed to Your Child's Success.",
+    subtitle: "Our teachers are carefully selected to provide high-quality Quran and Arabic education in a safe, respectful, and supportive environment.",
+    cards: [
+      { title: "Qualified & Certified", desc: "Our teachers are verified professionals with recognized qualifications in Quran and Arabic teaching." },
+      { title: "Comprehensive Islamic Education", desc: "We teach Quran recitation, Tajweed, Arabic language, and Islamic studies, tailored to each student's level and goals." },
+      { title: "Male & Female Teachers", desc: "We offer both male and female teachers, so you can choose the best fit for your child's needs and comfort." },
+      { title: "Carefully Vetted Hiring Process", desc: "Every teacher goes through a thorough selection process, including interviews, qualification checks, and background verification, ensuring a safe and positive learning experience." },
+    ],
+  }
+};
+
 // Reusable Quill Rich Text Editor Component
 function RichTextEditor({ value, onChange, placeholder = "Write content here...", minHeight = "200px" }) {
   const containerRef = useRef(null);
@@ -189,17 +230,7 @@ export default function AdminDashboard() {
   const [teachers, setTeachers] = useState([]);
   const [isEditingTeacher, setIsEditingTeacher] = useState(false);
   const [editingTeacherId, setEditingTeacherId] = useState(null);
-  const [teacherForm, setTeacherForm] = useState({
-    name: "",
-    title: "",
-    avatar_url: "",
-    languages: "",
-    experience: "",
-    specialization: "",
-    education: "",
-    bio: "",
-    order_index: 0
-  });
+  const [teacherForm, setTeacherForm] = useState(EMPTY_TEACHER_FORM);
 
   // Testimonials management states
   const [testimonials, setTestimonials] = useState([]);
@@ -2078,16 +2109,38 @@ export default function AdminDashboard() {
     }
 
     setLoading(true);
+    const t = (v) => { const s = (v ?? "").toString().trim(); return s || null; };
     const payload = {
       name: teacherForm.name,
-      title: teacherForm.title || null,
-      avatar_url: teacherForm.avatar_url || null,
+      title: t(teacherForm.title),
+      avatar_url: t(teacherForm.avatar_url),
       languages: teacherForm.languages,
       experience: teacherForm.experience,
       specialization: teacherForm.specialization,
-      education: teacherForm.education || null,
-      bio: teacherForm.bio || null,
-      order_index: parseInt(teacherForm.order_index) || 0
+      education: t(teacherForm.education),
+      bio: t(teacherForm.bio),
+      order_index: parseInt(teacherForm.order_index) || 0,
+      // Detail-page fields
+      slug: t(teacherForm.slug) || slugifyAdmin(teacherForm.name),
+      gender: t(teacherForm.gender),
+      country: t(teacherForm.country),
+      headline: t(teacherForm.headline),
+      short_bio: t(teacherForm.short_bio),
+      long_bio: t(teacherForm.long_bio),
+      quote: t(teacherForm.quote),
+      education_title: t(teacherForm.education_title),
+      education_sub: t(teacherForm.education_sub),
+      approach_title: t(teacherForm.approach_title),
+      approach_desc: t(teacherForm.approach_desc),
+      academic_title: t(teacherForm.academic_title),
+      academic_desc: t(teacherForm.academic_desc),
+      // Per-teacher SEO
+      seo_title: t(teacherForm.seo_title),
+      seo_description: t(teacherForm.seo_description),
+      seo_keywords: t(teacherForm.seo_keywords),
+      // Per-teacher "About" + "Verified" blocks (JSONB)
+      about_block: teacherForm.about_block || null,
+      verified_block: teacherForm.verified_block || null
     };
 
     // Save helper — retries with fallback if specific columns haven't been added yet
@@ -2101,27 +2154,28 @@ export default function AdminDashboard() {
     try {
       let { error } = await saveTeacher(payload);
       if (error) {
-        // Fallback retry omitting optional newer columns if database table is older
-        const { title, education, bio, ...basicPayload } = payload;
-        void title; void education; void bio;
+        // Fallback retry with only the base columns if the DB table is older
+        // (i.e. the detail/SEO migration hasn't been run yet).
+        const basicPayload = {
+          name: payload.name, title: payload.title, avatar_url: payload.avatar_url,
+          languages: payload.languages, experience: payload.experience,
+          specialization: payload.specialization, education: payload.education,
+          bio: payload.bio, order_index: payload.order_index
+        };
         const retryRes = await saveTeacher(basicPayload);
         if (retryRes.error) throw error;
+        adminSwal.fire({
+          icon: "warning",
+          title: "Saved (basic fields only)",
+          text: "Detail & SEO columns are missing in the database. Run supabase-teachers-details-seo.sql to enable them.",
+          confirmButtonColor: "var(--primary-color)", background: "#111827", color: "#fff"
+        });
       }
 
       // Reset Form
       setIsEditingTeacher(false);
       setEditingTeacherId(null);
-      setTeacherForm({
-        name: "",
-        title: "",
-        avatar_url: "",
-        languages: "",
-        experience: "",
-        specialization: "",
-        education: "",
-        bio: "",
-        order_index: 0
-      });
+      setTeacherForm(EMPTY_TEACHER_FORM);
       fetchDashboardData();
       adminSwal.fire({
         icon: "success",
@@ -2147,17 +2201,7 @@ export default function AdminDashboard() {
 
   const triggerCreateTeacher = () => {
     setEditingTeacherId(null);
-    setTeacherForm({
-      name: "",
-      title: "",
-      avatar_url: "",
-      languages: "",
-      experience: "",
-      specialization: "",
-      education: "",
-      bio: "",
-      order_index: 0
-    });
+    setTeacherForm(EMPTY_TEACHER_FORM);
     setIsEditingTeacher(true);
   };
 
@@ -2172,7 +2216,31 @@ export default function AdminDashboard() {
       specialization: teacher.specialization || "",
       education: teacher.education || "",
       bio: teacher.bio || "",
-      order_index: teacher.order_index || 0
+      order_index: teacher.order_index || 0,
+      slug: teacher.slug || "",
+      gender: teacher.gender || "",
+      country: teacher.country || "",
+      headline: teacher.headline || "",
+      short_bio: teacher.short_bio || "",
+      long_bio: teacher.long_bio || "",
+      quote: teacher.quote || "",
+      education_title: teacher.education_title || "",
+      education_sub: teacher.education_sub || "",
+      approach_title: teacher.approach_title || "",
+      approach_desc: teacher.approach_desc || "",
+      academic_title: teacher.academic_title || "",
+      academic_desc: teacher.academic_desc || "",
+      seo_title: teacher.seo_title || "",
+      seo_description: teacher.seo_description || "",
+      seo_keywords: teacher.seo_keywords || "",
+      about_block: (teacher.about_block && typeof teacher.about_block === "object")
+        ? { ...EMPTY_TEACHER_FORM.about_block, ...teacher.about_block,
+            features: Array.isArray(teacher.about_block.features) && teacher.about_block.features.length ? teacher.about_block.features : EMPTY_TEACHER_FORM.about_block.features }
+        : EMPTY_TEACHER_FORM.about_block,
+      verified_block: (teacher.verified_block && typeof teacher.verified_block === "object")
+        ? { ...EMPTY_TEACHER_FORM.verified_block, ...teacher.verified_block,
+            cards: Array.isArray(teacher.verified_block.cards) && teacher.verified_block.cards.length ? teacher.verified_block.cards : EMPTY_TEACHER_FORM.verified_block.cards }
+        : EMPTY_TEACHER_FORM.verified_block
     });
     setIsEditingTeacher(true);
   };
@@ -5944,6 +6012,206 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                   )}
+                </div>
+
+                {/* Detail Page Content Panel (shown on /teachers/[id]) */}
+                <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
+                  <div>
+                    <h3 style={{ fontSize: "18px", fontWeight: "600", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px" }}>Detail Page Content</h3>
+                    <p style={{ color: "var(--fg-muted)", fontSize: "12px", marginTop: "8px" }}>
+                      Yeh sab fields public teacher detail page (<code>/teachers/{editingTeacherId || "id"}</code>) par dynamically dikhte hain. Khaali chhodoge to sensible default aayega.
+                    </p>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "20px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Gender (for pronouns)</label>
+                      <select value={teacherForm.gender} onChange={(e) => setTeacherForm(prev => ({ ...prev, gender: e.target.value }))} style={formInputStyle}>
+                        <option value="">Auto (from name)</option>
+                        <option value="male">Male (He/His)</option>
+                        <option value="female">Female (She/Her)</option>
+                      </select>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Country</label>
+                      <input type="text" value={teacherForm.country} onChange={(e) => setTeacherForm(prev => ({ ...prev, country: e.target.value }))} placeholder="e.g. Egypt" style={formInputStyle} />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>URL Slug (optional)</label>
+                      <input type="text" value={teacherForm.slug} onChange={(e) => setTeacherForm(prev => ({ ...prev, slug: e.target.value }))} placeholder="auto from name" style={formInputStyle} />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Headline (role line under name)</label>
+                    <input type="text" value={teacherForm.headline} onChange={(e) => setTeacherForm(prev => ({ ...prev, headline: e.target.value }))} placeholder="e.g. Online Quran & Arabic Teacher" style={formInputStyle} />
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Education — Line 1 (pill)</label>
+                      <input type="text" value={teacherForm.education_title} onChange={(e) => setTeacherForm(prev => ({ ...prev, education_title: e.target.value }))} placeholder="e.g. Bachelor's Degree in Islamic Studies" style={formInputStyle} />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Education — Line 2 (pill)</label>
+                      <input type="text" value={teacherForm.education_sub} onChange={(e) => setTeacherForm(prev => ({ ...prev, education_sub: e.target.value }))} placeholder="e.g. Al-Azhar University — Graduation" style={formInputStyle} />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Short Bio (hero intro paragraph)</label>
+                    <textarea value={teacherForm.short_bio} onChange={(e) => setTeacherForm(prev => ({ ...prev, short_bio: e.target.value }))} placeholder="1–2 sentence intro shown in the hero card…" style={{ ...formInputStyle, minHeight: "70px", resize: "vertical" }} />
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Quote (gold quote block)</label>
+                    <textarea value={teacherForm.quote} onChange={(e) => setTeacherForm(prev => ({ ...prev, quote: e.target.value }))} placeholder="A short inspiring quote from the teacher…" style={{ ...formInputStyle, minHeight: "60px", resize: "vertical" }} />
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Long Bio (&quot;About Me&quot; paragraph)</label>
+                    <textarea value={teacherForm.long_bio} onChange={(e) => setTeacherForm(prev => ({ ...prev, long_bio: e.target.value }))} placeholder="Detailed background shown in the About Me section…" style={{ ...formInputStyle, minHeight: "100px", resize: "vertical" }} />
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Highlight 01 — Title</label>
+                      <input type="text" value={teacherForm.approach_title} onChange={(e) => setTeacherForm(prev => ({ ...prev, approach_title: e.target.value }))} placeholder="e.g. Student-Centered Learning Approach" style={formInputStyle} />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Highlight 02 — Title</label>
+                      <input type="text" value={teacherForm.academic_title} onChange={(e) => setTeacherForm(prev => ({ ...prev, academic_title: e.target.value }))} placeholder="e.g. Strong Academic Background" style={formInputStyle} />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Highlight 01 — Description</label>
+                      <textarea value={teacherForm.approach_desc} onChange={(e) => setTeacherForm(prev => ({ ...prev, approach_desc: e.target.value }))} placeholder="Describe the teaching approach…" style={{ ...formInputStyle, minHeight: "90px", resize: "vertical" }} />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Highlight 02 — Description</label>
+                      <textarea value={teacherForm.academic_desc} onChange={(e) => setTeacherForm(prev => ({ ...prev, academic_desc: e.target.value }))} placeholder="Describe the academic background…" style={{ ...formInputStyle, minHeight: "90px", resize: "vertical" }} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* "About Her/Him" Section (right side, top) */}
+                <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
+                  <div>
+                    <h3 style={{ fontSize: "18px", fontWeight: "600", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px" }}>&quot;About&quot; Section (right side)</h3>
+                    <p style={{ color: "var(--fg-muted)", fontSize: "12px", marginTop: "8px" }}>
+                      Detail page ke right side ka upar wala block. Title ke pehle teacher ki pronoun (She/He) auto lagti hai.
+                    </p>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Title — Line 1</label>
+                      <input type="text" value={teacherForm.about_block?.title_line1 || ""} onChange={(e) => setTeacherForm(p => ({ ...p, about_block: { ...p.about_block, title_line1: e.target.value } }))} placeholder="A Friendly, Supportive and" style={formInputStyle} />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Title — Highlight (gold)</label>
+                      <input type="text" value={teacherForm.about_block?.title_highlight || ""} onChange={(e) => setTeacherForm(p => ({ ...p, about_block: { ...p.about_block, title_highlight: e.target.value } }))} placeholder="Professional Teacher" style={formInputStyle} />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Subtitle (after pronoun She/He)</label>
+                    <input type="text" value={teacherForm.about_block?.subtitle_rest || ""} onChange={(e) => setTeacherForm(p => ({ ...p, about_block: { ...p.about_block, subtitle_rest: e.target.value } }))} placeholder="is committed to creating a positive and encouraging learning environment for every student." style={formInputStyle} />
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <label style={formLabelStyle}>Feature Cards</label>
+                      <button type="button" onClick={() => setTeacherForm(p => ({ ...p, about_block: { ...p.about_block, features: [...(p.about_block?.features || []), { title: "", desc: "" }] } }))} className="btn-secondary" style={{ padding: "6px 12px", fontSize: "12px" }}>+ Add Card</button>
+                    </div>
+                    {(teacherForm.about_block?.features || []).map((f, i) => (
+                      <div key={i} style={{ border: "1px solid var(--card-border)", borderRadius: "10px", padding: "14px", display: "flex", flexDirection: "column", gap: "10px", background: "rgba(255,255,255,0.02)" }}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                          <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--fg-muted)" }}>Card {i + 1}</span>
+                          <button type="button" onClick={() => setTeacherForm(p => ({ ...p, about_block: { ...p.about_block, features: p.about_block.features.filter((_, idx) => idx !== i) } }))} style={{ color: "#ef4444", background: "transparent", border: "none", fontSize: "12px", cursor: "pointer" }}>Remove</button>
+                        </div>
+                        <input type="text" value={f.title || ""} onChange={(e) => setTeacherForm(p => ({ ...p, about_block: { ...p.about_block, features: p.about_block.features.map((x, idx) => idx === i ? { ...x, title: e.target.value } : x) } }))} placeholder="Card title" style={formInputStyle} />
+                        <textarea value={f.desc || ""} onChange={(e) => setTeacherForm(p => ({ ...p, about_block: { ...p.about_block, features: p.about_block.features.map((x, idx) => idx === i ? { ...x, desc: e.target.value } : x) } }))} placeholder="Card description" style={{ ...formInputStyle, minHeight: "56px", resize: "vertical" }} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* "Verified Teachers" Section (right side, bottom) */}
+                <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
+                  <div>
+                    <h3 style={{ fontSize: "18px", fontWeight: "600", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px" }}>&quot;Verified Teachers&quot; Section</h3>
+                    <p style={{ color: "var(--fg-muted)", fontSize: "12px", marginTop: "8px" }}>
+                      Detail page ke doosre section ka right side (&quot;OUR VERIFIED TEACHERS&quot; + cards).
+                    </p>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Badge Label</label>
+                      <input type="text" value={teacherForm.verified_block?.badge || ""} onChange={(e) => setTeacherForm(p => ({ ...p, verified_block: { ...p.verified_block, badge: e.target.value } }))} placeholder="OUR VERIFIED TEACHERS" style={formInputStyle} />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={formLabelStyle}>Title — Line 1</label>
+                      <input type="text" value={teacherForm.verified_block?.title_line1 || ""} onChange={(e) => setTeacherForm(p => ({ ...p, verified_block: { ...p.verified_block, title_line1: e.target.value } }))} placeholder="Dedicated. Experienced." style={formInputStyle} />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Title — Highlight (gold)</label>
+                    <input type="text" value={teacherForm.verified_block?.title_highlight || ""} onChange={(e) => setTeacherForm(p => ({ ...p, verified_block: { ...p.verified_block, title_highlight: e.target.value } }))} placeholder="Committed to Your Child's Success." style={formInputStyle} />
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>Subtitle</label>
+                    <textarea value={teacherForm.verified_block?.subtitle || ""} onChange={(e) => setTeacherForm(p => ({ ...p, verified_block: { ...p.verified_block, subtitle: e.target.value } }))} placeholder="Our teachers are carefully selected…" style={{ ...formInputStyle, minHeight: "60px", resize: "vertical" }} />
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <label style={formLabelStyle}>Verification Cards</label>
+                      <button type="button" onClick={() => setTeacherForm(p => ({ ...p, verified_block: { ...p.verified_block, cards: [...(p.verified_block?.cards || []), { title: "", desc: "" }] } }))} className="btn-secondary" style={{ padding: "6px 12px", fontSize: "12px" }}>+ Add Card</button>
+                    </div>
+                    {(teacherForm.verified_block?.cards || []).map((c, i) => (
+                      <div key={i} style={{ border: "1px solid var(--card-border)", borderRadius: "10px", padding: "14px", display: "flex", flexDirection: "column", gap: "10px", background: "rgba(255,255,255,0.02)" }}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                          <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--fg-muted)" }}>Card {i + 1}</span>
+                          <button type="button" onClick={() => setTeacherForm(p => ({ ...p, verified_block: { ...p.verified_block, cards: p.verified_block.cards.filter((_, idx) => idx !== i) } }))} style={{ color: "#ef4444", background: "transparent", border: "none", fontSize: "12px", cursor: "pointer" }}>Remove</button>
+                        </div>
+                        <input type="text" value={c.title || ""} onChange={(e) => setTeacherForm(p => ({ ...p, verified_block: { ...p.verified_block, cards: p.verified_block.cards.map((x, idx) => idx === i ? { ...x, title: e.target.value } : x) } }))} placeholder="Card title" style={formInputStyle} />
+                        <textarea value={c.desc || ""} onChange={(e) => setTeacherForm(p => ({ ...p, verified_block: { ...p.verified_block, cards: p.verified_block.cards.map((x, idx) => idx === i ? { ...x, desc: e.target.value } : x) } }))} placeholder="Card description" style={{ ...formInputStyle, minHeight: "56px", resize: "vertical" }} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Teacher SEO Panel */}
+                <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
+                  <div>
+                    <h3 style={{ fontSize: "18px", fontWeight: "600", borderBottom: "1px solid var(--card-border)", paddingBottom: "12px" }}>Teacher SEO (Search Engine)</h3>
+                    <p style={{ color: "var(--fg-muted)", fontSize: "12px", marginTop: "8px" }}>
+                      Meta title, description &amp; keywords for this teacher&apos;s detail page. Khaali chhodoge to name/title aur short bio se auto ban jayega.
+                    </p>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>SEO Meta Title</label>
+                    <input type="text" value={teacherForm.seo_title} onChange={(e) => setTeacherForm(prev => ({ ...prev, seo_title: e.target.value }))} placeholder="e.g. Ustadh Mazin Yasir — Quran & Tajweed Teacher | Yaqeen Institute" style={formInputStyle} />
+                    <span style={{ fontSize: "11px", color: "var(--fg-muted)" }}>{(teacherForm.seo_title || "").length} chars (ideal ≤ 60)</span>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>SEO Meta Description</label>
+                    <textarea value={teacherForm.seo_description} onChange={(e) => setTeacherForm(prev => ({ ...prev, seo_description: e.target.value }))} placeholder="Short summary shown in Google results…" style={{ ...formInputStyle, minHeight: "70px", resize: "vertical" }} />
+                    <span style={{ fontSize: "11px", color: "var(--fg-muted)" }}>{(teacherForm.seo_description || "").length} chars (ideal ≤ 160)</span>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label style={formLabelStyle}>SEO Keywords (comma separated)</label>
+                    <input type="text" value={teacherForm.seo_keywords} onChange={(e) => setTeacherForm(prev => ({ ...prev, seo_keywords: e.target.value }))} placeholder="e.g. quran teacher, tajweed, online quran classes" style={formInputStyle} />
+                  </div>
                 </div>
 
                 {/* Action buttons */}

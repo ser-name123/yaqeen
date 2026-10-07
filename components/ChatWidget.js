@@ -274,16 +274,14 @@ export default function ChatWidget() {
 
   return (
     <>
-      {/* launcher + teaser */}
+      {/* launcher + prompt */}
       <div className={`cw-launcher-wrap ${open ? "hide" : ""}`}>
-        {teaser && (
-          <div className="cw-teaser" onClick={openChat}>
-            <button className="cw-teaser-x" onClick={dismissTeaser} aria-label="Dismiss">✕</button>
-            <div className="cw-teaser-av">{avatarInner()}</div>
-            <div className="cw-teaser-msg">👋 Assalamu Alaikum! Need help choosing a course? Tap to chat with us.</div>
-          </div>
-        )}
-        <button className="cw-launcher" onClick={openChat} aria-label="Chat with us">
+        <div className="cw-floating-prompt" onClick={openChat} role="button" tabIndex={0} aria-label="Open Yaqeen AI Chat">
+          <span className="cw-prompt-wave">👋</span>
+          <span className="cw-prompt-text">Salam, Ask Yaqeen’s A.I</span>
+        </div>
+
+        <button className="cw-launcher" onClick={openChat} aria-label="Chat with Yaqeen A.I">
           <IChat />
           {unread > 0 && <span className="cw-unread">{unread}</span>}
           <span className="cw-launcher-pulse" />
