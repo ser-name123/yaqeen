@@ -187,6 +187,7 @@ export default function BlogDetail() {
   }, [slug]);
 
   useEffect(() => {
+    if (loading || !blog) return;
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -195,10 +196,16 @@ export default function BlogDetail() {
       });
     }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
 
-    const animatedElements = document.querySelectorAll(".reveal-fade, .reveal-slide-up, .reveal-stagger");
+    const animatedElements = Array.from(document.querySelectorAll(".reveal-fade, .reveal-slide-up, .reveal-stagger"));
     animatedElements.forEach(el => observer.observe(el));
 
-    return () => observer.disconnect();
+    // Safety net: never leave content invisible if the observer doesn't fire
+    // (very tall articles, or a React re-render resetting the added class).
+    const fallback = setTimeout(() => {
+      animatedElements.forEach(el => el.classList.add("reveal-visible"));
+    }, 1200);
+
+    return () => { observer.disconnect(); clearTimeout(fallback); };
   }, [blog, loading]);
 
   // Social Share event handlers
@@ -333,8 +340,8 @@ export default function BlogDetail() {
             </div>
           )}
 
-          {/* Body Intro Text */}
-          <div className="blog-details-body-intro reveal-slide-up" dangerouslySetInnerHTML={{ __html: blog.body }} />
+          {/* Body Intro Text — primary content, always visible (no reveal hide) */}
+          <div className="blog-details-body-intro" dangerouslySetInnerHTML={{ __html: blog.body }} />
 
           {/* Accordion Sections list */}
           {blog.sections && blog.sections.length > 0 && (

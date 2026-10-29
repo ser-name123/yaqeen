@@ -104,6 +104,16 @@ const nextConfig = {
         ]
       }
     ];
+  },
+  // Serve /sitemap.xml from a normal route handler. Next reserves the
+  // /sitemap.xml path for its metadata convention, so a route handler folder
+  // named "sitemap.xml" breaks in dev ("Cannot find module './sitemap.js'").
+  // Hosting the handler at /api/sitemap and rewriting avoids that conflict and
+  // works in both dev and production.
+  async rewrites() {
+    return [
+      { source: "/sitemap.xml", destination: "/api/sitemap" }
+    ];
   }
 };
 
