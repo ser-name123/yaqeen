@@ -114,6 +114,14 @@ const nextConfig = {
     return [
       { source: "/sitemap.xml", destination: "/api/sitemap" }
     ];
+  },
+  // Landing pages now live at the root ( /{slug} ). Permanently redirect any
+  // legacy /landing/{slug} link (and old search-engine results) to the clean
+  // root URL so nothing 404s.
+  async redirects() {
+    return [
+      { source: "/landing/:slug", destination: "/:slug", permanent: true }
+    ];
   }
 };
 

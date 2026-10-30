@@ -10,9 +10,8 @@ import "./AdminLandingPages.css";
 
 export function getPagePublicPath(page) {
   if (!page) return "/";
-  const slug = page.slug || "";
-  const usePrefix = Boolean(page.seo?.useLandingPrefix);
-  return usePrefix ? `/landing/${slug}` : `/${slug}`;
+  // Landing pages always live at the root ( /{slug} ) — no /landing prefix.
+  return `/${page.slug || ""}`;
 }
 
 export default function AdminLandingPages() {
@@ -78,12 +77,6 @@ export default function AdminLandingPages() {
           <label style="font-weight: 600; display: block; margin-bottom: 5px;">URL Slug</label>
           <input id="swal-slug" class="swal2-input" placeholder="e.g. learn-quran-for-kids" style="margin: 0 0 15px 0; width: 100%; box-sizing: border-box;">
           
-          <label style="font-weight: 600; display: block; margin-bottom: 5px;">URL Prefix / Path Structure</label>
-          <select id="swal-prefix" class="swal2-select" style="margin: 0 0 15px 0; width: 100%; box-sizing: border-box;">
-            <option value="direct">🌐 Direct Root URL (/{slug}) — Recommended</option>
-            <option value="landing">📁 Under /landing/ (/landing/{slug})</option>
-          </select>
-
           <label style="font-weight: 600; display: block; margin-bottom: 5px;">Publish Status</label>
           <select id="swal-status" class="swal2-select" style="margin: 0; width: 100%; box-sizing: border-box;">
             <option value="published">Published</option>
@@ -98,7 +91,6 @@ export default function AdminLandingPages() {
       preConfirm: () => {
         const title = document.getElementById("swal-title").value;
         const slug = document.getElementById("swal-slug").value;
-        const prefix = document.getElementById("swal-prefix").value;
         const status = document.getElementById("swal-status").value;
         if (!title || !title.trim()) {
           Swal.showValidationMessage("Please enter a page title");
@@ -109,7 +101,8 @@ export default function AdminLandingPages() {
           slug,
           status,
           seo: {
-            useLandingPrefix: prefix === "landing"
+            // Landing pages always live at the root ( /{slug} ).
+            useLandingPrefix: false
           }
         };
       }
@@ -608,20 +601,12 @@ export default function AdminLandingPages() {
                     />
                   </div>
                   <div className="alp-form-group full">
-                    <label className="alp-label">URL Path Structure (Prefix Option)</label>
-                    <select
-                      className="alp-select"
-                      value={pageData.seo?.useLandingPrefix ? "landing" : "direct"}
-                      onChange={(e) => {
-                        const isLanding = e.target.value === "landing";
-                        updateSeo("useLandingPrefix", isLanding);
-                      }}
-                    >
-                      <option value="direct">🌐 Direct Root URL: /{pageData.slug || "your-slug"} (No "/landing/" prefix)</option>
-                      <option value="landing">📁 Subdirectory: /landing/{pageData.slug || "your-slug"}</option>
-                    </select>
+                    <label className="alp-label">Public URL</label>
+                    <div className="alp-input" style={{ display: "flex", alignItems: "center", background: "rgba(0,0,0,0.03)", color: "#555" }}>
+                      https://yaqeeninstitute.online/{pageData.slug || "your-slug"}
+                    </div>
                     <span className="alp-hint" style={{ color: "#2E6A3B", fontWeight: "600", marginTop: "4px", display: "block" }}>
-                      🔗 Public Live Link: https://yaqeeninstitute.online{getPagePublicPath(pageData)}
+                      🔗 Landing pages live directly at the root (no &quot;/landing/&quot; prefix).
                     </span>
                   </div>
                 </div>

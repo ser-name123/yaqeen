@@ -26,11 +26,8 @@ async function getLandingPageData(slug) {
       .maybeSingle();
 
     if (data) {
-      // If page has useLandingPrefix enabled, it must only be accessed via /landing/[slug]
-      if (Boolean(data.seo?.useLandingPrefix)) {
-        return null;
-      }
-
+      // All landing pages are served at the root ( /{slug} ); the legacy
+      // /landing/[slug] route now redirects here.
       return {
         ...data,
         seo: { ...DEFAULT_LANDING_PAGE_SEO, ...(data.seo || {}) },

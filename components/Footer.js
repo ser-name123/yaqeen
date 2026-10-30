@@ -441,7 +441,7 @@ export default function Footer({ faviconUrl: propFaviconUrl }) {
                 {itemsToDisplay.map((item, idx) => (
                   <Link
                     key={item.id || idx}
-                    href={`/landing/${item.slug || "online-quran-classes-uk"}`}
+                    href={`/${item.slug || "online-quran-classes-uk"}`}
                     className="footer-popular-pill"
                   >
                     {item.title}
